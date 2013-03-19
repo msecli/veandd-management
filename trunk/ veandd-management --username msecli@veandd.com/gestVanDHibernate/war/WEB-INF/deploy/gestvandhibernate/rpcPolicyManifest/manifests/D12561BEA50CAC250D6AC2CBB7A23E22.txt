@@ -1,0 +1,2 @@
+serviceClass: gestione.pack.client.SessionManagementService
+path: 4E71059E477BC0A45E56642BC27FCD56.gwt.rpc

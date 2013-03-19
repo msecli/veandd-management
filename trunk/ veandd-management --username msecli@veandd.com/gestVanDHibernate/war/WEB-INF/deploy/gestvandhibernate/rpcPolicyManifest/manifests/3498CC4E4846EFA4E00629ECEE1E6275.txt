@@ -1,0 +1,2 @@
+serviceClass: gestione.pack.client.AdministrationService
+path: F3B0CDF475C3A70D30D69F54491F3140.gwt.rpc

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "
+    -//Hibernate/Hibernate Configuration DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+ 
+<hibernate-configuration>
+<session-factory >
+    <property name="hibernate.connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property> 
+    <property name="hibernate.connection.driver_class">
+        com.mysql.jdbc.Driver
+    </property>
+    <property name="hibernate.connection.url">
+        jdbc:mysql://localhost:3306/gestionaledb
+    </property>
+    <property name="hibernate.connection.username">root</property>
+     <property name="hibernate.connection.password">root</property>
+    <property name="hibernate.dialect">
+        org.hibernate.dialect.MySQLDialect
+    </property>
+    <property name="hibernate.current_session_context_class">
+        thread
+    </property>
+    <!-- <property name="show_sql">true</property> -->
+    
+     <property name="hibernate.c3p0.min_size" > 5 </property> 
+	  <property name="hibernate.c3p0.max_size" > 20 </property> 
+	  <property name="hibernate.c3p0.timeout"> 1800 </property>
+	  <property name="hibernate.c3p0.max_statements" > 50 </property>
+	  <property name="hibernate.c3p0.idle_test_period" > 3000 </property>
+    <!-- Mappings -->
+ 
+      <mapping class="gestione.pack.shared.Cliente"/>
+      <mapping class="gestione.pack.shared.Rda"/>
+      <mapping class="gestione.pack.shared.Personale"/>
+      <mapping class="gestione.pack.shared.Ordine"/>
+      <mapping class="gestione.pack.shared.Offerta"/>
+      <mapping class="gestione.pack.shared.Attivita"/>
+      <mapping class="gestione.pack.shared.Commessa"/>
+      <mapping class="gestione.pack.shared.AssociazionePtoA"/>
+      <mapping class="gestione.pack.shared.FoglioOreMese"/>
+      <mapping class="gestione.pack.shared.DettaglioOreGiornaliere"/>
+      <mapping class="gestione.pack.shared.DettaglioIntervalliIU"/>
+      <mapping class="gestione.pack.shared.DettaglioIntervalliCommesse"/>
+      <mapping class="gestione.pack.shared.FoglioFatturazione"/>  
+      <mapping class="gestione.pack.shared.DatiTimbratriceExt"/> 
+      <mapping class="gestione.pack.shared.DettaglioTimbrature"/>
+      <mapping class="gestione.pack.shared.Commenti"/>     
+ 
+</session-factory>
+ 
+</hibernate-configuration>
