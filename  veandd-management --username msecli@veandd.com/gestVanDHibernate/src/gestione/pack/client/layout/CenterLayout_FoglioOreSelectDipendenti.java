@@ -402,7 +402,6 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 						if(!txtrNote.getRawValue().isEmpty())
 							noteAggiuntive=txtrNote.getValue().toString();
 						
-						
 						try {
 							controlloDati=checkCoerenzaDatiInput(fldSetGiustificativi, fldSetIntervalliC);
 						} catch (Exception e) {
