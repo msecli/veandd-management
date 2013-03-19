@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+              http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         version="2.5"
+         xmlns="http://java.sun.com/xml/ns/javaee">
+
+  <!-- Servlets -->
+  
+  <!-- Default page to serve -->
+  <welcome-file-list>
+    <welcome-file>GestVanDHibernate.html</welcome-file>
+  </welcome-file-list>
+  
+  <servlet>
+  	<servlet-name>AdministrationService</servlet-name>
+  	<servlet-class>gestione.pack.server.AdministrationServiceImpl</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>AdministrationService</servlet-name>
+  	<url-pattern>/gestvandhibernate/AdministrationService</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+	<servlet-name>upload</servlet-name>
+	<servlet-class>gestione.pack.server.UploadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+	<servlet-name>upload</servlet-name>
+    <url-pattern>/gestvandhibernate/UploadServlet</url-pattern>
+  </servlet-mapping>
+        
+   <servlet>
+	<servlet-name>print</servlet-name>
+	<servlet-class>gestione.pack.server.PrintDataServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+	<servlet-name>print</servlet-name>
+    <url-pattern>/gestvandhibernate/PrintDataServlet</url-pattern>
+  </servlet-mapping>
+ 
+  <servlet>
+   	<servlet-name>SessionManagementService</servlet-name>
+  	<servlet-class>gestione.pack.server.SessionManagementServiceImpl</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>SessionManagementService</servlet-name>
+  	<url-pattern>/gestvandhibernate/SessionManagementService</url-pattern>
+  </servlet-mapping>
+
+</web-app>

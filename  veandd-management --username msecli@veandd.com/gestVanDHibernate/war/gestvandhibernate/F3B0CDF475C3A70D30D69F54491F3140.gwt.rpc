@@ -1,0 +1,171 @@
+[B, true, true, false, false, [B/3308590456, 3308590456
+com.extjs.gxt.ui.client.core.FastMap, true, true, true, true, com.extjs.gxt.ui.client.core.FastMap/3488076414, 3488076414
+com.extjs.gxt.ui.client.core.FastSet, true, true, true, true, com.extjs.gxt.ui.client.core.FastSet/2139705081, 2139705081
+com.extjs.gxt.ui.client.data.BaseModel, true, false, true, false, com.extjs.gxt.ui.client.data.BaseModel/405059268, 405059268
+com.extjs.gxt.ui.client.data.BaseModelData, true, false, true, false, com.extjs.gxt.ui.client.data.BaseModelData/3541881726, 3541881726
+com.extjs.gxt.ui.client.data.RpcMap, true, true, true, true, com.extjs.gxt.ui.client.data.RpcMap/3441186752, 3441186752
+com.google.gwt.i18n.shared.impl.DateRecord, true, true, true, true, com.google.gwt.i18n.shared.impl.DateRecord/3375188634, 3375188634
+[Lcom.google.gwt.i18n.shared.impl.DateRecord;, true, true, true, true, [Lcom.google.gwt.i18n.shared.impl.DateRecord;/2477927360, 2477927360
+com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException, true, true, true, true, com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException/3936916533, 3936916533
+com.google.gwt.user.client.rpc.RpcTokenException, true, true, false, false, com.google.gwt.user.client.rpc.RpcTokenException/2345075298, 2345075298
+com.google.gwt.user.client.rpc.XsrfToken, false, false, true, true, com.google.gwt.user.client.rpc.XsrfToken/4254043109, 4254043109
+gestione.pack.client.AdministrationService, false, false, false, false, _, 1111209188
+gestione.pack.client.model.ClienteModel, true, true, false, false, gestione.pack.client.model.ClienteModel/715567860, 715567860
+[Lgestione.pack.client.model.ClienteModel;, true, true, false, false, [Lgestione.pack.client.model.ClienteModel;/1198615447, 1198615447
+gestione.pack.client.model.CommessaModel, true, true, false, false, gestione.pack.client.model.CommessaModel/3003416824, 3003416824
+[Lgestione.pack.client.model.CommessaModel;, true, true, false, false, [Lgestione.pack.client.model.CommessaModel;/624053035, 624053035
+gestione.pack.client.model.DatiFatturazioneCommessaModel, true, true, false, false, gestione.pack.client.model.DatiFatturazioneCommessaModel/2665551549, 2665551549
+[Lgestione.pack.client.model.DatiFatturazioneCommessaModel;, true, true, false, false, [Lgestione.pack.client.model.DatiFatturazioneCommessaModel;/1462268107, 1462268107
+gestione.pack.client.model.DatiFatturazioneMeseModel, true, true, false, false, gestione.pack.client.model.DatiFatturazioneMeseModel/3940288423, 3940288423
+[Lgestione.pack.client.model.DatiFatturazioneMeseModel;, true, true, false, false, [Lgestione.pack.client.model.DatiFatturazioneMeseModel;/1517625055, 1517625055
+gestione.pack.client.model.FoglioFatturazioneModel, true, true, false, false, gestione.pack.client.model.FoglioFatturazioneModel/747397219, 747397219
+gestione.pack.client.model.GiustificativiModel, true, true, false, false, gestione.pack.client.model.GiustificativiModel/2657554840, 2657554840
+gestione.pack.client.model.IntervalliCommesseModel, true, true, true, true, gestione.pack.client.model.IntervalliCommesseModel/1143204790, 1143204790
+[Lgestione.pack.client.model.IntervalliCommesseModel;, true, true, true, true, [Lgestione.pack.client.model.IntervalliCommesseModel;/2218195918, 2218195918
+gestione.pack.client.model.IntervalliIUModel, true, true, false, false, gestione.pack.client.model.IntervalliIUModel/3935527893, 3935527893
+[Lgestione.pack.client.model.IntervalliIUModel;, true, true, false, false, [Lgestione.pack.client.model.IntervalliIUModel;/2651453281, 2651453281
+gestione.pack.client.model.PersonaleAssociatoModel, true, true, false, false, gestione.pack.client.model.PersonaleAssociatoModel/4158441974, 4158441974
+[Lgestione.pack.client.model.PersonaleAssociatoModel;, true, true, false, false, [Lgestione.pack.client.model.PersonaleAssociatoModel;/503888945, 503888945
+gestione.pack.client.model.PersonaleModel, true, true, false, false, gestione.pack.client.model.PersonaleModel/353875873, 353875873
+[Lgestione.pack.client.model.PersonaleModel;, true, true, false, false, [Lgestione.pack.client.model.PersonaleModel;/2438032316, 2438032316
+gestione.pack.client.model.RdaModel, true, true, false, false, gestione.pack.client.model.RdaModel/1503862171, 1503862171
+[Lgestione.pack.client.model.RdaModel;, true, true, false, false, [Lgestione.pack.client.model.RdaModel;/2533596284, 2533596284
+gestione.pack.client.model.RdoCompletaModel, true, true, false, false, gestione.pack.client.model.RdoCompletaModel/3490638016, 3490638016
+[Lgestione.pack.client.model.RdoCompletaModel;, true, true, false, false, [Lgestione.pack.client.model.RdoCompletaModel;/222624269, 222624269
+gestione.pack.client.model.RiepilogoFoglioOreModel, true, true, true, true, gestione.pack.client.model.RiepilogoFoglioOreModel/1798869248, 1798869248
+[Lgestione.pack.client.model.RiepilogoFoglioOreModel;, true, true, true, true, [Lgestione.pack.client.model.RiepilogoFoglioOreModel;/640548124, 640548124
+gestione.pack.client.model.RiepilogoOreDipCommesse, true, true, false, false, gestione.pack.client.model.RiepilogoOreDipCommesse/117436708, 117436708
+[Lgestione.pack.client.model.RiepilogoOreDipCommesse;, true, true, false, false, [Lgestione.pack.client.model.RiepilogoOreDipCommesse;/1541211052, 1541211052
+gestione.pack.client.model.RiepilogoOreDipFatturazione, true, true, false, false, gestione.pack.client.model.RiepilogoOreDipFatturazione/4022908164, 4022908164
+[Lgestione.pack.client.model.RiepilogoOreDipFatturazione;, true, true, false, false, [Lgestione.pack.client.model.RiepilogoOreDipFatturazione;/2634519409, 2634519409
+gestione.pack.client.model.RiepilogoOreModel, true, true, false, false, gestione.pack.client.model.RiepilogoOreModel/3405678468, 3405678468
+gestione.pack.client.model.RiepilogoOreTotaliCommesse, true, true, false, false, gestione.pack.client.model.RiepilogoOreTotaliCommesse/801286936, 801286936
+[Lgestione.pack.client.model.RiepilogoOreTotaliCommesse;, true, true, false, false, [Lgestione.pack.client.model.RiepilogoOreTotaliCommesse;/3622950567, 3622950567
+gestione.pack.shared.AssociazionePtoA, true, true, false, false, gestione.pack.shared.AssociazionePtoA/2293547466, 2293547466
+@ClientFields,gestione.pack.shared.AssociazionePtoA,idAssociazionePa,attivita,personale
+[Lgestione.pack.shared.AssociazionePtoA;, true, true, false, false, [Lgestione.pack.shared.AssociazionePtoA;/823339846, 823339846
+gestione.pack.shared.Attivita, true, true, false, false, gestione.pack.shared.Attivita/2014192908, 2014192908
+@ClientFields,gestione.pack.shared.Attivita,idAttivita,dataAssociazione,dataFineAssociazione,idAttivitaPianAssociata,descrizioneAttivita,associazionePtoas,commessa
+[Lgestione.pack.shared.Attivita;, true, true, false, false, [Lgestione.pack.shared.Attivita;/490998534, 490998534
+gestione.pack.shared.Cliente, true, true, false, false, gestione.pack.shared.Cliente/626822841, 626822841
+@ClientFields,gestione.pack.shared.Cliente,codCliente,banca,cap,citta,codABI,codCAB,codCIN,codFiscale,condizioniPagamento,email,fax,indirizzo,partitaIVA,provincia,ragioneSociale,ramm,rgq,rua,rut,stato,telefono,valuta,codRaggr,rdas
+[Lgestione.pack.shared.Cliente;, true, true, false, false, [Lgestione.pack.shared.Cliente;/2073872656, 2073872656
+gestione.pack.shared.Commenti, true, true, false, false, gestione.pack.shared.Commenti/2444219304, 2444219304
+@ClientFields,gestione.pack.shared.Commenti,idCommenti,testo,username,dataRichiesta
+[Lgestione.pack.shared.Commenti;, true, true, false, false, [Lgestione.pack.shared.Commenti;/2806201849, 2806201849
+gestione.pack.shared.Commessa, true, true, false, false, gestione.pack.shared.Commessa/1579496748, 1579496748
+@ClientFields,gestione.pack.shared.Commessa,codCommessa,dataChiusura,dataElaborazione,denominazioneAttivita,estensione,matricolaPM,note,numeroCommessa,oreLavoro,residuoOreLavoro,pclAttuale,salAttuale,tariffaSal,statoCommessa,tipoCommessa,ordines,attivitas,foglioFatturaziones
+[Lgestione.pack.shared.Commessa;, true, true, false, false, [Lgestione.pack.shared.Commessa;/3615102616, 3615102616
+gestione.pack.shared.DatiTimbratriceExt, true, true, false, false, gestione.pack.shared.DatiTimbratriceExt/1699195395, 1699195395
+@ClientFields,gestione.pack.shared.DatiTimbratriceExt,idTimbratura,codice,codice1,codice2,codice3,giorno,matricolaPersonale,movimento,orario
+[Lgestione.pack.shared.DatiTimbratriceExt;, true, true, false, false, [Lgestione.pack.shared.DatiTimbratriceExt;/2908607647, 2908607647
+gestione.pack.shared.DettaglioIntervalliCommesse, true, true, false, false, gestione.pack.shared.DettaglioIntervalliCommesse/785856874, 785856874
+@ClientFields,gestione.pack.shared.DettaglioIntervalliCommesse,idDettaglioIntervalliCommesse,estensioneCommessa,idAttivita,numeroCommessa,oreLavorate,oreViaggio,dettaglioOreGiornaliere
+[Lgestione.pack.shared.DettaglioIntervalliCommesse;, true, true, false, false, [Lgestione.pack.shared.DettaglioIntervalliCommesse;/317512794, 317512794
+gestione.pack.shared.DettaglioIntervalliIU, true, true, false, false, gestione.pack.shared.DettaglioIntervalliIU/2182334986, 2182334986
+@ClientFields,gestione.pack.shared.DettaglioIntervalliIU,idDettaglioIntervalliIU,movimento,orario,sorgente,sostituito,dettaglioOreGiornaliere
+[Lgestione.pack.shared.DettaglioIntervalliIU;, true, true, false, false, [Lgestione.pack.shared.DettaglioIntervalliIU;/2444122055, 2444122055
+gestione.pack.shared.DettaglioOreGiornaliere, true, true, false, false, gestione.pack.shared.DettaglioOreGiornaliere/2113800899, 2113800899
+@ClientFields,gestione.pack.shared.DettaglioOreGiornaliere,idDettaglioOreGiornaliere,deltaOreGiorno,giornoRiferimento,giustificativo,oreAssenzeRecupero,oreViaggio,deltaOreViaggio,oreFerie,orePermesso,oreStraordinario,statoRevisione,totaleOreGiorno,noteAggiuntive,dettaglioIntervalliCommesses,dettaglioIntervalliIUs,foglioOreMese
+[Lgestione.pack.shared.DettaglioOreGiornaliere;, true, true, false, false, [Lgestione.pack.shared.DettaglioOreGiornaliere;/2692827299, 2692827299
+gestione.pack.shared.DettaglioTimbrature, true, true, false, false, gestione.pack.shared.DettaglioTimbrature/750579483, 750579483
+@ClientFields,gestione.pack.shared.DettaglioTimbrature,idDETTAGLIO_TIMBRATURE,numeroBadge,giorno,movimento,orario
+[Lgestione.pack.shared.DettaglioTimbrature;, true, true, false, false, [Lgestione.pack.shared.DettaglioTimbrature;/3551149951, 3551149951
+gestione.pack.shared.FoglioFatturazione, true, true, false, false, gestione.pack.shared.FoglioFatturazione/3475405218, 3475405218
+@ClientFields,gestione.pack.shared.FoglioFatturazione,idFoglioFatturazione,meseCorrente,note,oreFatturare,oreEseguite,oreScaricate,PCLattuale,SALattuale,statoElaborazione,variazionePCL,variazioneSAL,tariffaUtilizzata,commessa
+[Lgestione.pack.shared.FoglioFatturazione;, true, true, false, false, [Lgestione.pack.shared.FoglioFatturazione;/2913885398, 2913885398
+gestione.pack.shared.FoglioOreMese, true, true, false, false, gestione.pack.shared.FoglioOreMese/1183788626, 1183788626
+@ClientFields,gestione.pack.shared.FoglioOreMese,idFoglioOre,meseRiferimento,statoRevisioneMese,dettaglioOreGiornalieres,personale
+[Lgestione.pack.shared.FoglioOreMese;, true, true, false, false, [Lgestione.pack.shared.FoglioOreMese;/2671230925, 2671230925
+gestione.pack.shared.Offerta, true, true, false, false, gestione.pack.shared.Offerta/956407924, 956407924
+@ClientFields,gestione.pack.shared.Offerta,numeroOfferta,avanzamento,codiceOfferta,dataRedazione,descrizioneTecnica,documentoOfferta,nomeDocumento,numRevisione,numRisorse,statoOfferta,tariffaOraria,tempistica,rda
+[Lgestione.pack.shared.Offerta;, true, true, false, false, [Lgestione.pack.shared.Offerta;/665724868, 665724868
+gestione.pack.shared.Ordine, true, true, false, false, gestione.pack.shared.Ordine/1335024511, 1335024511
+@ClientFields,gestione.pack.shared.Ordine,numeroOrdine,codiceOrdine,dataChiusuraOrdine,dataFine,dataInizio,dataRichiestaOrdine,descrizioneAttivita,documentoOrdine,nomeDocumento,numRevisione,numRisorse,offertaAssociata,oreBudget,oreResidueBudget,statoAccettazione,statoOrdine,tariffaOraria,rda,commessa
+[Lgestione.pack.shared.Ordine;, true, true, false, false, [Lgestione.pack.shared.Ordine;/3187915946, 3187915946
+gestione.pack.shared.Personale, true, true, false, false, gestione.pack.shared.Personale/1180235282, 1180235282
+@ClientFields,gestione.pack.shared.Personale,ID_PERSONALE,cognome,costoOrario,costoStruttura,gruppoLavoro,nome,numeroBadge,password,ruolo,tipologiaLavoratore,tipologiaOrario,username,sede,oreDirette,oreIndirette,oreFerie,orePermessi,oreExFest,oreRecupero,curriculum,nomeFile,associazionePtoas,foglioOreMeses
+[Lgestione.pack.shared.Personale;, true, true, false, false, [Lgestione.pack.shared.Personale;/2528441853, 2528441853
+gestione.pack.shared.Rda, true, true, false, false, gestione.pack.shared.Rda/2270678289, 2270678289
+@ClientFields,gestione.pack.shared.Rda,numeroRda,codiceRDA,documentoRDA,nomeDocumento,cliente,offertas,ordines
+java.lang.Boolean, true, true, true, true, java.lang.Boolean/476441737, 476441737
+[Ljava.lang.Boolean;, true, true, true, true, [Ljava.lang.Boolean;/2507200464, 2507200464
+java.lang.Byte, true, true, true, true, java.lang.Byte/1571082439, 1571082439
+[Ljava.lang.Byte;, true, true, true, true, [Ljava.lang.Byte;/3053163818, 3053163818
+java.lang.Character, true, true, false, false, java.lang.Character/2663399736, 2663399736
+java.lang.Double, true, true, true, true, java.lang.Double/858496421, 858496421
+[Ljava.lang.Double;, true, true, true, true, [Ljava.lang.Double;/2857560407, 2857560407
+java.lang.Exception, true, false, true, false, java.lang.Exception/1920171873, 1920171873
+java.lang.Float, true, true, true, true, java.lang.Float/1718559123, 1718559123
+[Ljava.lang.Float;, true, true, true, true, [Ljava.lang.Float;/3956181278, 3956181278
+java.lang.IllegalArgumentException, true, true, false, false, java.lang.IllegalArgumentException/1755012560, 1755012560
+java.lang.Integer, true, true, true, true, java.lang.Integer/3438268394, 3438268394
+[Ljava.lang.Integer;, true, true, true, true, [Ljava.lang.Integer;/1574882222, 1574882222
+java.lang.Long, true, true, true, true, java.lang.Long/4227064769, 4227064769
+[Ljava.lang.Long;, true, true, true, true, [Ljava.lang.Long;/97727328, 97727328
+java.lang.Number, true, false, true, false, java.lang.Number/300033342, 300033342
+java.lang.NumberFormatException, true, true, false, false, java.lang.NumberFormatException/3305228476, 3305228476
+java.lang.RuntimeException, true, false, true, false, java.lang.RuntimeException/515124647, 515124647
+java.lang.Short, true, true, true, true, java.lang.Short/551743396, 551743396
+[Ljava.lang.Short;, true, true, true, true, [Ljava.lang.Short;/3779901635, 3779901635
+java.lang.String, true, true, true, true, java.lang.String/2004016611, 2004016611
+[Ljava.lang.String;, true, true, true, true, [Ljava.lang.String;/2600011424, 2600011424
+java.lang.Throwable, true, false, true, false, java.lang.Throwable/2953622131, 2953622131
+java.sql.Date, true, true, true, true, java.sql.Date/730999118, 730999118
+[Ljava.sql.Date;, true, true, true, true, [Ljava.sql.Date;/177260296, 177260296
+java.sql.Time, true, true, true, true, java.sql.Time/1816797103, 1816797103
+[Ljava.sql.Time;, true, true, true, true, [Ljava.sql.Time;/1999508513, 1999508513
+java.sql.Timestamp, true, true, true, true, java.sql.Timestamp/3040052672, 3040052672
+[Ljava.sql.Timestamp;, true, true, true, true, [Ljava.sql.Timestamp;/1038705795, 1038705795
+java.util.ArrayList, true, true, true, true, java.util.ArrayList/4159755760, 4159755760
+java.util.Arrays$ArrayList, true, true, true, true, java.util.Arrays$ArrayList/2507071751, 2507071751
+java.util.Collections$EmptyList, true, true, true, true, java.util.Collections$EmptyList/4157118744, 4157118744
+java.util.Collections$EmptyMap, true, true, true, true, java.util.Collections$EmptyMap/4174664486, 4174664486
+java.util.Collections$EmptySet, true, true, true, true, java.util.Collections$EmptySet/3523698179, 3523698179
+java.util.Collections$SingletonList, true, true, true, true, java.util.Collections$SingletonList/1586180994, 1586180994
+java.util.Date, true, true, true, true, java.util.Date/3385151746, 3385151746
+[Ljava.util.Date;, true, true, true, true, [Ljava.util.Date;/3768760277, 3768760277
+java.util.HashMap, true, true, true, true, java.util.HashMap/1797211028, 1797211028
+java.util.HashSet, true, true, true, true, java.util.HashSet/3273092938, 3273092938
+java.util.IdentityHashMap, true, true, true, true, java.util.IdentityHashMap/1839153020, 1839153020
+java.util.LinkedHashMap, true, true, true, true, java.util.LinkedHashMap/3008245022, 3008245022
+java.util.LinkedHashSet, true, true, true, true, java.util.LinkedHashSet/1826081506, 1826081506
+java.util.LinkedList, true, true, true, true, java.util.LinkedList/3953877921, 3953877921
+java.util.Stack, true, true, true, true, java.util.Stack/1346942793, 1346942793
+java.util.TreeMap, true, true, true, true, java.util.TreeMap/1493889780, 1493889780
+java.util.TreeSet, true, true, true, true, java.util.TreeSet/4043497002, 4043497002
+java.util.Vector, true, true, true, true, java.util.Vector/3057315478, 3057315478
+[Lnet.sf.gilead.pojo.base.ILightEntity;, true, true, false, false, [Lnet.sf.gilead.pojo.base.ILightEntity;/3861184979, 3861184979
+net.sf.gilead.pojo.gwt.GwtSerializableId, true, true, false, false, net.sf.gilead.pojo.gwt.GwtSerializableId/2844303195, 2844303195
+[Lnet.sf.gilead.pojo.gwt.GwtSerializableId;, true, true, false, false, [Lnet.sf.gilead.pojo.gwt.GwtSerializableId;/2285567209, 2285567209
+[Lnet.sf.gilead.pojo.gwt.IGwtSerializableParameter;, true, true, false, false, [Lnet.sf.gilead.pojo.gwt.IGwtSerializableParameter;/2071697777, 2071697777
+net.sf.gilead.pojo.gwt.LightEntity, true, false, false, false, net.sf.gilead.pojo.gwt.LightEntity/1555581365, 1555581365
+[Lnet.sf.gilead.pojo.gwt.LightEntity;, true, true, false, false, [Lnet.sf.gilead.pojo.gwt.LightEntity;/3449970074, 3449970074
+net.sf.gilead.pojo.gwt.SerializedParameter, true, true, false, false, net.sf.gilead.pojo.gwt.SerializedParameter/132341980, 132341980
+[Lnet.sf.gilead.pojo.gwt.SerializedParameter;, true, true, false, false, [Lnet.sf.gilead.pojo.gwt.SerializedParameter;/2694220992, 2694220992
+net.sf.gilead.pojo.gwt.basic.BooleanParameter, true, true, false, false, net.sf.gilead.pojo.gwt.basic.BooleanParameter/2694046737, 2694046737
+[Lnet.sf.gilead.pojo.gwt.basic.BooleanParameter;, true, true, false, false, [Lnet.sf.gilead.pojo.gwt.basic.BooleanParameter;/659978017, 659978017
+net.sf.gilead.pojo.gwt.basic.ByteParameter, true, true, false, false, net.sf.gilead.pojo.gwt.basic.ByteParameter/2737926916, 2737926916
+[Lnet.sf.gilead.pojo.gwt.basic.ByteParameter;, true, true, false, false, [Lnet.sf.gilead.pojo.gwt.basic.ByteParameter;/2840751033, 2840751033
+net.sf.gilead.pojo.gwt.basic.CharacterParameter, true, true, false, false, net.sf.gilead.pojo.gwt.basic.CharacterParameter/3361494208, 3361494208
+[Lnet.sf.gilead.pojo.gwt.basic.CharacterParameter;, true, true, false, false, [Lnet.sf.gilead.pojo.gwt.basic.CharacterParameter;/537814816, 537814816
+net.sf.gilead.pojo.gwt.basic.DateParameter, true, true, false, false, net.sf.gilead.pojo.gwt.basic.DateParameter/3691507541, 3691507541
+[Lnet.sf.gilead.pojo.gwt.basic.DateParameter;, true, true, false, false, [Lnet.sf.gilead.pojo.gwt.basic.DateParameter;/2753979251, 2753979251
+net.sf.gilead.pojo.gwt.basic.DoubleParameter, true, true, false, false, net.sf.gilead.pojo.gwt.basic.DoubleParameter/367474200, 367474200
+[Lnet.sf.gilead.pojo.gwt.basic.DoubleParameter;, true, true, false, false, [Lnet.sf.gilead.pojo.gwt.basic.DoubleParameter;/2828072013, 2828072013
+net.sf.gilead.pojo.gwt.basic.FloatParameter, true, true, false, false, net.sf.gilead.pojo.gwt.basic.FloatParameter/2266458363, 2266458363
+[Lnet.sf.gilead.pojo.gwt.basic.FloatParameter;, true, true, false, false, [Lnet.sf.gilead.pojo.gwt.basic.FloatParameter;/1883925208, 1883925208
+net.sf.gilead.pojo.gwt.basic.IntegerParameter, true, true, false, false, net.sf.gilead.pojo.gwt.basic.IntegerParameter/3421404974, 3421404974
+[Lnet.sf.gilead.pojo.gwt.basic.IntegerParameter;, true, true, false, false, [Lnet.sf.gilead.pojo.gwt.basic.IntegerParameter;/408650838, 408650838
+net.sf.gilead.pojo.gwt.basic.LongParameter, true, true, false, false, net.sf.gilead.pojo.gwt.basic.LongParameter/1349029528, 1349029528
+[Lnet.sf.gilead.pojo.gwt.basic.LongParameter;, true, true, false, false, [Lnet.sf.gilead.pojo.gwt.basic.LongParameter;/3419125299, 3419125299
+net.sf.gilead.pojo.gwt.basic.ShortParameter, true, true, false, false, net.sf.gilead.pojo.gwt.basic.ShortParameter/3591328655, 3591328655
+[Lnet.sf.gilead.pojo.gwt.basic.ShortParameter;, true, true, false, false, [Lnet.sf.gilead.pojo.gwt.basic.ShortParameter;/1337822491, 1337822491
+net.sf.gilead.pojo.gwt.basic.StringParameter, true, true, false, false, net.sf.gilead.pojo.gwt.basic.StringParameter/2783524083, 2783524083
+[Lnet.sf.gilead.pojo.gwt.basic.StringParameter;, true, true, false, false, [Lnet.sf.gilead.pojo.gwt.basic.StringParameter;/2215125269, 2215125269
+net.sf.gilead.pojo.gwt.collection.ListParameter, true, true, false, false, net.sf.gilead.pojo.gwt.collection.ListParameter/3890945144, 3890945144
+[Lnet.sf.gilead.pojo.gwt.collection.ListParameter;, true, true, false, false, [Lnet.sf.gilead.pojo.gwt.collection.ListParameter;/2269834606, 2269834606
+net.sf.gilead.pojo.gwt.collection.MapParameter, true, true, false, false, net.sf.gilead.pojo.gwt.collection.MapParameter/1940144086, 1940144086
+[Lnet.sf.gilead.pojo.gwt.collection.MapParameter;, true, true, false, false, [Lnet.sf.gilead.pojo.gwt.collection.MapParameter;/1810339670, 1810339670
+net.sf.gilead.pojo.gwt.collection.SetParameter, true, true, false, false, net.sf.gilead.pojo.gwt.collection.SetParameter/3311896573, 3311896573
+[Lnet.sf.gilead.pojo.gwt.collection.SetParameter;, true, true, false, false, [Lnet.sf.gilead.pojo.gwt.collection.SetParameter;/3930796824, 3930796824
