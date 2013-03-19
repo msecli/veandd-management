@@ -4,6 +4,7 @@ package gestione.pack.client.layout;
 
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.utility.ClientUtility;
+import gestione.pack.client.utility.ConstantiMSG;
 import gestione.pack.client.utility.MyImages;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -128,7 +129,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 				d.setPosition(w-500, 0);
 				d.setButtons("");
 				d.setStyleAttribute("margin", "10");
-				d.setUrl("/JSPage/Aggiornamenti.html");
+				d.setUrl(ConstantiMSG.URLAggiornamenti);
 				
 				d.show();
 			}
