@@ -15,7 +15,7 @@ public class RiepilogoFoglioOreModel extends BaseModel implements IsSerializable
 	}
 	
 	public RiepilogoFoglioOreModel(int idDettaglioGiorno, String mese, String giorno, String orePreviste, Float oreTimbrature, Float oreViaggio, Float deltaViaggio, Float oreTotali, Float oreFerie, 
-			Float orePermesso, Float oreRecupero, Float oreStraordinario, String giustificativo){
+			Float orePermesso, Float oreRecupero, Float oreStraordinario, String giustificativo, String note){
 		
 		set("idDettaglio", idDettaglioGiorno);
 		set("mese", mese);
@@ -30,7 +30,7 @@ public class RiepilogoFoglioOreModel extends BaseModel implements IsSerializable
 		set("oreRecupero", oreRecupero);
 		set("oreStraordinario", oreStraordinario);
 		set("giustificativo", giustificativo);
-		
+		set("note", note);
 	}
 
 	public int getDettaglioGiorno(){
