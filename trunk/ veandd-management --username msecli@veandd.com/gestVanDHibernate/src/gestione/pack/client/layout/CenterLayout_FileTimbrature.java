@@ -25,6 +25,7 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 
 public class CenterLayout_FileTimbrature extends LayoutContainer{
 	public CenterLayout_FileTimbrature() {
+		
 	}
 	
 	private int h=Window.getClientHeight();

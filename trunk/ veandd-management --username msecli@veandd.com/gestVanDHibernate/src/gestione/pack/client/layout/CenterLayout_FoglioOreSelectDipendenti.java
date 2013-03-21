@@ -59,6 +59,11 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
@@ -251,6 +256,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 				public void componentSelected(ButtonEvent ce) {
 					Dialog d =new  DialogInvioCommenti(txtfldUsername.getValue().toString());
 					d.show();
+					
 				}
 			});
 			
