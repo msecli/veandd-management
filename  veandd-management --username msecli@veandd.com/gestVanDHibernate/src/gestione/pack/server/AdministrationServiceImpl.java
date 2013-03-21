@@ -2949,7 +2949,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					
 					giorno= new RiepilogoFoglioOreModel(d.getIdDettaglioOreGiornaliere(), data, day, p.getTipologiaOrario(), Float.valueOf(d.getTotaleOreGiorno()),  Float.valueOf(d.getOreViaggio()), 
 							 Float.valueOf(d.getDeltaOreViaggio()),  Float.valueOf(oreTotali),  Float.valueOf(d.getOreFerie()),  Float.valueOf(d.getOrePermesso()) ,  Float.valueOf(d.getOreAssenzeRecupero()),
-							 Float.valueOf(d.getOreStraordinario()), d.getGiustificativo());
+							 Float.valueOf(d.getOreStraordinario()), d.getGiustificativo(), d.getNoteAggiuntive());
 					listaGiorni.add(giorno);
 				}
 				
