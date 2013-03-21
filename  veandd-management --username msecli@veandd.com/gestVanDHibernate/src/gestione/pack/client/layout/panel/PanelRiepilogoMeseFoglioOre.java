@@ -513,6 +513,14 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	    column.setAlignment(HorizontalAlignment.RIGHT);  
 	    configs.add(column); 
 	    
+	    column=new SummaryColumnConfig<Double>();		
+	    column.setId("note");  
+	    column.setHeader("noteAggiuntive");  
+	    column.setWidth(180);  
+	    column.setRowHeader(true);  
+	    column.setAlignment(HorizontalAlignment.RIGHT);  
+	    configs.add(column); 
+	    
 	    
 		return configs;
 	}
