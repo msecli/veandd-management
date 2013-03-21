@@ -7,6 +7,7 @@ import gestione.pack.client.utility.MyImages;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,14 +16,14 @@ import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.js.JsonConverter;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.FormPanel.Method;
+
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
@@ -36,7 +37,13 @@ import com.extjs.gxt.ui.client.widget.grid.SummaryType;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
 import com.google.gwt.i18n.client.NumberFormat;
+
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -72,21 +79,50 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	  	bodyContainer.setBorders(false);
 	    
 	  	ButtonBar btnBarPrint= new ButtonBar();
-	  	
-	  	final FormPanel frmSubmit= new FormPanel();
-	  	frmSubmit.setAction("/gestvandhibernate/PrintDataServlet");
-	  	frmSubmit.setMethod(Method.GET);
-	  	
+	  	  	
 	  	btnPrint.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.print()));
 		btnPrint.setToolTip("Stampa");
 		btnPrint.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
-				frmSubmit.submit();	
+							
+				final String url="/gestvandhibernate/PrintDataServlet";
+				RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
+
+			    try {
+			    	
+			    	List<RiepilogoFoglioOreModel> list= new ArrayList<RiepilogoFoglioOreModel>();
+			    	list.addAll(store.getModels());
+			    	Map<String, Object> map = new HashMap<String, Object>();
+			    	
+			    	for (Object i : list){
+			    		
+			    		map.put(String.valueOf(list.indexOf(i)), (RiepilogoFoglioOreModel) i);
+			    	}
+			    	
+			        String obj= JsonConverter.encode(map).toString();
+			    	
+			        Request request = builder.sendRequest(obj, new RequestCallback() {
+			        public void onError(Request request, Throwable exception) {
+			         // displayError("Couldn't retrieve JSON");
+			        	
+			        }
+
+			        public void onResponseReceived(Request request, Response response) {
+			          if (200 == response.getStatusCode()) {
+			           // updateTable(asArrayOfStockData(response.getText()));
+			          } else {
+			            //displayError("Couldn't retrieve JSON (" + response.getStatusText()  + ")");
+			          }
+			        }
+			      });
+			    } catch (RequestException e) {
+			    	 Window.alert("Failed to send the request: " + e.getMessage());
+			    }
 			}
 		});
 	  	
-		btnBarPrint.add(btnPrint);
+		//btnBarPrint.add(btnPrint);
 		
 		ContentPanel cntpnlGrid= new ContentPanel();
 		cntpnlGrid.setBodyBorder(false);         
@@ -119,7 +155,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	    gridRiepilogo.setView(summary);  
 	    gridRiepilogo.getView().setShowDirtyCells(false);
 	    cntpnlGrid.add(gridRiepilogo);
-	    //cntpnlGrid.setTopComponent(btnBarPrint);
+	    cntpnlGrid.setTopComponent(btnBarPrint);
 	    
 	    ContentPanel cntpnlLayout= new ContentPanel();
 		cntpnlLayout.setHeaderVisible(false);
