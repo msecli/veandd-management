@@ -1859,6 +1859,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		
 		
 		private void aggiornaTotaleIntervalli() {
+			
 		   List<String> listaParziali= new ArrayList<String>();
 		   String totale=new String();
 		   String delta=new String();
@@ -1880,8 +1881,11 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
   		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
   		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
   		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
-  		   fldsetGiustificativo.txtfldRecupero.setValue(delta);
-  		   
+  		  
+  		   if(isNew.compareTo("new")==0){
+  			 fldsetGiustificativo.txtfldRecupero.setValue(delta);
+  		   }
+  		   	   
   		   setFieldGiustificativo(fldsetGiustificativo, delta);			
 		}
 
