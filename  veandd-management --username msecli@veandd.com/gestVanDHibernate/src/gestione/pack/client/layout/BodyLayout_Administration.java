@@ -121,7 +121,6 @@ public class BodyLayout_Administration extends LayoutContainer {
 		
 		Button btnSetting=new Button();
 		btnSetting.addListener(Events.OnClick, new Listener<BaseEvent>() {
-
 			@Override
 			public void handleEvent(BaseEvent be) {
 				final Dialog d= new Dialog();
