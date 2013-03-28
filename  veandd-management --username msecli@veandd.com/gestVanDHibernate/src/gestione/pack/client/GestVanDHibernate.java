@@ -6,6 +6,7 @@ import gestione.pack.client.layout.BodyLayout_Direzione;
 import gestione.pack.client.layout.BodyLayout_PersonalManager;
 import gestione.pack.client.layout.BodyLayout_UffAmministrazione;
 import gestione.pack.client.layout.BodyLayout_GestionePersonale;
+import gestione.pack.client.utility.ConstantiMSG;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.dom.client.Element;
@@ -13,12 +14,14 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.FramePanel;
 import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -66,7 +69,14 @@ public class GestVanDHibernate implements EntryPoint {
 	    setWidth(320);
 	    setResizable(false);
 	    setClosable(false);
-
+	    
+	    ContentPanel co= new ContentPanel();
+	    co.setSize(290, 300);
+	    co.setHeaderVisible(false);
+	    co.setScrollMode(Scroll.NONE);
+	    co.setUrl(ConstantiMSG.URLAggiornamenti);
+	    setBottomComponent(co);
+	    
 	    KeyListener keyListener = new KeyListener() {
 	      
 	    public void componentKeyUp(ComponentEvent event) {
