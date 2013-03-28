@@ -2534,13 +2534,13 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				intervallo=intervalliIU.get(i*4);//0,4,8,12,16
 				movimento="i"+String.valueOf(i+1);//1,2,3,4,5
 				sorgente=intervalliIU.get(i*4+1);//1,5,9,13,17
-				if(intervallo.compareTo("")!=0)
+				//if(intervallo.compareTo("")!=0)
 					editIntervalloIU(idDettGiorno, intervallo, movimento, sorgente);
 				
 				intervallo=intervalliIU.get(i*4+2);//2,6,10,14,18
 				movimento="u"+String.valueOf(i+1);//1,2,3,4,5
 				sorgente=intervalliIU.get(i*4+3);//3,7,11,15,19
-				if(intervallo.compareTo("")!=0)
+				//if(intervallo.compareTo("")!=0)
 					editIntervalloIU(idDettGiorno, intervallo, movimento, sorgente);			
 			}	
 				
