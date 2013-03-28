@@ -37,6 +37,7 @@ public class GestVanDHibernate implements EntryPoint {
 	public void onModuleLoad() {		
 		LoginDialog d = new LoginDialog();
 		d.show();
+		
 		}
 	}
 	

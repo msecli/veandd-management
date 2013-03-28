@@ -173,11 +173,6 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	}
 	
 
-	private void openNewPage() {
-		final String URL = "http://127.0.0.1:8888/JSPage/RiepilogoOreMeseDipendente.jsp";
-		
-		Window.open(URL, "_blank", "1");
-	}
 
 	private void caricaTabellaDati() {
 		AdministrationService.Util.getInstance().getRiepilogoMeseFoglioOre(username, data,  new AsyncCallback<List<RiepilogoFoglioOreModel>>() {	
@@ -520,8 +515,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	    column.setRowHeader(true);  
 	    column.setAlignment(HorizontalAlignment.RIGHT);  
 	    configs.add(column); 
-	    
-	    
+	    	    
 		return configs;
 	}
 

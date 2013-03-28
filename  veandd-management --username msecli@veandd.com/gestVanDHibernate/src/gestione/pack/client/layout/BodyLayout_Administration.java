@@ -18,7 +18,6 @@ import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.Viewport;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
@@ -35,6 +34,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.FormPanel;
 
 
 public class BodyLayout_Administration extends LayoutContainer {
@@ -322,8 +322,31 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        	center.layout(true);}      
 	      });
 	    btnLoadTimbrature.setWidth("100%");
-	    cp.add(btnLoadTimbrature);    
+	    cp.add(btnLoadTimbrature);
+	    
+	    
+	    //--------------------------------
+	   
+	    Button btnPrint = new Button("Stampa");
+	    final FormPanel fp= new FormPanel();
+	    String url= "/gestvandhibernate/PrintDataServlet";
+    	fp.setAction(url);
+    	fp.setEncoding(FormPanel.ENCODING_MULTIPART);
+	    fp.setMethod(FormPanel.METHOD_POST);
+	   
+	    fp.add(btnPrint);
+	    	   
+	    btnPrint.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {	         
+	        	fp.submit();	        	
+	        }	
+	      });
+	    btnPrint.setWidth("100%");
+	    cp.add(btnPrint);    
+	  	    
 	    panel.add(cp);
+	    
+	    //-------------------------------------   
 	    
 	    cp = new ContentPanel();
 	    cp.setAnimCollapse(false);
