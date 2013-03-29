@@ -9,6 +9,7 @@ import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.layout.panel.DialogAssociaOrdine;
 import gestione.pack.client.model.CommessaModel;
+import gestione.pack.client.model.PersonaleModel;
 import gestione.pack.client.utility.DatiComboBox;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -26,6 +27,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
@@ -780,8 +782,10 @@ public class PanelCommessa extends LayoutContainer {
 		
 		try {		
 			store.removeAll();
-			store.add(lista);
-			store.setSortDir(SortDir.ASC);
+			store.setStoreSorter(new StoreSorter<CommessaModel>());  
+		    store.setDefaultSort("numeroCommessa", SortDir.ASC);
+			store.add(lista);			
+			
 			store.groupBy("ragioneSociale");
 			gridCommessa.reconfigure(store, cmCommessa);
 			frmpnlCommessa.reset();

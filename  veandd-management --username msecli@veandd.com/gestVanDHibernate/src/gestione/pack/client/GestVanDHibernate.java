@@ -48,6 +48,7 @@ public class GestVanDHibernate implements EntryPoint {
 
 	  protected TextField<String> userName;
 	  protected TextField<String> password;
+	 
 	  protected Button reset;
 	  protected Button login;
 	  protected Status status;
@@ -66,12 +67,12 @@ public class GestVanDHibernate implements EntryPoint {
 	    setModal(true);
 	    setBodyBorder(true);
 	    setBodyStyle("padding: 8px; background: none");
-	    setWidth(320);
+	    setWidth(380);
 	    setResizable(false);
 	    setClosable(false);
 	    
 	    ContentPanel co= new ContentPanel();
-	    co.setSize(290, 300);
+	    co.setSize(290, 350);
 	    co.setHeaderVisible(false);
 	    co.setScrollMode(Scroll.NONE);
 	    co.setUrl(ConstantiMSG.URLAggiornamenti);
@@ -195,52 +196,56 @@ public class GestVanDHibernate implements EntryPoint {
 	  }
 	   
 	  
-	  private void callLayout(String result) {
+	  private void callLayout(String result) {//Stringa nel formato ruolo;tipoLavoratore
+		  
+		  String ruolo= result.substring(0,result.indexOf(";"));
+		  String tipoL= result.substring(result.indexOf(";")+1, result.length());
 		  	
-		  if(result.equals("UA")){
+		  if(ruolo.equals("UA")){
 			  BodyLayout_UffAmministrazione bl= new BodyLayout_UffAmministrazione();
 			  bl.txtfldUsername.setValue(userName.getValue().toString());
-			  bl.txtfldRuolo.setValue(result);		  	  
+			  bl.txtfldRuolo.setValue(ruolo);		  	  
 			  RootPanel.get().add(bl);
 			  LoginDialog.this.hide();
 		  	}
 		  
-		  if(result.equals("UG")){
+		  if(ruolo.equals("UG")){
 			  BodyLayout_GestionePersonale bl= new BodyLayout_GestionePersonale();
 			  bl.txtfldUsername.setValue(userName.getValue().toString());
-			  bl.txtfldRuolo.setValue(result);
+			  bl.txtfldRuolo.setValue(ruolo);
 			  RootPanel.get().add(bl);
 			  LoginDialog.this.hide();  
 		   }
 		  
-		  if(result.equals("AMM")){		  
+		  if(ruolo.equals("AMM")){		  
 			  BodyLayout_Administration bl=new BodyLayout_Administration();
 			  bl.txtfldUsername.setValue(userName.getValue().toString());
-			  bl.txtfldRuolo.setValue(result);
+			  bl.txtfldRuolo.setValue(ruolo);
 			  RootPanel.get().add(bl); 
 			  LoginDialog.this.hide();  
 		   }
 		  
-		  if(result.equals("DIR")){		  
+		  if(ruolo.equals("DIR")){		  
 			  BodyLayout_Direzione bl=new BodyLayout_Direzione();
 			  bl.txtfldUsername.setValue(userName.getValue().toString());
-			  bl.txtfldRuolo.setValue(result);
+			  bl.txtfldRuolo.setValue(ruolo);
 			  RootPanel.get().add(bl); 
 			  LoginDialog.this.hide();  
 		   }
 		  
-		  if(result.equals("PM")){
+		  if(ruolo.equals("PM")){
 			  BodyLayout_PersonalManager bl= new BodyLayout_PersonalManager();
 			  bl.txtfldUsername.setValue(userName.getValue().toString());
-			  bl.txtfldRuolo.setValue(result);
+			  bl.txtfldRuolo.setValue(ruolo);
 			  RootPanel.get().add(bl);
 			  LoginDialog.this.hide();  
 		  }
 
-		  if(result.equals("DIP")){
+		  if(ruolo.equals("DIP")){
 			  BodyLayout_Dipendente bl= new BodyLayout_Dipendente();
 			  bl.txtfldUsername.setValue(userName.getValue().toString());
-			  bl.txtfldRuolo.setValue(result);
+			  bl.txtfldRuolo.setValue(ruolo);
+			  bl.txtfldTipologiaLavoratore.setValue(tipoL);
 			  RootPanel.get().add(bl);
 			  LoginDialog.this.hide();  
 			  

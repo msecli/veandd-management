@@ -55,13 +55,14 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	private Grid<RiepilogoFoglioOreModel> gridRiepilogo;
 	private ColumnModel cmCommessa;
 	private String username= new String();
+	private String tLavoratore= new String();
 	private Date data;
 	private Button btnPrint= new Button();
 	
-	public PanelRiepilogoMeseFoglioOre(String user, Date dataRiferimento){
+	public PanelRiepilogoMeseFoglioOre(String user, Date dataRiferimento, String tipoLavoratore){
 		username=user;
 		data=dataRiferimento;
-		
+		tLavoratore=tipoLavoratore;
 	}
 			
 	protected void onRender(Element target, int index) {  
@@ -135,7 +136,12 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 		caricaTabellaDati();
 	    
 	    try {
-	    	cmCommessa = new ColumnModel(createColumns());	
+	    	
+	    	if(tLavoratore.compareTo("C")!=0)
+	    		cmCommessa = new ColumnModel(createColumns());
+	    	else
+	    		cmCommessa = new ColumnModel(createColumnsCollaboratori());
+	    	
 		} catch (Exception e) {
 			e.printStackTrace();
 			Window.alert("error: Problema createColumns().");			
@@ -171,7 +177,6 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 		layoutContainer.add(bodyContainer, new FitData(5, 5, 5, 8));
 		add(layoutContainer);    
 	}
-	
 
 
 	private void caricaTabellaDati() {
@@ -206,6 +211,114 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 		}
 	}
 
+	private List<ColumnConfig> createColumnsCollaboratori() {
+		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
+		final NumberFormat number = NumberFormat.getFormat("0.00");
+		
+		SummaryColumnConfig<Double> column=new SummaryColumnConfig<Double>();		
+	    column.setId("giorno");  
+	    column.setHeader("Giorno");  
+	    column.setWidth(80);  
+	    column.setRowHeader(true);  
+	    column.setSummaryRenderer(new SummaryRenderer() {
+			@Override
+			public String render(Number value, Map<String, Number> data) {
+				return "Totale Ore:";
+	   			}     			
+		});  
+	    configs.add(column); 
+	    
+	    SummaryColumnConfig<Double> columnOreTimbrature=new SummaryColumnConfig<Double>();		
+	    columnOreTimbrature.setId("oreTimbrature");  
+	    columnOreTimbrature.setHeader("Ore Lavoro");  
+	    columnOreTimbrature.setWidth(100);    
+	    columnOreTimbrature.setRowHeader(true); 
+	    columnOreTimbrature.setSummaryType(SummaryType.SUM);  
+	    columnOreTimbrature.setAlignment(HorizontalAlignment.RIGHT);  	
+	    columnOreTimbrature.setRenderer(new GridCellRenderer<RiepilogoFoglioOreModel>() {
+			@Override
+			public Object render(RiepilogoFoglioOreModel model,
+					String property, ColumnData config, int rowIndex,
+					int colIndex,
+					ListStore<RiepilogoFoglioOreModel> store,
+					Grid<RiepilogoFoglioOreModel> grid) {
+				Float n=model.get(property);
+				return number.format(n);
+			}
+			  	
+		});
+	    columnOreTimbrature.setSummaryRenderer(new SummaryRenderer() {  
+	   			@Override
+	   			public String render(Number value, Map<String, Number> data) {
+	   				GroupingStore<RiepilogoFoglioOreModel>store1 = new GroupingStore<RiepilogoFoglioOreModel>();
+	   				String tot="0.00";
+	   				store1.add(store.getModels());
+	   				for(RiepilogoFoglioOreModel riep: store1.getModels()){
+	   					tot=ClientUtility.aggiornaTotGenerale(tot, number.format(riep.getOreTimbrature()));
+	   				}
+	   				
+	   				Float n=Float.valueOf(tot);
+					return number.format(n);
+	   			}  
+	      });  
+	    configs.add(columnOreTimbrature);
+	    	    
+	    
+	    SummaryColumnConfig<Double> columnOreViaggio=new SummaryColumnConfig<Double>();		
+	    columnOreViaggio.setId("oreViaggio");  
+	    columnOreViaggio.setHeader("Ore Viaggio");  
+	    columnOreViaggio.setWidth(100);    
+	    columnOreViaggio.setRowHeader(true); 
+	    columnOreViaggio.setSummaryType(SummaryType.SUM);  
+	    columnOreViaggio.setAlignment(HorizontalAlignment.RIGHT);  	
+	    columnOreViaggio.setRenderer(new GridCellRenderer<RiepilogoFoglioOreModel>() {
+			@Override
+			public Object render(RiepilogoFoglioOreModel model,
+					String property, ColumnData config, int rowIndex,
+					int colIndex,
+					ListStore<RiepilogoFoglioOreModel> store,
+					Grid<RiepilogoFoglioOreModel> grid) {
+				Float n=model.get(property);
+				return number.format(n);
+			}
+			  	
+		});
+	    columnOreViaggio.setSummaryRenderer(new SummaryRenderer() {  
+	   			@Override
+	   			public String render(Number value, Map<String, Number> data) {
+	   				GroupingStore<RiepilogoFoglioOreModel>store1 = new GroupingStore<RiepilogoFoglioOreModel>();
+	   				String tot="0.00";
+	   				store1.add(store.getModels());
+	   				for(RiepilogoFoglioOreModel riep: store1.getModels()){
+	   					tot=ClientUtility.aggiornaTotGenerale(tot, number.format(riep.getOreViaggio()));
+	   				}
+	   				
+	   				Float n=Float.valueOf(tot);
+					return number.format(n);
+	   			}  
+	      });  
+	    configs.add(columnOreViaggio);
+	    
+	            
+	    column=new SummaryColumnConfig<Double>();		
+	    column.setId("giustificativo");  
+	    column.setHeader("Giustificativo");  
+	    column.setWidth(120);  
+	    column.setRowHeader(true);  
+	    column.setAlignment(HorizontalAlignment.RIGHT);  
+	    configs.add(column); 
+	    
+	    column=new SummaryColumnConfig<Double>();		
+	    column.setId("note");  
+	    column.setHeader("noteAggiuntive");  
+	    column.setWidth(250);  
+	    column.setRowHeader(true);  
+	    column.setAlignment(HorizontalAlignment.RIGHT);  
+	    configs.add(column); 
+	    	    
+		return configs;
+	}
+	
 	private List<ColumnConfig> createColumns() {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 		final NumberFormat number = NumberFormat.getFormat("0.00");

@@ -88,6 +88,7 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 	public String login(String username, String password){
 	       
 		   String ruolo= new String();
+		   String descrizione= new String(); //contiene ruolo;tipoLavoratore
 	       Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
 		   Transaction tx= null;
 		   //Invalidare la sessione al momento del Login nel caso in cui ci fosse una sessione http ancora aperta 
@@ -106,6 +107,7 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 				p=(Personale)session.createQuery("from Personale where username=:username and password=:password").setParameter("username", username).
 						setParameter("password", password).uniqueResult();
 				if(p!=null){
+					descrizione=p.getRuolo()+";"+p.getTipologiaLavoratore();
 					ruolo= p.getRuolo();
 					httpSession.setAttribute("ruolo", ruolo);
 					httpSession.setAttribute("userName", username);
@@ -121,7 +123,7 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 	    	   e.printStackTrace();
 	       }
 	             
-	       return ruolo;
+	       return descrizione;
 	    }
 	
 	@Override

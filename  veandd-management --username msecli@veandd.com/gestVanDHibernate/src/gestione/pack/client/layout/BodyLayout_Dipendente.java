@@ -40,7 +40,7 @@ public class BodyLayout_Dipendente extends LayoutContainer {
 	private Text txtUsername = new Text();
 	public TextField<String> txtfldUsername= new TextField<String>();
 	public TextField<String> txtfldRuolo= new TextField<String>();
-	
+	public TextField<String> txtfldTipologiaLavoratore= new TextField<String>();
 	
 	private int w=Window.getClientWidth();
 		
@@ -185,8 +185,13 @@ public class BodyLayout_Dipendente extends LayoutContainer {
 	    btnGestionePresenze.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	          center.removeAll();
-	        	center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb());
-	        	center.layout(true);}      
+	        	
+	          if(txtfldTipologiaLavoratore.getValue().toString().compareTo("C")!=0)
+	        	  center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb());
+	          else
+	        	  center.add(new CenterLayout_FoglioOreGiornaliero_Collaboratori());//per i collaboratori
+	          
+	          center.layout(true);}      
 	      });
 	    btnGestionePresenze.setWidth("100%");
 	    cp.add(btnGestionePresenze);
@@ -201,7 +206,10 @@ public class BodyLayout_Dipendente extends LayoutContainer {
 //----------------------------------------------------------------------------------------------
 	    
 	   
-	   center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb());
+	    if(txtfldTipologiaLavoratore.getValue().toString().compareTo("C")!=0)
+      	  center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb());
+        else
+      	  center.add(new CenterLayout_FoglioOreGiornaliero_Collaboratori());
 	    
 	   container.add(north, northData);
 	   container.add(west, westData);

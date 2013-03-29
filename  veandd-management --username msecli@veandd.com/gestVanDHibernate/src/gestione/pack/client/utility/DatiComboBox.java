@@ -148,6 +148,7 @@ public class DatiComboBox {
 		listaR.add("14.Congedo Matrim.");
 		listaR.add("15.Allattamento");
 		listaR.add("16.Presente");
+		listaR.add("17.Assente");
 		//listaR.add("17.Recup.Straord.Mese Preced.");
 		listaR.add("18.Sciopero");
 		listaR.add("19.Assenza neo Assunti");

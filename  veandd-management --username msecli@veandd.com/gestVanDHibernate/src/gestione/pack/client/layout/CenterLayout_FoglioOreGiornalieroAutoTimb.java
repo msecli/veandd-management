@@ -304,7 +304,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			main.add(right);
 			
 			frm.add(main);
-			frm.add(new PanelRiepilogoMeseFoglioOre(txtfldUsername.getValue().toString(), giornoRiferimento.getValue()));
+			frm.add(new PanelRiepilogoMeseFoglioOre(txtfldUsername.getValue().toString(), giornoRiferimento.getValue(),""));
 			frm.layout(true);
 			add(frm);
 			
@@ -491,7 +491,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			main.add(right);
 			main.layout(true);
 			
-			pnlRiepilogo=new PanelRiepilogoMeseFoglioOre(txtfldUsername.getValue().toString(), giornoRiferimento.getValue());
+			pnlRiepilogo=new PanelRiepilogoMeseFoglioOre(txtfldUsername.getValue().toString(), giornoRiferimento.getValue(),"");
 			frm.getItemByItemId("pnlRiepilogo").removeFromParent();
 			frm.add(pnlRiepilogo);
 			frm.layout(true);

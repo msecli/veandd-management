@@ -49,6 +49,7 @@ import gestione.pack.client.model.PersonaleAssociatoModel;
 import gestione.pack.client.model.PersonaleModel;
 import gestione.pack.client.model.RdaModel;
 import gestione.pack.client.model.RdoCompletaModel;
+import gestione.pack.client.model.RiepilogoCommesseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
 import gestione.pack.client.model.RiepilogoOreDipCommesse;
 import gestione.pack.client.model.RiepilogoOreDipFatturazione;
@@ -2051,6 +2052,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String data=new String();
 		String mese=new String();
 		String anno= new String();
+		String tipoLavoratore= new String();
 		
 		int idDettGiorno;
 		boolean intervalliIUpresenti;
@@ -2077,6 +2079,21 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				foglioOre=(FoglioOreMese) session.createQuery("from FoglioOreMese where id_personale=:id and meseRiferimento=:mese").setParameter("id", p.getId_PERSONALE())
 						.setParameter("mese", data).uniqueResult();
 				
+				tipoLavoratore=p.getTipologiaLavoratore();
+				
+				if(tipoLavoratore.compareTo("C")==0){
+					//se è un collaboratore calcolo il totale generale sulla base delle ore negli intervalli commesse
+					String totaleLavoro= "0.00";
+					String totaleViaggio= "0.00";
+					for(IntervalliCommesseModel d: intervalliC){
+						totaleLavoro=ServerUtility.aggiornaTotGenerale(totaleLavoro, d.getOreLavoro());
+						totaleViaggio=ServerUtility.aggiornaTotGenerale(totaleViaggio, d.getOreViaggio());
+					}
+					
+					totOreGenerale=totaleLavoro;
+					oreViaggio=totaleViaggio;
+				}
+				
 				//se è un nuovo mese, e quindi un nuovo giorno
 				if(foglioOre==null){	
 					foglioOre=new FoglioOreMese();
@@ -2088,9 +2105,11 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					session.save(p);
 					tx.commit();
 					    
+					
 					createDettaglioGiornaliero(username, giornoRiferimento, totOreGenerale, delta, oreViaggio, 
 							oreAssRecupero, deltaOreViaggio, oreStraordinario, oreFerie, orePermesso, giustificativo, noteAggiuntive, revisione);
-					createDettaglioIntervalliIU(intervalliIU ,username,giornoRiferimento);
+								
+					createDettaglioIntervalliIU(intervalliIU ,username, giornoRiferimento);
 					createDettaglioIntervalliCommesse(intervalliC, username, giornoRiferimento);			
 				}
 				
@@ -2263,9 +2282,12 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		int id;
 		int idDettGiorno;
 		
-		data=giorno.toString();
-		mese=data.substring(4, 7);
-		anno=data.substring(24, data.length());
+		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
+		anno=formatter.format(giorno);
+		formatter = new SimpleDateFormat("MMM");
+		mese=formatter.format(giorno);
+	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
+	    formatter = new SimpleDateFormat("dd");
 		
 		data=(mese+anno);//sostituito mese con data per ricerca 
 		
@@ -3751,10 +3773,82 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 	}
 
+	//non usato----------
 	@Override
 	public boolean setRiepilogoOreOnSession(List<RiepilogoFoglioOreModel> lista) {
 		HttpSession httpSession = getThreadLocalRequest().getSession(true);  
 	    httpSession.setAttribute("listaRiepilogo", lista);
 		return true;
+	}
+	
+
+	@Override
+	public List<RiepilogoCommesseGiornalieroModel> getRiepilogoGiornalieroCommesse(
+			String username, Date meseRiferimento) throws IllegalArgumentException {
+		
+		List<RiepilogoCommesseGiornalieroModel> listaG= new ArrayList<RiepilogoCommesseGiornalieroModel>();
+		List<FoglioOreMese> listaF= new ArrayList<FoglioOreMese>();
+		List<DettaglioOreGiornaliere> listaD= new ArrayList<DettaglioOreGiornaliere>();
+		List<DettaglioIntervalliCommesse> listaIntervalliC= new ArrayList<DettaglioIntervalliCommesse>();
+		List<AssociazionePtoA> listaAssociazioniPA= new ArrayList<AssociazionePtoA>();
+		List<Commessa> listaCommesse= new ArrayList<Commessa>();
+			
+		FoglioOreMese fM=new FoglioOreMese();
+		Personale p= new Personale();
+		
+		Date giorno= new Date();  
+		String dipendente= new String();
+		
+		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
+		String anno=formatter.format(meseRiferimento);
+		formatter = new SimpleDateFormat("MMM");
+		String mese=formatter.format(meseRiferimento);
+	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
+		
+	    String data=mese+anno;
+	    
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {
+						
+			tx=session.beginTransaction();
+			p=(Personale)session.createQuery("from Personale where usernema=:username").setParameter("username", username).uniqueResult();
+			
+			dipendente= p.getCognome()+" "+p.getNome();
+			
+			listaF.addAll(p.getFoglioOreMeses());
+			listaAssociazioniPA.addAll(p.getAssociazionePtoas());
+			
+			for(FoglioOreMese f:listaF){//scorro i mesi per trovare il foglio ore desiderato
+				if(f.getMeseRiferimento().compareTo(data)==0){
+					fM=f;
+					break;
+				}
+			}
+			
+			listaD.addAll(fM.getDettaglioOreGiornalieres());
+			
+			for(DettaglioOreGiornaliere d: listaD ){//scorro i giorni del mese e calcolo il totale ore per ogni commessa
+				giorno= d.getGiornoRiferimento();
+				
+				listaIntervalliC.addAll(d.getDettaglioIntervalliCommesses());
+							
+				for(DettaglioIntervalliCommesse c:listaIntervalliC){
+				
+				}		
+			}
+			
+			tx.commit();
+			
+			return listaG;
+		} catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return null;
+		}finally{
+			session.close();
+		}
 	}
 }
