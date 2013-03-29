@@ -88,6 +88,7 @@ public class ServerUtility {
 		String anno= new String();
 		String giorno= new String();
 		String dataGiornoMese= new String();
+		String dataCompleta= new String();
 		
 		int giorniMese;
 		int oreLavorative=0;
@@ -113,14 +114,17 @@ public class ServerUtility {
 			formatter = new SimpleDateFormat("yyyy-MMM-dd");
 			try {
 				date = (Date)formatter.parse(dataGiornoMese);
-				data=date.toString();				
+				data=date.toString();	
+				giorno=data.substring(0, 3);
+				
+				dataCompleta= formatter.format(date);
+				
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			giorno=data.substring(0, 3);
-			if(giorno.compareTo("Sun")!=0 && giorno.compareTo("Sat")!=0)
-				oreLavorative= oreLavorative + Integer.parseInt(orePreviste);
 			
+			if(giorno.compareTo("Sun")!=0 && giorno.compareTo("Sat")!=0 && dataCompleta.compareTo("2013-apr-01")!=0) //TODO creare uno strumento per l'aggiunta di date festive/chiusura
+				oreLavorative= oreLavorative + Integer.parseInt(orePreviste);			
 		}
 		return oreLavorative;
 	}

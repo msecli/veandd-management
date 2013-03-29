@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 
@@ -559,9 +560,12 @@ public class ConverterUtil {
 		String estensione= new String();
 		String anno=new String();
 		
-		data=giornoRiferimento.toString();
-		mese=data.substring(4,7);
-		anno=data.substring(24, data.length());
+		DateFormat formatter1 = new SimpleDateFormat("yyyy") ; 
+		anno=formatter1.format(giornoRiferimento);
+		formatter1 = new SimpleDateFormat("MMM");
+		mese=formatter1.format(giornoRiferimento);
+	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
+	    formatter1 = new SimpleDateFormat("dd");
 		
 		data=(mese+anno);
 			

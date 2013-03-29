@@ -29,6 +29,7 @@ import gestione.pack.client.model.PersonaleAssociatoModel;
 import gestione.pack.client.model.PersonaleModel;
 import gestione.pack.client.model.RdaModel;
 import gestione.pack.client.model.RdoCompletaModel;
+import gestione.pack.client.model.RiepilogoCommesseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
 import gestione.pack.client.model.RiepilogoOreDipCommesse;
 import gestione.pack.client.model.RiepilogoOreDipFatturazione;
@@ -269,12 +270,14 @@ public interface AdministrationService extends RemoteService {
 //---------------------------------VARIE----------------------------------------------------------------------------
 	boolean invioCommenti(String testo, String username)throws IllegalArgumentException;
 
-	List<CommessaModel> getAllCommesseModelByPm(String cognomePm);
+	List<CommessaModel> getAllCommesseModelByPm(String cognomePm)throws IllegalArgumentException;
 
-	List<PersonaleModel> getListaDipendentiModel(String string);
+	List<PersonaleModel> getListaDipendentiModel(String string)throws IllegalArgumentException;
 
-	boolean setRiepilogoOreOnSession(List<RiepilogoFoglioOreModel> lista);
+	boolean setRiepilogoOreOnSession(List<RiepilogoFoglioOreModel> lista)throws IllegalArgumentException;
 
+	List<RiepilogoCommesseGiornalieroModel> getRiepilogoGiornalieroCommesse(
+			String username, Date data)throws IllegalArgumentException;
 	
 	
 }
