@@ -3,6 +3,7 @@ package gestione.pack.client.layout.panel;
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.model.RiepilogoCommesseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
+import gestione.pack.client.model.RiepilogoOreDipCommesseGiornaliero;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.MyImages;
 
@@ -52,8 +53,8 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{	
 	
-	private GroupingStore<RiepilogoCommesseGiornalieroModel>store = new GroupingStore<RiepilogoCommesseGiornalieroModel>();
-	private Grid<RiepilogoCommesseGiornalieroModel> gridRiepilogo;
+	private GroupingStore<RiepilogoOreDipCommesseGiornaliero>store = new GroupingStore<RiepilogoOreDipCommesseGiornaliero>();
+	private Grid<RiepilogoOreDipCommesseGiornaliero> gridRiepilogo;
 	private ColumnModel cmCommessa;
 	private String username= new String();
 	private String tLavoratore= new String();
@@ -93,7 +94,7 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 
 			    try {
 			    	
-			    	List<RiepilogoCommesseGiornalieroModel> list= new ArrayList<RiepilogoCommesseGiornalieroModel>();
+			    	List<RiepilogoOreDipCommesseGiornaliero> list= new ArrayList<RiepilogoOreDipCommesseGiornaliero>();
 			    	list.addAll(store.getModels());
 			    	Map<String, Object> map = new HashMap<String, Object>();
 			    	
@@ -130,25 +131,21 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 		cntpnlGrid.setBodyBorder(false);         
 		cntpnlGrid.setLayout(new FitLayout());  
 		cntpnlGrid.setHeaderVisible(false);
-		cntpnlGrid.setWidth(975);
-		cntpnlGrid.setHeight(290);
+		cntpnlGrid.setWidth(500);
+		cntpnlGrid.setHeight(500);
 		cntpnlGrid.setScrollMode(Scroll.AUTOY);
 				
 		caricaTabellaDati();
 	    
 	    try {
-	    	
-	    	if(tLavoratore.compareTo("C")!=0)
+	    
 	    		cmCommessa = new ColumnModel(createColumns());
-	    	else
-	    		cmCommessa = new ColumnModel(createColumnsCollaboratori());
-	    	
-		} catch (Exception e) {
+	    	} catch (Exception e) {
 			e.printStackTrace();
 			Window.alert("error: Problema createColumns().");			
 		}	
 	    
-	    store.groupBy("mese");
+	    store.groupBy("numeroCommessa");
 	    store.setSortField("giorno");
 	    
 	    GroupSummaryView summary = new GroupSummaryView();  
@@ -156,7 +153,7 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	    summary.setShowGroupedColumn(false);
 	    summary.setStartCollapsed(false);
 		    
-	    gridRiepilogo= new EditorGrid<RiepilogoCommesseGiornalieroModel>(store, cmCommessa);  
+	    gridRiepilogo= new EditorGrid<RiepilogoOreDipCommesseGiornaliero>(store, cmCommessa);  
 	    gridRiepilogo.setItemId("grid");
 	    gridRiepilogo.setBorders(false);  
 	    gridRiepilogo.setView(summary);  
@@ -169,7 +166,7 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 		cntpnlLayout.setCollapsible(false);
 		cntpnlLayout.setExpanded(true);
 		cntpnlLayout.setHeading("Riepilogo Giornaliero.");
-		cntpnlLayout.setSize(990, 300);
+		cntpnlLayout.setSize(515, 510);
 		cntpnlLayout.setFrame(true);
 		cntpnlLayout.add(cntpnlGrid);
 	    
@@ -181,9 +178,9 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 
 
 	private void caricaTabellaDati() {
-		AdministrationService.Util.getInstance().getRiepilogoGiornalieroCommesse(username, data,  new AsyncCallback<List<RiepilogoCommesseGiornalieroModel>>() {	
+		AdministrationService.Util.getInstance().getRiepilogoGiornalieroCommesse(username, data,  new AsyncCallback<List<RiepilogoOreDipCommesseGiornaliero>>() {	
 			@Override
-			public void onSuccess(List<RiepilogoCommesseGiornalieroModel> result) {
+			public void onSuccess(List<RiepilogoOreDipCommesseGiornaliero> result) {
 				if(result==null)
 					Window.alert("error: Problemi durante l'accesso ai dati del riepilogo ore.");
 				else	
@@ -201,7 +198,7 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	}
 	
 	
-	private void loadTable(List<RiepilogoCommesseGiornalieroModel> result) {
+	private void loadTable(List<RiepilogoOreDipCommesseGiornaliero> result) {
 		try {
 			store.removeAll();
 			store.add(result);
@@ -212,15 +209,102 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 		}
 	}
 
-	private List<ColumnConfig> createColumnsCollaboratori() {
-		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
-		
-		return configs;
-	}
 	
 	private List<ColumnConfig> createColumns() {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
-	    	    
+		final NumberFormat number= NumberFormat.getFormat("0.00");
+		
+		SummaryColumnConfig<Double> column=new SummaryColumnConfig<Double>();		
+	    column.setId("numeroCommessa");  
+	    column.setHeader("Commessa");  
+	    column.setWidth(85);  
+	    column.setRowHeader(true);  
+	    configs.add(column); 
+	    
+	    column=new SummaryColumnConfig<Double>();		
+	    column.setId("giorno");  
+	    column.setHeader("Giorno");  
+	    column.setWidth(85);  
+	    column.setRowHeader(true);  
+	    configs.add(column); 
+	    
+	   	    	    
+	    SummaryColumnConfig<Double> columnOreLavoro=new SummaryColumnConfig<Double>();		
+	    columnOreLavoro.setId("oreLavoro");  
+	    columnOreLavoro.setHeader("Ore Lavoro");  
+	    columnOreLavoro.setWidth(60);    
+	    columnOreLavoro.setRowHeader(true); 
+	    columnOreLavoro.setSummaryType(SummaryType.SUM);  
+	    columnOreLavoro.setAlignment(HorizontalAlignment.LEFT);  	
+	    columnOreLavoro.setRenderer(new GridCellRenderer<RiepilogoOreDipCommesseGiornaliero>() {
+			@Override
+			public Object render(RiepilogoOreDipCommesseGiornaliero model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreDipCommesseGiornaliero> store,
+					Grid<RiepilogoOreDipCommesseGiornaliero> grid) {
+				Float n=model.get(property);
+				return number.format(n);
+			}  	
+		});
+	    columnOreLavoro.setSummaryRenderer(new SummaryRenderer() {  
+	   			@Override
+			public String render(Number value, Map<String, Number> data) {
+	   			
+					return number.format(value);
+			}  
+	      });  
+	    configs.add(columnOreLavoro); 	
+	    
+	    SummaryColumnConfig<Double> columnOreViaggio=new SummaryColumnConfig<Double>();		
+	    columnOreViaggio.setId("oreViaggio");  
+	    columnOreViaggio.setHeader("Ore Viaggio");  
+	    columnOreViaggio.setWidth(60);    
+	    columnOreViaggio.setRowHeader(true); 
+	    columnOreViaggio.setSummaryType(SummaryType.SUM);  
+	    columnOreViaggio.setAlignment(HorizontalAlignment.LEFT);    
+	    columnOreViaggio.setRenderer(new GridCellRenderer<RiepilogoOreDipCommesseGiornaliero>() {
+			@Override
+			public Object render(RiepilogoOreDipCommesseGiornaliero model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreDipCommesseGiornaliero> store,
+					Grid<RiepilogoOreDipCommesseGiornaliero> grid) {
+				Float n=model.get(property);
+				return number.format(n);
+			}  	
+		});
+	    columnOreViaggio.setSummaryRenderer(new SummaryRenderer() {  
+	   			@Override
+			public String render(Number value, Map<String, Number> data) {
+	   				
+					return number.format(value);
+			}  
+	      });      
+	    configs.add(columnOreViaggio); 	
+	    
+	    SummaryColumnConfig<Double> columnOreTotali=new SummaryColumnConfig<Double>();		
+	    columnOreTotali.setId("totOre");  
+	    columnOreTotali.setHeader("Totale");  
+	    columnOreTotali.setWidth(60);    
+	    columnOreTotali.setRowHeader(true); 
+	    columnOreTotali.setSummaryType(SummaryType.SUM);  
+	    columnOreTotali.setAlignment(HorizontalAlignment.LEFT);   
+	    columnOreTotali.setStyle("color:#e71d2b;");
+	    columnOreTotali.setRenderer(new GridCellRenderer<RiepilogoOreDipCommesseGiornaliero>() {
+			@Override
+			public Object render(RiepilogoOreDipCommesseGiornaliero model,
+					String property, ColumnData config, int rowIndex,
+					int colIndex,
+					ListStore<RiepilogoOreDipCommesseGiornaliero> store,
+					Grid<RiepilogoOreDipCommesseGiornaliero> grid) {
+				Float n=model.get(property);
+				return number.format(n);
+			}			
+		});
+	    columnOreTotali.setSummaryRenderer(new SummaryRenderer() {  
+	   			@Override
+			public String render(Number value, Map<String, Number> data) {
+	   				
+					return number.format(value);
+			}  
+	    });      
+	    configs.add(columnOreTotali); 
+		
 		return configs;
 	}
 

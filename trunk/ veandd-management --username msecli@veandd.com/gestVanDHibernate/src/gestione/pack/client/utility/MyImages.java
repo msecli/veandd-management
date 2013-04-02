@@ -37,4 +37,7 @@ public interface MyImages extends ClientBundle{
 
 	@Source("Icone/winprogress.jpg")
 	ImageResource workinprogress();
+	
+	@Source("Icone/riep_comm.png")
+	ImageResource riep_comm();
 }

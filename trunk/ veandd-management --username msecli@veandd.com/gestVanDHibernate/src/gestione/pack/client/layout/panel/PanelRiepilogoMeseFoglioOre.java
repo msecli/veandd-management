@@ -19,6 +19,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.js.JsonConverter;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -58,6 +59,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	private String tLavoratore= new String();
 	private Date data;
 	private Button btnPrint= new Button();
+	private Button btnRiepilogoCommesse= new Button();
 	
 	public PanelRiepilogoMeseFoglioOre(String user, Date dataRiferimento, String tipoLavoratore){
 		username=user;
@@ -79,7 +81,8 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	    bodyContainer.setLayout(new FlowLayout());
 	  	bodyContainer.setBorders(false);
 	    
-	  	ButtonBar btnBarPrint= new ButtonBar();
+	  	ButtonBar btnBar= new ButtonBar();
+	  	btnBar.setStyleAttribute("margin-bottom", "5px");
 	  	  	
 	  	btnPrint.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.print()));
 		btnPrint.setToolTip("Stampa");
@@ -122,8 +125,27 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 			    }
 			}
 		});
-	  	
-		//btnBarPrint.add(btnPrint);
+		
+		btnRiepilogoCommesse.setEnabled(false);
+		btnRiepilogoCommesse.setSize(26, 26);
+		btnRiepilogoCommesse.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riep_comm()));
+		btnRiepilogoCommesse.setToolTip("Riepilogo Commesse");
+		btnRiepilogoCommesse.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				Dialog d= new Dialog();
+				d.setHeaderVisible(true);
+				d.setHeading("Riepilogo dettagliato (Commesse).");
+				d.setSize(550, 575);
+				d.add(new PanelRiepilogoGiornalieroCommesse(username, data));
+				d.setButtons("");
+				d.show();			
+			}
+		});
+		
+		
+		btnBar.add(btnRiepilogoCommesse);
 		
 		ContentPanel cntpnlGrid= new ContentPanel();
 		cntpnlGrid.setBodyBorder(false);         
@@ -161,7 +183,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	    gridRiepilogo.setView(summary);  
 	    gridRiepilogo.getView().setShowDirtyCells(false);
 	    cntpnlGrid.add(gridRiepilogo);
-	    cntpnlGrid.setTopComponent(btnBarPrint);
+	    cntpnlGrid.setTopComponent(btnBar);
 	    
 	    ContentPanel cntpnlLayout= new ContentPanel();
 		cntpnlLayout.setHeaderVisible(false);
@@ -202,6 +224,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	
 	private void loadTable(List<RiepilogoFoglioOreModel> result) {
 		try {
+			btnRiepilogoCommesse.setEnabled(true);
 			store.removeAll();
 			store.add(result);
 			gridRiepilogo.reconfigure(store, cmCommessa);				
@@ -339,7 +362,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	    SummaryColumnConfig<Double> columnOreTimbrature=new SummaryColumnConfig<Double>();		
 	    columnOreTimbrature.setId("oreTimbrature");  
 	    columnOreTimbrature.setHeader("Ore Timb.");  
-	    columnOreTimbrature.setWidth(70);    
+	    columnOreTimbrature.setWidth(55);    
 	    columnOreTimbrature.setRowHeader(true); 
 	    columnOreTimbrature.setSummaryType(SummaryType.SUM);  
 	    columnOreTimbrature.setAlignment(HorizontalAlignment.RIGHT);  	
@@ -375,7 +398,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	    SummaryColumnConfig<Double> columnOreViaggio=new SummaryColumnConfig<Double>();		
 	    columnOreViaggio.setId("oreViaggio");  
 	    columnOreViaggio.setHeader("Ore Viaggio");  
-	    columnOreViaggio.setWidth(70);    
+	    columnOreViaggio.setWidth(55);    
 	    columnOreViaggio.setRowHeader(true); 
 	    columnOreViaggio.setSummaryType(SummaryType.SUM);  
 	    columnOreViaggio.setAlignment(HorizontalAlignment.RIGHT);  	
@@ -411,7 +434,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	    SummaryColumnConfig<Double> columnDeltaViaggio=new SummaryColumnConfig<Double>();		
 	    columnDeltaViaggio.setId("deltaViaggio");  
 	    columnDeltaViaggio.setHeader("Delta Viaggio");  
-	    columnDeltaViaggio.setWidth(70);    
+	    columnDeltaViaggio.setWidth(55);    
 	    columnDeltaViaggio.setRowHeader(true); 
 	    columnDeltaViaggio.setSummaryType(SummaryType.SUM);  
 	    columnDeltaViaggio.setAlignment(HorizontalAlignment.RIGHT);  	
@@ -446,7 +469,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	    SummaryColumnConfig<Double> columnOreTotali=new SummaryColumnConfig<Double>();		
 	    columnOreTotali.setId("oreTotali");  
 	    columnOreTotali.setHeader("Ore Totali");  
-	    columnOreTotali.setWidth(70);    
+	    columnOreTotali.setWidth(55);    
 	    columnOreTotali.setRowHeader(true); 
 	    columnOreTotali.setSummaryType(SummaryType.SUM);  
 	    columnOreTotali.setAlignment(HorizontalAlignment.RIGHT);    
@@ -480,7 +503,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	    SummaryColumnConfig<Double> columnOreFerie=new SummaryColumnConfig<Double>();		
 	    columnOreFerie.setId("oreFerie");  
 	    columnOreFerie.setHeader("Ore Ferie");  
-	    columnOreFerie.setWidth(70);    
+	    columnOreFerie.setWidth(55);    
 	    columnOreFerie.setRowHeader(true); 
 	    columnOreFerie.setSummaryType(SummaryType.SUM);  
 	    columnOreFerie.setAlignment(HorizontalAlignment.RIGHT);    
@@ -514,7 +537,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	    SummaryColumnConfig<Double> columnOrePermesso=new SummaryColumnConfig<Double>();		
 	    columnOrePermesso.setId("orePermesso");  
 	    columnOrePermesso.setHeader("Perm. (ROL)");  
-	    columnOrePermesso.setWidth(70);    
+	    columnOrePermesso.setWidth(55);    
 	    columnOrePermesso.setRowHeader(true); 
 	    columnOrePermesso.setSummaryType(SummaryType.SUM);  
 	    columnOrePermesso.setAlignment(HorizontalAlignment.RIGHT);    
@@ -548,7 +571,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	    SummaryColumnConfig<Double> columnOreStraordinario=new SummaryColumnConfig<Double>();		
 	    columnOreStraordinario.setId("oreStraordinario");  
 	    columnOreStraordinario.setHeader("Straordin.");  
-	    columnOreStraordinario.setWidth(70);    
+	    columnOreStraordinario.setWidth(55);    
 	    columnOreStraordinario.setRowHeader(true); 
 	    columnOreStraordinario.setSummaryType(SummaryType.SUM);  
 	    columnOreStraordinario.setAlignment(HorizontalAlignment.RIGHT);    
@@ -582,7 +605,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	    SummaryColumnConfig<Double> columnOreRecupero=new SummaryColumnConfig<Double>();		
 	    columnOreRecupero.setId("oreRecupero");  
 	    columnOreRecupero.setHeader("Ore a Recupero");  
-	    columnOreRecupero.setWidth(70);    
+	    columnOreRecupero.setWidth(55);    
 	    columnOreRecupero.setRowHeader(true); 
 	    columnOreRecupero.setSummaryType(SummaryType.SUM);  
 	    columnOreRecupero.setAlignment(HorizontalAlignment.RIGHT);    
