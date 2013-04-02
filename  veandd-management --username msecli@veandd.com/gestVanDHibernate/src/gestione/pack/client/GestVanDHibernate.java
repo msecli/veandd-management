@@ -164,7 +164,7 @@ public class GestVanDHibernate implements EntryPoint {
 				@Override
 				public void onSuccess(String result) {
 					
-					if(result!=null){
+					if(result!=null && result.compareTo("")!=0){
 						callLayout(result);
 						
 					}

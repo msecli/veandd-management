@@ -52,6 +52,7 @@ import gestione.pack.client.model.RdoCompletaModel;
 import gestione.pack.client.model.RiepilogoCommesseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
 import gestione.pack.client.model.RiepilogoOreDipCommesse;
+import gestione.pack.client.model.RiepilogoOreDipCommesseGiornaliero;
 import gestione.pack.client.model.RiepilogoOreDipFatturazione;
 import gestione.pack.client.model.RiepilogoOreModel;
 import gestione.pack.client.model.RiepilogoOreTotaliCommesse;
@@ -3783,18 +3784,18 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	
 
 	@Override
-	public List<RiepilogoCommesseGiornalieroModel> getRiepilogoGiornalieroCommesse(
+	public List<RiepilogoOreDipCommesseGiornaliero> getRiepilogoGiornalieroCommesse(
 			String username, Date meseRiferimento) throws IllegalArgumentException {
 		
-		List<RiepilogoCommesseGiornalieroModel> listaG= new ArrayList<RiepilogoCommesseGiornalieroModel>();
+		List<RiepilogoOreDipCommesseGiornaliero> listaG= new ArrayList<RiepilogoOreDipCommesseGiornaliero>();
 		List<FoglioOreMese> listaF= new ArrayList<FoglioOreMese>();
 		List<DettaglioOreGiornaliere> listaD= new ArrayList<DettaglioOreGiornaliere>();
 		List<DettaglioIntervalliCommesse> listaIntervalliC= new ArrayList<DettaglioIntervalliCommesse>();
 		List<AssociazionePtoA> listaAssociazioniPA= new ArrayList<AssociazionePtoA>();
-		List<Commessa> listaCommesse= new ArrayList<Commessa>();
-			
+		
 		FoglioOreMese fM=new FoglioOreMese();
 		Personale p= new Personale();
+		Commessa c= new Commessa();
 		
 		Date giorno= new Date();  
 		String dipendente= new String();
@@ -3813,7 +3814,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		try {
 						
 			tx=session.beginTransaction();
-			p=(Personale)session.createQuery("from Personale where usernema=:username").setParameter("username", username).uniqueResult();
+			p=(Personale)session.createQuery("from Personale where username=:username").setParameter("username", username).uniqueResult();
 			
 			dipendente= p.getCognome()+" "+p.getNome();
 			
@@ -3827,16 +3828,28 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				}
 			}
 			
-			listaD.addAll(fM.getDettaglioOreGiornalieres());
+			listaD.addAll(fM.getDettaglioOreGiornalieres()); //prendo tutti i giorni del mese
 			
-			for(DettaglioOreGiornaliere d: listaD ){//scorro i giorni del mese e calcolo il totale ore per ogni commessa
-				giorno= d.getGiornoRiferimento();
-				
-				listaIntervalliC.addAll(d.getDettaglioIntervalliCommesses());
-							
-				for(DettaglioIntervalliCommesse c:listaIntervalliC){
-				
-				}		
+						
+			for(DettaglioOreGiornaliere d: listaD ){//scorro i giorni del mese e calcolo il totale ore per ogni commessa selezionata
+					giorno= d.getGiornoRiferimento();
+					formatter = new SimpleDateFormat("dd-MMM-yyy") ; 
+					String giornoF=formatter.format(giorno);
+					
+					if(!d.getDettaglioIntervalliCommesses().isEmpty())
+						listaIntervalliC.addAll(d.getDettaglioIntervalliCommesses());
+								
+					for(DettaglioIntervalliCommesse dett:listaIntervalliC){
+						
+						if(Float.valueOf(ServerUtility.aggiornaTotGenerale(dett.getOreLavorate(),  dett.getOreViaggio()))>0){
+							RiepilogoOreDipCommesseGiornaliero riep= new RiepilogoOreDipCommesseGiornaliero(dett.getNumeroCommessa()+"."+dett.getEstensioneCommessa()
+								, dipendente, giornoF, Float.valueOf(dett.getOreLavorate()), Float.valueOf(dett.getOreViaggio()), Float.valueOf(ServerUtility.aggiornaTotGenerale(dett.getOreLavorate(),  dett.getOreViaggio())));
+						
+							listaG.add(riep);
+						}
+					}	
+					
+					listaIntervalliC.clear();
 			}
 			
 			tx.commit();

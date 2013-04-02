@@ -32,6 +32,7 @@ import gestione.pack.client.model.RdoCompletaModel;
 import gestione.pack.client.model.RiepilogoCommesseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
 import gestione.pack.client.model.RiepilogoOreDipCommesse;
+import gestione.pack.client.model.RiepilogoOreDipCommesseGiornaliero;
 import gestione.pack.client.model.RiepilogoOreDipFatturazione;
 import gestione.pack.client.model.RiepilogoOreModel;
 import gestione.pack.client.model.RiepilogoOreTotaliCommesse;
@@ -276,7 +277,7 @@ public interface AdministrationService extends RemoteService {
 
 	boolean setRiepilogoOreOnSession(List<RiepilogoFoglioOreModel> lista)throws IllegalArgumentException;
 
-	List<RiepilogoCommesseGiornalieroModel> getRiepilogoGiornalieroCommesse(
+	List<RiepilogoOreDipCommesseGiornaliero> getRiepilogoGiornalieroCommesse(
 			String username, Date data)throws IllegalArgumentException;
 	
 	

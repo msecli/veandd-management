@@ -18,6 +18,7 @@ import gestione.pack.client.model.RdoCompletaModel;
 import gestione.pack.client.model.RiepilogoCommesseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
 import gestione.pack.client.model.RiepilogoOreDipCommesse;
+import gestione.pack.client.model.RiepilogoOreDipCommesseGiornaliero;
 import gestione.pack.client.model.RiepilogoOreDipFatturazione;
 import gestione.pack.client.model.RiepilogoOreModel;
 import gestione.pack.client.model.RiepilogoOreTotaliCommesse;
@@ -267,7 +268,7 @@ public interface AdministrationServiceAsync {
 			AsyncCallback<Boolean> asyncCallback);
 
 	void getRiepilogoGiornalieroCommesse(String username, Date data,
-			AsyncCallback<List<RiepilogoCommesseGiornalieroModel>> asyncCallback);
+			AsyncCallback<List<RiepilogoOreDipCommesseGiornaliero>> asyncCallback);
 
 		
 }

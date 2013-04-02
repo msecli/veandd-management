@@ -22,7 +22,7 @@ public class RiepilogoCommesseGiornalieroModel extends BaseModel implements IsSe
 		set("dipendente", dipendente);
 		set("commessa", commessa);
 		set("attivita", attivita);//utile per distinguere le ore viaggio
-		set("giorno1", giorno1);
+		set("giorno1", giorno1); //in ogni giorno indico le ore, che siano di lavoro o viaggio è discriminato dall'attività
 		set("giorno2", giorno2);
 		set("giorno3",giorno3);
 		set("giorno4",giorno4);
