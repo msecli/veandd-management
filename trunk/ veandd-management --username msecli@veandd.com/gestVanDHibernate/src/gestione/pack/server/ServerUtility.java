@@ -1,9 +1,23 @@
 package gestione.pack.server;
 
+import gestione.pack.client.model.RiepilogoFoglioOreModel;
+import gestione.pack.shared.DatiOreMese;
+import gestione.pack.shared.DatiTimbratriceExt;
+import gestione.pack.shared.DettaglioOreGiornaliere;
+import gestione.pack.shared.DettaglioTimbrature;
+import gestione.pack.shared.FoglioOreMese;
+import gestione.pack.shared.Personale;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 public class ServerUtility {
 	
@@ -87,6 +101,7 @@ public class ServerUtility {
 		String mese=new String();
 		String anno= new String();
 		String giorno= new String();
+		String daydd=new String();
 		String dataGiornoMese= new String();
 		String dataCompleta= new String();
 		
@@ -94,39 +109,60 @@ public class ServerUtility {
 		int oreLavorative=0;
 		
 		Date date;
-		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
+		DateFormat formatter = new SimpleDateFormat("yyyy", Locale.ENGLISH) ; 
 		anno=formatter.format(giornoRiferimento);
-		formatter = new SimpleDateFormat("MMM");
+		formatter = new SimpleDateFormat("MMM", Locale.ENGLISH);
 		mese=formatter.format(giornoRiferimento);
 	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
 			
 		giorniMese=ServerUtility.getGiorniMese(mese, anno);
 					
-		//String meseTradotto= ServerUtility.traduciMese(mese); //Locale
-		String meseTradotto= mese; //Per server Amazon
 		
 		for(int i=1;i<=giorniMese;i++){
 			if(i<10)
-				dataGiornoMese=(anno+"-"+meseTradotto+"-"+"0"+i);
+				dataGiornoMese=(anno+"-"+mese+"-"+"0"+i);
 			else
-				dataGiornoMese=(anno+"-"+meseTradotto+"-"+i);
+				dataGiornoMese=(anno+"-"+mese+"-"+i);
 			
-			formatter = new SimpleDateFormat("yyyy-MMM-dd");
+			formatter = new SimpleDateFormat("yyyy-MMM-dd",Locale.ENGLISH);
 			try {
 				date = (Date)formatter.parse(dataGiornoMese);
 				data=date.toString();	
 				giorno=data.substring(0, 3);
 				
-				dataCompleta= formatter.format(date);
-				
+				formatter = new SimpleDateFormat("yyyy") ; 
+				anno=formatter.format(date);
+				formatter = new SimpleDateFormat("MMM",Locale.ENGLISH);
+				mese=formatter.format(date);
+			    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
+			    formatter= new SimpleDateFormat("dd");
+			    daydd=formatter.format(date);
+			    
+			    dataCompleta=(anno+"-"+mese+"-"+daydd);
+			    			
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
 			
-			if(giorno.compareTo("Sun")!=0 && giorno.compareTo("Sat")!=0 && dataCompleta.compareTo("2013-apr-01")!=0) //TODO creare uno strumento per l'aggiunta di date festive/chiusura
+			if(giorno.compareTo("Sun")!=0 && giorno.compareTo("Sat")!=0 && !isFestivo(dataCompleta)) //TODO creare uno strumento per l'aggiunta di date festive/chiusura
 				oreLavorative= oreLavorative + Integer.parseInt(orePreviste);			
 		}
 		return oreLavorative;
+	}
+	
+	
+	public static Boolean isFestivo(String dataCompleta){
+		//TODO crearne una versione dinamica
+		
+		if(dataCompleta.compareTo("2013-Apr-01")==0)
+			return true;
+		if(dataCompleta.compareTo("2013-Apr-25")==0)
+			return true;
+		if(dataCompleta.compareTo("2013-May-01")==0)
+			return true;
+		if(dataCompleta.compareTo("2013-Nov-01")==0)
+			return true;		
+		return false;
 	}
 	
 	
@@ -508,6 +544,141 @@ public class ServerUtility {
 			
 			
 			return totale;
+			
+	}
+	
+	
+	public static Boolean PrintRiepilogoOreMese(Date dataRif){
+		List<RiepilogoFoglioOreModel> listaGiorni= new ArrayList<RiepilogoFoglioOreModel>();
+		List<DettaglioOreGiornaliere> listaDettGiorno= new ArrayList<DettaglioOreGiornaliere>();
+		List<FoglioOreMese> listaMesi=new ArrayList<FoglioOreMese>();
+		List<Personale> listaPers= new ArrayList<Personale>();
+		RiepilogoFoglioOreModel giorno;
+		
+		List<DatiOreMese> listaDatiMese= new ArrayList<DatiOreMese>();
+		
+				
+		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
+		String anno=formatter.format(dataRif);
+		formatter = new SimpleDateFormat("MMM");
+		String mese=formatter.format(dataRif);
+	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
+	    
+		String data=(mese+anno);
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {
+			tx = session.beginTransaction();
+			
+			listaPers=(List<Personale>)session.createQuery("from Personale").list();//TODO distinguere torino da brescia
+			
+			DatiOreMese datoG= new DatiOreMese();//Prima riga con la descrizione delle colonne
+			datoG.setUsername("Username");
+			datoG.setGiornoRiferimento("Giorno");
+			datoG.setTotGiorno("Ore Presenza");
+			datoG.setOreViaggio("Ore Viaggio");
+			datoG.setDeltaOreViaggio("Delta Viaggio");
+			datoG.setOreTotali("Ore Totali");
+			datoG.setOreFerie("Ore Ferie");
+			datoG.setOrePermesso("Ore ROL");
+			datoG.setOreAssenzeRecupero("Ore Recupero");
+			datoG.setOreStraordinario("Ore Straord.");
+			datoG.setGiustificativo("Giustificativo");
+			datoG.setNoteAggiuntive("Note Agg.");
+					
+			listaDatiMese.add(datoG);
+			
+		  for(Personale p:listaPers){
+			  
+			datoG= new DatiOreMese();		  
+			datoG.setUsername(p.getCognome()+" "+p.getNome()); //riga con solo l'username
+			listaDatiMese.add(datoG);
+			
+			if(!p.getFoglioOreMeses().isEmpty()){
+				listaMesi.addAll(p.getFoglioOreMeses());
+				for(FoglioOreMese f:listaMesi){
+					if(f.getMeseRiferimento().compareTo(data)==0){
+						listaDettGiorno.addAll(f.getDettaglioOreGiornalieres());
+						break;
+					}
+				}
+				
+				//caricare la lista con tutti i giorni di tutti i dipendenti: la prima riga di ogni dipendente deve essere solo con l'username, l'ultima con il totale, poi due vuote
+				
+				for(DettaglioOreGiornaliere d:listaDettGiorno){
+					
+					datoG=new DatiOreMese();
+					
+					String day=new String();
+					String oreTotali= "0.00";
+					
+					formatter = new SimpleDateFormat("dd-MMM-yyyy");
+					day=formatter.format(d.getGiornoRiferimento());
+					
+					if(d.getOreViaggio().compareTo("0.00")!=0){
+						if(Float.valueOf(d.getDeltaOreGiorno())<0){
+							if(Float.valueOf(d.getOreViaggio())>Math.abs(Float.valueOf(d.getDeltaOreGiorno()))){							
+								oreTotali=(p.getTipologiaOrario()+".00");					
+							}								
+							if(Float.valueOf(d.getOreViaggio())<=Math.abs(Float.valueOf(d.getDeltaOreGiorno()))){
+								String oreTotGenerale=ServerUtility.aggiornaTotGenerale(d.getTotaleOreGiorno(), d.getOreViaggio());			
+								oreTotali=(oreTotGenerale);
+							}
+						}else					
+						if(Float.valueOf(d.getDeltaOreGiorno())>=0){			
+							oreTotali=d.getTotaleOreGiorno();
+						}
+						
+					}else{						
+						oreTotali=(d.getTotaleOreGiorno());
+					}
+					
+					
+					Date gRiferimento=d.getGiornoRiferimento();
+					formatter = new SimpleDateFormat("dd/MM/yy");
+					String giornoR=formatter.format(gRiferimento);
+										
+					datoG.setUsername(" ");
+					datoG.setGiornoRiferimento(giornoR);
+					datoG.setTotGiorno(d.getTotaleOreGiorno());
+					datoG.setOreViaggio(d.getOreViaggio());
+					datoG.setDeltaOreViaggio(d.getDeltaOreViaggio());
+					datoG.setOreTotali(oreTotali);
+					datoG.setOreFerie(d.getOreFerie());
+					datoG.setOrePermesso(d.getOrePermesso());
+					datoG.setOreAssenzeRecupero(d.getOreAssenzeRecupero());
+					datoG.setOreStraordinario(d.getOreStraordinario());
+					datoG.setGiustificativo(d.getGiustificativo());
+					datoG.setNoteAggiuntive(d.getNoteAggiuntive());
+					
+					listaDatiMese.add(datoG);
+				}
+				
+								
+			}
+			
+			//Due righe vuote
+						
+			datoG= new DatiOreMese();
+			listaDatiMese.add(datoG);
+			datoG= new DatiOreMese();
+			listaDatiMese.add(datoG);
+			
+		  }
+		  
+		  tx.commit();
+		  return true;
+				 
+		} catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return null;
+		} finally {
+			session.close();
+		}
 			
 	}
 }

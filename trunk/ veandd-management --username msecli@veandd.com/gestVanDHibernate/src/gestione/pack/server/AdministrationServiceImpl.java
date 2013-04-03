@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -2061,7 +2062,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
 		anno=formatter.format(giornoRiferimento);
-		formatter = new SimpleDateFormat("MMM");
+		formatter = new SimpleDateFormat("MMM", Locale.ENGLISH);
 		mese=formatter.format(giornoRiferimento);
 	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
 	    formatter = new SimpleDateFormat("dd");
