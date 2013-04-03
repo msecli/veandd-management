@@ -30,11 +30,15 @@ import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 
 
 public class BodyLayout_Administration extends LayoutContainer {
@@ -46,7 +50,11 @@ public class BodyLayout_Administration extends LayoutContainer {
 	
 	private int w=Window.getClientWidth();
 	private int h=Window.getClientHeight();
-		
+	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
+    	
+	private static String url= "/gestvandhibernate/PrintDataServlet";
+	
+	
 	public BodyLayout_Administration() {
 		setBorders(false);	
 			}
@@ -324,28 +332,28 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    cp.add(btnLoadTimbrature);
 	    
 	    
-	    //--------------------------------
+	    
+	    
+	    //--------------------------------PROVA PRINT//TODO
 	   
-	    Button btnPrint = new Button("Stampa");
-	    final FormPanel fp= new FormPanel();
-	    String url= "/gestvandhibernate/PrintDataServlet";
-    	fp.setAction(url);
+	    com.google.gwt.user.client.ui.Button btnPrint = new com.google.gwt.user.client.ui.Button("Stampa");
+	    
+	    btnPrint.addClickHandler(new SubmitClickHandler());    
+	    
     	fp.setEncoding(FormPanel.ENCODING_MULTIPART);
 	    fp.setMethod(FormPanel.METHOD_POST);
-	   
+	    fp.setAction(url);
+	    
+	    fp.addSubmitCompleteHandler(new FormSubmitCompleteHandler());  
+	    
 	    fp.add(btnPrint);
 	    	   
-	    btnPrint.addSelectionListener(new SelectionListener<ButtonEvent>() {
-	        public void componentSelected(ButtonEvent ce) {	         
-	        	fp.submit();	        	
-	        }	
-	      });
 	    btnPrint.setWidth("100%");
-	    cp.add(btnPrint);    
-	  	    
+	    cp.add(fp);     	    
 	    panel.add(cp);
 	    
-	    //-------------------------------------   
+	    //-------------------------------------   	    
+	    
 	    
 	    cp = new ContentPanel();
 	    cp.setAnimCollapse(false);
@@ -419,63 +427,26 @@ public class BodyLayout_Administration extends LayoutContainer {
 	}
 
 	
-/*	
-	private void recuperoSessionUsername() {
-		
-		SessionManagementService.Util.getInstance().getUserName(new AsyncCallback<String>() {
-			
-			@Override
-			public void onSuccess(String result) {
-				
-				setUsername(result);
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				
-				
-			}
-		});
-		
-		
-	}
-	
-	public  void setUsername(String result){
-		String nome=new String();
-		String cognome=new String();
-		int i=result.indexOf(".");
-				
-		nome=result.substring(0,i);
-		cognome=result.substring(i+1,result.length());
-		
-		
-		txtUsername.setText("Welcome, "+nome+" "+cognome+".");
-	}
-	
+	private class FormSubmitCompleteHandler implements SubmitCompleteHandler {
 
-	private void recuperoSessionRuolo() {
-		
-		SessionManagementService.Util.getInstance().getRuolo(new AsyncCallback<String>() {
+		@Override
+		public void onSubmitComplete(final SubmitCompleteEvent event) {
 			
-			@Override
-			public void onSuccess(String result) {
-				
-				setRuolo(result);
-			}
+			if(event.getResults().isEmpty())
+				Window.alert("Errore durante il caricamento!");
+			else
+				Window.alert("Caricamento avvenuto con successo!");//TODO far venire fuori una dialog con il link per scaricare il file csv
 			
-			@Override
-			public void onFailure(Throwable caught) {
-				
-				Window.alert("Error on getRuolo();");
-			}
-		});				
+		}
 	}
 	
-	
-	public  void setRuolo(String result){
-		
-		txtfldRuolo.setValue(result);
-			}
-	*/
+	private final class SubmitClickHandler implements ClickHandler {
+
+		@Override
+		public void onClick(final ClickEvent event) {
+			
+			fp.submit();
+		}
+	}
 
 }
