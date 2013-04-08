@@ -44,7 +44,8 @@
       <mapping class="gestione.pack.shared.FoglioFatturazione"/>  
       <mapping class="gestione.pack.shared.DatiTimbratriceExt"/> 
       <mapping class="gestione.pack.shared.DettaglioTimbrature"/>
-      <mapping class="gestione.pack.shared.Commenti"/>     
+      <mapping class="gestione.pack.shared.Commenti"/>  
+      <mapping class="gestione.pack.shared.DatiOreMese"/>    
  
 </session-factory>
  
