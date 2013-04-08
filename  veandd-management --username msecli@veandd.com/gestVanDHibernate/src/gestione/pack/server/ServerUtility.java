@@ -8,6 +8,9 @@ import gestione.pack.shared.DettaglioTimbrature;
 import gestione.pack.shared.FoglioOreMese;
 import gestione.pack.shared.Personale;
 
+
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -542,12 +546,11 @@ public class ServerUtility {
 			else
 				totale=("-"+totA+"."+totB);
 			
-			
-			return totale;
-			
+			return totale;		
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	public static Boolean PrintRiepilogoOreMese(Date dataRif){
 		List<RiepilogoFoglioOreModel> listaGiorni= new ArrayList<RiepilogoFoglioOreModel>();
 		List<DettaglioOreGiornaliere> listaDettGiorno= new ArrayList<DettaglioOreGiornaliere>();
@@ -556,7 +559,7 @@ public class ServerUtility {
 		RiepilogoFoglioOreModel giorno;
 		
 		List<DatiOreMese> listaDatiMese= new ArrayList<DatiOreMese>();
-		
+		Boolean exportOk= false;
 				
 		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
 		String anno=formatter.format(dataRif);
@@ -591,15 +594,17 @@ public class ServerUtility {
 			listaDatiMese.add(datoG);
 			
 		  for(Personale p:listaPers){
-			  
-			datoG= new DatiOreMese();		  
-			datoG.setUsername(p.getCognome()+" "+p.getNome()); //riga con solo l'username
-			listaDatiMese.add(datoG);
-			
+			  		
 			if(!p.getFoglioOreMeses().isEmpty()){
+								
 				listaMesi.addAll(p.getFoglioOreMeses());
 				for(FoglioOreMese f:listaMesi){
 					if(f.getMeseRiferimento().compareTo(data)==0){
+						
+						datoG= new DatiOreMese();		  
+						datoG.setUsername(p.getCognome()+" "+p.getNome()); //riga con solo l'username
+						listaDatiMese.add(datoG);
+						
 						listaDettGiorno.addAll(f.getDettaglioOreGiornalieres());
 						break;
 					}
@@ -655,20 +660,16 @@ public class ServerUtility {
 					
 					listaDatiMese.add(datoG);
 				}
-				
+				listaDettGiorno.clear();
+				listaMesi.clear();
 								
 			}
-			
-			//Due righe vuote
-						
-			datoG= new DatiOreMese();
-			listaDatiMese.add(datoG);
-			datoG= new DatiOreMese();
-			listaDatiMese.add(datoG);
-			
-		  }
+		 }
 		  
 		  tx.commit();
+		  
+		  exportOk=exportListaDatiCommesse(listaDatiMese);
+		  
 		  return true;
 				 
 		} catch (Exception e) {
@@ -680,6 +681,36 @@ public class ServerUtility {
 			session.close();
 		}
 			
+	}
+
+	private static Boolean exportListaDatiCommesse(List<DatiOreMese> listaDatiMese) {
+				
+		for(DatiOreMese d: listaDatiMese){
+			
+			saveDateG(d);		
+		}
+		
+				
+		return true;	
+	}
+
+	private static void saveDateG(DatiOreMese d) {
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {
+			tx = session.beginTransaction();
+			
+			session.save(d);
+			tx.commit();
+			
+		} catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		}finally{
+			session.close();
+		}		
 	}
 }
 
