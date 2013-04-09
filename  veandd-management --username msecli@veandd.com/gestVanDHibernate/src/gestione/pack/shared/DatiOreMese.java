@@ -78,12 +78,12 @@ public class DatiOreMese extends LightEntity implements IsSerializable {
 		this.giustificativo = giustificativo;
 	}
 
-	public String getOreAssenzeRecupero() {
+	public String getOreRecupero() {
 		return this.oreRecupero;
 	}
 
-	public void setOreAssenzeRecupero(String oreAssenzeRecupero) {
-		this.oreRecupero = oreAssenzeRecupero;
+	public void setOreRecupero(String oreRecupero) {
+		this.oreRecupero = oreRecupero;
 	}
 
 	public String getOreViaggio() {
