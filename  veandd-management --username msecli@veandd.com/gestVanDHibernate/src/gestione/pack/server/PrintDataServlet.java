@@ -58,25 +58,8 @@ public class PrintDataServlet extends HttpServlet  {
 			e.printStackTrace();
 		}
 		
-		//stampato=ServerUtility.PrintRiepilogoOreMese(data);
+		stampato=ServerUtility.PrintRiepilogoOreMese(data);
 		
-/*		 Connection conn = null;
-		 String HOST = "jdbc:mysql://localhost:3306/";
-	     String USERNAME = "root";
-	     String PASSWORD = "root";
-	    
-	     try {
-	            Class.forName("com.mysql.jdbc.Driver");
-	        } catch (ClassNotFoundException ex) {
-	            ex.printStackTrace();
-	        }
-	 
-	        try {
-	            conn = DriverManager.getConnection(HOST, USERNAME, PASSWORD);
-	        } catch (SQLException ex) {
-	            ex.printStackTrace();
-	        }
-		*/
 		
 		List<DatiOreMese> lista= new ArrayList<DatiOreMese>();
 		
@@ -111,7 +94,7 @@ public class PrintDataServlet extends HttpServlet  {
 		}
 		
 		
-		tx.rollback();
+	tx.rollback();
 		session.close();
 				   
 		
