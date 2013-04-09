@@ -15,6 +15,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -557,6 +559,7 @@ public class ServerUtility {
 		List<FoglioOreMese> listaMesi=new ArrayList<FoglioOreMese>();
 		List<Personale> listaPers= new ArrayList<Personale>();
 		RiepilogoFoglioOreModel giorno;
+		DatiOreMese datoG= new DatiOreMese();		
 		
 		List<DatiOreMese> listaDatiMese= new ArrayList<DatiOreMese>();
 		Boolean exportOk= false;
@@ -576,36 +579,25 @@ public class ServerUtility {
 			tx = session.beginTransaction();
 			
 			listaPers=(List<Personale>)session.createQuery("from Personale").list();//TODO distinguere torino da brescia
-			
-			DatiOreMese datoG= new DatiOreMese();//Prima riga con la descrizione delle colonne
-			datoG.setUsername("Username");
-			datoG.setGiornoRiferimento("Giorno");
-			datoG.setTotGiorno("Ore Presenza");
-			datoG.setOreViaggio("Ore Viaggio");
-			datoG.setDeltaOreViaggio("Delta Viaggio");
-			datoG.setOreTotali("Ore Totali");
-			datoG.setOreFerie("Ore Ferie");
-			datoG.setOrePermesso("Ore ROL");
-			datoG.setOreAssenzeRecupero("Ore Recupero");
-			datoG.setOreStraordinario("Ore Straord.");
-			datoG.setGiustificativo("Giustificativo");
-			datoG.setNoteAggiuntive("Note Agg.");
-					
-			listaDatiMese.add(datoG);
-			
-		  for(Personale p:listaPers){
+						
+		    for(Personale p:listaPers){
 			  		
-			if(!p.getFoglioOreMeses().isEmpty()){
+			 if(!p.getFoglioOreMeses().isEmpty()){
 								
 				listaMesi.addAll(p.getFoglioOreMeses());
 				for(FoglioOreMese f:listaMesi){
 					if(f.getMeseRiferimento().compareTo(data)==0){
 						
-						datoG= new DatiOreMese();		  
+						/*datoG= new DatiOreMese();		  
 						datoG.setUsername(p.getCognome()+" "+p.getNome()); //riga con solo l'username
 						listaDatiMese.add(datoG);
-						
+						*/
 						listaDettGiorno.addAll(f.getDettaglioOreGiornalieres());
+						Collections.sort(listaDettGiorno, new Comparator<DettaglioOreGiornaliere>(){
+							  public int compare(DettaglioOreGiornaliere s1, DettaglioOreGiornaliere s2) {
+								 return s1.getGiornoRiferimento().compareTo(s2.getGiornoRiferimento());
+							  }
+							});
 						break;
 					}
 				}
@@ -624,6 +616,7 @@ public class ServerUtility {
 					
 					if(d.getOreViaggio().compareTo("0.00")!=0){
 						if(Float.valueOf(d.getDeltaOreGiorno())<0){
+					
 							if(Float.valueOf(d.getOreViaggio())>Math.abs(Float.valueOf(d.getDeltaOreGiorno()))){							
 								oreTotali=(p.getTipologiaOrario()+".00");					
 							}								
@@ -639,13 +632,12 @@ public class ServerUtility {
 					}else{						
 						oreTotali=(d.getTotaleOreGiorno());
 					}
-					
-					
+										
 					Date gRiferimento=d.getGiornoRiferimento();
 					formatter = new SimpleDateFormat("dd/MM/yy");
 					String giornoR=formatter.format(gRiferimento);
 										
-					datoG.setUsername(" ");
+					datoG.setUsername(p.getCognome()+" "+p.getNome());
 					datoG.setGiornoRiferimento(giornoR);
 					datoG.setTotGiorno(d.getTotaleOreGiorno());
 					datoG.setOreViaggio(d.getOreViaggio());
@@ -653,7 +645,7 @@ public class ServerUtility {
 					datoG.setOreTotali(oreTotali);
 					datoG.setOreFerie(d.getOreFerie());
 					datoG.setOrePermesso(d.getOrePermesso());
-					datoG.setOreAssenzeRecupero(d.getOreAssenzeRecupero());
+					datoG.setOreRecupero(d.getOreAssenzeRecupero());
 					datoG.setOreStraordinario(d.getOreStraordinario());
 					datoG.setGiustificativo(d.getGiustificativo());
 					datoG.setNoteAggiuntive(d.getNoteAggiuntive());
