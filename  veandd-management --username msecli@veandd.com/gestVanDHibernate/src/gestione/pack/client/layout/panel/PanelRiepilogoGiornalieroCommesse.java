@@ -85,46 +85,7 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	  	  	
 	  	btnPrint.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.print()));
 		btnPrint.setToolTip("Stampa");
-		btnPrint.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-							
-				final String url="/gestvandhibernate/PrintDataServlet";
-				RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
-
-			    try {
-			    	
-			    	List<RiepilogoOreDipCommesseGiornaliero> list= new ArrayList<RiepilogoOreDipCommesseGiornaliero>();
-			    	list.addAll(store.getModels());
-			    	Map<String, Object> map = new HashMap<String, Object>();
-			    	
-			    	for (Object i : list){
-			    		
-			    		map.put(String.valueOf(list.indexOf(i)), (RiepilogoFoglioOreModel) i);
-			    	}
-			    	
-			        String obj= JsonConverter.encode(map).toString();
-			    	
-			        Request request = builder.sendRequest(obj, new RequestCallback() {
-			        public void onError(Request request, Throwable exception) {
-			         // displayError("Couldn't retrieve JSON");
-			        	
-			        }
-
-			        public void onResponseReceived(Request request, Response response) {
-			          if (200 == response.getStatusCode()) {
-			           // updateTable(asArrayOfStockData(response.getText()));
-			          } else {
-			            //displayError("Couldn't retrieve JSON (" + response.getStatusText()  + ")");
-			          }
-			        }
-			      });
-			    } catch (RequestException e) {
-			    	 Window.alert("Failed to send the request: " + e.getMessage());
-			    }
-			}
-		});
-	  	
+			  	
 		//btnBarPrint.add(btnPrint);
 		
 		ContentPanel cntpnlGrid= new ContentPanel();
@@ -137,8 +98,7 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 				
 		caricaTabellaDati();
 	    
-	    try {
-	    
+	    try {	    
 	    		cmCommessa = new ColumnModel(createColumns());
 	    	} catch (Exception e) {
 			e.printStackTrace();
@@ -247,8 +207,15 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	    columnOreLavoro.setSummaryRenderer(new SummaryRenderer() {  
 	   			@Override
 			public String render(Number value, Map<String, Number> data) {
-	   			
-					return number.format(value);
+	   				GroupingStore<RiepilogoOreDipCommesseGiornaliero>store1 = new GroupingStore<RiepilogoOreDipCommesseGiornaliero>();
+	   				String tot="0.00";
+	   				store1.add(store.getModels());
+	   				for(RiepilogoOreDipCommesseGiornaliero riep: store1.getModels()){
+	   					tot=ClientUtility.aggiornaTotGenerale(tot, number.format(riep.getOreLavoro()));
+	   				}
+	   				
+	   				Float n=Float.valueOf(tot);
+					return number.format(n);
 			}  
 	      });  
 	    configs.add(columnOreLavoro); 	
@@ -271,8 +238,16 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	    columnOreViaggio.setSummaryRenderer(new SummaryRenderer() {  
 	   			@Override
 			public String render(Number value, Map<String, Number> data) {
+	   				GroupingStore<RiepilogoOreDipCommesseGiornaliero>store1 = new GroupingStore<RiepilogoOreDipCommesseGiornaliero>();
+	   				String tot="0.00";
+	   				store1.add(store.getModels());
+	   				for(RiepilogoOreDipCommesseGiornaliero riep: store1.getModels()){
 	   				
-					return number.format(value);
+	   					tot=ClientUtility.aggiornaTotGenerale(tot, number.format(riep.getOreViaggio()));
+	   				}
+	   				
+	   				Float n=Float.valueOf(tot);
+					return number.format(n);
 			}  
 	      });      
 	    configs.add(columnOreViaggio); 	
@@ -300,7 +275,15 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	   			@Override
 			public String render(Number value, Map<String, Number> data) {
 	   				
-					return number.format(value);
+	   				GroupingStore<RiepilogoOreDipCommesseGiornaliero>store1 = new GroupingStore<RiepilogoOreDipCommesseGiornaliero>();
+	   				String tot="0.00";
+	   				store1.add(store.getModels());
+	   				for(RiepilogoOreDipCommesseGiornaliero riep: store1.getModels()){
+	   					tot=ClientUtility.aggiornaTotGenerale(tot, number.format(riep.getTotOre()));
+	   				}
+	   				
+	   				Float n=Float.valueOf(tot);
+					return number.format(n);
 			}  
 	    });      
 	    configs.add(columnOreTotali); 
