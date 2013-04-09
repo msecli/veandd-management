@@ -339,7 +339,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    com.google.gwt.user.client.ui.Button btnPrint = new com.google.gwt.user.client.ui.Button("Stampa");
 	    
 	    btnPrint.addClickHandler(new SubmitClickHandler());    
-	    
+	    	    
     	fp.setEncoding(FormPanel.ENCODING_MULTIPART);
 	    fp.setMethod(FormPanel.METHOD_POST);
 	    fp.setAction(url);
@@ -433,10 +433,10 @@ public class BodyLayout_Administration extends LayoutContainer {
 		public void onSubmitComplete(final SubmitCompleteEvent event) {
 			
 			if(event.getResults().isEmpty())
-				Window.alert("Errore durante il caricamento!");
-			else
-				Window.alert("Caricamento avvenuto con successo!");//TODO far venire fuori una dialog con il link per scaricare il file csv
-			
+				Window.alert("Errore durante la creazione del file!");
+			else{
+				Window.alert("File creato!");//TODO far venire fuori una dialog con il link per scaricare il file csv
+			}
 		}
 	}
 	
