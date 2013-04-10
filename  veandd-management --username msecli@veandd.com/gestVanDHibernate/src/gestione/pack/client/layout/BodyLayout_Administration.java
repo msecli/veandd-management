@@ -3,6 +3,7 @@ package gestione.pack.client.layout;
 //import gestione.pack.client.utility.RecuperoParametriSessione;
 
 import gestione.pack.client.SessionManagementService;
+import gestione.pack.client.layout.panel.PanelPrintAll;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
 import gestione.pack.client.utility.MyImages;
@@ -57,6 +58,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	
 	public BodyLayout_Administration() {
 		setBorders(false);	
+		
 			}
 
 	protected void onRender(Element target, int index) {  
@@ -330,28 +332,34 @@ public class BodyLayout_Administration extends LayoutContainer {
 	      });
 	    btnLoadTimbrature.setWidth("100%");
 	    cp.add(btnLoadTimbrature);
-	    
-	    
-	    
-	    
+	        
+	    	    
 	    //--------------------------------PROVA PRINT//TODO
+	    Button btnPrintRiepilogo = new Button("Stampa");
+	    btnPrintRiepilogo.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	          center.removeAll();
+	        	center.add(new PanelPrintAll());
+	        	center.layout(true);}      
+	      });
+	    btnPrintRiepilogo.setWidth("100%");
+	    cp.add(btnPrintRiepilogo);
 	   
+	   /* 
 	    com.google.gwt.user.client.ui.Button btnPrint = new com.google.gwt.user.client.ui.Button("Stampa");
 	    
 	    btnPrint.addClickHandler(new SubmitClickHandler());    
-	    	    
-    	fp.setEncoding(FormPanel.ENCODING_MULTIPART);
+	    
+    	//fp.setEncoding(FormPanel.ENCODING_MULTIPART);
 	    fp.setMethod(FormPanel.METHOD_POST);
 	    fp.setAction(url);
-	    
 	    fp.addSubmitCompleteHandler(new FormSubmitCompleteHandler());  
-	    
 	    fp.add(btnPrint);
-	    	   
+	    
 	    btnPrint.setWidth("100%");
 	    cp.add(fp);     	    
 	    panel.add(cp);
-	    
+	    */
 	    //-------------------------------------   	    
 	    
 	    
@@ -424,29 +432,6 @@ public class BodyLayout_Administration extends LayoutContainer {
 	 	
 	   viewport.add(container);
 	   add(viewport);		
-	}
-
-	
-	private class FormSubmitCompleteHandler implements SubmitCompleteHandler {
-
-		@Override
-		public void onSubmitComplete(final SubmitCompleteEvent event) {
-			
-			if(event.getResults().isEmpty())
-				Window.alert("Errore durante la creazione del file!");
-			else{
-				Window.alert("File creato!");//TODO far venire fuori una dialog con il link per scaricare il file csv
-			}
-		}
-	}
-	
-	private final class SubmitClickHandler implements ClickHandler {
-
-		@Override
-		public void onClick(final ClickEvent event) {
-			
-			fp.submit();
-		}
 	}
 
 }
