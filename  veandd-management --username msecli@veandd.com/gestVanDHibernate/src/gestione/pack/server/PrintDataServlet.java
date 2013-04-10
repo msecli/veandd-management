@@ -101,8 +101,7 @@ public class PrintDataServlet extends HttpServlet  {
 		
 		tx.rollback();
 		session.close();
-				   
-		
+				   		
 	}
 	
 }
