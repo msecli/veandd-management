@@ -193,8 +193,7 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	    columnOreLavoro.setId("oreLavoro");  
 	    columnOreLavoro.setHeader("Ore Lavoro");  
 	    columnOreLavoro.setWidth(60);    
-	    columnOreLavoro.setRowHeader(true); 
-	    columnOreLavoro.setSummaryType(SummaryType.SUM);  
+	    columnOreLavoro.setRowHeader(true);  
 	    columnOreLavoro.setAlignment(HorizontalAlignment.LEFT);  	
 	    columnOreLavoro.setRenderer(new GridCellRenderer<RiepilogoOreDipCommesseGiornaliero>() {
 			@Override
@@ -204,28 +203,14 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 				return number.format(n);
 			}  	
 		});
-	    columnOreLavoro.setSummaryRenderer(new SummaryRenderer() {  
-	   			@Override
-			public String render(Number value, Map<String, Number> data) {
-	   				GroupingStore<RiepilogoOreDipCommesseGiornaliero>store1 = new GroupingStore<RiepilogoOreDipCommesseGiornaliero>();
-	   				String tot="0.00";
-	   				store1.add(store.getModels());
-	   				for(RiepilogoOreDipCommesseGiornaliero riep: store1.getModels()){
-	   					tot=ClientUtility.aggiornaTotGenerale(tot, number.format(riep.getOreLavoro()));
-	   				}
-	   				
-	   				Float n=Float.valueOf(tot);
-					return number.format(n);
-			}  
-	      });  
+	   
 	    configs.add(columnOreLavoro); 	
 	    
 	    SummaryColumnConfig<Double> columnOreViaggio=new SummaryColumnConfig<Double>();		
 	    columnOreViaggio.setId("oreViaggio");  
 	    columnOreViaggio.setHeader("Ore Viaggio");  
 	    columnOreViaggio.setWidth(60);    
-	    columnOreViaggio.setRowHeader(true); 
-	    columnOreViaggio.setSummaryType(SummaryType.SUM);  
+	    columnOreViaggio.setRowHeader(true);  
 	    columnOreViaggio.setAlignment(HorizontalAlignment.LEFT);    
 	    columnOreViaggio.setRenderer(new GridCellRenderer<RiepilogoOreDipCommesseGiornaliero>() {
 			@Override
@@ -235,29 +220,14 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 				return number.format(n);
 			}  	
 		});
-	    columnOreViaggio.setSummaryRenderer(new SummaryRenderer() {  
-	   			@Override
-			public String render(Number value, Map<String, Number> data) {
-	   				GroupingStore<RiepilogoOreDipCommesseGiornaliero>store1 = new GroupingStore<RiepilogoOreDipCommesseGiornaliero>();
-	   				String tot="0.00";
-	   				store1.add(store.getModels());
-	   				for(RiepilogoOreDipCommesseGiornaliero riep: store1.getModels()){
-	   				
-	   					tot=ClientUtility.aggiornaTotGenerale(tot, number.format(riep.getOreViaggio()));
-	   				}
-	   				
-	   				Float n=Float.valueOf(tot);
-					return number.format(n);
-			}  
-	      });      
+	        
 	    configs.add(columnOreViaggio); 	
 	    
 	    SummaryColumnConfig<Double> columnOreTotali=new SummaryColumnConfig<Double>();		
 	    columnOreTotali.setId("totOre");  
 	    columnOreTotali.setHeader("Totale");  
 	    columnOreTotali.setWidth(60);    
-	    columnOreTotali.setRowHeader(true); 
-	    columnOreTotali.setSummaryType(SummaryType.SUM);  
+	    columnOreTotali.setRowHeader(true);   
 	    columnOreTotali.setAlignment(HorizontalAlignment.LEFT);   
 	    columnOreTotali.setStyle("color:#e71d2b;");
 	    columnOreTotali.setRenderer(new GridCellRenderer<RiepilogoOreDipCommesseGiornaliero>() {
@@ -271,21 +241,7 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 				return number.format(n);
 			}			
 		});
-	    columnOreTotali.setSummaryRenderer(new SummaryRenderer() {  
-	   			@Override
-			public String render(Number value, Map<String, Number> data) {
-	   				
-	   				GroupingStore<RiepilogoOreDipCommesseGiornaliero>store1 = new GroupingStore<RiepilogoOreDipCommesseGiornaliero>();
-	   				String tot="0.00";
-	   				store1.add(store.getModels());
-	   				for(RiepilogoOreDipCommesseGiornaliero riep: store1.getModels()){
-	   					tot=ClientUtility.aggiornaTotGenerale(tot, number.format(riep.getTotOre()));
-	   				}
-	   				
-	   				Float n=Float.valueOf(tot);
-					return number.format(n);
-			}  
-	    });      
+	       
 	    configs.add(columnOreTotali); 
 		
 		return configs;
