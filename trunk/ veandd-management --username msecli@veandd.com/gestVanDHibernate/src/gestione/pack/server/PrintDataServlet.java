@@ -23,6 +23,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -47,10 +48,14 @@ public class PrintDataServlet extends HttpServlet  {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		boolean stampato;
+		 
+		HttpSession httpSession = request.getSession();
+		 
+		String mex=(String) httpSession.getAttribute("mese");
 		
 		Date data= new Date();
 		
-		DateFormat formatter = new SimpleDateFormat("yyyy-MMM-dd",Locale.ENGLISH);
+		DateFormat formatter = new SimpleDateFormat("yyyy-MMM-dd",Locale.ITALIAN);
 		try {
 			data = (Date)formatter.parse("2013-Mar-22");
 		} catch (ParseException e) {
@@ -58,7 +63,7 @@ public class PrintDataServlet extends HttpServlet  {
 			e.printStackTrace();
 		}
 		
-		stampato=ServerUtility.PrintRiepilogoOreMese(data);
+		if(stampato=ServerUtility.PrintRiepilogoOreMese(data));
 		
 		
 		List<DatiOreMese> lista= new ArrayList<DatiOreMese>();
@@ -94,7 +99,7 @@ public class PrintDataServlet extends HttpServlet  {
 		}
 		
 		
-	tx.rollback();
+		tx.rollback();
 		session.close();
 				   
 		

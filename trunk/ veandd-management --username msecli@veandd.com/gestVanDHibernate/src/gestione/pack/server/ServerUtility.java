@@ -2,15 +2,12 @@ package gestione.pack.server;
 
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
 import gestione.pack.shared.DatiOreMese;
-import gestione.pack.shared.DatiTimbratriceExt;
 import gestione.pack.shared.DettaglioOreGiornaliere;
-import gestione.pack.shared.DettaglioTimbrature;
+
 import gestione.pack.shared.FoglioOreMese;
 import gestione.pack.shared.Personale;
 
 
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,7 +17,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
+
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -36,7 +33,7 @@ public class ServerUtility {
 			bisestile=true;
 
 		switch (mese) {
-        case "Jan":  giorni = 31;
+        case "Gen":  giorni = 31;
                  break;
         case "Feb":  {  	
         		if(!bisestile)
@@ -48,27 +45,27 @@ public class ServerUtility {
                  break;
         case "Apr":  giorni = 30;
                  break;
-        case "May":  giorni = 31;
+        case "Mag":  giorni = 31;
                  break;
-        case "Jun":  giorni = 30;
+        case "Giu":  giorni = 30;
                  break;
-        case "Jul":   giorni = 31;
+        case "Lug":   giorni = 31;
                  break;
-        case "Aug":   giorni = 31;
+        case "Ago":   giorni = 31;
                  break;
-        case "Sep":   giorni = 30;
+        case "Set":   giorni = 30;
                  break;
-        case "Oct":  giorni = 31;
+        case "Ott":  giorni = 31;
                  break;
         case "Nov":  giorni = 30;
                  break;
-        case "Dec":  giorni = 31;
+        case "Dic":  giorni = 31;
                  break;
 		}
 			
 		return giorni;
 	}
-	
+	/*
 	public static String traduciMese(String month){
 		String mese=new String();
 		
@@ -101,7 +98,7 @@ public class ServerUtility {
 		return mese;
 	}
 
-	
+	*/
 	public static int calcolaOreLavorativeMese(Date giornoRiferimento, String orePreviste) {
 		String data=new String();
 		String mese=new String();
@@ -115,9 +112,9 @@ public class ServerUtility {
 		int oreLavorative=0;
 		
 		Date date;
-		DateFormat formatter = new SimpleDateFormat("yyyy", Locale.ENGLISH) ; 
+		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
 		anno=formatter.format(giornoRiferimento);
-		formatter = new SimpleDateFormat("MMM", Locale.ENGLISH);
+		formatter = new SimpleDateFormat("MMM", Locale.ITALIAN);
 		mese=formatter.format(giornoRiferimento);
 	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
 			
@@ -130,7 +127,7 @@ public class ServerUtility {
 			else
 				dataGiornoMese=(anno+"-"+mese+"-"+i);
 			
-			formatter = new SimpleDateFormat("yyyy-MMM-dd",Locale.ENGLISH);
+			formatter = new SimpleDateFormat("yyyy-MMM-dd",Locale.ITALIAN);
 			try {
 				date = (Date)formatter.parse(dataGiornoMese);
 				data=date.toString();	
@@ -138,7 +135,7 @@ public class ServerUtility {
 				
 				formatter = new SimpleDateFormat("yyyy") ; 
 				anno=formatter.format(date);
-				formatter = new SimpleDateFormat("MMM",Locale.ENGLISH);
+				formatter = new SimpleDateFormat("MMM",Locale.ITALIAN);
 				mese=formatter.format(date);
 			    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
 			    formatter= new SimpleDateFormat("dd");
@@ -164,7 +161,7 @@ public class ServerUtility {
 			return true;
 		if(dataCompleta.compareTo("2013-Apr-25")==0)
 			return true;
-		if(dataCompleta.compareTo("2013-May-01")==0)
+		if(dataCompleta.compareTo("2013-Mag-01")==0)
 			return true;
 		if(dataCompleta.compareTo("2013-Nov-01")==0)
 			return true;		
@@ -449,13 +446,13 @@ public class ServerUtility {
 		mese=month.substring(0,3);
 		anno=month.substring(3, month.length());
 		
-		if(mese.compareTo("Jan") ==0){
-			mese="Dec";
+		if(mese.compareTo("Gen") ==0){
+			mese="Dic";
 			anno=String.valueOf(Integer.parseInt(anno)-1);
 			mese=mese+anno;
 		}
 		if(mese.compareTo("Feb") ==0){
-			mese="Jan";
+			mese="Gen";
 			mese=mese+anno;
 		}
 		if(mese.compareTo("Mar") ==0){
@@ -466,35 +463,35 @@ public class ServerUtility {
 			mese="Mar";
 			mese=mese+anno;
 		}
-		if(mese.compareTo("May") ==0){
+		if(mese.compareTo("Mag") ==0){
 			mese="Apr";
 			mese=mese+anno;
 		}
-		if(mese.compareTo("Jun") ==0){
-			mese="May";
+		if(mese.compareTo("Giu") ==0){
+			mese="Mag";
 			mese=mese+anno;
 		}
-		if(mese.compareTo("Jul") ==0){
-			mese="Jun";
+		if(mese.compareTo("Lug") ==0){
+			mese="Giu";
 			mese=mese+anno;
 		}
-		if(mese.compareTo("Aug") ==0){
-			mese="Jul";
+		if(mese.compareTo("Ago") ==0){
+			mese="Lug";
 			mese=mese+anno;
 		}
-		if(mese.compareTo("Sep") ==0){
-			mese="Aug";
+		if(mese.compareTo("Set") ==0){
+			mese="Ago";
 			mese=mese+anno;
 		}
-		if(mese.compareTo("Oct") ==0){
-			mese="Sep";
+		if(mese.compareTo("Ott") ==0){
+			mese="Set";
 			mese=mese+anno;
 		}
 		if(mese.compareTo("Nov") ==0){
-			mese="Oct";
+			mese="Ott";
 			mese=mese+anno;
 		}
-		if(mese.compareTo("Dec") ==0){
+		if(mese.compareTo("Dic") ==0){
 			mese="Nov";
 			mese=mese+anno;
 		}
@@ -566,7 +563,7 @@ public class ServerUtility {
 				
 		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
 		String anno=formatter.format(dataRif);
-		formatter = new SimpleDateFormat("MMM");
+		formatter = new SimpleDateFormat("MMM", Locale.ITALIAN);
 		String mese=formatter.format(dataRif);
 	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
 	    
@@ -611,7 +608,7 @@ public class ServerUtility {
 					String day=new String();
 					String oreTotali= "0.00";
 					
-					formatter = new SimpleDateFormat("dd-MMM-yyyy");
+					formatter = new SimpleDateFormat("dd-MMM-yyyy",Locale.ITALIAN);
 					day=formatter.format(d.getGiornoRiferimento());
 					
 					if(d.getOreViaggio().compareTo("0.00")!=0){
@@ -634,7 +631,7 @@ public class ServerUtility {
 					}
 										
 					Date gRiferimento=d.getGiornoRiferimento();
-					formatter = new SimpleDateFormat("dd/MM/yy");
+					formatter = new SimpleDateFormat("dd/MM/yy",Locale.ITALIAN);
 					String giornoR=formatter.format(gRiferimento);
 										
 					datoG.setUsername(p.getCognome()+" "+p.getNome());

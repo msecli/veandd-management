@@ -132,5 +132,16 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
     	HttpSession session = request.getSession();
 		session.invalidate();
 	}
+
+
+	@Override
+	public boolean setDataInSession(String mese) {
+		 HttpServletRequest request = this.getThreadLocalRequest();
+	   	 HttpSession httpSession = request.getSession();
+	   	   
+	   	 httpSession.setAttribute("mese", mese);
+	   	 
+		return true;
+	}
 	
 }
