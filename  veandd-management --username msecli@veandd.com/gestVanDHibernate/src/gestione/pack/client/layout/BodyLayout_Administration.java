@@ -344,7 +344,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	      });
 	    btnPrintRiepilogo.setWidth("100%");
 	    cp.add(btnPrintRiepilogo);
-	   
+	    panel.add(cp);
 	   /* 
 	    com.google.gwt.user.client.ui.Button btnPrint = new com.google.gwt.user.client.ui.Button("Stampa");
 	    
