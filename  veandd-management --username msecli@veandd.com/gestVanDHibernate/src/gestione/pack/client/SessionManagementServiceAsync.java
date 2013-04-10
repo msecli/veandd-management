@@ -14,4 +14,6 @@ public interface SessionManagementServiceAsync {
 
 	void logOut(AsyncCallback<Void> callback);
 
+	void setDataInSession(String mese, AsyncCallback<Boolean> asyncCallback);
+
 }

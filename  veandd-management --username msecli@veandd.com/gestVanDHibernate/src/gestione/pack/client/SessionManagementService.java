@@ -43,6 +43,8 @@ public interface SessionManagementService extends RemoteService {
 	public String login(String username, String password)throws IllegalArgumentException;
 
 	void logOut()throws IllegalArgumentException;
+
+	boolean setDataInSession(String mese);
 	
 	
 }
