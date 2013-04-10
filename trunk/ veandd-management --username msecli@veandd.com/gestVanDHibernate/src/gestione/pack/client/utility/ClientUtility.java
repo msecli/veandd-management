@@ -330,7 +330,7 @@ public class ClientUtility {
 		String mese=new String();
 		
 		if(month.compareTo("Gennaio") ==0)
-			mese="Jan";
+			mese="Gen";
 		if(month.compareTo("Febbraio") ==0)
 			mese="Feb";
 		if(month.compareTo("Marzo") ==0)
@@ -338,21 +338,21 @@ public class ClientUtility {
 		if(month.compareTo("Aprile") ==0)
 			mese="Apr";
 		if(month.compareTo("Maggio") ==0)
-			mese="May";
+			mese="Mag";
 		if(month.compareTo("Giugno") ==0)
-			mese="Jun";
+			mese="Giu";
 		if(month.compareTo("Luglio") ==0)
-			mese="Jul";
+			mese="Lug";
 		if(month.compareTo("Agosto") ==0)
-			mese="Aug";
+			mese="Ago";
 		if(month.compareTo("Settembre") ==0)
-			mese="Sep";
+			mese="Set";
 		if(month.compareTo("Ottobre") ==0)
-			mese="Oct";
+			mese="Ott";
 		if(month.compareTo("Novembre") ==0)
 			mese="Nov";
 		if(month.compareTo("Dicembre") ==0)
-			mese="Dec";
+			mese="Dic";
 		
 		return mese;
 	}
