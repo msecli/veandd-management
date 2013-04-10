@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -179,7 +180,7 @@ public class ConverterUtil {
 				dataOfferta="00-00-0000";	
 			} else{
 				
-				formatter=new SimpleDateFormat("dd-MMM-yyyy");
+				formatter=new SimpleDateFormat("dd-MMM-yyyy",Locale.ITALIAN);
 				data=o.getDataRedazione();
 				dataOfferta=formatter.format(data);
 			}
@@ -275,7 +276,7 @@ public class ConverterUtil {
 				
 				dataInizioO="00-00-0000";	
 			} else{
-				formatter=new SimpleDateFormat("dd-MMM-yyyy");
+				formatter=new SimpleDateFormat("dd-MMM-yyyy",Locale.ITALIAN);
 				dataInizio=o.getDataInizio();
 				dataInizioO=formatter.format(dataInizio);
 			}
@@ -284,7 +285,7 @@ public class ConverterUtil {
 				dataFineO="00-00-0000";	
 				
 			} else{
-				formatter=new SimpleDateFormat("dd-MMM-yyyy");
+				formatter=new SimpleDateFormat("dd-MMM-yyyy",Locale.ITALIAN);
 				dataFine=o.getDataFine();
 				dataFineO=formatter.format(dataFine);		
 			}
@@ -361,7 +362,7 @@ public class ConverterUtil {
 			if(c.getDataElaborazione()==null){			
 				dataElaborazione="00-00-0000";	
 			} else{
-				formatter=new SimpleDateFormat("dd-MMM-yyyy");
+				formatter=new SimpleDateFormat("dd-MMM-yyyy",Locale.ITALIAN);
 				data=c.getDataElaborazione();
 				dataElaborazione=formatter.format(data);
 			}
@@ -370,7 +371,7 @@ public class ConverterUtil {
 			if(c.getDataChiusura()==null){		
 				dataChiusura="00-00-0000";	
 			} else{
-				formatter=new SimpleDateFormat("dd-MMM-yyyy");
+				formatter=new SimpleDateFormat("dd-MMM-yyyy",Locale.ITALIAN);
 				dataC=c.getDataChiusura();
 				dataChiusura=formatter.format(dataC);
 			}
@@ -562,7 +563,7 @@ public class ConverterUtil {
 		
 		DateFormat formatter1 = new SimpleDateFormat("yyyy") ; 
 		anno=formatter1.format(giornoRiferimento);
-		formatter1 = new SimpleDateFormat("MMM");
+		formatter1 = new SimpleDateFormat("MMM",Locale.ITALIAN);
 		mese=formatter1.format(giornoRiferimento);
 	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
 	    formatter1 = new SimpleDateFormat("dd");
@@ -606,7 +607,7 @@ public class ConverterUtil {
 				}
 				
 				for(DettaglioOreGiornaliere d:listaGiorni){
-					SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+					SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd",Locale.ITALIAN);
 					String formattedDate = formatter.format(giornoRiferimento);
 					
 					if(formattedDate.equals(d.getGiornoRiferimento().toString()))//se è presente il giorno di riferimento 

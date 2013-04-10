@@ -487,7 +487,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Ordine or= new Ordine();
 		Offerta of=new Offerta();
 			
-		SimpleDateFormat formatter =new SimpleDateFormat("yyyy-MM-dd");	;
+		SimpleDateFormat formatter =new SimpleDateFormat("yyyy-MM-dd",Locale.ITALIAN);	;
 		
 		String numRdo="#";
 		
@@ -2058,7 +2058,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
 		anno=formatter.format(giornoRiferimento);
-		formatter = new SimpleDateFormat("MMM", Locale.ENGLISH);
+		formatter = new SimpleDateFormat("MMM",Locale.ITALIAN);
 		mese=formatter.format(giornoRiferimento);
 	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
 	    formatter = new SimpleDateFormat("dd");
@@ -2207,7 +2207,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
 		anno=formatter.format(giornoRiferimento);
-		formatter = new SimpleDateFormat("MMM");
+		formatter = new SimpleDateFormat("MMM",Locale.ITALIAN);
 		mese=formatter.format(giornoRiferimento);
 	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
 		
@@ -2254,7 +2254,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 
 	private boolean giornoPresente(Set<DettaglioOreGiornaliere> listaDettOreGiorno, Date giornoRiferimento) {
 		Boolean presente=false;
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd",Locale.ITALIAN);
 		String formattedDate = formatter.format(giornoRiferimento);
 		
 		for(DettaglioOreGiornaliere d:listaDettOreGiorno){
@@ -2282,7 +2282,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
 		anno=formatter.format(giorno);
-		formatter = new SimpleDateFormat("MMM");
+		formatter = new SimpleDateFormat("MMM",Locale.ITALIAN);
 		mese=formatter.format(giorno);
 	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
 	    formatter = new SimpleDateFormat("dd");
@@ -2387,7 +2387,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 
 		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
 		anno=formatter.format(giornoRiferimento);
-		formatter = new SimpleDateFormat("MMM");
+		formatter = new SimpleDateFormat("MMM",Locale.ITALIAN);
 		mese=formatter.format(giornoRiferimento);
 	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
 		
@@ -2657,7 +2657,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				
 		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
 		anno=formatter.format(giornoRiferimento);
-		formatter = new SimpleDateFormat("MMM");
+		formatter = new SimpleDateFormat("MMM",Locale.ITALIAN);
 		mese=formatter.format(giornoRiferimento);
 	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
 		
@@ -2683,7 +2683,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 			for(DettaglioOreGiornaliere d:listaGiorni){
 				
-				formatter = new SimpleDateFormat("yyyy-MM-dd");
+				formatter = new SimpleDateFormat("yyyy-MM-dd",Locale.ITALIAN);
 				String formattedDate = formatter.format(giornoRiferimento);
 					
 				if(d.getGiornoRiferimento().toString().equals(formattedDate))//seleziono il giorno desiderato
@@ -2730,7 +2730,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				
 		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
 		anno=formatter.format(giornoRiferimento);
-		formatter = new SimpleDateFormat("MMM");
+		formatter = new SimpleDateFormat("MMM",Locale.ITALIAN);
 		mese=formatter.format(giornoRiferimento);
 	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
 		
@@ -2760,7 +2760,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			else return giust;
 			
 			for(DettaglioOreGiornaliere d:listaGiorni){
-				formatter = new SimpleDateFormat("yyyy-MM-dd");
+				formatter = new SimpleDateFormat("yyyy-MM-dd",Locale.ITALIAN);
 				String formattedDate = formatter.format(giornoRiferimento);
 				
 				if(formattedDate.equals(d.getGiornoRiferimento().toString()))
@@ -2806,7 +2806,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
 		anno=formatter.format(giornoRiferimento);
-		formatter = new SimpleDateFormat("MMM");
+		formatter = new SimpleDateFormat("MMM",Locale.ITALIAN);
 		mese=formatter.format(giornoRiferimento);
 	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
 	    
@@ -2912,7 +2912,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
 		String anno=formatter.format(dataRif);
-		formatter = new SimpleDateFormat("MMM");
+		formatter = new SimpleDateFormat("MMM",Locale.ITALIAN);
 		String mese=formatter.format(dataRif);
 	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
 	    
@@ -2937,7 +2937,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					String day=new String();
 					String oreTotali= "0.00";
 					
-					formatter = new SimpleDateFormat("dd-MMM-yyyy");
+					formatter = new SimpleDateFormat("dd-MMM-yyyy",Locale.ITALIAN);
 					day=formatter.format(d.getGiornoRiferimento());
 					
 					if(d.getOreViaggio().compareTo("0.00")!=0){
@@ -2960,7 +2960,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					
 					//ricercare le timbrature nel giorno in esame e contarle; se sono dispari dare il flag mancanti
 					Date gRiferimento=d.getGiornoRiferimento();
-					formatter = new SimpleDateFormat("dd/MM/yy");
+					formatter = new SimpleDateFormat("dd/MM/yy",Locale.ITALIAN);
 					String giornoR=formatter.format(gRiferimento);
 					@SuppressWarnings("unchecked")
 					List<DettaglioTimbrature> listaT=(List<DettaglioTimbrature>)session.createQuery("from DettaglioTimbrature where numeroBadge=:nBadge and giorno=:giorno")
@@ -2999,7 +2999,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		List<String> listaIntervalliTimbr=new ArrayList<String>();
 		String numeroBadge= new String();
 		
-		DateFormat formatter = new SimpleDateFormat("dd/MM/yy") ; 
+		DateFormat formatter = new SimpleDateFormat("dd/MM/yy",Locale.ITALIAN) ; 
 		String data=formatter.format(giorno);
 		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
@@ -3794,12 +3794,16 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Personale p= new Personale();
 		Commessa c= new Commessa();
 		
+		String totaleOreLavoroC= "0.00";
+		String totaleOreViaggioC= "0.00";
+		String totaleOreC= "0.00";
+		
 		Date giorno= new Date();  
 		String dipendente= new String();
 		
 		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
 		String anno=formatter.format(meseRiferimento);
-		formatter = new SimpleDateFormat("MMM");
+		formatter = new SimpleDateFormat("MMM",Locale.ITALIAN);
 		String mese=formatter.format(meseRiferimento);
 	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
 		
@@ -3830,7 +3834,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						
 			for(DettaglioOreGiornaliere d: listaD ){//scorro i giorni del mese e calcolo il totale ore per ogni commessa selezionata
 					giorno= d.getGiornoRiferimento();
-					formatter = new SimpleDateFormat("dd-MMM-yyy") ; 
+					formatter = new SimpleDateFormat("dd-MMM-yyy",Locale.ITALIAN) ; 
 					String giornoF=formatter.format(giorno);
 					
 					if(!d.getDettaglioIntervalliCommesses().isEmpty())
@@ -3843,10 +3847,44 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 								, dipendente, giornoF, Float.valueOf(dett.getOreLavorate()), Float.valueOf(dett.getOreViaggio()), Float.valueOf(ServerUtility.aggiornaTotGenerale(dett.getOreLavorate(),  dett.getOreViaggio())));
 						
 							listaG.add(riep);
+													
 						}
 					}	
 					
 					listaIntervalliC.clear();
+									
+			}
+			
+			for(AssociazionePtoA ass:listaAssociazioniPA){
+				String commessa= ass.getAttivita().getCommessa().getNumeroCommessa() +"."+ ass.getAttivita().getCommessa().getEstensione();
+				
+				for(RiepilogoOreDipCommesseGiornaliero g:listaG){
+					if(g.getNumeroCommessa().compareTo(commessa)==0){
+						String oreLavoro=String.valueOf(g.getOreLavoro());
+						String oreViaggio=String.valueOf(g.getOreViaggio());
+						String oreTotali=String.valueOf(g.getTotOre());
+						
+						if(oreLavoro.substring(oreLavoro.indexOf(".")+1, oreLavoro.length()).length()==1)
+							oreLavoro=oreLavoro+"0";
+						if(oreViaggio.substring(oreViaggio.indexOf(".")+1, oreViaggio.length()).length()==1)
+							oreViaggio=oreViaggio+"0";
+						if(oreTotali.substring(oreTotali.indexOf(".")+1, oreTotali.length()).length()==1)
+							oreTotali=oreTotali+"0";
+						
+						totaleOreLavoroC= ServerUtility.aggiornaTotGenerale(totaleOreLavoroC, oreLavoro);
+						totaleOreViaggioC= ServerUtility.aggiornaTotGenerale(totaleOreViaggioC, oreViaggio);
+						totaleOreC=ServerUtility.aggiornaTotGenerale(totaleOreC, oreTotali);
+					}
+				}
+				
+				RiepilogoOreDipCommesseGiornaliero riep= new RiepilogoOreDipCommesseGiornaliero( commessa
+						, dipendente, "Totale", Float.valueOf(totaleOreLavoroC), Float.valueOf(totaleOreViaggioC), Float.valueOf(totaleOreC));
+				
+				listaG.add(riep);
+				
+				totaleOreLavoroC= "0.00";
+				totaleOreViaggioC= "0.00";
+				totaleOreC= "0.00";
 			}
 			
 			tx.commit();
