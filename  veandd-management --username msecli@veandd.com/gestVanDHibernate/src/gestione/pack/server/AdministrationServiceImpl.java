@@ -3855,6 +3855,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 									
 			}
 			
+			//elaboro un record per i totali per ogni commessa
 			for(AssociazionePtoA ass:listaAssociazioniPA){
 				String commessa= ass.getAttivita().getCommessa().getNumeroCommessa() +"."+ ass.getAttivita().getCommessa().getEstensione();
 				
@@ -3877,7 +3878,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					}
 				}
 				
-				RiepilogoOreDipCommesseGiornaliero riep= new RiepilogoOreDipCommesseGiornaliero( commessa
+				RiepilogoOreDipCommesseGiornaliero riep= new RiepilogoOreDipCommesseGiornaliero(commessa
 						, dipendente, "Totale", Float.valueOf(totaleOreLavoroC), Float.valueOf(totaleOreViaggioC), Float.valueOf(totaleOreC));
 				
 				listaG.add(riep);
