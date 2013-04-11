@@ -2,9 +2,14 @@ package gestione.pack.client.layout.panel;
 
 
 import gestione.pack.client.SessionManagementService;
+import gestione.pack.client.utility.ConstantiMSG;
+import gestione.pack.client.utility.DatiComboBox;
 
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
@@ -22,6 +27,9 @@ public class PanelPrintAll extends LayoutContainer {
 	public PanelPrintAll(){}
 	
 	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
+	private SimpleComboBox<String> smplcmbxAnno = new SimpleComboBox<String>();
+    private SimpleComboBox<String> smplcmbxMese = new SimpleComboBox<String>();
+	
 	private static String url= "/gestvandhibernate/PrintDataServlet";
 	
 	protected void onRender(Element target, int index) {  
@@ -40,6 +48,26 @@ public class PanelPrintAll extends LayoutContainer {
 	    ContentPanel cp= new ContentPanel();
 	    cp.setHeading("Stampa del riepilogo ore di tutti i Dipendenti");
 	    cp.setSize(300, 200);
+		
+	    smplcmbxMese.setFieldLabel("Mese");
+		smplcmbxMese.setName("mese");
+		smplcmbxMese.setEmptyText("Mese..");
+		smplcmbxMese.setAllowBlank(false);
+		 for(String l : DatiComboBox.getMese()){
+			 smplcmbxMese.add(l);}
+		smplcmbxMese.setTriggerAction(TriggerAction.ALL);
+
+		smplcmbxAnno.setFieldLabel("Anno");
+		smplcmbxAnno.setName("anno");
+		smplcmbxAnno.setWidth(75);
+		smplcmbxAnno.setEmptyText("Anno..");
+		smplcmbxAnno.setAllowBlank(false);
+		 for(String l : DatiComboBox.getAnno()){
+			 smplcmbxAnno.add(l);}
+		smplcmbxAnno.setTriggerAction(TriggerAction.ALL);
+	    
+		cp.add(smplcmbxAnno);
+		cp.add(smplcmbxMese);
 		
 	    com.google.gwt.user.client.ui.Button btnPrint = new com.google.gwt.user.client.ui.Button("Stampa");
 	    
@@ -69,7 +97,16 @@ public class PanelPrintAll extends LayoutContainer {
 			if(event.getResults().isEmpty())
 				Window.alert("Errore durante la creazione del file!");
 			else{
-				Window.alert("File creato!");//TODO far venire fuori una dialog con il link per scaricare il file csv
+				/*final Dialog d= new Dialog();
+				d.setSize(250, 150);
+				d.setButtons("");
+				d.setStyleAttribute("margin", "10");
+				d.setUrl(ConstantiMSG.URLDownloadFileRiepilogoOre);
+				
+				d.show();*/
+				
+				Window.open("FileStorage/RiepilogoTotali.pdf", "_blank", "1");
+				
 			}
 		}
 	}
