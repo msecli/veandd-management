@@ -50,7 +50,7 @@ public class PrintDataServlet extends HttpServlet  {
 		boolean stampato;
 		 
 		HttpSession httpSession = request.getSession();
-		 
+		
 		String mex=(String) httpSession.getAttribute("mese");
 		
 		Date data= new Date();
@@ -63,7 +63,7 @@ public class PrintDataServlet extends HttpServlet  {
 			e.printStackTrace();
 		}
 		
-		if(stampato=ServerUtility.PrintRiepilogoOreMese(data));
+		//if(stampato=ServerUtility.PrintRiepilogoOreMese(data));
 		
 		
 		List<DatiOreMese> lista= new ArrayList<DatiOreMese>();
@@ -91,7 +91,7 @@ public class PrintDataServlet extends HttpServlet  {
 		     jasperPrint = JasperFillManager.fillReport(jasperReport,  parameters);
 			
 			 
-			JasperExportManager.exportReportToPdfFile(jasperPrint, "C:/sample.pdf");
+			JasperExportManager.exportReportToPdfFile(jasperPrint, "FileStorage/RiepilogoTotali.pdf");
 			 
 		} catch (JRException e) {
 			
@@ -99,9 +99,9 @@ public class PrintDataServlet extends HttpServlet  {
 		}
 		
 		
+		
 		tx.rollback();
 		session.close();
-				   		
 	}
 	
 }
