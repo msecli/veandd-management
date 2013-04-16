@@ -45,8 +45,10 @@
       <mapping class="gestione.pack.shared.DatiTimbratriceExt"/> 
       <mapping class="gestione.pack.shared.DettaglioTimbrature"/>
       <mapping class="gestione.pack.shared.Commenti"/>  
-      <mapping class="gestione.pack.shared.DatiOreMese"/>    
- 
+      <mapping class="gestione.pack.shared.DatiOreMese"/>
+      <mapping class="gestione.pack.shared.DatiRiepilogoMensileCommesse"/>    
+ 		
+      
 </session-factory>
  
 </hibernate-configuration>
