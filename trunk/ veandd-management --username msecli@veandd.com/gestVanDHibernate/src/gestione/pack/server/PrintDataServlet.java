@@ -46,62 +46,116 @@ public class PrintDataServlet extends HttpServlet  {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	@SuppressWarnings("unchecked")
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		boolean stampato;
 		 
 		HttpSession httpSession = request.getSession();
-		
-		String mex=(String) httpSession.getAttribute("mese");
-		
-		Date data= new Date();
-		
-		DateFormat formatter = new SimpleDateFormat("yyyy-MMM-dd",Locale.ITALIAN);
-		try {
-			data = (Date)formatter.parse("2013-Mar-22");
-		} catch (ParseException e) {
-			
-			e.printStackTrace();
-		}
-		
-		//if(stampato=ServerUtility.PrintRiepilogoOreMese(data));
-		
-		
-		List<DatiOreMese> lista= new ArrayList<DatiOreMese>();
-		
-		Session session= MyHibernateUtil.getSessionFactory().openSession();
-		Transaction tx= null;
-		tx = session.beginTransaction();
 
-		Map parameters = new HashMap();
-		parameters.put(JRHibernateQueryExecuterFactory.PARAMETER_HIBERNATE_SESSION, session);//Parametri che usa il file jasper per connettersi!
+		String dataRif = (String) httpSession.getAttribute("mese");
+		String username = (String) httpSession.getAttribute("username");
+
+		if (username.compareTo("") == 0) {// se non ha valore allora stampo il
+											// report del riepilogo giornaliero
+											// altrimenti quello delle commesse
+
+			stampato = ServerUtility.PrintRiepilogoOreMese(dataRif);
+
+			if (stampato) {
+				List<DatiOreMese> lista = new ArrayList<DatiOreMese>();
+
+				Session session = MyHibernateUtil.getSessionFactory()
+						.openSession();
+				Transaction tx = null;
+				tx = session.beginTransaction();
+
+				Map parameters = new HashMap();
+				parameters.put(JRHibernateQueryExecuterFactory.PARAMETER_HIBERNATE_SESSION,
+								session);// Parametri che usa il file jasper per
+											// connettersi!
+
+				JasperPrint jasperPrint;
+				FileInputStream fis;
+				BufferedInputStream bufferedInputStream;
+
+				try {
+
+					fis = new FileInputStream("Jasper Report/Blank_A4.jasper");
+
+					bufferedInputStream = new BufferedInputStream(fis);
+
+					JasperReport jasperReport = (JasperReport) JRLoader
+							.loadObject(bufferedInputStream);
+
+					jasperPrint = JasperFillManager.fillReport(jasperReport,
+							parameters);
+
+					JasperExportManager.exportReportToPdfFile(jasperPrint,
+							"FileStorage/RiepilogoTotali.pdf");
+
+				} catch (JRException e) {
+
+					e.printStackTrace();
+				}
+
+				tx.rollback();
+				session.close();
+				httpSession.setAttribute("result", stampato);
+			}
+
+			else
+				httpSession.setAttribute("result", stampato);
 		
-		
-		JasperPrint jasperPrint;
-		FileInputStream fis;
-        BufferedInputStream bufferedInputStream;
-		
-		try {
+		}else{
 			
-			 fis = new FileInputStream("Jasper Report/Blank_A4.jasper");
-	         
-			 bufferedInputStream = new BufferedInputStream(fis);
-	            
-			 JasperReport jasperReport = (JasperReport) JRLoader.loadObject(bufferedInputStream);
-			  
-		     jasperPrint = JasperFillManager.fillReport(jasperReport,  parameters);
+			stampato = ServerUtility.getRiepilogoGiornalieroCommesse(username, dataRif);
+
+			if (stampato) {
+				List<DatiOreMese> lista = new ArrayList<DatiOreMese>();
+
+				Session session = MyHibernateUtil.getSessionFactory()
+						.openSession();
+				Transaction tx = null;
+				tx = session.beginTransaction();
+
+				Map parameters = new HashMap();
+				parameters.put(JRHibernateQueryExecuterFactory.PARAMETER_HIBERNATE_SESSION,
+								session);// Parametri che usa il file jasper per
+											// connettersi!
+
+				JasperPrint jasperPrint;
+				FileInputStream fis;
+				BufferedInputStream bufferedInputStream;
+
+				try {
+
+					fis = new FileInputStream("Jasper Report/ReportRiepilogoCommesse.jasper");
+
+					bufferedInputStream = new BufferedInputStream(fis);
+
+					JasperReport jasperReport = (JasperReport) JRLoader
+							.loadObject(bufferedInputStream);
+
+					jasperPrint = JasperFillManager.fillReport(jasperReport,
+							parameters);
+
+					JasperExportManager.exportReportToPdfFile(jasperPrint,
+							"FileStorage/RiepilogoTotaliCommesse.pdf");
+
+				} catch (JRException e) {
+
+					e.printStackTrace();
+				}
+
+				tx.rollback();
+				session.close();
+				httpSession.setAttribute("result", stampato);//ritorno all'applicazione se è andata a buon fine o meno
+			}
+
+			else
+				httpSession.setAttribute("result", stampato);
 			
-			 
-			JasperExportManager.exportReportToPdfFile(jasperPrint, "FileStorage/RiepilogoTotali.pdf");
-			 
-		} catch (JRException e) {
 			
-			e.printStackTrace();
 		}
-		
-		
-		
-		tx.rollback();
-		session.close();
 	}
-	
 }

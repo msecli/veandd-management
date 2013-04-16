@@ -3851,8 +3851,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						}
 					}	
 					
-					listaIntervalliC.clear();
-									
+					listaIntervalliC.clear();							
 			}
 			
 			//elaboro un record per i totali per ogni commessa

@@ -14,6 +14,8 @@
  *******************************************************************************/
 package gestione.pack.server;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -45,8 +47,7 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 	    persistentBeanManager.setPersistenceUtil(gileadHibernateUtil);
 	    persistentBeanManager.setProxyStore(new StatelessProxyStore());
 
-	    setBeanManager(persistentBeanManager);
-		
+	    setBeanManager(persistentBeanManager);	
 	}
 	
 
@@ -68,8 +69,7 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 	    else 
 	    {
 	        return "";
-	    }
-		
+	    }		
 	}
 	
 	public String getRuolo() throws IllegalArgumentException{
@@ -136,12 +136,34 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 
 	@Override
 	public boolean setDataInSession(String mese) {
-		 HttpServletRequest request = this.getThreadLocalRequest();
-	   	 HttpSession httpSession = request.getSession();
-	   	   
-	   	 httpSession.setAttribute("mese", mese);
-	   	 
-		return true;
+		try {
+			 HttpServletRequest request = this.getThreadLocalRequest();
+		   	 HttpSession httpSession = request.getSession();
+		   	   
+		   	 httpSession.setAttribute("mese", mese);
+		   	 httpSession.setAttribute("username", "");
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		} 		
+	}
+
+
+	@Override
+	public boolean setDataInSession(String dataRif, String username) {
+		try {
+			 HttpServletRequest request = this.getThreadLocalRequest();
+		   	 HttpSession httpSession = request.getSession();
+		   	   
+		   	 httpSession.setAttribute("mese", dataRif);
+		   	 httpSession.setAttribute("username", username);
+		   	 
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		} 
 	}
 	
 }
