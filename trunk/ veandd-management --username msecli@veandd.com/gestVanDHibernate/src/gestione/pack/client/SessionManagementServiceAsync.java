@@ -16,4 +16,7 @@ public interface SessionManagementServiceAsync {
 
 	void setDataInSession(String mese, AsyncCallback<Boolean> asyncCallback);
 
+	void setDataInSession(String dataRif, String username,
+			AsyncCallback<Boolean> asyncCallback);
+
 }
