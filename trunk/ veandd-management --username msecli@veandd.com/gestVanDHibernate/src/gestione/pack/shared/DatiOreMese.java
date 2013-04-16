@@ -4,13 +4,7 @@ import javax.persistence.*;
 
 import net.sf.gilead.pojo.gwt.LightEntity;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
-
-import java.util.Date;
-import java.util.Set;
 
 
 /**
