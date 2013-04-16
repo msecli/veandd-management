@@ -1,7 +1,12 @@
 package gestione.pack.server;
 
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
+import gestione.pack.client.model.RiepilogoOreDipCommesseGiornaliero;
+import gestione.pack.shared.AssociazionePtoA;
+import gestione.pack.shared.Commessa;
 import gestione.pack.shared.DatiOreMese;
+import gestione.pack.shared.DatiRiepilogoMensileCommesse;
+import gestione.pack.shared.DettaglioIntervalliCommesse;
 import gestione.pack.shared.DettaglioOreGiornaliere;
 
 import gestione.pack.shared.FoglioOreMese;
@@ -550,7 +555,7 @@ public class ServerUtility {
 	
 	
 	@SuppressWarnings("unchecked")
-	public static Boolean PrintRiepilogoOreMese(Date dataRif){
+	public static Boolean PrintRiepilogoOreMese(String dataRif){
 		List<RiepilogoFoglioOreModel> listaGiorni= new ArrayList<RiepilogoFoglioOreModel>();
 		List<DettaglioOreGiornaliere> listaDettGiorno= new ArrayList<DettaglioOreGiornaliere>();
 		List<FoglioOreMese> listaMesi=new ArrayList<FoglioOreMese>();
@@ -560,7 +565,17 @@ public class ServerUtility {
 		
 		List<DatiOreMese> listaDatiMese= new ArrayList<DatiOreMese>();
 		Boolean exportOk= false;
-				
+		
+		String sumTotGiorno="0.00";
+		String sumOreViaggio="0.00";
+		String sumDeltaOreViaggio="0.00";
+		String sumOreTotali="0.00";
+		String sumOreRecupero="0.00";
+		String sumOreFerie="0.00";
+		String sumOrePermesso="0.00";
+		String sumOreStraordinario="0.00";
+		
+		/*		
 		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
 		String anno=formatter.format(dataRif);
 		formatter = new SimpleDateFormat("MMM", Locale.ITALIAN);
@@ -568,7 +583,7 @@ public class ServerUtility {
 	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
 	    
 		String data=(mese+anno);
-		
+		*/
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
 		
@@ -583,12 +598,8 @@ public class ServerUtility {
 								
 				listaMesi.addAll(p.getFoglioOreMeses());
 				for(FoglioOreMese f:listaMesi){
-					if(f.getMeseRiferimento().compareTo(data)==0){
+					if(f.getMeseRiferimento().compareTo(dataRif)==0){
 						
-						/*datoG= new DatiOreMese();		  
-						datoG.setUsername(p.getCognome()+" "+p.getNome()); //riga con solo l'username
-						listaDatiMese.add(datoG);
-						*/
 						listaDettGiorno.addAll(f.getDettaglioOreGiornalieres());
 						Collections.sort(listaDettGiorno, new Comparator<DettaglioOreGiornaliere>(){
 							  public int compare(DettaglioOreGiornaliere s1, DettaglioOreGiornaliere s2) {
@@ -599,7 +610,7 @@ public class ServerUtility {
 					}
 				}
 				
-				//caricare la lista con tutti i giorni di tutti i dipendenti: la prima riga di ogni dipendente deve essere solo con l'username, l'ultima con il totale, poi due vuote
+				//caricare la lista con tutti i giorni di tutti i dipendenti: l'ultima con il totale
 				
 				for(DettaglioOreGiornaliere d:listaDettGiorno){
 					
@@ -608,7 +619,7 @@ public class ServerUtility {
 					String day=new String();
 					String oreTotali= "0.00";
 					
-					formatter = new SimpleDateFormat("dd-MMM-yyyy",Locale.ITALIAN);
+					DateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy",Locale.ITALIAN);
 					day=formatter.format(d.getGiornoRiferimento());
 					
 					if(d.getOreViaggio().compareTo("0.00")!=0){
@@ -648,18 +659,59 @@ public class ServerUtility {
 					datoG.setNoteAggiuntive(d.getNoteAggiuntive());
 					
 					listaDatiMese.add(datoG);
+					
+					sumTotGiorno=ServerUtility.aggiornaTotGenerale(sumTotGiorno,d.getTotaleOreGiorno());
+					sumOreViaggio=ServerUtility.aggiornaTotGenerale(sumOreViaggio, d.getOreViaggio());
+					sumDeltaOreViaggio=ServerUtility.aggiornaTotGenerale(sumDeltaOreViaggio, d.getDeltaOreViaggio());
+					sumOreTotali=ServerUtility.aggiornaTotGenerale(sumOreTotali, oreTotali);
+					sumOreRecupero=ServerUtility.aggiornaTotGenerale(sumOreRecupero, d.getOreAssenzeRecupero());
+					sumOreFerie=ServerUtility.aggiornaTotGenerale(sumOreFerie, d.getOreFerie());
+					sumOrePermesso=ServerUtility.aggiornaTotGenerale(sumOrePermesso, d.getOrePermesso());
+					sumOreStraordinario=ServerUtility.aggiornaTotGenerale(sumOreStraordinario, d.getOreStraordinario());
+					
 				}
+						
+				datoG=new DatiOreMese();
+				datoG.setUsername(p.getCognome()+" "+p.getNome());
+				datoG.setGiornoRiferimento("TOTALE");
+				datoG.setTotGiorno(sumTotGiorno);
+				datoG.setOreViaggio(sumOreViaggio);
+				datoG.setDeltaOreViaggio(sumDeltaOreViaggio);
+				datoG.setOreTotali(sumOreTotali);
+				datoG.setOreFerie(sumOreFerie);
+				datoG.setOrePermesso(sumOreFerie);
+				datoG.setOreRecupero(sumOreRecupero);
+				datoG.setOreStraordinario(sumOreStraordinario);
+				datoG.setGiustificativo("");
+				datoG.setNoteAggiuntive("");
+				listaDatiMese.add(datoG);
+				
+				//resetto a 0 il necessario
 				listaDettGiorno.clear();
 				listaMesi.clear();
+				
+				sumTotGiorno="0.00";
+				sumOreViaggio="0.00";
+				sumDeltaOreViaggio="0.00";
+				sumOreTotali="0.00";
+				sumOreRecupero="0.00";
+				sumOreFerie="0.00";
+				sumOrePermesso="0.00";
+				sumOreStraordinario="0.00";
 								
 			}
 		 }
 		  
+		  session.createSQLQuery("truncate datioremese").executeUpdate();
+		    
 		  tx.commit();
+		  		  
+		  exportOk=exportListaDatiOreMese(listaDatiMese);
 		  
-		  exportOk=exportListaDatiCommesse(listaDatiMese);
-		  
-		  return true;
+		  if(exportOk)
+			  return true;
+		  else 
+			  return false;
 				 
 		} catch (Exception e) {
 			if (tx != null)
@@ -672,18 +724,22 @@ public class ServerUtility {
 			
 	}
 
-	private static Boolean exportListaDatiCommesse(List<DatiOreMese> listaDatiMese) {
+	private static Boolean exportListaDatiOreMese(List<DatiOreMese> listaDatiMese) {
 				
+		Boolean saveRecordOK=true;
+		
 		for(DatiOreMese d: listaDatiMese){
 			
-			saveDateG(d);		
+			saveRecordOK=saveDateG(d);		
 		}
 		
-				
-		return true;	
+		if(saveRecordOK)		
+			return true;
+		else
+			return false;
 	}
 
-	private static void saveDateG(DatiOreMese d) {
+	private static Boolean saveDateG(DatiOreMese d) {
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
 		
@@ -692,14 +748,193 @@ public class ServerUtility {
 			
 			session.save(d);
 			tx.commit();
+			return true;
 			
 		} catch (Exception e) {
 			if (tx != null)
 				tx.rollback();
 			e.printStackTrace();
+			return false;
 		}finally{
 			session.close();
 		}		
 	}
+	
+	
+	
+	public static Boolean getRiepilogoGiornalieroCommesse(
+			String username, String data) throws IllegalArgumentException {
+		
+		List<DatiRiepilogoMensileCommesse> listaG= new ArrayList<DatiRiepilogoMensileCommesse>();
+		List<FoglioOreMese> listaF= new ArrayList<FoglioOreMese>();
+		List<DettaglioOreGiornaliere> listaD= new ArrayList<DettaglioOreGiornaliere>();
+		List<DettaglioIntervalliCommesse> listaIntervalliC= new ArrayList<DettaglioIntervalliCommesse>();
+		List<AssociazionePtoA> listaAssociazioniPA= new ArrayList<AssociazionePtoA>();
+		
+		FoglioOreMese fM=new FoglioOreMese();
+		Personale p= new Personale();
+		Commessa c= new Commessa();
+		
+		String totaleOreLavoroC= "0.00";
+		String totaleOreViaggioC= "0.00";
+		String totaleOreC= "0.00";
+				
+		Date giorno= new Date();  
+		String dipendente= new String();
+		
+		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
+		/*String anno=formatter.format(meseRiferimento);
+		formatter = new SimpleDateFormat("MMM",Locale.ITALIAN);
+		String mese=formatter.format(meseRiferimento);
+	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
+		
+	    String data=mese+anno;
+	    */
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {
+			
+			tx=session.beginTransaction();
+			p=(Personale)session.createQuery("from Personale where username=:username").setParameter("username", username).uniqueResult();
+			
+			dipendente= p.getCognome()+" "+p.getNome();
+			
+			listaF.addAll(p.getFoglioOreMeses());
+			listaAssociazioniPA.addAll(p.getAssociazionePtoas());
+			
+			for(FoglioOreMese f:listaF){//scorro i mesi per trovare il foglio ore desiderato
+				if(f.getMeseRiferimento().compareTo(data)==0){
+					fM=f;
+					break;
+				}
+			}
+			
+			listaD.addAll(fM.getDettaglioOreGiornalieres()); //prendo tutti i giorni del mese
+			
+						
+			for(DettaglioOreGiornaliere d: listaD ){//scorro i giorni del mese e calcolo il totale ore per ogni commessa selezionata
+					giorno= d.getGiornoRiferimento();
+					formatter = new SimpleDateFormat("dd-MMM-yyy",Locale.ITALIAN) ; 
+					String giornoF=formatter.format(giorno);
+					
+					if(!d.getDettaglioIntervalliCommesses().isEmpty())
+						listaIntervalliC.addAll(d.getDettaglioIntervalliCommesses());
+								
+					for(DettaglioIntervalliCommesse dett:listaIntervalliC){
+						
+						if(Float.valueOf(ServerUtility.aggiornaTotGenerale(dett.getOreLavorate(),  dett.getOreViaggio()))>0){
+							DatiRiepilogoMensileCommesse riep= new DatiRiepilogoMensileCommesse();
+						
+							riep.setDataRiferimento(data);
+							riep.setUsername(username);
+							riep.setGiorno(giornoF);
+							riep.setNumeroCommessa(dett.getNumeroCommessa()+"."+dett.getEstensioneCommessa());
+							riep.setOreLavoro(dett.getOreLavorate());
+							riep.setOreViaggio(dett.getOreViaggio());
+							riep.setOreTotali(aggiornaTotGenerale(dett.getOreLavorate(), dett.getOreViaggio()));
+							
+							listaG.add(riep);							
+						}
+					}					
+					listaIntervalliC.clear();							
+			}
+			
+			//elaboro un record per i totali per ogni commessa
+			for(AssociazionePtoA ass:listaAssociazioniPA){
+				String commessa= ass.getAttivita().getCommessa().getNumeroCommessa() +"."+ ass.getAttivita().getCommessa().getEstensione();
+				
+				for(DatiRiepilogoMensileCommesse g:listaG){
+					if(g.getNumeroCommessa().compareTo(commessa)==0){
+						String oreLavoro=String.valueOf(g.getOreLavoro());
+						String oreViaggio=String.valueOf(g.getOreViaggio());
+						String oreTotali=String.valueOf(g.getOreTotali());
+						
+						if(oreLavoro.substring(oreLavoro.indexOf(".")+1, oreLavoro.length()).length()==1)
+							oreLavoro=oreLavoro+"0";
+						if(oreViaggio.substring(oreViaggio.indexOf(".")+1, oreViaggio.length()).length()==1)
+							oreViaggio=oreViaggio+"0";
+						if(oreTotali.substring(oreTotali.indexOf(".")+1, oreTotali.length()).length()==1)
+							oreTotali=oreTotali+"0";
+						
+						totaleOreLavoroC= ServerUtility.aggiornaTotGenerale(totaleOreLavoroC, oreLavoro);
+						totaleOreViaggioC= ServerUtility.aggiornaTotGenerale(totaleOreViaggioC, oreViaggio);
+						totaleOreC=ServerUtility.aggiornaTotGenerale(totaleOreC, oreTotali);
+					}
+				}
+				
+				DatiRiepilogoMensileCommesse riep= new DatiRiepilogoMensileCommesse();
+						
+				riep.setDataRiferimento(data);
+				riep.setUsername(username);
+				riep.setGiorno("TOTALE");
+				riep.setNumeroCommessa(commessa);
+				riep.setOreLavoro(totaleOreLavoroC);
+				riep.setOreViaggio(totaleOreViaggioC);
+				riep.setOreTotali(totaleOreC);
+				
+				listaG.add(riep);
+				
+				totaleOreLavoroC= "0.00";
+				totaleOreViaggioC= "0.00";
+				totaleOreC= "0.00";
+			}
+			
+			//TODO eliminare dalla tabella i record presenti per username e periodo indicato
+			session.createSQLQuery("truncate dati_riepilogomensile_commesse").executeUpdate();
+			tx.commit();
+			
+			Boolean exportOK=exportListaDatiCommesse(listaG);
+			if(exportOK)	
+				return true;
+			else
+				return false;
+			
+		} catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return null;
+		}finally{
+			session.close();
+		}
+	}
+	
+	private static Boolean exportListaDatiCommesse(List<DatiRiepilogoMensileCommesse> listaDatiMese) {
+		
+		Boolean saveRecordOK=true;
+		
+		for(DatiRiepilogoMensileCommesse d: listaDatiMese){
+			
+			saveRecordOK=saveDateC(d);		
+		}
+		
+		if(saveRecordOK)		
+			return true;
+		else
+			return false;
+	}
+
+	private static Boolean saveDateC(DatiRiepilogoMensileCommesse d) {
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {
+			tx = session.beginTransaction();
+			
+			session.save(d);
+			tx.commit();
+			return true;
+			
+		} catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return false;
+		}finally{
+			session.close();
+		}		
+	}
+	
 }
 
