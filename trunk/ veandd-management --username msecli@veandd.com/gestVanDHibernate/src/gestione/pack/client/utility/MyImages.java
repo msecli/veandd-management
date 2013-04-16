@@ -40,4 +40,7 @@ public interface MyImages extends ClientBundle{
 	
 	@Source("Icone/riep_comm.png")
 	ImageResource riep_comm();
+	
+	@Source("Icone/printer64x64.png")
+	ImageResource printBig();
 }

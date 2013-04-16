@@ -357,6 +357,38 @@ public class ClientUtility {
 		return mese;
 	}
 	
+	public static String traduciMeseToIt(String month){
+		String mese=new String();
+		
+		if(month.compareTo("Jan") ==0)
+			month="Gen";
+		if(month.compareTo("Feb") ==0)
+			month="Feb";
+		if(month.compareTo("Mar") ==0)
+			month="Mar";
+		if(month.compareTo("Apr") ==0)
+			month="Apr";
+		if(month.compareTo("May") ==0)
+			month="Mag";
+		if(month.compareTo("Jun") ==0)
+			month="Giu";
+		if(month.compareTo("Jul") ==0)
+			month="Lug";
+		if(month.compareTo("Aug") ==0)
+			month="Ago";
+		if(month.compareTo("Sep") ==0)
+			month="Set";
+		if(month.compareTo("Oct") ==0)
+			month="Ott";
+		if(month.compareTo("Nov") ==0)
+			month="Nov";
+		if(month.compareTo("Dec") ==0)
+			month="Dic";
+		
+		return month;
+	}
+	
+	
 	public static String arrotondaIntervallo(String intervallo, String movimento){
 		String arrotondato=new String();
 		String minuti=intervallo.substring(intervallo.indexOf(":")+1, intervallo.length());
