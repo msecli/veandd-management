@@ -9,6 +9,7 @@ import gestione.pack.client.utility.ConstantiMSG;
 import gestione.pack.client.utility.MyImages;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.util.Margins;
@@ -333,9 +334,12 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    btnLoadTimbrature.setWidth("100%");
 	    cp.add(btnLoadTimbrature);
 	        
-	    	    
-	    //--------------------------------PROVA PRINT//TODO
-	    Button btnPrintRiepilogo = new Button("Stampa");
+	 
+	    Button btnPrintRiepilogo = new Button();
+	    btnPrintRiepilogo.setToolTip("Stampa");
+	    btnPrintRiepilogo.setHeight(64);
+	    btnPrintRiepilogo.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.printBig()));
+	    btnPrintRiepilogo.setIconAlign(IconAlign.BOTTOM);
 	    btnPrintRiepilogo.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	          center.removeAll();
@@ -344,24 +348,10 @@ public class BodyLayout_Administration extends LayoutContainer {
 	      });
 	    btnPrintRiepilogo.setWidth("100%");
 	    cp.add(btnPrintRiepilogo);
+	    
+	    
 	    panel.add(cp);
-	   /* 
-	    com.google.gwt.user.client.ui.Button btnPrint = new com.google.gwt.user.client.ui.Button("Stampa");
-	    
-	    btnPrint.addClickHandler(new SubmitClickHandler());    
-	    
-    	//fp.setEncoding(FormPanel.ENCODING_MULTIPART);
-	    fp.setMethod(FormPanel.METHOD_POST);
-	    fp.setAction(url);
-	    fp.addSubmitCompleteHandler(new FormSubmitCompleteHandler());  
-	    fp.add(btnPrint);
-	    
-	    btnPrint.setWidth("100%");
-	    cp.add(fp);     	    
-	    panel.add(cp);
-	    */
-	    //-------------------------------------   	    
-	    
+	      
 	    
 	    cp = new ContentPanel();
 	    cp.setAnimCollapse(false);
