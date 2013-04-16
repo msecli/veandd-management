@@ -1,24 +1,23 @@
 package gestione.pack.client.layout.panel;
 
 import gestione.pack.client.AdministrationService;
-import gestione.pack.client.model.RiepilogoCommesseGiornalieroModel;
-import gestione.pack.client.model.RiepilogoFoglioOreModel;
+import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.model.RiepilogoOreDipCommesseGiornaliero;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.MyImages;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Locale;
+
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.js.JsonConverter;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -34,22 +33,18 @@ import com.extjs.gxt.ui.client.widget.grid.GroupSummaryView;
 import com.extjs.gxt.ui.client.widget.grid.SummaryColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
-import com.extjs.gxt.ui.client.widget.grid.SummaryRenderer;
-import com.extjs.gxt.ui.client.widget.grid.SummaryType;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-import com.google.gwt.http.client.Request;
-import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.RequestException;
-import com.google.gwt.http.client.Response;
 import com.google.gwt.i18n.client.NumberFormat;
 
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 
 public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{	
 	
@@ -60,6 +55,9 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	private String tLavoratore= new String();
 	private Date data;
 	private Button btnPrint= new Button();
+	
+	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
+	private static String url= "/gestvandhibernate/PrintDataServlet";
 	
 	public PanelRiepilogoGiornalieroCommesse(String user, Date dataRiferimento){
 		username=user;
@@ -85,8 +83,45 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	  	  	
 	  	btnPrint.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.print()));
 		btnPrint.setToolTip("Stampa");
-			  	
-		//btnBarPrint.add(btnPrint);
+		btnPrint.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				
+				
+				String dataRif=data.toString();
+				String mese=dataRif.substring(4, 7);
+				
+				String anno=dataRif.substring(dataRif.length()-4,dataRif.length());
+			    
+				mese=ClientUtility.traduciMeseToIt(mese);
+				
+			    dataRif=mese+anno;
+			    
+				SessionManagementService.Util.getInstance().setDataInSession(dataRif, username, new AsyncCallback<Boolean>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Window.alert("Error on setDataInSession()");					
+					}
+
+					@Override
+					public void onSuccess(Boolean result) {
+						if(result)
+							fp.submit();
+						else
+							Window.alert("Problemi durante il settaggio dei parametri in Sessione (http)");
+					}
+				});					
+			}	
+		});		
+		//TODO probabilmente non parte la submit del form
+		fp.setMethod(FormPanel.METHOD_POST);
+	    fp.setAction(url);
+	    fp.addSubmitCompleteHandler(new FormSubmitCompleteHandler());  
+	   
+		
+		btnBarPrint.add(btnPrint);
 		
 		ContentPanel cntpnlGrid= new ContentPanel();
 		cntpnlGrid.setBodyBorder(false);         
@@ -242,9 +277,21 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 			}			
 		});
 	       
-	    configs.add(columnOreTotali); 
-		
+	    configs.add(columnOreTotali); 		
 		return configs;
 	}
 
+	
+	private class FormSubmitCompleteHandler implements SubmitCompleteHandler {
+
+		@Override
+		public void onSubmitComplete(final SubmitCompleteEvent event) {
+			//Accedere alla sessione per verificare l'username e aprire il file giusto
+			if(event.getResults().isEmpty())
+				Window.alert("Errore durante la creazione del file!");
+			else{					
+				Window.open("FileStorage/RiepilogoTotali.pdf", "_blank", "1");		
+			}
+		}
+	}
 }

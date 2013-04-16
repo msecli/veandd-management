@@ -2,22 +2,29 @@ package gestione.pack.client.layout.panel;
 
 
 import gestione.pack.client.SessionManagementService;
+import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
 import gestione.pack.client.utility.DatiComboBox;
+import gestione.pack.client.utility.MyImages;
 
+import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
@@ -46,9 +53,14 @@ public class PanelPrintAll extends LayoutContainer {
 		bodyContainer.setBorders(false);
 	    
 	    ContentPanel cp= new ContentPanel();
+	    cp.setLayout(new RowLayout(Orientation.HORIZONTAL));
 	    cp.setHeading("Stampa del riepilogo ore di tutti i Dipendenti");
-	    cp.setSize(300, 200);
-		
+	    cp.setFrame(true);
+	    cp.setSize(500, 80);
+	    		
+	    HorizontalPanel vp= new HorizontalPanel();
+	    vp.setSpacing(6);
+	    
 	    smplcmbxMese.setFieldLabel("Mese");
 		smplcmbxMese.setName("mese");
 		smplcmbxMese.setEmptyText("Mese..");
@@ -56,7 +68,7 @@ public class PanelPrintAll extends LayoutContainer {
 		 for(String l : DatiComboBox.getMese()){
 			 smplcmbxMese.add(l);}
 		smplcmbxMese.setTriggerAction(TriggerAction.ALL);
-
+		
 		smplcmbxAnno.setFieldLabel("Anno");
 		smplcmbxAnno.setName("anno");
 		smplcmbxAnno.setWidth(75);
@@ -65,12 +77,9 @@ public class PanelPrintAll extends LayoutContainer {
 		 for(String l : DatiComboBox.getAnno()){
 			 smplcmbxAnno.add(l);}
 		smplcmbxAnno.setTriggerAction(TriggerAction.ALL);
-	    
-		cp.add(smplcmbxAnno);
-		cp.add(smplcmbxMese);
-		
+	    		
 	    com.google.gwt.user.client.ui.Button btnPrint = new com.google.gwt.user.client.ui.Button("Stampa");
-	    
+	    btnPrint.setSize("55px","25px");	   
 	    btnPrint.addClickHandler(new SubmitClickHandler());    
 	    
     	//fp.setEncoding(FormPanel.ENCODING_MULTIPART);
@@ -80,8 +89,13 @@ public class PanelPrintAll extends LayoutContainer {
 	    fp.add(btnPrint);
 	    
 	    btnPrint.setWidth("100%");
-	    cp.add(fp);     	    
-	  	    
+	    
+	    vp.add(smplcmbxAnno);
+	  	vp.add(smplcmbxMese);
+	  	vp.add(fp);
+	  	
+	  	cp.add(vp);
+	    
 	    bodyContainer.add(cp);    
 		
 		layoutContainer.add(bodyContainer, new FitData(5, 5, 5, 8));
@@ -96,17 +110,8 @@ public class PanelPrintAll extends LayoutContainer {
 			
 			if(event.getResults().isEmpty())
 				Window.alert("Errore durante la creazione del file!");
-			else{
-				/*final Dialog d= new Dialog();
-				d.setSize(250, 150);
-				d.setButtons("");
-				d.setStyleAttribute("margin", "10");
-				d.setUrl(ConstantiMSG.URLDownloadFileRiepilogoOre);
-				
-				d.show();*/
-				
-				Window.open("FileStorage/RiepilogoTotali.pdf", "_blank", "1");
-				
+			else{					
+				Window.open("FileStorage/RiepilogoTotali.pdf", "_blank", "1");		
 			}
 		}
 	}
@@ -115,21 +120,31 @@ public class PanelPrintAll extends LayoutContainer {
 
 		@Override
 		public void onClick(final ClickEvent event) {
-			String mese="Mar2013";
-			SessionManagementService.Util.getInstance().setDataInSession(mese, new AsyncCallback<Boolean>() {
+			
+			String data= new String();
+			String anno=smplcmbxAnno.getRawValue().toString();
+			String meseCorrente=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
+			data=meseCorrente+anno;
+			
+			if(smplcmbxAnno.isValid()&&smplcmbxMese.isValid())
+			SessionManagementService.Util.getInstance().setDataInSession(data, new AsyncCallback<Boolean>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
-					// TODO Auto-generated method stub
-					
+					Window.alert("Error on setDataInSession()");					
 				}
 
 				@Override
 				public void onSuccess(Boolean result) {
-					fp.submit();
-					
+					if(result)
+						fp.submit();
+					else
+						Window.alert("Problemi durante il settaggio dei parametri in Sessione (http)");
 				}
 			});		
+			
+			else 
+				Window.alert("Controllare i dati inseriti!");
 		}
 	}
 	
