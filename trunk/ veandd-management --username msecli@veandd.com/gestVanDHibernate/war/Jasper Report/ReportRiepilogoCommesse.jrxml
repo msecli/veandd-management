@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version last-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReportRiepilogoCommesse" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ece14834-d507-40df-890c-686d2feea118">
+	<import value="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<queryString language="hql">
+		<![CDATA[from DatiRiepilogoMensileCommesse]]>
+	</queryString>
+	<field name="username" class="java.lang.String">
+		<fieldDescription><![CDATA[username]]></fieldDescription>
+	</field>
+	<field name="numeroCommessa" class="java.lang.String">
+		<fieldDescription><![CDATA[numeroCommessa]]></fieldDescription>
+	</field>
+	<field name="giorno" class="java.lang.String">
+		<fieldDescription><![CDATA[giorno]]></fieldDescription>
+	</field>
+	<field name="oreLavoro" class="java.lang.String">
+		<fieldDescription><![CDATA[oreLavoro]]></fieldDescription>
+	</field>
+	<field name="oreViaggio" class="java.lang.String">
+		<fieldDescription><![CDATA[oreViaggio]]></fieldDescription>
+	</field>
+	<field name="oreTotali" class="java.lang.String">
+		<fieldDescription><![CDATA[oreTotali]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="40" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="8da5856b-8eae-4dfb-9b85-0af5a7092746" x="13" y="4" width="80" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Username]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="29a82117-28de-4db0-a1f0-2b849b50049d" x="531" y="4" width="47" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Commessa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="103662c1-8eee-4ada-bfe2-aaf61d8eaeb9" x="119" y="4" width="65" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Giorno]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="cf2f7f31-fe05-447c-ab24-dc0f99e6e456" x="190" y="4" width="55" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ore Lavoro]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="490d3580-bc84-4417-99e6-f8615693b03b" x="320" y="4" width="69" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ore Viaggio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="25ac9351-d092-498a-b0c3-ecef214516ef" x="401" y="4" width="66" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Totale Ore]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="25" splitType="Stretch">
+			<textField>
+				<reportElement uuid="349a855c-03a9-4210-a5ee-7b15844fcada" isPrintRepeatedValues="false" x="13" y="2" width="100" height="16"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{username}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a35ed355-f9a4-4c3f-a856-c7ffb4cc96e2" isPrintRepeatedValues="false" x="120" y="3" width="64" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{numeroCommessa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5b4e0e90-7d99-4db1-b69f-548def9eaa0e" x="190" y="3" width="54" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{giorno}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a4ac310a-016e-4cef-b6c0-a1723e310718" x="320" y="3" width="59" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{oreLavoro}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a4ca9e72-faa9-4eac-9cce-fb76ea1bea4e" x="400" y="3" width="56" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{oreViaggio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="51bc487e-83db-4c53-9f63-3225dc341d84" x="470" y="3" width="55" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{oreTotali}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
