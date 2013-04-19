@@ -32,15 +32,10 @@ import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 
 
 public class BodyLayout_Administration extends LayoutContainer {
@@ -53,10 +48,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	private int w=Window.getClientWidth();
 	private int h=Window.getClientHeight();
 	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
-    	
-	private static String url= "/gestvandhibernate/PrintDataServlet";
-	
-	
+  	
 	public BodyLayout_Administration() {
 		setBorders(false);	
 		
@@ -73,6 +65,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 		viewport.setBorders(false);
 		container.setLayout(layout);
 		container.setBorders(false);
+		
 /*
 		viewport.setStyleAttribute("margin-left", "-5px");
 		viewport.setStyleAttribute("margin-top", "-5px");
@@ -304,7 +297,11 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        	center.layout(true);               
             }
         });
-	    Button btnGestionePresenze = new Button("Foglio Ore");
+	    Button btnGestionePresenze = new Button();
+	    btnGestionePresenze.setToolTip("Rilevazione Presenze");
+	    btnGestionePresenze.setHeight(65);
+	    btnGestionePresenze.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.presenze()));
+	    btnGestionePresenze.setIconAlign(IconAlign.BOTTOM);
 	    btnGestionePresenze.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	          center.removeAll();
@@ -314,7 +311,11 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    btnGestionePresenze.setWidth("100%");
 	    cp.add(btnGestionePresenze);
 	    
-	    Button btnPresenzeDipendenti = new Button("Foglio Ore Dipendenti");
+	    Button btnPresenzeDipendenti = new Button();
+	    btnPresenzeDipendenti.setToolTip("Rilevazione Presenze Dipendenti");
+	    btnPresenzeDipendenti.setHeight(65);
+	    btnPresenzeDipendenti.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.presenzeDip()));
+	    btnPresenzeDipendenti.setIconAlign(IconAlign.BOTTOM);
 	    btnPresenzeDipendenti.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	          center.removeAll();
@@ -324,7 +325,11 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    btnPresenzeDipendenti.setWidth("100%");
 	    cp.add(btnPresenzeDipendenti);
 	    
-	    Button btnLoadTimbrature = new Button("Load File");
+	    Button btnLoadTimbrature = new Button();
+	    btnLoadTimbrature.setToolTip("Upload Timbrature");
+	    btnLoadTimbrature.setHeight(64);
+	    btnLoadTimbrature.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.upload()));
+	    btnLoadTimbrature.setIconAlign(IconAlign.BOTTOM);
 	    btnLoadTimbrature.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	          center.removeAll();
@@ -337,7 +342,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	 
 	    Button btnPrintRiepilogo = new Button();
 	    btnPrintRiepilogo.setToolTip("Stampa");
-	    btnPrintRiepilogo.setHeight(64);
+	    btnPrintRiepilogo.setHeight(65);
 	    btnPrintRiepilogo.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.printBig()));
 	    btnPrintRiepilogo.setIconAlign(IconAlign.BOTTOM);
 	    btnPrintRiepilogo.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -349,7 +354,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    btnPrintRiepilogo.setWidth("100%");
 	    cp.add(btnPrintRiepilogo);
 	    
-	    
+	    cp.setButtonAlign(HorizontalAlignment.CENTER);
 	    panel.add(cp);
 	      
 	    

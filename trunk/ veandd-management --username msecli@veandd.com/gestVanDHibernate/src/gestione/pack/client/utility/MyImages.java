@@ -41,6 +41,15 @@ public interface MyImages extends ClientBundle{
 	@Source("Icone/riep_comm.png")
 	ImageResource riep_comm();
 	
-	@Source("Icone/printer64x64.png")
+	@Source("Icone/printer1.png")
 	ImageResource printBig();
+	
+	@Source("Icone/upload3.png")
+	ImageResource upload();
+	
+	@Source("Icone/rilevPresenze64x64.png")
+	ImageResource presenze();
+	
+	@Source("Icone/rilevPresenzeDip.png")
+	ImageResource presenzeDip();
 }
