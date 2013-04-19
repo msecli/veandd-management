@@ -297,6 +297,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        	center.layout(true);               
             }
         });
+	    
 	    Button btnGestionePresenze = new Button();
 	    btnGestionePresenze.setToolTip("Rilevazione Presenze");
 	    btnGestionePresenze.setHeight(65);
@@ -338,8 +339,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	      });
 	    btnLoadTimbrature.setWidth("100%");
 	    cp.add(btnLoadTimbrature);
-	        
-	 
+	         
 	    Button btnPrintRiepilogo = new Button();
 	    btnPrintRiepilogo.setToolTip("Stampa");
 	    btnPrintRiepilogo.setHeight(65);
