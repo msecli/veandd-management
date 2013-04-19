@@ -1,11 +1,13 @@
 package gestione.pack.client.layout;
 
 import gestione.pack.client.SessionManagementService;
+import gestione.pack.client.layout.panel.PanelPrintAll;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
 import gestione.pack.client.utility.MyImages;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.util.Margins;
@@ -210,19 +212,39 @@ public class BodyLayout_GestionePersonale extends LayoutContainer {
 	        	center.layout(true);               
             }
         });
-	    Button btnGestionePresenze = new Button("Foglio Ore");
+	    
+	    cp = new ContentPanel();
+	    cp.setAnimCollapse(false);
+	    cp.setBodyStyleName("pad-text");
+	    cp.setHeading("Gestione Presenze");
+	    cp.setExpanded(true);
+	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent be) {
+            	center.removeAll();
+	        	center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb());
+	        	center.layout(true);               
+            }
+        });
+	    
+	    Button btnGestionePresenze = new Button();
+	    btnGestionePresenze.setToolTip("Rilevazione Presenze");
+	    btnGestionePresenze.setHeight(65);
+	    btnGestionePresenze.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.presenze()));
+	    btnGestionePresenze.setIconAlign(IconAlign.BOTTOM);
 	    btnGestionePresenze.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
-	        	center.removeAll();
+	          center.removeAll();
 	        	center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb());
-	        	center.layout(true);
-	        }      
-	    });
+	        	center.layout(true);}      
+	      });
 	    btnGestionePresenze.setWidth("100%");
 	    cp.add(btnGestionePresenze);
-	  
 	    
-	    Button btnPresenzeDipendenti = new Button("Foglio Ore Dipendenti");
+	    Button btnPresenzeDipendenti = new Button();
+	    btnPresenzeDipendenti.setToolTip("Rilevazione Presenze Dipendenti");
+	    btnPresenzeDipendenti.setHeight(65);
+	    btnPresenzeDipendenti.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.presenzeDip()));
+	    btnPresenzeDipendenti.setIconAlign(IconAlign.BOTTOM);
 	    btnPresenzeDipendenti.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	          center.removeAll();
@@ -232,7 +254,11 @@ public class BodyLayout_GestionePersonale extends LayoutContainer {
 	    btnPresenzeDipendenti.setWidth("100%");
 	    cp.add(btnPresenzeDipendenti);
 	    
-	    Button btnLoadTimbrature = new Button("Load File");
+	    Button btnLoadTimbrature = new Button();
+	    btnLoadTimbrature.setToolTip("Upload Timbrature");
+	    btnLoadTimbrature.setHeight(64);
+	    btnLoadTimbrature.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.upload()));
+	    btnLoadTimbrature.setIconAlign(IconAlign.BOTTOM);
 	    btnLoadTimbrature.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	          center.removeAll();
@@ -240,7 +266,21 @@ public class BodyLayout_GestionePersonale extends LayoutContainer {
 	        	center.layout(true);}      
 	      });
 	    btnLoadTimbrature.setWidth("100%");
-	    cp.add(btnLoadTimbrature);    
+	    cp.add(btnLoadTimbrature);
+	         
+	    Button btnPrintRiepilogo = new Button();
+	    btnPrintRiepilogo.setToolTip("Stampa");
+	    btnPrintRiepilogo.setHeight(65);
+	    btnPrintRiepilogo.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.printBig()));
+	    btnPrintRiepilogo.setIconAlign(IconAlign.BOTTOM);
+	    btnPrintRiepilogo.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	          center.removeAll();
+	        	center.add(new PanelPrintAll());
+	        	center.layout(true);}      
+	      });
+	    btnPrintRiepilogo.setWidth("100%");
+	    cp.add(btnPrintRiepilogo);    
 	    
 	    panel.add(cp);   
 	    
