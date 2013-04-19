@@ -6,13 +6,9 @@ import gestione.pack.client.model.RiepilogoOreDipCommesseGiornaliero;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.MyImages;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Scroll;
@@ -36,6 +32,8 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.NumberFormat;
 
 import com.google.gwt.user.client.Element;
@@ -56,6 +54,7 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	private Date data;
 	private Button btnPrint= new Button();
 	
+	 com.google.gwt.user.client.ui.Button btnPrint1 = new com.google.gwt.user.client.ui.Button("Stampa");
 	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
 	private static String url= "/gestvandhibernate/PrintDataServlet";
 	
@@ -78,9 +77,8 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	    LayoutContainer bodyContainer = new LayoutContainer();
 	    bodyContainer.setLayout(new FlowLayout());
 	  	bodyContainer.setBorders(false);
-	    
-	  	ButtonBar btnBarPrint= new ButtonBar();
-	  	  	
+	  	  	  	
+	  	//Button GXT
 	  	btnPrint.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.print()));
 		btnPrint.setToolTip("Stampa");
 		btnPrint.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -115,14 +113,12 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 				});					
 			}	
 		});		
-		//TODO probabilmente non parte la submit del form
+		
+		fp.add(btnPrint);
 		fp.setMethod(FormPanel.METHOD_POST);
 	    fp.setAction(url);
 	    fp.addSubmitCompleteHandler(new FormSubmitCompleteHandler());  
 	   
-		
-		btnBarPrint.add(btnPrint);
-		
 		ContentPanel cntpnlGrid= new ContentPanel();
 		cntpnlGrid.setBodyBorder(false);         
 		cntpnlGrid.setLayout(new FitLayout());  
@@ -153,16 +149,17 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	    gridRiepilogo.setBorders(false);  
 	    gridRiepilogo.setView(summary);  
 	    gridRiepilogo.getView().setShowDirtyCells(false);
-	    cntpnlGrid.add(gridRiepilogo);
-	    cntpnlGrid.setTopComponent(btnBarPrint);
 	    
+	    cntpnlGrid.add(gridRiepilogo);
+	    	    
 	    ContentPanel cntpnlLayout= new ContentPanel();
 		cntpnlLayout.setHeaderVisible(false);
 		cntpnlLayout.setCollapsible(false);
 		cntpnlLayout.setExpanded(true);
 		cntpnlLayout.setHeading("Riepilogo Giornaliero.");
-		cntpnlLayout.setSize(515, 510);
+		cntpnlLayout.setSize(515, 545);
 		cntpnlLayout.setFrame(true);
+		cntpnlLayout.add(fp);
 		cntpnlLayout.add(cntpnlGrid);
 	    
 		bodyContainer.add(cntpnlLayout);    
@@ -280,17 +277,22 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	    configs.add(columnOreTotali); 		
 		return configs;
 	}
-
 	
 	private class FormSubmitCompleteHandler implements SubmitCompleteHandler {
 
 		@Override
 		public void onSubmitComplete(final SubmitCompleteEvent event) {
-			//Accedere alla sessione per verificare l'username e aprire il file giusto
 			if(event.getResults().isEmpty())
 				Window.alert("Errore durante la creazione del file!");
-			else{					
-				Window.open("FileStorage/RiepilogoTotali.pdf", "_blank", "1");		
+			else{		
+				String nome=username.substring(0, username.indexOf("."));
+				nome=nome.substring(0, 1).toUpperCase()+nome.substring(1,nome.length());
+				
+				String cognome=username.substring(username.indexOf(".")+1, username.length());
+				cognome=cognome.substring(0, 1).toUpperCase()+cognome.substring(1,cognome.length());
+				
+				String nomeFile=cognome+nome+"_Report.pdf";
+				Window.open("FileStorage/RiepiloghiCommesse/"+nomeFile, "_blank", "1");		
 			}
 		}
 	}

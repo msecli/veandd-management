@@ -552,30 +552,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		return controllo;
 	}
 
-	//TODO prove per stampa probabilmente serve creare una jsp e una servlet che le invii i dati in modo da poter stampare la pagina web
-	public class dlgProva extends Dialog{
-		public dlgProva(){
-			
-			setSize(300, 300);
-			Html h= new Html();
-			String html = new String();
-			html=("<!DOCTYPE html>" +
-					"<html>" +
-					"<body>" +
-					"<p><b>This text is bold</b></p>" +
-					"<p><strong>This text is strong</strong></p>" +
-					"<p><i>This text is italic</i></p>" +
-					"<p><em>This text is emphasized</em></p>" +
-					"<p><code>This is computer output</code></p>" +
-					"<p>This is<sub> subscript</sub> and <sup>superscript</sup></p>" +
-					"</body>" +
-					"</html>");
-			h.setHtml(html);
-			add(h);
-			
-		}
-	}
-
+	
 	public class FldsetIntervalliIU extends FieldSet {
 						
 		private TextField<String> txtfld1I = new TextField<String>();

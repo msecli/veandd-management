@@ -74,7 +74,7 @@ public class CenterLayout_FileTimbrature extends LayoutContainer{
 	    horizontalPanel.setCellVerticalAlignment(submit, HasVerticalAlignment.ALIGN_MIDDLE);
 	    submit.setSize("60px", "25px");
 	    submit.setTitle("upload file");
-	      	    
+	    
 	    submit.addClickHandler(new SubmitClickHandler());
 
 	    form = new FormPanel();
@@ -88,10 +88,8 @@ public class CenterLayout_FileTimbrature extends LayoutContainer{
 	    cp.add(form);
 	    bodyContainer.add(cp);
 		
-		
 		layoutContainer.add(bodyContainer, new FitData(5, 5, 5, 8));
-		add(layoutContainer);
-		
+		add(layoutContainer);		
 	}
 
 	private class FormSubmitHandler implements SubmitHandler {
