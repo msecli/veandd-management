@@ -811,7 +811,11 @@ public class ServerUtility {
 			}
 			
 			listaD.addAll(fM.getDettaglioOreGiornalieres()); //prendo tutti i giorni del mese
-			
+			Collections.sort(listaD, new Comparator<DettaglioOreGiornaliere>(){
+				  public int compare(DettaglioOreGiornaliere s1, DettaglioOreGiornaliere s2) {
+					 return s1.getGiornoRiferimento().compareTo(s2.getGiornoRiferimento());
+				  }
+			});
 						
 			for(DettaglioOreGiornaliere d: listaD ){//scorro i giorni del mese e calcolo il totale ore per ogni commessa selezionata
 					giorno= d.getGiornoRiferimento();
@@ -865,25 +869,34 @@ public class ServerUtility {
 				
 				DatiRiepilogoMensileCommesse riep= new DatiRiepilogoMensileCommesse();
 						
-				riep.setDataRiferimento(data);
-				riep.setUsername(username);
-				riep.setGiorno("TOTALE");
-				riep.setNumeroCommessa(commessa);
-				riep.setOreLavoro(totaleOreLavoroC);
-				riep.setOreViaggio(totaleOreViaggioC);
-				riep.setOreTotali(totaleOreC);
+				if(totaleOreC.compareTo("0.00")!=0){
+					riep.setDataRiferimento(data);
+					riep.setUsername(username);
+					riep.setGiorno("TOTALE");
+					riep.setNumeroCommessa(commessa);
+					riep.setOreLavoro(totaleOreLavoroC);
+					riep.setOreViaggio(totaleOreViaggioC);
+					riep.setOreTotali(totaleOreC);
 				
-				listaG.add(riep);
+					listaG.add(riep);
+				}
+				
+				Collections.sort(listaG, new Comparator<DatiRiepilogoMensileCommesse>(){
+					  public int compare(DatiRiepilogoMensileCommesse s1, DatiRiepilogoMensileCommesse s2) {
+						 return s1.getNumeroCommessa().compareTo(s2.getNumeroCommessa());
+					  }
+				});
 				
 				totaleOreLavoroC= "0.00";
 				totaleOreViaggioC= "0.00";
 				totaleOreC= "0.00";
 			}
 			
-			//TODO eliminare dalla tabella i record presenti per username e periodo indicato
-			session.createSQLQuery("truncate dati_riepilogomensile_commesse").executeUpdate();
+			//eliminare dalla tabella i record presenti per username e periodo indicato(in modo tale da non creare duplicati)
+			session.createSQLQuery("delete from dati_riepilogomensile_commesse where username=:username and dataRiferimento=:dataRif")
+			.setParameter("username", username).setParameter("dataRif", data).executeUpdate();
 			tx.commit();
-			
+					
 			Boolean exportOK=exportListaDatiCommesse(listaG);
 			if(exportOK)	
 				return true;
