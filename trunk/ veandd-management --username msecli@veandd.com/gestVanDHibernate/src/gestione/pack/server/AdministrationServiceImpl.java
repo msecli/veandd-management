@@ -3090,8 +3090,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			for (Commessa c : listaCommesse) {
 								
 				if (c.getAttivitas().size() > 0)
-					listaAttivita.add(c.getAttivitas().iterator().next());
-				
+					listaAttivita.add(c.getAttivitas().iterator().next());	
 			}
 
 			for (Attivita a : listaAttivita) { // in questo caso la lista  Attivita rappresenta la lista di commesse associate al PM selezionato
