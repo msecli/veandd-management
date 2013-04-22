@@ -8,6 +8,7 @@ import gestione.pack.client.utility.ConstantiMSG;
 import gestione.pack.client.utility.MyImages;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.util.Margins;
@@ -187,7 +188,11 @@ public class BodyLayout_Direzione extends LayoutContainer {
             }
         });
 	    
-	    Button btnGestionePresenze = new Button("Foglio Ore");
+	    Button btnGestionePresenze = new Button();
+	    btnGestionePresenze.setToolTip("Rilevazione Presenze");
+	    btnGestionePresenze.setHeight(65);
+	    btnGestionePresenze.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.presenze()));
+	    btnGestionePresenze.setIconAlign(IconAlign.BOTTOM);
 	    btnGestionePresenze.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	          center.removeAll();
@@ -197,7 +202,11 @@ public class BodyLayout_Direzione extends LayoutContainer {
 	    btnGestionePresenze.setWidth("100%");
 	    cp.add(btnGestionePresenze);
 	    
-	    Button btnPresenzeDipendenti = new Button("Foglio Ore Dipendenti");
+	    Button btnPresenzeDipendenti = new Button();
+	    btnPresenzeDipendenti.setToolTip("Rilevazione Presenze Dipendenti");
+	    btnPresenzeDipendenti.setHeight(65);
+	    btnPresenzeDipendenti.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.presenzeDip()));
+	    btnPresenzeDipendenti.setIconAlign(IconAlign.BOTTOM);
 	    btnPresenzeDipendenti.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	          center.removeAll();
@@ -220,6 +229,7 @@ public class BodyLayout_Direzione extends LayoutContainer {
 	        	center.layout(true);               
             }
         });
+	    
 	    Button btnCommessa = new Button("Gestione Dati");
 	    btnCommessa.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {

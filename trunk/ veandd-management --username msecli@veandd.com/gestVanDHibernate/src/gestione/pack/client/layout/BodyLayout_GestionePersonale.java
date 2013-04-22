@@ -199,9 +199,10 @@ public class BodyLayout_GestionePersonale extends LayoutContainer {
 	    });
 	    btnAnagrP.setWidth("100%");
 	    cp.add(btnAnagrP);
+	    cp.setExpanded(false);
 	    panel.add(cp);
 	    
-	    cp = new ContentPanel();
+	 /*   cp = new ContentPanel();
 	    cp.setAnimCollapse(false);
 	    cp.setBodyStyleName("pad-text");
 	    cp.setHeading("Gestione Presenze");
@@ -211,13 +212,12 @@ public class BodyLayout_GestionePersonale extends LayoutContainer {
 	        	center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb());
 	        	center.layout(true);               
             }
-        });
+        });*/
 	    
 	    cp = new ContentPanel();
 	    cp.setAnimCollapse(false);
 	    cp.setBodyStyleName("pad-text");
 	    cp.setHeading("Gestione Presenze");
-	    cp.setExpanded(true);
 	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
             	center.removeAll();
@@ -281,7 +281,7 @@ public class BodyLayout_GestionePersonale extends LayoutContainer {
 	      });
 	    btnPrintRiepilogo.setWidth("100%");
 	    cp.add(btnPrintRiepilogo);    
-	    
+	    cp.setExpanded(true);
 	    panel.add(cp);   
 	    
 	    panel.setSize(180,Window.getClientHeight()-70);
