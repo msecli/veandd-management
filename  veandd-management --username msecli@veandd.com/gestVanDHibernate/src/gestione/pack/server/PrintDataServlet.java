@@ -1,6 +1,7 @@
 package gestione.pack.server;
 
 import gestione.pack.shared.DatiOreMese;
+import gestione.pack.shared.Personale;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -39,16 +40,18 @@ public class PrintDataServlet extends HttpServlet  {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		boolean stampato;
 		 
+		Personale p = new Personale();
 		HttpSession httpSession = request.getSession();
 
 		String dataRif = (String) httpSession.getAttribute("mese");
 		String username = (String) httpSession.getAttribute("username");
-
+		String sedeOperativa=(String) httpSession.getAttribute("sede");
+		
 		if (username.compareTo("") == 0) {// se non ha valore allora stampo il
 											// report del riepilogo giornaliero
 											// altrimenti quello delle commesse
 
-			stampato = ServerUtility.PrintRiepilogoOreMese(dataRif);
+			stampato = ServerUtility.PrintRiepilogoOreMese(dataRif, sedeOperativa);
 
 			if (stampato) {
 				List<DatiOreMese> lista = new ArrayList<DatiOreMese>();
@@ -62,7 +65,7 @@ public class PrintDataServlet extends HttpServlet  {
 				parameters.put(JRHibernateQueryExecuterFactory.PARAMETER_HIBERNATE_SESSION,
 								session);// Parametri che usa il file jasper per
 											// connettersi!
-
+				
 				JasperPrint jasperPrint;
 				FileInputStream fis;
 				BufferedInputStream bufferedInputStream;

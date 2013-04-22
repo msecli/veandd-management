@@ -36,6 +36,7 @@ public class PanelPrintAll extends LayoutContainer {
 	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
 	private SimpleComboBox<String> smplcmbxAnno = new SimpleComboBox<String>();
     private SimpleComboBox<String> smplcmbxMese = new SimpleComboBox<String>();
+    private SimpleComboBox<String> smplcmbxSede= new SimpleComboBox<String>();
 	
 	private static String url= "/gestvandhibernate/PrintDataServlet";
 	
@@ -77,6 +78,13 @@ public class PanelPrintAll extends LayoutContainer {
 		 for(String l : DatiComboBox.getAnno()){
 			 smplcmbxAnno.add(l);}
 		smplcmbxAnno.setTriggerAction(TriggerAction.ALL);
+		
+		smplcmbxSede.setFieldLabel("Sede");
+		smplcmbxSede.setWidth(65);
+		smplcmbxSede.setEmptyText("Sede..");
+		smplcmbxSede.setAllowBlank(false);
+		smplcmbxSede.add("T");
+		smplcmbxSede.add("B");
 	    		
 	    com.google.gwt.user.client.ui.Button btnPrint = new com.google.gwt.user.client.ui.Button("Stampa");
 	    btnPrint.setSize("55px","25px");	   
@@ -92,6 +100,7 @@ public class PanelPrintAll extends LayoutContainer {
 	    
 	    vp.add(smplcmbxAnno);
 	  	vp.add(smplcmbxMese);
+	  	vp.add(smplcmbxSede);
 	  	vp.add(fp);
 	  	
 	  	cp.add(vp);
@@ -125,9 +134,11 @@ public class PanelPrintAll extends LayoutContainer {
 			String anno=smplcmbxAnno.getRawValue().toString();
 			String meseCorrente=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
 			data=meseCorrente+anno;
+			String sedeOperativa=smplcmbxSede.getRawValue().toString();
+			String username="";
 			
 			if(smplcmbxAnno.isValid()&&smplcmbxMese.isValid())
-			SessionManagementService.Util.getInstance().setDataInSession(data, new AsyncCallback<Boolean>() {
+			SessionManagementService.Util.getInstance().setDataInSession(data, sedeOperativa ,username, new AsyncCallback<Boolean>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
