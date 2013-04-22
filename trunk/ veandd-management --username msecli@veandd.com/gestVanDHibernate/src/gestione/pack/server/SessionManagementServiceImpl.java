@@ -135,13 +135,14 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 
 
 	@Override
-	public boolean setDataInSession(String mese) {
+	public boolean setDataInSession(String mese, String sede, String username) {
 		try {
 			 HttpServletRequest request = this.getThreadLocalRequest();
 		   	 HttpSession httpSession = request.getSession();
 		   	   
 		   	 httpSession.setAttribute("mese", mese);
 		   	 httpSession.setAttribute("username", "");
+		   	 httpSession.setAttribute("sede", sede);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -555,7 +555,7 @@ public class ServerUtility {
 	
 	
 	@SuppressWarnings("unchecked")
-	public static Boolean PrintRiepilogoOreMese(String dataRif){
+	public static Boolean PrintRiepilogoOreMese(String dataRif, String sedeOperativa){
 		List<RiepilogoFoglioOreModel> listaGiorni= new ArrayList<RiepilogoFoglioOreModel>();
 		List<DettaglioOreGiornaliere> listaDettGiorno= new ArrayList<DettaglioOreGiornaliere>();
 		List<FoglioOreMese> listaMesi=new ArrayList<FoglioOreMese>();
@@ -590,7 +590,8 @@ public class ServerUtility {
 		try {
 			tx = session.beginTransaction();
 			
-			listaPers=(List<Personale>)session.createQuery("from Personale").list();//TODO distinguere torino da brescia
+			listaPers=(List<Personale>)session.createQuery("from Personale where sedeOperativa=:sede")
+					.setParameter("sede", sedeOperativa).list();//TODO distinguere torino da brescia
 						
 		    for(Personale p:listaPers){
 			  		

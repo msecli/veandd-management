@@ -49,6 +49,8 @@ public class Personale  extends LightEntity implements IsSerializable {
 	
 	private String sede;
 	
+	private String sedeOperativa;
+	
 	private String oreDirette;
 	
 	private String oreIndirette;
@@ -265,6 +267,14 @@ public class Personale  extends LightEntity implements IsSerializable {
 
 	public void setFoglioOreMeses(Set<FoglioOreMese> foglioOreMeses) {
 		this.foglioOreMeses = foglioOreMeses;
+	}
+
+	public String getSedeOperativa() {
+		return sedeOperativa;
+	}
+
+	public void setSedeOperativa(String sedeOperativa) {
+		this.sedeOperativa = sedeOperativa;
 	}
 
 	
