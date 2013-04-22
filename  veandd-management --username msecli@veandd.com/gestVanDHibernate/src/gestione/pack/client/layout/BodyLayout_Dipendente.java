@@ -8,6 +8,7 @@ import gestione.pack.client.utility.ConstantiMSG;
 import gestione.pack.client.utility.MyImages;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.util.Margins;
@@ -181,19 +182,19 @@ public class BodyLayout_Dipendente extends LayoutContainer {
 	    cp.setBodyStyleName("pad-text");
 	    cp.setHeading("Gestione Presenze");
 	    
-	    Button btnGestionePresenze = new Button("Foglio Ore Personale");
+	    Button btnGestionePresenze = new Button();
+	    btnGestionePresenze.setToolTip("Rilevazione Presenze");
+	    btnGestionePresenze.setHeight(65);
+	    btnGestionePresenze.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.presenze()));
+	    btnGestionePresenze.setIconAlign(IconAlign.BOTTOM);
 	    btnGestionePresenze.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	          center.removeAll();
-	        	
-	          if(txtfldTipologiaLavoratore.getValue().toString().compareTo("C")!=0)
-	        	  center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb());
-	          else
-	        	  center.add(new CenterLayout_FoglioOreGiornaliero_Collaboratori());//per i collaboratori
-	          
-	          center.layout(true);}      
+	        	center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb());
+	        	center.layout(true);}      
 	      });
 	    btnGestionePresenze.setWidth("100%");
+	    
 	    cp.add(btnGestionePresenze);
 	    
 	    panel.add(cp);
