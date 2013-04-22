@@ -69,7 +69,7 @@ public class PrintDataServlet extends HttpServlet  {
 
 				try {
 
-					fis = new FileInputStream("Jasper Report/Blank_A4.jasper");
+					fis = new FileInputStream("Jasper Report/ReportRiepilogoOre.jasper");
 
 					bufferedInputStream = new BufferedInputStream(fis);
 
@@ -86,7 +86,6 @@ public class PrintDataServlet extends HttpServlet  {
 
 					e.printStackTrace();
 				}
-
 				tx.rollback();
 				session.close();
 				httpSession.setAttribute("result", stampato);
