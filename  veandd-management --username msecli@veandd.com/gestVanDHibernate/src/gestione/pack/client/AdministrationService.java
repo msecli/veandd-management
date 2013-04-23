@@ -63,14 +63,15 @@ public interface AdministrationService extends RemoteService {
 			String password, String nBadge, String ruolo, String tipoOrario,
 			String tipoLavoratore, String gruppoLavoro, String costoOrario,
 			String costoStruttura, String sede, String oreDirette,
-			String oreIndirette, String permessi, String ferie, String ext, String oreRecupero)throws IllegalArgumentException;
+			String oreIndirette, String permessi, String ferie, String ext,
+			String oreRecupero, String oreRecupero2);
 
 	void editDataPersonale(int id, String nome, String cognome,
 			String username, String password, String nBadge, String ruolo,
 			String tipoOrario, String tipoLavoratore, String gruppoLavoro,
 			String costoOrario, String costoStruttura, String sede,
 			String oreDirette, String oreIndirette, String permessi,
-			String ferie, String ext, String oreRecupero) throws IllegalArgumentException;
+			String ferie, String ext, String oreRecupero, String oreRecupero2);
 
 	void removeDataPersonale(int id) throws IllegalArgumentException;
 

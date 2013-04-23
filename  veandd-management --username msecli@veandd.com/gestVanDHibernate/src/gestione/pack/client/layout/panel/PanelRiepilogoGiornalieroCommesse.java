@@ -292,7 +292,8 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 				cognome=cognome.substring(0, 1).toUpperCase()+cognome.substring(1,cognome.length());
 				
 				String nomeFile=cognome+nome+"_Report.pdf";
-				Window.open("FileStorage/RiepiloghiCommesse/"+nomeFile, "_blank", "1");		
+				//Window.open("FileStorage/RiepiloghiCommesse/"+nomeFile, "_blank", "1");	
+				Window.open("/var/lib/tomcat7/webapps/ROOT/FileStorage/RiepiloghiCommesse/"+nomeFile, "_blank", "1");
 			}
 		}
 	}

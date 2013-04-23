@@ -17,7 +17,7 @@ public class PersonaleModel extends BaseModel implements IsSerializable{
 	      
 	    public PersonaleModel(int id_PERSONALE2, String nome2, String cognome2, String username2, String password2, String numeroBadge2,
 				String ruolo2, String tipologiaOrario2, String tipologiaLavoratore2, String gruppoLavoro2,
-				String costoOrario2, String costoStruttura2, String sede2, String oreDirette2, String oreIndirette2, String orePermessi2,
+				String costoOrario2, String costoStruttura2, String sede2, String sedeOperativa, String oreDirette2, String oreIndirette2, String orePermessi2,
 				String oreFerie2, String oreExFest2, String oreRecupero) {
 	    	
 	    	//impostazione della proprietà che dovrà essere uguale al momento della configurazione delle colonne
@@ -34,6 +34,7 @@ public class PersonaleModel extends BaseModel implements IsSerializable{
 	        set("costoOrario", costoOrario2);
 	        set("costoStruttura", costoStruttura2);
 	        set("sede", sede2);
+	        set("sedeOperativa", sedeOperativa);
 	        set("oreDirette", oreDirette2);
 	        set("oreIndirette", oreIndirette2);
 	        set("permessi", orePermessi2);

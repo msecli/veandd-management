@@ -3,7 +3,6 @@ package gestione.pack.client.layout;
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.model.PersonaleModel;
 import gestione.pack.client.utility.DatiComboBox;
-import gestione.pack.shared.Personale;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +64,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	private SimpleComboBox <String> smplcmbxTipoLavoratore;
 	private SimpleComboBox <String> smplcmbxRuolo;
 	private SimpleComboBox <String> smplcmbxSede;
+	private SimpleComboBox <String> smplcmbxSedeOperativa;
 	private SimpleComboBox<String> smplcmbxGruppolavoro;
 	private TextField<String> txtfldCostoOrario;
 	private TextField<String> txtfldCostoStruttura;
@@ -176,6 +176,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    formBindings.addFieldBinding(new SimpleComboBoxFieldBinding(smplcmbxTipoOrario, "tipologiaOrario"));
 	    formBindings.addFieldBinding(new SimpleComboBoxFieldBinding(smplcmbxTipoLavoratore, "tipologiaLavoratore"));
 	    formBindings.addFieldBinding(new SimpleComboBoxFieldBinding(smplcmbxSede, "sede"));
+	    formBindings.addFieldBinding(new SimpleComboBoxFieldBinding(smplcmbxSedeOperativa, "sedeOperativa"));
 	    formBindings.addFieldBinding(new SimpleComboBoxFieldBinding(smplcmbxGruppolavoro, "gruppoLavoro"));    
 	    formBindings.setStore((Store<PersonaleModel>) grid.getStore());
 //	    
@@ -272,6 +273,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    		String ruolo=new String();
 	    		String gruppoL= new String();
 	    		String sede= new String();
+	    		String sedeOperativa= new String();
 	    		String oreDirette= new String();
 	    		String oreIndirette= new String();
 	    		String permessi= new String();
@@ -294,6 +296,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    			if(txtfldCostoOrario.getRawValue().isEmpty()){  costoO = "";}else{ costoO=txtfldCostoOrario.getValue().toString();};
 	    			if(txtfldCostoStruttura.getRawValue().isEmpty()){  costoS = "";}else{ costoS=txtfldCostoStruttura.getValue().toString();};
 	    			if(smplcmbxSede.getRawValue().isEmpty()){ sede="";}else{sede=smplcmbxSede.getRawValue().toString();}
+	    			if(smplcmbxSedeOperativa.getRawValue().isEmpty()){ sedeOperativa="";}else{sedeOperativa=smplcmbxSedeOperativa.getRawValue().toString();}
 	    			if(txtfldOreDirette.getRawValue().isEmpty()){ oreDirette="";}else{oreDirette=txtfldOreDirette.getValue().toString();}
 	    			if(txtfldOreIndirette.getRawValue().isEmpty()){ oreIndirette="";}else{oreIndirette=txtfldOreIndirette.getValue().toString();}
 	    			if(txtfldPermessi.getRawValue().isEmpty()){ permessi="";}else{permessi=txtfldPermessi.getValue().toString();}
@@ -303,7 +306,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    			 
 	    			//Al momento dell'inserimento la password sarà uguale all'username
 	    			AdministrationService.Util.getInstance().insertDataPersonale(nome, cognome, username, username, badge, ruolo, tipoO, tipoL, gruppoL, costoO,  costoS, 
-	    						sede, oreDirette, oreIndirette, permessi, ferie, ext, oreRecupero, new AsyncCallback<Void>() {
+	    						sede, sedeOperativa, oreDirette, oreIndirette, permessi, ferie, ext, oreRecupero, new AsyncCallback<Void>() {
 
 							@Override
 							public void onFailure(
@@ -347,6 +350,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    		String ruolo=new String();
 	    		String gruppoL= new String();
 	    		String sede= new String();
+	    		String sedeOperativa= new String();
 	    		String oreDirette= new String();
 	    		String oreIndirette= new String();
 	    		String permessi= new String();
@@ -394,15 +398,16 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 						costoO=p.get("costoOrario");
 						costoS=p.get("costoStruttura");
 						sede=p.get("sede");
+						sedeOperativa=p.get("sedeOperativa");
 						oreDirette=p.get("oreDirette");
 						oreIndirette=p.get("oreIndirette");
 						permessi=p.get("permessi");
 						ferie=p.get("ferie");
 						ex_fest="0.0";
 						oreRecupero=p.get("oreRecupero");
-						//TODO converrebbe passare la lista di oggetti p
+						
 						AdministrationService.Util.getInstance().editDataPersonale(id, nome, cognome, username, "", 
-		    					badge, ruolo, tipoO, tipoL, gruppoL, costoO,  costoS, sede, oreDirette, oreIndirette, permessi,
+		    					badge, ruolo, tipoO, tipoL, gruppoL, costoO,  costoS, sede, sedeOperativa, oreDirette, oreIndirette, permessi,
 		    					ferie, ex_fest, oreRecupero, new AsyncCallback<Void>() {
 
 								@Override
@@ -633,7 +638,15 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    smplcmbxSede.setTriggerAction(TriggerAction.ALL);
 	    frmpnlAnagrPersonale.add(smplcmbxSede, new FormData("65%"));
 	    
-	     
+	    smplcmbxSedeOperativa = new SimpleComboBox<String>();
+	    smplcmbxSedeOperativa.setFieldLabel("Sede Oper.");
+	    smplcmbxSedeOperativa.setName("sedeOperativa");
+	    smplcmbxSedeOperativa.setToolTip("T: Torino B: Brescia");
+	    smplcmbxSedeOperativa.add("T");
+	    smplcmbxSedeOperativa.add("B");
+	    smplcmbxSede.setTriggerAction(TriggerAction.ALL);
+	    frmpnlAnagrPersonale.add(smplcmbxSedeOperativa, new FormData("65%")); 
+	    
 	    smplcmbxGruppolavoro = new SimpleComboBox<String>();
 	    smplcmbxGruppolavoro.setName("gruppoLavoro");
 	    for(String l : DatiComboBox.getGruppoLavoro()){

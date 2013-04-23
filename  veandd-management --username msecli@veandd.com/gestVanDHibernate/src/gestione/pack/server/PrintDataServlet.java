@@ -64,7 +64,7 @@ public class PrintDataServlet extends HttpServlet  {
 				Map parameters = new HashMap();
 				parameters.put(JRHibernateQueryExecuterFactory.PARAMETER_HIBERNATE_SESSION,
 								session);// Parametri che usa il file jasper per
-											// connettersi!
+										 // connettersi!
 				
 				JasperPrint jasperPrint;
 				FileInputStream fis;
@@ -72,8 +72,9 @@ public class PrintDataServlet extends HttpServlet  {
 
 				try {
 
-					fis = new FileInputStream("Jasper Report/ReportRiepilogoOre.jasper");
-
+					fis = new FileInputStream("/var/lib/tomcat7/webapps/ROOT/JasperReport/ReportRiepilogoOre.jasper");
+					//fis = new FileInputStream("JasperReport/ReportRiepilogoOre.jasper");
+					
 					bufferedInputStream = new BufferedInputStream(fis);
 
 					JasperReport jasperReport = (JasperReport) JRLoader
@@ -132,7 +133,9 @@ public class PrintDataServlet extends HttpServlet  {
 
 				try {
 
-					fis = new FileInputStream("Jasper Report/ReportRiepilogoCommesse.jasper");
+				//	fis = new FileInputStream("JasperReport/ReportRiepilogoCommesse.jasper");
+					
+					fis = new FileInputStream("/var/lib/tomcat7/webapps/ROOT/JasperReport/ReportRiepilogoCommesse.jasper");
 
 					bufferedInputStream = new BufferedInputStream(fis);
 
@@ -142,8 +145,9 @@ public class PrintDataServlet extends HttpServlet  {
 					jasperPrint = JasperFillManager.fillReport(jasperReport,
 							parameters);
 
-					JasperExportManager.exportReportToPdfFile(jasperPrint,
-							"FileStorage/RiepiloghiCommesse/"+nomeFile);
+					JasperExportManager.exportReportToPdfFile(jasperPrint,"/var/lib/tomcat7/webapps/ROOT/FileStorage/RiepiloghiCommesse/"+nomeFile);
+					
+					//JasperExportManager.exportReportToPdfFile(jasperPrint,"FileStorage/RiepiloghiCommesse/"+nomeFile);
 
 				} catch (JRException e) {
 
