@@ -58,14 +58,14 @@ public interface AdministrationServiceAsync {
 			String tipoLavoratore, String gruppoLavoro, String costoOrario,
 			String costoStruttura, String sede, String oreDirette,
 			String oreIndirette, String permessi, String ferie, String ext,String oreRecupero,
-			AsyncCallback<Void> callback);
+			String oreRecupero2, AsyncCallback<Void> callback);
 
 	void editDataPersonale(int id, String nome, String cognome,
 			String username, String password, String nBadge, String ruolo,
 			String tipoOrario, String tipoLavoratore, String gruppoLavoro,
 			String costoOrario, String costoStruttura, String sede,
 			String oreDirette, String oreIndirette, String permessi,
-			String ferie, String ext,String oreRecupero, AsyncCallback<Void> callback);
+			String ferie, String ext,String oreRecupero, String oreRecupero2, AsyncCallback<Void> callback);
 
 	void removeDataPersonale(int id, AsyncCallback<Void> callback);
 

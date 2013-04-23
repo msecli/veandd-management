@@ -96,7 +96,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 //------------------Gestione Personale-----------------------------------------------------------------------------------------
 	@Override
 	public void insertDataPersonale(String nome, String cognome, String username, String password, String nBadge, String ruolo, String tipoOrario, String tipoLavoratore,
-			String gruppoLavoro, String costoOrario,  String costoStruttura,String sede,  String oreDirette, String oreIndirette,  String permessi, String ferie, String ext, String oreRecupero)throws IllegalArgumentException {
+			String gruppoLavoro, String costoOrario,  String costoStruttura,String sede, String sedeOperativa,  String oreDirette, String oreIndirette,  String permessi, String ferie, String ext, String oreRecupero)throws IllegalArgumentException {
 		
 		//TODO controllo presenza username
 		
@@ -113,6 +113,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			p.setPassword(username);//sarà sempre lo username passato lato client
 			p.setGruppoLavoro(gruppoLavoro);
 			p.setSede(sede);
+			p.setSedeOperativa(sedeOperativa);
 			p.setOreDirette(oreDirette);
 			p.setOreIndirette(oreIndirette);
 			p.setOrePermessi(permessi);
@@ -139,7 +140,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	
 	@Override
 	public void editDataPersonale(int id, String nome, String cognome, String username, String password, String nBadge, String ruolo, String tipoOrario, String tipoLavoratore, String gruppoLavoro, 
-			String costoOrario, String costoStruttura, String sede, String oreDirette, String oreIndirette,  String permessi, String ferie, String ext, String oreRecupero) throws IllegalArgumentException {
+			String costoOrario, String costoStruttura, String sede, String sedeOperativa, String oreDirette, String oreIndirette,  String permessi, String ferie, String ext, String oreRecupero) throws IllegalArgumentException {
 				
 		Personale p = new Personale();
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
@@ -162,6 +163,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			//p.setPassword(password);
 			p.setGruppoLavoro(gruppoLavoro);
 			p.setSede(sede);
+			p.setSedeOperativa(sedeOperativa);
 			p.setOreDirette(oreDirette);
 			p.setOreIndirette(oreIndirette);
 			p.setOrePermessi(permessi);
@@ -309,7 +311,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 			  for(Personale p: listaP){
 				personaM=new PersonaleModel(p.getId_PERSONALE(), p.getNome(), p.getCognome(), p.getUsername(), 
-						"", "", "", "", "", "", "", "",  "",  "",  "",  "",  "",  "",  "");
+						"", "", "", "", "", "", "", "", "",  "",  "",  "",  "",  "",  "",  "");
 				
 				if(ruolo.compareTo("PM")==0)//ruolo di chi effettua la ricerca
 					if(p.getRuolo().compareTo("DIP")==0)//se è il pm a richiederlo allora preleverò solo i dipendenti

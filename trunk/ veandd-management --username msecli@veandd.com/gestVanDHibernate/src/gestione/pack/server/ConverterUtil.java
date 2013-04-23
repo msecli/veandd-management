@@ -66,7 +66,7 @@ public class ConverterUtil {
 	static PersonaleModel personaleToModelConverter(Personale p) {
 		
 		PersonaleModel pm= new PersonaleModel(p.getId_PERSONALE(),p.getNome(), p.getCognome(), p.getUsername(), p.getPassword(), p.getNumeroBadge(),p.getRuolo(), 
-				p.getTipologiaOrario(), p.getTipologiaLavoratore(), p.getGruppoLavoro(), p.getCostoOrario(), p.getCostoStruttura(), p.getSede(), p.getOreDirette(), 
+				p.getTipologiaOrario(), p.getTipologiaLavoratore(), p.getGruppoLavoro(), p.getCostoOrario(), p.getCostoStruttura(), p.getSede(), p.getSedeOperativa(), p.getOreDirette(), 
 				p.getOreIndirette(), p.getOrePermessi(), p.getOreFerie(), p.getOreExFest(), p.getOreRecupero());
 		
 		return pm;

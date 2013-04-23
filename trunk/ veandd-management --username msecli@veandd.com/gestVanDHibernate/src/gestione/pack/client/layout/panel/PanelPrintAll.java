@@ -120,7 +120,8 @@ public class PanelPrintAll extends LayoutContainer {
 			if(event.getResults().isEmpty())
 				Window.alert("Errore durante la creazione del file!");
 			else{					
-				Window.open("FileStorage/RiepilogoTotali.pdf", "_blank", "1");		
+				//Window.open("FileStorage/RiepilogoTotali.pdf", "_blank", "1");
+				Window.open("/var/lib/tomcat7/webapps/ROOT/FileStorage/RiepilogoTotali.pdf", "_blank", "1");	
 			}
 		}
 	}
