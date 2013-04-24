@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version last-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="1120" pageHeight="595" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="91906a4e-31ec-43a1-9ea2-81cfe01d289d">
+	<import value="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<queryString language="hql">
+		<![CDATA[from DatiOreMese]]>
+	</queryString>
+	<field name="username" class="java.lang.String">
+		<fieldDescription><![CDATA[username]]></fieldDescription>
+	</field>
+	<field name="giorno" class="java.lang.String">
+		<fieldDescription><![CDATA[giorno]]></fieldDescription>
+	</field>
+	<field name="totGiorno" class="java.lang.String">
+		<fieldDescription><![CDATA[totGiorno]]></fieldDescription>
+	</field>
+	<field name="oreRecupero" class="java.lang.String">
+		<fieldDescription><![CDATA[oreRecupero]]></fieldDescription>
+	</field>
+	<field name="oreViaggio" class="java.lang.String">
+		<fieldDescription><![CDATA[oreViaggio]]></fieldDescription>
+	</field>
+	<field name="deltaOreViaggio" class="java.lang.String">
+		<fieldDescription><![CDATA[deltaOreViaggio]]></fieldDescription>
+	</field>
+	<field name="oreTotali" class="java.lang.String">
+		<fieldDescription><![CDATA[oreTotali]]></fieldDescription>
+	</field>
+	<field name="oreFerie" class="java.lang.String">
+		<fieldDescription><![CDATA[oreFerie]]></fieldDescription>
+	</field>
+	<field name="orePermesso" class="java.lang.String">
+		<fieldDescription><![CDATA[orePermesso]]></fieldDescription>
+	</field>
+	<field name="oreStraordinario" class="java.lang.String">
+		<fieldDescription><![CDATA[oreStraordinario]]></fieldDescription>
+	</field>
+	<field name="giustificativo" class="java.lang.String">
+		<fieldDescription><![CDATA[giustificativo]]></fieldDescription>
+	</field>
+	<field name="noteAggiuntive" class="java.lang.String">
+		<fieldDescription><![CDATA[noteAggiuntive]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="40" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="103662c1-8eee-4ada-bfe2-aaf61d8eaeb9" x="119" y="4" width="65" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Giorno]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="cf2f7f31-fe05-447c-ab24-dc0f99e6e456" x="190" y="4" width="55" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ore TMB]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="490d3580-bc84-4417-99e6-f8615693b03b" x="320" y="4" width="69" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ore Viaggio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8da5856b-8eae-4dfb-9b85-0af5a7092746" x="13" y="4" width="80" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Username]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="25ac9351-d092-498a-b0c3-ecef214516ef" x="401" y="4" width="66" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[D. Viaggio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="66c01b81-5a47-45b7-abdd-fb6172ef83dc" x="471" y="4" width="55" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ore Tot]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="29a82117-28de-4db0-a1f0-2b849b50049d" x="531" y="4" width="47" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ferie]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="42e06986-ab29-48e4-aa54-906fd8d6f5c1" x="586" y="4" width="47" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Perm.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="eb68ae64-41b9-487c-885d-4ebe9f1fd4f8" x="641" y="4" width="47" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Strao.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="781e1e23-f877-44b6-8f90-193144ca9555" x="700" y="4" width="110" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Giustificativo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="dee1dafe-e507-43c6-88f0-8478c524d021" x="820" y="4" width="101" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Note Aggiuntive]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="01e8c8be-22f8-41f7-8146-91d422b76fc2" x="253" y="4" width="59" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ore Rec.]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="23">
+			<textField>
+				<reportElement uuid="349a855c-03a9-4210-a5ee-7b15844fcada" isPrintRepeatedValues="false" x="13" y="2" width="100" height="16"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{username}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a35ed355-f9a4-4c3f-a856-c7ffb4cc96e2" x="120" y="3" width="64" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{giorno}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5b4e0e90-7d99-4db1-b69f-548def9eaa0e" x="190" y="3" width="54" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{totGiorno}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a4ac310a-016e-4cef-b6c0-a1723e310718" x="320" y="3" width="59" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{oreViaggio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a4ca9e72-faa9-4eac-9cce-fb76ea1bea4e" x="400" y="3" width="56" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{deltaOreViaggio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="51bc487e-83db-4c53-9f63-3225dc341d84" x="470" y="3" width="55" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{oreTotali}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8d42a0ab-38f3-4cbe-9aac-3f7ef8ea5566" x="530" y="3" width="47" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{oreFerie}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e0365264-8dbd-4100-973f-51dc7ab7d766" x="585" y="3" width="47" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{orePermesso}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="963c56d2-5169-45b8-ac33-de2d96add4d7" x="640" y="3" width="47" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{oreStraordinario}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="10a42516-eb2e-44a0-b66f-6f3c7461bd43" x="700" y="3" width="110" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{giustificativo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="407b25d4-a98f-44de-8a7c-d3f237554b75" x="250" y="3" width="62" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{oreRecupero}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4de6a5ac-6766-4742-b8e8-a0b388fee0fb" x="820" y="3" width="260" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{noteAggiuntive}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
