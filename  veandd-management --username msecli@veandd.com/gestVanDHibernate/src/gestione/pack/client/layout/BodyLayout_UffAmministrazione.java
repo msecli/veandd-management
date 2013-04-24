@@ -114,7 +114,9 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 				
 		nome=s.substring(0,i);
 		cognome=s.substring(i+1,s.length());
-			
+		nome=nome.substring(0,1).toUpperCase()+nome.substring(1,nome.length());
+		cognome=cognome.substring(0,1).toUpperCase()+cognome.substring(1,cognome.length());
+		
 		txtUsername.setText("Welcome, "+nome+" "+cognome+".");	
 		
 		Button btnSetting=new Button();

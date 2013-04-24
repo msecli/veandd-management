@@ -109,14 +109,22 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 		String s= new String();
 		s=txtfldUsername.getValue().toString();
 		
-		txtUsername.setText("Welcome,"+s);
+		String nome=new String();
+		String cognome=new String();
+		int i=s.indexOf(".");
+				
+		nome=s.substring(0,i);
+		cognome=s.substring(i+1,s.length());
+		nome=nome.substring(0,1).toUpperCase()+nome.substring(1,nome.length());
+		cognome=cognome.substring(0,1).toUpperCase()+cognome.substring(1,cognome.length());
+		
+		txtUsername.setText("Welcome,"+nome+" "+cognome);
 		
 		toolBar.add(txtUsername);
 		toolBar.add(txtfldUsername);
 		
 		north.setTopComponent(toolBar);
 	    toolBar.setHeight("30px");
-
 			
 	    Button btnSetting=new Button();
 		btnSetting.addListener(Events.OnClick, new Listener<BaseEvent>() {
