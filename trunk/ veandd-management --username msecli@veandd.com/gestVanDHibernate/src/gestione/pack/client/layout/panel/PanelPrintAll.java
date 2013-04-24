@@ -5,14 +5,12 @@ import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
 import gestione.pack.client.utility.DatiComboBox;
-import gestione.pack.client.utility.MyImages;
+import gestione.pack.server.Constanti;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
@@ -24,10 +22,13 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
+
+/*
+ * Stampa del riepilogo delle ore, nel mese, discriminato per sede operativa 
+ * */
 
 public class PanelPrintAll extends LayoutContainer {
 	
@@ -117,12 +118,13 @@ public class PanelPrintAll extends LayoutContainer {
 		@Override
 		public void onSubmitComplete(final SubmitCompleteEvent event) {
 			
-			if(event.getResults().isEmpty())
-				Window.alert("Errore durante la creazione del file!");
-			else{					
-				//Window.open("FileStorage/RiepilogoTotali.pdf", "_blank", "1");
-				Window.open("/var/lib/tomcat7/webapps/ROOT/FileStorage/RiepilogoTotali.pdf", "_blank", "1");	
+			Window.open("/FileStorage/RiepilogoTotali.pdf", "_blank", "1");
+			/*if(event.getResults().isEmpty()){
+				Window.open(ConstantiMSG.PATHAmazon+"FileStorage/RiepilogoTotali.pdf", "_blank", "1");
 			}
+			else{			
+				Window.open(ConstantiMSG.PATHAmazon+"FileStorage/RiepilogoTotali.pdf", "_blank", "1");	
+			}*/
 		}
 	}
 	
@@ -153,8 +155,7 @@ public class PanelPrintAll extends LayoutContainer {
 					else
 						Window.alert("Problemi durante il settaggio dei parametri in Sessione (http)");
 				}
-			});		
-			
+			});				
 			else 
 				Window.alert("Controllare i dati inseriti!");
 		}

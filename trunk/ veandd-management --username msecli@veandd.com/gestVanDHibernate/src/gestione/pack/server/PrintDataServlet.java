@@ -72,9 +72,8 @@ public class PrintDataServlet extends HttpServlet  {
 
 				try {
 
-					fis = new FileInputStream("/var/lib/tomcat7/webapps/ROOT/JasperReport/ReportRiepilogoOre.jasper");
-					//fis = new FileInputStream("JasperReport/ReportRiepilogoOre.jasper");
-					
+					fis = new FileInputStream(Constanti.PATHAmazon+"JasperReport/ReportRiepilogoOre.jasper");
+										
 					bufferedInputStream = new BufferedInputStream(fis);
 
 					JasperReport jasperReport = (JasperReport) JRLoader
@@ -83,8 +82,7 @@ public class PrintDataServlet extends HttpServlet  {
 					jasperPrint = JasperFillManager.fillReport(jasperReport,
 							parameters);
 
-					JasperExportManager.exportReportToPdfFile(jasperPrint,
-							"FileStorage/RiepilogoTotali.pdf");
+					JasperExportManager.exportReportToPdfFile(jasperPrint,Constanti.PATHAmazon+"FileStorage/RiepilogoTotali.pdf");
 
 				} catch (JRException e) {
 
@@ -94,7 +92,6 @@ public class PrintDataServlet extends HttpServlet  {
 				session.close();
 				httpSession.setAttribute("result", stampato);
 			}
-
 			else
 				httpSession.setAttribute("result", stampato);
 		
@@ -133,9 +130,7 @@ public class PrintDataServlet extends HttpServlet  {
 
 				try {
 
-				//	fis = new FileInputStream("JasperReport/ReportRiepilogoCommesse.jasper");
-					
-					fis = new FileInputStream("/var/lib/tomcat7/webapps/ROOT/JasperReport/ReportRiepilogoCommesse.jasper");
+					fis = new FileInputStream(Constanti.PATHAmazon+"JasperReport/ReportRiepilogoCommesse.jasper");
 
 					bufferedInputStream = new BufferedInputStream(fis);
 
@@ -144,13 +139,9 @@ public class PrintDataServlet extends HttpServlet  {
 
 					jasperPrint = JasperFillManager.fillReport(jasperReport,
 							parameters);
-
-					JasperExportManager.exportReportToPdfFile(jasperPrint,"/var/lib/tomcat7/webapps/ROOT/FileStorage/RiepiloghiCommesse/"+nomeFile);
+					JasperExportManager.exportReportToPdfFile(jasperPrint,Constanti.PATHAmazon+"FileStorage/RiepiloghiCommesse/"+nomeFile);
 					
-					//JasperExportManager.exportReportToPdfFile(jasperPrint,"FileStorage/RiepiloghiCommesse/"+nomeFile);
-
 				} catch (JRException e) {
-
 					e.printStackTrace();
 				}
 
@@ -158,7 +149,6 @@ public class PrintDataServlet extends HttpServlet  {
 				session.close();
 				httpSession.setAttribute("result", stampato);//ritorno all'applicazione se è andata a buon fine o meno
 			}
-
 			else
 				httpSession.setAttribute("result", stampato);	//TODO effettuare il controllo sul return	
 		}

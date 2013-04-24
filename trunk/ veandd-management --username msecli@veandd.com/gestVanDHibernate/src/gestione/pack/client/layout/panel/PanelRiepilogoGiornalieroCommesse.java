@@ -4,6 +4,7 @@ import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.model.RiepilogoOreDipCommesseGiornaliero;
 import gestione.pack.client.utility.ClientUtility;
+import gestione.pack.client.utility.ConstantiMSG;
 import gestione.pack.client.utility.MyImages;
 
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	private Date data;
 	private Button btnPrint= new Button();
 	
-	 com.google.gwt.user.client.ui.Button btnPrint1 = new com.google.gwt.user.client.ui.Button("Stampa");
+	com.google.gwt.user.client.ui.Button btnPrint1 = new com.google.gwt.user.client.ui.Button("Stampa");
 	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
 	private static String url= "/gestvandhibernate/PrintDataServlet";
 	
@@ -279,22 +280,35 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	}
 	
 	private class FormSubmitCompleteHandler implements SubmitCompleteHandler {
-
 		@Override
 		public void onSubmitComplete(final SubmitCompleteEvent event) {
-			if(event.getResults().isEmpty())
-				Window.alert("Errore durante la creazione del file!");
+			 	
+			String nome, cognome, nomeFile;
+			
+			nome=username.substring(0, username.indexOf("."));
+			nome=nome.substring(0, 1).toUpperCase()+nome.substring(1,nome.length());
+			
+			cognome=username.substring(username.indexOf(".")+1, username.length());
+			cognome=cognome.substring(0, 1).toUpperCase()+cognome.substring(1,cognome.length());
+			
+			nomeFile=cognome+nome+"_Report.pdf";
+			
+			Window.open("/FileStorage/RiepiloghiCommesse/"+nomeFile, "_blank", "1");
+			/*
+			 if(event.getResults().isEmpty()){
+				//Window.alert("Errore durante la creazione del file!");	 	
+			 }
 			else{		
-				String nome=username.substring(0, username.indexOf("."));
+				nome=username.substring(0, username.indexOf("."));
 				nome=nome.substring(0, 1).toUpperCase()+nome.substring(1,nome.length());
 				
-				String cognome=username.substring(username.indexOf(".")+1, username.length());
+				cognome=username.substring(username.indexOf(".")+1, username.length());
 				cognome=cognome.substring(0, 1).toUpperCase()+cognome.substring(1,cognome.length());
 				
-				String nomeFile=cognome+nome+"_Report.pdf";
-				//Window.open("FileStorage/RiepiloghiCommesse/"+nomeFile, "_blank", "1");	
-				Window.open("/var/lib/tomcat7/webapps/ROOT/FileStorage/RiepiloghiCommesse/"+nomeFile, "_blank", "1");
-			}
+				nomeFile=cognome+nome+"_Report.pdf";
+				
+				Window.open(ConstantiMSG.PATHAmazon+"FileStorage/RiepiloghiCommesse/"+nomeFile, "_blank", "1");
+			}*/
 		}
 	}
 }
