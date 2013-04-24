@@ -130,6 +130,9 @@
 				</textElement>
 				<text><![CDATA[Ore Rec.]]></text>
 			</staticText>
+			<rectangle>
+				<reportElement uuid="5c08fa54-d274-482f-9bb1-545db09efd79" x="0" y="30" width="1080" height="2" forecolor="#6DB7E2" backcolor="#6DB7E2"/>
+			</rectangle>
 		</band>
 	</columnHeader>
 	<detail>

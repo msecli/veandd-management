@@ -71,7 +71,7 @@
 		</band>
 	</title>
 	<columnHeader>
-		<band height="28" splitType="Stretch">
+		<band height="27" splitType="Stretch">
 			<staticText>
 				<reportElement uuid="307ace26-c654-4f41-972b-773a0bf9e2f5" x="16" y="2" width="100" height="20"/>
 				<textElement>
@@ -110,29 +110,29 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="30" splitType="Stretch">
+		<band height="28" splitType="Stretch">
 			<textField>
-				<reportElement uuid="c713917f-9ea4-46a4-a6f8-8e0a29e70d5f" isPrintRepeatedValues="false" x="16" y="9" width="100" height="20"/>
+				<reportElement uuid="c713917f-9ea4-46a4-a6f8-8e0a29e70d5f" isPrintRepeatedValues="false" x="16" y="0" width="100" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{numeroCommessa}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="d6b3df05-a9f2-4659-8f83-119e2f04fc02" x="123" y="9" width="80" height="20"/>
+				<reportElement uuid="d6b3df05-a9f2-4659-8f83-119e2f04fc02" x="123" y="0" width="80" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{giorno}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="8ca240ff-6b4a-43d0-8341-c1e94b476f77" x="210" y="9" width="63" height="20"/>
+				<reportElement uuid="8ca240ff-6b4a-43d0-8341-c1e94b476f77" x="210" y="0" width="63" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{oreLavoro}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="5792c7f2-c80b-4272-9885-53468f9c78b4" x="291" y="10" width="72" height="20"/>
+				<reportElement uuid="5792c7f2-c80b-4272-9885-53468f9c78b4" x="291" y="1" width="72" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{oreViaggio}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="b3d76232-508d-4fae-a665-ed3d43e90534" x="374" y="10" width="63" height="20"/>
+				<reportElement uuid="b3d76232-508d-4fae-a665-ed3d43e90534" x="374" y="1" width="63" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{oreTotali}]]></textFieldExpression>
 			</textField>
