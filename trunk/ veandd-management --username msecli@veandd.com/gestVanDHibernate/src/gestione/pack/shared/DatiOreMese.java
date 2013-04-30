@@ -39,6 +39,8 @@ public class DatiOreMese extends LightEntity implements IsSerializable {
 	private String orePermesso;
 
 	private String oreStraordinario;
+	
+	private String deltaGiornaliero;
 
 	private String giustificativo;
 
@@ -150,6 +152,14 @@ public class DatiOreMese extends LightEntity implements IsSerializable {
 
 	public void setOreTotali(String oreTotali) {
 		this.oreTotali = oreTotali;
+	}
+
+	public String getDeltaGiornaliero() {
+		return deltaGiornaliero;
+	}
+
+	public void setDeltaGiornaliero(String deltaGiornaliero) {
+		this.deltaGiornaliero = deltaGiornaliero;
 	}
 
 	
