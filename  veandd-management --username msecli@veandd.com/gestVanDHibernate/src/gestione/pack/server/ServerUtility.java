@@ -574,6 +574,7 @@ public class ServerUtility {
 		String sumOreFerie="0.00";
 		String sumOrePermesso="0.00";
 		String sumOreStraordinario="0.00";
+		String sumDeltaGiorno="0.00";
 		
 		/*		
 		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
@@ -658,6 +659,7 @@ public class ServerUtility {
 					datoG.setOreStraordinario(d.getOreStraordinario());
 					datoG.setGiustificativo(d.getGiustificativo());
 					datoG.setNoteAggiuntive(d.getNoteAggiuntive());
+					datoG.setDeltaGiornaliero(d.getDeltaOreGiorno());
 					
 					listaDatiMese.add(datoG);
 					
@@ -669,7 +671,7 @@ public class ServerUtility {
 					sumOreFerie=ServerUtility.aggiornaTotGenerale(sumOreFerie, d.getOreFerie());
 					sumOrePermesso=ServerUtility.aggiornaTotGenerale(sumOrePermesso, d.getOrePermesso());
 					sumOreStraordinario=ServerUtility.aggiornaTotGenerale(sumOreStraordinario, d.getOreStraordinario());
-					
+					sumDeltaGiorno=ServerUtility.aggiornaTotGenerale(sumDeltaGiorno, d.getDeltaOreGiorno());
 				}
 						
 				datoG=new DatiOreMese();
@@ -685,6 +687,7 @@ public class ServerUtility {
 				datoG.setOreStraordinario(sumOreStraordinario);
 				datoG.setGiustificativo("");
 				datoG.setNoteAggiuntive("");
+				datoG.setDeltaGiornaliero(sumDeltaGiorno);
 				listaDatiMese.add(datoG);
 				
 				//resetto a 0 il necessario
@@ -699,6 +702,7 @@ public class ServerUtility {
 				sumOreFerie="0.00";
 				sumOrePermesso="0.00";
 				sumOreStraordinario="0.00";
+				sumDeltaGiorno="0.00";
 								
 			}
 		 }
