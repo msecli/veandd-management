@@ -58,7 +58,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	private String username= new String();
 	private String tLavoratore= new String();
 	private Date data;
-	private Button btnPrint= new Button();
+	//private Button btnPrint= new Button();
 	private Button btnRiepilogoCommesse= new Button();
 	
 	public PanelRiepilogoMeseFoglioOre(String user, Date dataRiferimento, String tipoLavoratore){
@@ -83,7 +83,8 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	    
 	  	ButtonBar btnBar= new ButtonBar();
 	  	btnBar.setStyleAttribute("margin-bottom", "5px");
-	  	  	
+	  	
+	  	/* 	
 	  	btnPrint.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.print()));
 		btnPrint.setToolTip("Stampa");
 		btnPrint.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -124,7 +125,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 			    	 Window.alert("Failed to send the request: " + e.getMessage());
 			    }
 			}
-		});
+		});*/
 		
 		btnRiepilogoCommesse.setEnabled(false);
 		btnRiepilogoCommesse.setSize(26, 26);
@@ -143,8 +144,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 				d.show();			
 			}
 		});
-		
-		
+			
 		btnBar.add(btnRiepilogoCommesse);
 		
 		ContentPanel cntpnlGrid= new ContentPanel();

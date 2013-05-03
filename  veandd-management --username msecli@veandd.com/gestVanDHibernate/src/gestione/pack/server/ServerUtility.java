@@ -592,7 +592,7 @@ public class ServerUtility {
 			tx = session.beginTransaction();
 			
 			listaPers=(List<Personale>)session.createQuery("from Personale where sedeOperativa=:sede")
-					.setParameter("sede", sedeOperativa).list();//TODO distinguere torino da brescia
+					.setParameter("sede", sedeOperativa).list();
 						
 		    for(Personale p:listaPers){
 			  		
@@ -673,7 +673,42 @@ public class ServerUtility {
 					sumOreStraordinario=ServerUtility.aggiornaTotGenerale(sumOreStraordinario, d.getOreStraordinario());
 					sumDeltaGiorno=ServerUtility.aggiornaTotGenerale(sumDeltaGiorno, d.getDeltaOreGiorno());
 				}
-						
+				
+				//Elaboro il residuo per le ore a recupero
+				String monteOreRecuperoTotale= "0.00";
+				List<DettaglioOreGiornaliere> listaGiorniM= new ArrayList<DettaglioOreGiornaliere>();			
+				listaMesi.clear();
+				if(!p.getFoglioOreMeses().isEmpty()){
+					listaMesi.addAll(p.getFoglioOreMeses());
+					for(FoglioOreMese f:listaMesi){
+						if(f.getMeseRiferimento().compareTo("Feb2013")!=0 && f.getMeseRiferimento().compareTo(dataRif)!=0){//per omettere le ore inserite nel mese di prova di Feb2013 e quelle relative al mese in corso
+							listaGiorniM.clear();
+							if(!f.getDettaglioOreGiornalieres().isEmpty()){
+								listaGiorniM.addAll(f.getDettaglioOreGiornalieres());
+								for(DettaglioOreGiornaliere d:listaGiorniM){
+									monteOreRecuperoTotale=ServerUtility.aggiornaTotGenerale(d.getOreAssenzeRecupero(), monteOreRecuperoTotale);	
+								}		
+							}
+						}									
+					}		
+				}
+				
+				datoG=new DatiOreMese();
+				datoG.setUsername(p.getCognome()+" "+p.getNome());
+				datoG.setGiornoRiferimento("RESIDUI");
+				datoG.setTotGiorno("");
+				datoG.setOreViaggio("");
+				datoG.setDeltaOreViaggio("");
+				datoG.setOreTotali("");
+				datoG.setOreFerie("");
+				datoG.setOrePermesso("");
+				datoG.setOreRecupero(monteOreRecuperoTotale);
+				datoG.setOreStraordinario("");
+				datoG.setGiustificativo("");
+				datoG.setNoteAggiuntive("");
+				datoG.setDeltaGiornaliero("");
+				listaDatiMese.add(datoG);
+				
 				datoG=new DatiOreMese();
 				datoG.setUsername(p.getCognome()+" "+p.getNome());
 				datoG.setGiornoRiferimento("TOTALE");
@@ -683,7 +718,7 @@ public class ServerUtility {
 				datoG.setOreTotali(sumOreTotali);
 				datoG.setOreFerie(sumOreFerie);
 				datoG.setOrePermesso(sumOreFerie);
-				datoG.setOreRecupero(sumOreRecupero);
+				datoG.setOreRecupero(ServerUtility.aggiornaTotGenerale(sumOreRecupero, monteOreRecuperoTotale));
 				datoG.setOreStraordinario(sumOreStraordinario);
 				datoG.setGiustificativo("");
 				datoG.setNoteAggiuntive("");

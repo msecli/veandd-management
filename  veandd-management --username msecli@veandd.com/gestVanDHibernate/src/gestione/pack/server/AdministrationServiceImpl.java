@@ -2907,6 +2907,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	public List<RiepilogoFoglioOreModel> getRiepilogoMeseFoglioOre(String username, Date dataRif) {
 		
 		List<RiepilogoFoglioOreModel> listaGiorni= new ArrayList<RiepilogoFoglioOreModel>();
+		
 		List<DettaglioOreGiornaliere> listaDettGiorno= new ArrayList<DettaglioOreGiornaliere>();
 		List<FoglioOreMese> listaMesi=new ArrayList<FoglioOreMese>();
 		RiepilogoFoglioOreModel giorno;
@@ -2960,7 +2961,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						oreTotali=(d.getTotaleOreGiorno());
 					}
 					
-					//ricercare le timbrature nel giorno in esame e contarle; se sono dispari dare il flag mancanti
+					//TODO ricercare le timbrature nel giorno in esame e contarle; se sono dispari dare il flag mancanti
 					Date gRiferimento=d.getGiornoRiferimento();
 					formatter = new SimpleDateFormat("dd/MM/yy",Locale.ITALIAN);
 					String giornoR=formatter.format(gRiferimento);
@@ -2974,6 +2975,31 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							 Float.valueOf(d.getOreStraordinario()), d.getGiustificativo(), d.getNoteAggiuntive());
 					listaGiorni.add(giorno);
 				}
+				
+				//TODO sarebbe il caso di aggiungere un campo nella tabella fogliooremese che indiche le ore a recupero residue ai mesi precedenti
+				//Calcolo il monte ore Totale a recupero che deve considerare tutti i mesi e non solo il corrente
+				String monteOreRecuperoTotale= "0.00";
+				List<DettaglioOreGiornaliere> listaGiorniM= new ArrayList<DettaglioOreGiornaliere>();
+				listaMesi.clear();
+				if(!p.getFoglioOreMeses().isEmpty()){
+					listaMesi.addAll(p.getFoglioOreMeses());
+					for(FoglioOreMese f:listaMesi){
+						if(f.getMeseRiferimento().compareTo("Feb2013")!=0 && f.getMeseRiferimento().compareTo(data)!=0){//per omettere le ore inserite nel mese di prova di Feb2013 e quelle relative al mese in corso
+							listaGiorniM.clear();
+							if(!f.getDettaglioOreGiornalieres().isEmpty()){
+								listaGiorniM.addAll(f.getDettaglioOreGiornalieres());
+								for(DettaglioOreGiornaliere d:listaGiorniM){
+									monteOreRecuperoTotale=ServerUtility.aggiornaTotGenerale(d.getOreAssenzeRecupero(), monteOreRecuperoTotale);	
+								}		
+							}
+						}
+										
+					}		
+				}
+				
+				giorno=new RiepilogoFoglioOreModel(0, data, "RESIDUI", "", Float.valueOf(0),Float.valueOf(0) , Float.valueOf(0), Float.valueOf(0), 
+						Float.valueOf(0), Float.valueOf(0), Float.valueOf(monteOreRecuperoTotale), Float.valueOf(0), "", "");
+				listaGiorni.add(giorno);
 				
 				tx.commit();
 				return listaGiorni;				
