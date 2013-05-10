@@ -639,6 +639,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    frmpnlAnagrPersonale.add(smplcmbxSede, new FormData("65%"));
 	    
 	    smplcmbxSedeOperativa = new SimpleComboBox<String>();
+	    smplcmbxSedeOperativa.setAllowBlank(false);
 	    smplcmbxSedeOperativa.setFieldLabel("Sede Oper.");
 	    smplcmbxSedeOperativa.setName("sedeOperativa");
 	    smplcmbxSedeOperativa.setToolTip("T: Torino B: Brescia");
