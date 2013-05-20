@@ -1,8 +1,9 @@
 package gestione.pack.client.layout;
 
+//modifiche dalla versione 3
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.model.RiepilogoOreDipFatturazione;
@@ -41,13 +42,10 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GroupSummaryView;
 import com.extjs.gxt.ui.client.widget.grid.SummaryColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.SummaryRenderer;
-import com.extjs.gxt.ui.client.widget.grid.SummaryType;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
@@ -74,6 +72,8 @@ public CenterLayout_FoglioFatturazione(){}
 	private HorizontalPanel hpLayout;
 	private Button btnSalva= new Button("Salva");
 	private boolean trovato=true;
+	private String numCommessa= "";
+	private String numEstensione= "";
 	
 	protected void onRender(Element target, int index) {  
 	    super.onRender(target, index);
@@ -296,7 +296,7 @@ public CenterLayout_FoglioFatturazione(){}
 	private class CntpnlRiepilogoOreDipFatturazione extends ContentPanel{
 		
 		private GroupingStore<RiepilogoOreDipFatturazione>store = new GroupingStore<RiepilogoOreDipFatturazione>();
-		private EditorGrid<RiepilogoOreDipFatturazione> gridRiepilogo;
+		private Grid<RiepilogoOreDipFatturazione> gridRiepilogo;
 		private ColumnModel cm;
 		private boolean nuovo=true;	
 		
@@ -325,13 +325,42 @@ public CenterLayout_FoglioFatturazione(){}
 		    summary.setForceFit(true);  
 		    summary.setShowGroupedColumn(false);
 		    summary.setStartCollapsed(true);
-			    
-		    gridRiepilogo= new EditorGrid<RiepilogoOreDipFatturazione>(store, cm);  
+		   		
+		    gridRiepilogo= new Grid<RiepilogoOreDipFatturazione>(store, cm);  
 		    gridRiepilogo.setItemId("grid");
 		    gridRiepilogo.setBorders(false);  
-		    gridRiepilogo.setView(summary);  
-		    gridRiepilogo.getView().setShowDirtyCells(false);
-		    	    	    
+		    gridRiepilogo.setStripeRows(true);  
+		    gridRiepilogo.setColumnLines(true);  
+		    gridRiepilogo.setColumnReordering(true);  
+		    gridRiepilogo.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+		    gridRiepilogo.setView(summary);
+		    
+		    gridRiepilogo.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+		    gridRiepilogo.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<RiepilogoOreDipFatturazione>>() {  
+		          public void handleEvent(SelectionChangedEvent<RiepilogoOreDipFatturazione> be) {  
+		        	
+		            if (be.getSelection().size() > 0) {      
+		            	String commessa= new String();
+		            	commessa=be.getSelectedItem().getNumeroCommessa();
+		            			            	
+		            	numCommessa=commessa.substring(0,commessa.indexOf("."));
+		            	numEstensione=commessa.substring(commessa.indexOf(".")+1, commessa.indexOf("(")-1);		
+		            		            	
+		            	//hpLayout.removeAll();
+		        		//hpLayout.add(new CntpnlRiepilogoOreDipFatturazione());
+		        		CntpnlDatiFatturazioneOrdine cp=new CntpnlDatiFatturazioneOrdine();
+		        		cp=(CntpnlDatiFatturazioneOrdine) hpLayout.getItemByItemId("panelDatiFatturazione");
+		        		
+		        		hpLayout.remove(cp);
+		        		hpLayout.add(new CntpnlDatiFatturazioneOrdine());
+		        		hpLayout.layout();	
+		               		            	
+		            } else {  
+		                
+		           }
+		         }
+		    }); 		   
+		    
 		    ContentPanel cntpnlGrid= new ContentPanel();
 		    cntpnlGrid.setBodyBorder(false);  
 		    cntpnlGrid.setBorders(false);
@@ -373,12 +402,6 @@ public CenterLayout_FoglioFatturazione(){}
 			column.setHeader("Dipendente");  
 			column.setWidth(120);  
 			column.setRowHeader(true); 
-			column.setSummaryRenderer(new SummaryRenderer() {
-				@Override
-				public String render(Number value, Map<String, Number> data) {
-					return "Totale Ore:";
-		   			}     			
-			});  
 		    configs.add(column); 
 		    	    
 		    SummaryColumnConfig<Double> columnOreLavoro=new SummaryColumnConfig<Double>();		
@@ -386,8 +409,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    columnOreLavoro.setHeader("Ore Lavoro");  
 		    columnOreLavoro.setWidth(63);    
 		    columnOreLavoro.setRowHeader(true); 
-		    columnOreLavoro.setSummaryType(SummaryType.SUM);  
-		    columnOreLavoro.setAlignment(HorizontalAlignment.LEFT);  	
+		    columnOreLavoro.setAlignment(HorizontalAlignment.LEFT);  
 		    columnOreLavoro.setRenderer(new GridCellRenderer<RiepilogoOreDipFatturazione>() {
 				@Override
 				public Object render(RiepilogoOreDipFatturazione model,
@@ -397,23 +419,8 @@ public CenterLayout_FoglioFatturazione(){}
 						Grid<RiepilogoOreDipFatturazione> grid) {
 					Float n=model.get(property);
 					return number.format(n);
-				}
-				  	
+				} 	
 			});
-		    columnOreLavoro.setSummaryRenderer(new SummaryRenderer() {  
-		   			@Override
-		   			public String render(Number value, Map<String, Number> data) {
-		   				/*GroupingStore<RiepilogoOreDipFatturazione>store1 = new GroupingStore<RiepilogoOreDipFatturazione>();
-		   				String tot="0.00";
-		   				store1.add(store.getModels());
-		   				for(RiepilogoOreDipFatturazione riep: store1.getModels()){
-		   					tot=ClientUtility.aggiornaTotGenerale(tot, number.format(riep.getOreLavoro()));
-		   				}
-		   				
-		   				Float n=Float.valueOf(tot);*/
-						return number.format(value);
-		   			}  
-		      });  
 		    configs.add(columnOreLavoro); 	
 		    
 		    SummaryColumnConfig<Double> columnOreViaggio=new SummaryColumnConfig<Double>();		
@@ -421,7 +428,6 @@ public CenterLayout_FoglioFatturazione(){}
 		    columnOreViaggio.setHeader("Ore Viaggio");  
 		    columnOreViaggio.setWidth(63);    
 		    columnOreViaggio.setRowHeader(true); 
-		    columnOreViaggio.setSummaryType(SummaryType.SUM);  
 		    columnOreViaggio.setAlignment(HorizontalAlignment.LEFT);    
 		    columnOreViaggio.setRenderer(new GridCellRenderer<RiepilogoOreDipFatturazione>() {
 				@Override
@@ -433,21 +439,7 @@ public CenterLayout_FoglioFatturazione(){}
 					Float n=model.get(property);
 					return number.format(n);
 				}			
-			});
-		    columnOreViaggio.setSummaryRenderer(new SummaryRenderer() {  
-		   			@Override
-				public String render(Number value, Map<String, Number> data) {
-		   				/*GroupingStore<RiepilogoOreDipFatturazione>store1 = new GroupingStore<RiepilogoOreDipFatturazione>();
-		   				String tot="0.00";
-		   				store1.add(store.getModels());
-		   				for(RiepilogoOreDipFatturazione riep: store1.getModels()){
-		   					tot=ClientUtility.aggiornaTotGenerale(tot, number.format(riep.getOreViaggio()));
-		   				}
-		   				
-		   				Float n=Float.valueOf(tot);*/
-						return number.format(value);
-				}  
-		      });      
+			});   
 		    configs.add(columnOreViaggio); 
 		    
 		    SummaryColumnConfig<Double> columnOreTotali=new SummaryColumnConfig<Double>();		
@@ -455,7 +447,6 @@ public CenterLayout_FoglioFatturazione(){}
 		    columnOreTotali.setHeader("Totale");  
 		    columnOreTotali.setWidth(63);    
 		    columnOreTotali.setRowHeader(true); 
-		    columnOreTotali.setSummaryType(SummaryType.SUM);  
 		    columnOreTotali.setAlignment(HorizontalAlignment.LEFT);    
 		    columnOreTotali.setRenderer(new GridCellRenderer<RiepilogoOreDipFatturazione>() {
 				@Override
@@ -467,21 +458,7 @@ public CenterLayout_FoglioFatturazione(){}
 					Float n=model.get(property);
 					return number.format(n);
 				}			
-			});
-		    columnOreTotali.setSummaryRenderer(new SummaryRenderer() {  
-		   			@Override
-				public String render(Number value, Map<String, Number> data) {
-		   				/*GroupingStore<RiepilogoOreDipFatturazione>store1 = new GroupingStore<RiepilogoOreDipFatturazione>();
-		   				String tot="0.00";
-		   				store1.add(store.getModels());
-		   				for(RiepilogoOreDipFatturazione riep: store1.getModels()){
-		   					tot=ClientUtility.aggiornaTotGenerale(tot, number.format(riep.getOreTotali()));
-		   				}
-		   				
-		   				Float n=Float.valueOf(tot);*/
-						return number.format(value);
-				}  
-		    });      
+			});    
 		    configs.add(columnOreTotali); 		
 			return configs;
 		}	
@@ -573,6 +550,7 @@ public CenterLayout_FoglioFatturazione(){}
 			
 			if(smplcmbxMese.getRawValue().toString().compareTo("")!=0)
 				caricaTabellaDati();
+			
 			//Tabella contenente elenco ordini
 			ContentPanel cntpnlGrid = new ContentPanel();  
 		    cntpnlGrid.setBodyBorder(false);
@@ -596,7 +574,8 @@ public CenterLayout_FoglioFatturazione(){}
 		    gridOrdine.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);		    
 		    gridOrdine.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<RiepilogoOreTotaliCommesse>>() {  
 		          public void handleEvent(SelectionChangedEvent<RiepilogoOreTotaliCommesse> be) {  		        	
-		            if (be.getSelection().size() > 0) {      
+		            if (be.getSelection().size() > 0) {  
+		            	if(be.getSelectedItem().getNumeroCommessa().compareTo("TOTALE")!=0){
 		            		String numeroC= new String();
 		            		String estensione=new String();
 		            		numeroC=be.getSelectedItem().getNumeroCommessa();
@@ -606,12 +585,12 @@ public CenterLayout_FoglioFatturazione(){}
 		            		}catch (Exception e) {
 		            			e.printStackTrace();
 		        				System.out.println("errore carica dati fatturazione");
-							}
-		            		
+							}	            		
 		            		commessaSelezionata=(numeroC+"."+be.getSelectedItem().getEstensione());
 		            		btnSalva.setEnabled(true);
-		            	} 	
-		            }          
+		            	}		            	
+		             } 	
+		          }          
 		        }); 
 			
 		    cntpnlGrid.add(gridOrdine);
@@ -906,28 +885,29 @@ public CenterLayout_FoglioFatturazione(){}
 			fldsetFattura.add(cp2);
 			
 			add(vp);
-			layout();
-			
+			layout();		
 		}
 		
 		private void caricaTabellaDati() {
 			String data= new String(); //Formato Feb2013
 			data=smplcmbxMese.getRawValue().toString().substring(0,3)+smplcmbxAnno.getRawValue().toString();
 			
-		  	AdministrationService.Util.getInstance().getRiepilogoOreTotCommesse(smplcmbxPM.getRawValue().toString(), data, new AsyncCallback<List<RiepilogoOreTotaliCommesse>>() {
-		  		@Override
-		    	public void onSuccess(List<RiepilogoOreTotaliCommesse> result) {
-		    		if(result==null)
+	    	AdministrationService.Util.getInstance().getElencoCommesseSuFoglioFatturazione(numCommessa, numEstensione,  data, new AsyncCallback<List<RiepilogoOreTotaliCommesse>>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					Window.alert("Errore connessione on getElencoCommesseSuFoglioFatturazione();");
+    				caught.printStackTrace();
+				}
+
+				@Override
+				public void onSuccess(List<RiepilogoOreTotaliCommesse> result) {
+					if(result==null)
 		    			Window.alert("error: Impossibile efettuare il caricamento dei dati Ordini in tabella.");
 		    		else	
-		    			loadTable(result);
-		    	}			
-				@Override
-    			public void onFailure(Throwable caught) {
-    				Window.alert("Errore connessione on getRiepilogoOreTotCommesse();");
-    				caught.printStackTrace();	    			
-    			}
-		  	}); //AsyncCallback	        		        	
+		    			loadTable(result);					
+				}
+			});
 		}
 		
 		private void loadTable(List<RiepilogoOreTotaliCommesse> lista) {
@@ -942,7 +922,7 @@ public CenterLayout_FoglioFatturazione(){}
 			}	
 		}
 		
-		
+
 		private List<ColumnConfig> createColumns() {
 			
 			List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
@@ -957,16 +937,23 @@ public CenterLayout_FoglioFatturazione(){}
 		    column=new ColumnConfig();		
 		    column.setId("estensione");  
 		    column.setHeader("Estens.");  
-		    column.setWidth(55);  
+		    column.setWidth(35);  
 		    column.setRowHeader(true);  
 		    configs.add(column);
 		    
 			 column=new ColumnConfig();		
 		    column.setId("numeroOrdine");  
 		    column.setHeader("Ordine");  
-		    column.setWidth(85);  
+		    column.setWidth(80);  
 		    column.setRowHeader(true);  
 		    configs.add(column);  
+		    
+		    column=new ColumnConfig();		
+		    column.setId("oreOrdine");
+		    column.setHeader("Ore");  
+		    column.setWidth(40);  
+		    column.setRowHeader(true);  
+		    configs.add(column);
 		    
 		    column=new ColumnConfig();		
 		    column.setId("compilato");//flag per indicare se è già presente il foglio ore del mese  
