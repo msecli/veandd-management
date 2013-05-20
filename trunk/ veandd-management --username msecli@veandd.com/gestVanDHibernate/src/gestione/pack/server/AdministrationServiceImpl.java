@@ -3334,6 +3334,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String oreTotMeseLavoro= "0.0";
 		String oreTotMeseViaggio= "0.0";
 		String oreSommaLavoroViaggio="0.0";
+		String oreTotLavoroCommessa="0.0";
+		String oreTotViaggioCommessa="0.0";
+		String oreTotCommessa="0.0";
+		
 		
 		String statoCommessa="Aperta";
 		
@@ -3393,12 +3397,27 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 								oreSommaLavoroViaggio = ServerUtility.aggiornaTotGenerale(oreTotMeseLavoro, oreTotMeseViaggio);
 								riep = new RiepilogoOreDipFatturazione(numeroCommessa, dipendente, Float.valueOf(oreTotMeseLavoro), Float.valueOf(oreTotMeseViaggio), Float.valueOf(oreSommaLavoroViaggio));
 								listaR.add(riep);
+								
+								//Per ogni dipendente incremento il totale sulla commessa in esame
+								oreTotLavoroCommessa=ServerUtility.aggiornaTotGenerale(oreTotLavoroCommessa, oreTotMeseLavoro);
+								oreTotViaggioCommessa=ServerUtility.aggiornaTotGenerale(oreTotViaggioCommessa, oreTotMeseViaggio);
+								oreTotCommessa=ServerUtility.aggiornaTotGenerale(oreTotLavoroCommessa, oreTotViaggioCommessa);
+								
 								oreTotMeseLavoro="0.0";
 								oreTotMeseViaggio="0.0";
 								oreSommaLavoroViaggio="0.0";
 							}
-						}			
-					}
+														
+						}//end ciclo su mesi(fatto solo una volta per il mese necessario)
+															
+					}//end ciclo su lista persone nella stessa commessa
+					
+					riep = new RiepilogoOreDipFatturazione(numeroCommessa, ".TOTALE", Float.valueOf(oreTotLavoroCommessa), Float.valueOf(oreTotViaggioCommessa), Float.valueOf(oreTotCommessa));
+					listaR.add(riep);
+					oreTotLavoroCommessa="0.0";
+					oreTotViaggioCommessa="0.0";
+					oreTotCommessa="0.0";
+					
 					listaP.clear();
 					listaAssociazioni.clear();
 				}
@@ -3752,10 +3771,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					}		
 					listaFF.clear();				
 				}
-			}		
-				
+			}					
 			tx.commit();
-			
 			return listaDati;
 		}catch (Exception e) {
 			if (tx != null)
@@ -3765,6 +3782,127 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}finally{
 			session.close();
 		}
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<RiepilogoOreTotaliCommesse> getElencoCommesseSuFoglioFatturazione(String numCommessa,
+			String numEstensione, String data)
+			throws IllegalArgumentException {
+		
+		Commessa c= new Commessa();
+		List<Commessa> listaC= new ArrayList<Commessa>();
+		List<RiepilogoOreTotaliCommesse> listaRiep= new ArrayList<RiepilogoOreTotaliCommesse>();
+		RiepilogoOreTotaliCommesse riep;
+		List<FoglioFatturazione> listaFF=new ArrayList<FoglioFatturazione>();
+		
+		String flagCompilato= new String();
+		String oreEseguite= "0.00";
+		String numeroOrdine="#";
+		
+		numEstensione=numEstensione.toLowerCase();
+		
+		if(numCommessa.compareTo("")!=0){
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		//TODO prendere il foglio fatturazione del mese indicato, se c'è, e prendere le eventuali ore eseguite
+		
+		try {
+			tx = session.beginTransaction();		
+			//prendere tutte le commesse con numero uguale a quella .pa
+			if(numEstensione.compareTo("pa")==0){
+				listaC=(List<Commessa>)session.createQuery("from Commessa where numeroCommessa=:numeroCommessa and statoCommessa=:stato").
+						setParameter("numeroCommessa", numCommessa).setParameter("stato", "Aperta").list();
+				
+				for(Commessa comm:listaC){
+					if(comm.getEstensione().toLowerCase().compareTo("pa")!=0){	//se non è la .pa la inserisco in lista
+						if(comm.getOrdines().size()>0){
+							numeroOrdine=comm.getOrdines().iterator().next().getCodiceOrdine();
+						}
+						else {
+							numeroOrdine="#";
+						}
+				    
+						listaFF.addAll(comm.getFoglioFatturaziones());
+						if(listaFF.isEmpty())
+							flagCompilato="No";
+						else
+							for(FoglioFatturazione ff:listaFF){
+						
+								if(ff.getMeseCorrente().compareTo(data)==0)
+								{
+									flagCompilato="Si";
+									oreEseguite=ff.getOreEseguite();
+									break;
+								}else
+									flagCompilato="No";
+							}
+					
+					riep= new RiepilogoOreTotaliCommesse(comm.getNumeroCommessa(), comm.getEstensione(), numeroOrdine, oreEseguite, Float.valueOf("0.00"), flagCompilato);
+					listaRiep.add(riep);
+				    oreEseguite="0.00";
+				    flagCompilato="No";
+				    numeroOrdine="#";	
+				    listaFF.clear();
+				  }
+				}
+			}
+			
+			//viene considerata solo la commessa selezionata
+			else{
+				
+			    c=(Commessa)session.createQuery("from Commessa where numeroCommessa=:numCommessa and estensione=:numEstensione").
+						setParameter("numCommessa", numCommessa).setParameter("numEstensione", numEstensione).uniqueResult();
+				
+			    if(!c.getOrdines().isEmpty()){
+					numeroOrdine=c.getOrdines().iterator().next().getCodiceOrdine();
+				}
+				else {
+					numeroOrdine="#";
+				}
+			    
+				listaFF.addAll(c.getFoglioFatturaziones());
+				if(listaFF.isEmpty())
+					flagCompilato="No";
+				else
+				for(FoglioFatturazione ff:listaFF){
+					
+					if(ff.getMeseCorrente().compareTo(data)==0)
+					{
+						flagCompilato="Si";
+						oreEseguite=ff.getOreEseguite();
+						break;
+					}else
+						flagCompilato="No";
+				}			
+				riep= new RiepilogoOreTotaliCommesse(numCommessa, numEstensione, numeroOrdine, oreEseguite, Float.valueOf("0.00"), "N");
+				listaRiep.add(riep);		
+			}
+								
+			tx.commit();
+			
+			oreEseguite="0.00";
+			for(RiepilogoOreTotaliCommesse r: listaRiep){
+				oreEseguite=ServerUtility.aggiornaTotGenerale(oreEseguite, r.getOreOrdine());			
+			}
+			riep= new RiepilogoOreTotaliCommesse("TOTALE", "", "", oreEseguite , Float.valueOf("0.00"), "");
+			listaRiep.add(riep);
+			
+			return listaRiep;
+			
+		} catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return null;
+		}finally{
+			session.close();
+		}
+		
+		}else 
+			return listaRiep;
 	}
 
 	
@@ -3926,4 +4064,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			session.close();
 		}
 	}
+
+	
 }
