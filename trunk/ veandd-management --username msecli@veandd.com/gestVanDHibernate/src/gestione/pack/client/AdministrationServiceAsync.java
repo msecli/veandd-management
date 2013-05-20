@@ -253,6 +253,10 @@ public interface AdministrationServiceAsync {
 
 	void loadIntervalliToolTip(String username, Date giorno,
 			AsyncCallback<List<String>> asyncCallback);
+	
+	void getElencoCommesseSuFoglioFatturazione(String numCommessa,
+			String numEstensione, String data,
+			AsyncCallback<List<RiepilogoOreTotaliCommesse>> asyncCallback);
 
 //----------------------------------------------------VARIE
 	void invioCommenti(String testo, String username,
@@ -269,6 +273,8 @@ public interface AdministrationServiceAsync {
 
 	void getRiepilogoGiornalieroCommesse(String username, Date data,
 			AsyncCallback<List<RiepilogoOreDipCommesseGiornaliero>> asyncCallback);
+
+	
 
 		
 }
