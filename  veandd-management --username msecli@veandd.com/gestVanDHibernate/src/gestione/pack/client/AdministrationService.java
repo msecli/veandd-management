@@ -268,6 +268,8 @@ public interface AdministrationService extends RemoteService {
 
 	List<DatiFatturazioneCommessaModel> getRiepilogoDatiFatturazioneCommessa()throws IllegalArgumentException;
 
+	List<RiepilogoOreTotaliCommesse> getElencoCommesseSuFoglioFatturazione(
+			String numCommessa, String numEstensione, String data) throws IllegalArgumentException;
 	
 //---------------------------------VARIE----------------------------------------------------------------------------
 	boolean invioCommenti(String testo, String username)throws IllegalArgumentException;
@@ -280,6 +282,8 @@ public interface AdministrationService extends RemoteService {
 
 	List<RiepilogoOreDipCommesseGiornaliero> getRiepilogoGiornalieroCommesse(
 			String username, Date data)throws IllegalArgumentException;
+
+	
 	
 	
 }
