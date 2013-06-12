@@ -2976,7 +2976,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					listaGiorni.add(giorno);
 				}
 				
-				//TODO sarebbe il caso di aggiungere un campo nella tabella fogliooremese che indiche le ore a recupero residue ai mesi precedenti
+				
 				//Calcolo il monte ore Totale a recupero che deve considerare tutti i mesi e non solo il corrente
 				String monteOreRecuperoTotale= "0.00";
 				List<DettaglioOreGiornaliere> listaGiorniM= new ArrayList<DettaglioOreGiornaliere>();
@@ -2997,6 +2997,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					}		
 				}
 				
+				//aggiunta di un campo nella tabella fogliooremese che indiche le ore a recupero residue ai mesi precedenti
 				giorno=new RiepilogoFoglioOreModel(0, data, "RESIDUI", "", Float.valueOf(0),Float.valueOf(0) , Float.valueOf(0), Float.valueOf(0), 
 						Float.valueOf(0), Float.valueOf(0), Float.valueOf(monteOreRecuperoTotale), Float.valueOf(0), "", "");
 				listaGiorni.add(giorno);
@@ -3445,8 +3446,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String salAttuale= new String();
 		String pclAttuale= new String();
 		String tariffaUtilizzata= new String();
+		Boolean esistePa= false; //controllo l'esistenza di una eventuale commessa madre .pa
 		
 		Commessa c= new Commessa();
+		Commessa c_pa= new Commessa();
 		Ordine o= new Ordine();
 		FoglioFatturazione f= new FoglioFatturazione();
 		FoglioFatturazione fPrec=new FoglioFatturazione();
@@ -3460,6 +3463,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
 		
+		//TODO controllare la presenza di sal pcl sulla commessa singola, eventualmente sulla .pa se esiste
+		// Ma se considero il sal e pcl solo sulla .pa non ci sono problemi
+		
 		try {
 			tx = session.beginTransaction();
 			
@@ -3467,11 +3473,20 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					.setParameter("estensione", estensione).uniqueResult();
 			codCommessa=c.getCodCommessa();
 			
+			//controllo la presenza di una commessa .pa 
+			c_pa=(Commessa)session.createQuery("from Commessa where numeroCommessa=:commessa and estensione=:estensione").setParameter("commessa", commessa)
+					.setParameter("estensione", "pa").uniqueResult();
+			if(c_pa==null)
+				esistePa=false;
+				else
+					esistePa=true;
+			
 			o=(Ordine)session.createQuery("from Ordine where cod_commessa=:id").setParameter("id", codCommessa).uniqueResult();
 			
 			f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:id and meseCorrente=:mese").setParameter("id", codCommessa)
 					.setParameter("mese", mese).uniqueResult();
 			
+			//c'è un controllo sul mese precedente e non su tutti gli eventuali precedenti
 			fPrec=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:id and meseCorrente=:mesePrecedente")
 					.setParameter("id", codCommessa).setParameter("mesePrecedente", mesePrecedente).uniqueResult();
 			
@@ -3492,7 +3507,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					foglioModel= new FoglioFatturazioneModel("#", "0.0", "0.0", Float.valueOf(tariffaUtilizzata), "0.0", salAttuale, pclAttuale, "0.0", "0.0", "0.0", "0.0", "", "0");
 				}
 				else{			
-					foglioModel= new FoglioFatturazioneModel("#", "0.0", "0.0", Float.valueOf(tariffaUtilizzata), "0.0",
+					foglioModel= new FoglioFatturazioneModel("#", "0.0", "0.0", Float.valueOf(tariffaUtilizzata), f.getOreEseguite(),
 							f.getSALattuale(), f.getPCLattuale(), f.getOreFatturare(), f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione());
 				}		
 						
@@ -3807,7 +3822,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
 		
-		//TODO prendere il foglio fatturazione del mese indicato, se c'è, e prendere le eventuali ore eseguite
+		//prendere il foglio fatturazione del mese indicato, se c'è, e prendere le eventuali ore eseguite
 		
 		try {
 			tx = session.beginTransaction();		
