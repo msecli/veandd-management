@@ -1820,10 +1820,16 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			LayoutContainer layoutCol4=new LayoutContainer();
 			LayoutContainer layoutCol5=new LayoutContainer();
 			
+			String d= data.toString();
+			
 			txtfldOrePreviste.setName("orePreviste");
 			txtfldOrePreviste.setEnabled(false);
-			txtfldOrePreviste.setFieldLabel("Ore Previste");	
-			txtfldOrePreviste.setValue(result.getOrePreviste());
+			txtfldOrePreviste.setFieldLabel("Ore Previste");
+			
+			if(d.substring(0, 3).compareTo("Sat")==0)
+				txtfldOrePreviste.setValue("0.00");
+			else	
+				txtfldOrePreviste.setValue(result.getOrePreviste());
 			
 			txtfldTotGenerale.setEnabled(false);
 			txtfldTotGenerale.setFieldLabel("Tot.Generale");
