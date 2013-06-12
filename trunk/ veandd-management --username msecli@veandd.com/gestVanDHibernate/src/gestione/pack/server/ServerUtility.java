@@ -169,7 +169,9 @@ public class ServerUtility {
 		if(dataCompleta.compareTo("2013-Mag-01")==0)
 			return true;
 		if(dataCompleta.compareTo("2013-Nov-01")==0)
-			return true;		
+			return true;	
+		if(dataCompleta.compareTo("2013-Giu-24")==0)
+			return true;
 		return false;
 	}
 	
