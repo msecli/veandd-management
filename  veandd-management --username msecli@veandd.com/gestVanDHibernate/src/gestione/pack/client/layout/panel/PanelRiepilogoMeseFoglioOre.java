@@ -60,6 +60,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	private Date data;
 	//private Button btnPrint= new Button();
 	private Button btnRiepilogoCommesse= new Button();
+	private Button btnStampaRiepilogo= new Button();
 	
 	public PanelRiepilogoMeseFoglioOre(String user, Date dataRiferimento, String tipoLavoratore){
 		username=user;
@@ -127,6 +128,18 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 			}
 		});*/
 		
+	  	btnStampaRiepilogo.setSize(26, 26);
+	  	btnStampaRiepilogo.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.print()));
+	  	btnStampaRiepilogo.setToolTip("Stampa Riepilogo.");
+	  	btnStampaRiepilogo.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+	  	
 		btnRiepilogoCommesse.setEnabled(false);
 		btnRiepilogoCommesse.setSize(26, 26);
 		btnRiepilogoCommesse.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riep_comm()));

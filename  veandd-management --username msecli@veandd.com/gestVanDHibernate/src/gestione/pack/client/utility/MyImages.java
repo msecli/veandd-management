@@ -34,6 +34,9 @@ public interface MyImages extends ClientBundle{
 	
 	@Source("Icone/printer2_16x16.png")
 	ImageResource print();
+	
+	@Source("Icone/printer24x24.png")
+	ImageResource print24();
 
 	@Source("Icone/winprogress.jpg")
 	ImageResource workinprogress();
@@ -52,4 +55,11 @@ public interface MyImages extends ClientBundle{
 	
 	@Source("Icone/rilevPresenzeDip.png")
 	ImageResource presenzeDip();
+	
+	@Source("Icone/arrowdown.png")
+	ImageResource arrowdown();
+	
+	@Source("Icone/azzera.png")
+	ImageResource azzera();
 }
+

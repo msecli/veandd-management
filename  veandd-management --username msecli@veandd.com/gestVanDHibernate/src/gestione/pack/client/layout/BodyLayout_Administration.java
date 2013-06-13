@@ -421,7 +421,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 //----------------------------------------------------------------------------------------------
 	    
 	   
-	   center.add(new CenterLayout_FoglioOreSelectDipendenti());
+	   center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb());
 	    
 	   container.add(north, northData);
 	   container.add(west, westData);
