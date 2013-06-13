@@ -38,7 +38,9 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -2203,6 +2205,12 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		public TextField<String> txtfldOreTotEffettive= new TextField<String>();
 		public TextArea txtrNoteAggiuntive= new TextArea();
 		
+		public Button btnAssegnaOreStraordinario= new Button();
+		public Button btnAssegnaOreFerie= new Button();
+		public Button btnAssegnaOrePermesso= new Button();
+		public Button btnAssegnaRecupero= new Button();
+		
+		
 		private String username= new String();
 		private Date data= new Date();
 		
@@ -2225,7 +2233,62 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 				public void onFailure(Throwable caught) {
 					Window.alert("Errore di connessione on loadGiustificativi()");
 				}
-			});					
+			});		
+			
+			btnAssegnaOreStraordinario.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.arrowdown()));
+			btnAssegnaOreStraordinario.setToolTip("Assegna delta giornaliero.");
+			btnAssegnaOreStraordinario.setStyleAttribute("padding-top", "2px");
+			btnAssegnaOreStraordinario.addSelectionListener(new SelectionListener<ButtonEvent>() {
+				
+				@Override
+				public void componentSelected(ButtonEvent ce) {
+					txtfldRecupero.setValue("0.00");
+					txtfldFerie.setValue("0.00");
+					txtfldPermesso.setValue("0.00");
+					txtfldStraordinario.setValue(txtfldOreDelta.getValue());			
+				}
+			});
+			
+			btnAssegnaOreFerie.setToolTip("Assegna delta giornaliero.");
+			btnAssegnaOreFerie.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.arrowdown()));
+			btnAssegnaOreFerie.addSelectionListener(new SelectionListener<ButtonEvent>() {
+				
+				@Override
+				public void componentSelected(ButtonEvent ce) {
+					txtfldRecupero.setValue("0.00");
+					txtfldStraordinario.setValue("0.00");
+					txtfldPermesso.setValue("0.00");
+					txtfldFerie.setValue(txtfldOreDelta.getValue());				
+				}
+			});
+			
+			btnAssegnaOrePermesso.setToolTip("Assegna delta giornaliero.");
+			btnAssegnaOrePermesso.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.arrowdown()));
+			btnAssegnaOrePermesso.setStyleAttribute("padding-top", "2px");
+			btnAssegnaOrePermesso.addSelectionListener(new SelectionListener<ButtonEvent>() {
+				
+				@Override
+				public void componentSelected(ButtonEvent ce) {
+					txtfldRecupero.setValue("0.00");
+					txtfldFerie.setValue("0.00");
+					txtfldStraordinario.setValue("0.00");
+					txtfldPermesso.setValue(txtfldOreDelta.getValue());				
+				}
+			});
+			
+			btnAssegnaRecupero.setToolTip("Assegna delta giornaliero.");
+			btnAssegnaRecupero.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.arrowdown()));
+			btnAssegnaRecupero.setStyleAttribute("padding-top", "2px");
+			btnAssegnaRecupero.addSelectionListener(new SelectionListener<ButtonEvent>() {
+				
+				@Override
+				public void componentSelected(ButtonEvent ce) {
+					txtfldStraordinario.setValue("0.00");
+					txtfldFerie.setValue("0.00");
+					txtfldPermesso.setValue("0.00");
+					txtfldRecupero.setValue(txtfldOreDelta.getValue());			
+				}
+			});
 		}	
 		
 		private void load(GiustificativiModel result) {
@@ -2246,6 +2309,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			LayoutContainer layoutCol3=new LayoutContainer();
 			LayoutContainer layoutCol4=new LayoutContainer();
 			LayoutContainer layoutCol5=new LayoutContainer();
+			LayoutContainer layoutCol6=new LayoutContainer();
 			
 			String d=data.toString();
 			txtfldOrePreviste.setName("orePreviste");
@@ -2409,6 +2473,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			//chbxStraordinario.setLabelSeparator("");
 			txtfldStraordinario.setRegex("[0-9]+[.]?[0-5]{1}[0-9]{1}|0.00|0.0");
 			txtfldStraordinario.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+			txtfldStraordinario.setWidth(50);
 			if(statoRevisione==1)txtfldStraordinario.setEnabled(false);
 			
 			txtrNoteAggiuntive.setEmptyText("Note Aggiuntive..");
@@ -2420,13 +2485,23 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					
 			ContentPanel cp= new ContentPanel();
 			cp.setHeaderVisible(false);
-			cp.setSize(320, 210);
+			cp.setSize(320, 110);
 			cp.setBorders(false);
 			cp.setBodyBorder(false);
 			cp.setFrame(false);
 			cp.setLayout(new RowLayout(Orientation.HORIZONTAL));
 			cp.setStyleAttribute("padding-top", "0px");
 			cp.setStyleAttribute("padding-left", "15px");
+			
+			ContentPanel cp2= new ContentPanel();
+			cp2.setHeaderVisible(false);
+			cp2.setSize(320, 110);
+			cp2.setBorders(false);
+			cp2.setBodyBorder(false);
+			cp2.setFrame(false);
+			cp2.setLayout(new RowLayout(Orientation.HORIZONTAL));
+			cp2.setStyleAttribute("padding-top", "0px");
+			cp2.setStyleAttribute("padding-left", "15px");
 			
 			ContentPanel cp1= new ContentPanel();
 			cp1.setHeaderVisible(false);
@@ -2442,13 +2517,18 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			layout.setLabelWidth(95);
 			layout.setLabelAlign(LabelAlign.LEFT);
 			layoutCol1.setLayout(layout);
-			layoutCol1.setWidth(290);
+			layoutCol1.setWidth(150);
 					
 			layout= new FormLayout();
-			layout.setLabelWidth(10);
 			layout.setLabelAlign(LabelAlign.LEFT);
 			layoutCol2.setLayout(layout);
 			layoutCol2.setWidth(55);
+			
+			layout= new FormLayout();
+			layout.setLabelWidth(95);
+			layout.setLabelAlign(LabelAlign.LEFT);
+			layoutCol6.setLayout(layout);
+			layoutCol6.setWidth(290);
 			
 			layout=new FormLayout();
 			layout.setLabelWidth(90);
@@ -2463,15 +2543,37 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			layout=new FormLayout();
 			layout.setLabelWidth(90);
 			layout.setLabelAlign(LabelAlign.TOP);
-			layoutCol5.setLayout(layout);
-								
-			layoutCol1.add(txtfldFerie, new FormData("50%"));
-			layoutCol1.add(txtfldPermesso, new FormData("50%"));
-			layoutCol1.add(txtfldStraordinario, new FormData("50%"));		
-			layoutCol1.add(txtfldRecupero, new FormData("50%"));
-			layoutCol1.add(smplcmbxAltroGiustificativo, new FormData("100%"));
-			layoutCol1.add(txtrNoteAggiuntive, new FormData("100%"));
+			layoutCol5.setLayout(layout);			
+			/*
+			Label lblStraordinario= new Label();
+			lblStraordinario.setText("Straordinario: ");
+			HorizontalPanel hpStr= new HorizontalPanel();
+			hpStr.setSpacing(2);
+			hpStr.add(lblStraordinario);
+			hpStr.add(txtfldStraordinario);
+			hpStr.add(btnScambioOre);
 			
+			Label lblFerie= new Label();
+			lblFerie.setText("Ferie: ");
+			HorizontalPanel hpFerie= new HorizontalPanel();
+			hpFerie.setSpacing(2);
+			hpFerie.add(lblFerie);
+			hpFerie.add(txtfldFerie);
+			hpFerie.add(btnAssegnaOreFerie);*/
+						
+			layoutCol1.add(txtfldFerie, new FormData("100%"));
+			layoutCol1.add(txtfldPermesso, new FormData("100%"));
+			layoutCol1.add(txtfldStraordinario, new FormData("100%"));		
+			layoutCol1.add(txtfldRecupero, new FormData("100%"));
+			
+			layoutCol6.add(smplcmbxAltroGiustificativo, new FormData("100%"));
+			layoutCol6.add(txtrNoteAggiuntive, new FormData("100%"));
+			
+			layoutCol2.add(btnAssegnaOreFerie);
+			layoutCol2.add(btnAssegnaOrePermesso);
+			layoutCol2.add(btnAssegnaOreStraordinario);
+			layoutCol2.add(btnAssegnaRecupero);
+						
 		    layoutCol3.add(txtfldOrePreviste, new FormData("50%"));
 			layoutCol3.add(txtfldOreViaggio, new FormData("50%"));
 			
@@ -2481,9 +2583,9 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			layoutCol5.add(txtfldTotGenerale, new FormData("50%"));
 			layoutCol5.add(txtfldDeltaViaggio, new FormData("50%"));			
 			
-			RowData data = new RowData(.2, 1);
+			RowData data = new RowData(.50, 1);
 			data.setMargins(new Margins(5));
-			
+					
 			cp1.add(layoutCol3, new RowData(.33,1));
 			cp1.add(layoutCol5, new RowData(.33,1));
 			cp1.add(layoutCol4, new RowData(.33,1));
@@ -2491,8 +2593,11 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			cp.add(layoutCol1, data);
 			cp.add(layoutCol2, data);
 			
+			cp2.add(layoutCol6,  new RowData(.2,1, new Margins(5)));
+			
 			add(cp1);
 			add(cp);
+			add(cp2);
 			layout(true);
 		}	
 		
