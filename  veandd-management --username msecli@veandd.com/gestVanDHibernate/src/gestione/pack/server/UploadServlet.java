@@ -93,9 +93,6 @@ public class UploadServlet extends HttpServlet  {
 		
 			listaT=(List<DatiTimbratriceExt>)session.createQuery("from DatiTimbratriceExt").list();
 			
-			
-			//TODO eliminare il file TMB
-			
 			tx.commit();
 			session.close();
 			

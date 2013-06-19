@@ -188,9 +188,6 @@ public class DatiComboBox {
 	public static List<String> getAnno() {
 		List <String> listaR=new ArrayList<String>();
 		
-		listaR.add("2010");
-		listaR.add("2011");
-		listaR.add("2012");
 		listaR.add("2013");
 		listaR.add("2014");
 		listaR.add("2015");

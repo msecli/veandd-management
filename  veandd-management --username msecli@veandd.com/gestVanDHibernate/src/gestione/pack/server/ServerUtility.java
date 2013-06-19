@@ -677,7 +677,7 @@ public class ServerUtility {
 				}
 				
 				//Elaboro il residuo per le ore a recupero
-				String monteOreRecuperoTotale= "0.00";
+				String monteOreRecuperoTotale= p.getOreRecupero();
 				List<DettaglioOreGiornaliere> listaGiorniM= new ArrayList<DettaglioOreGiornaliere>();			
 				listaMesi.clear();
 				if(!p.getFoglioOreMeses().isEmpty()){

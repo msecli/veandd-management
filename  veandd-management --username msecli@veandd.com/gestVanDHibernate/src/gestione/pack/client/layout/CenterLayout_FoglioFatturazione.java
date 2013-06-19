@@ -3,6 +3,7 @@ package gestione.pack.client.layout;
 //modifiche dalla versione 3
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import gestione.pack.client.AdministrationService;
@@ -11,6 +12,7 @@ import gestione.pack.client.model.RiepilogoOreTotaliCommesse;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.DatiComboBox;
 import gestione.pack.client.model.FoglioFatturazioneModel;
+import gestione.pack.server.ServerUtility;
 
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -133,8 +135,8 @@ public CenterLayout_FoglioFatturazione(){}
 				cp=(CntpnlDatiFatturazioneOrdine) hp.getItemByItemId("panelDatiFatturazione");
 				if(cp.txtfldOreDaFatturare.isValid()&&cp.txtfldVariazioneSAL.isValid()&&cp.txtfldVariazionePCL.isValid()){
 					String oreEseguite= cp.txtfldOreEseguiteRegistrate.getValue().toString();		
-					String salAttuale= cp.txtfldSALAttuale.getValue().toString();
-					String pclAttuale= cp.txtfldPCLAttuale.getValue().toString();
+					String salIniziale= cp.txtfldSALIniziale.getValue().toString();
+					String pclIniziale= cp.txtfldPCLIniziale.getValue().toString();
 					String oreFatturare= cp.txtfldOreDaFatturare.getValue().toString();
 					String variazioneSAL= cp.txtfldVariazioneSAL.getValue().toString();
 					String variazionePCL= cp.txtfldVariazionePCL.getValue().toString();
@@ -153,7 +155,7 @@ public CenterLayout_FoglioFatturazione(){}
 					anno=smplcmbxAnno.getRawValue().toString();
 					meseCorrente=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
 					data=meseCorrente+anno;
-					AdministrationService.Util.getInstance().insertDatiFoglioFatturazione(oreEseguite,salAttuale,pclAttuale,oreFatturare,variazioneSAL,
+					AdministrationService.Util.getInstance().insertDatiFoglioFatturazione(oreEseguite,salIniziale,pclIniziale,oreFatturare,variazioneSAL,
 							variazionePCL, data, note, statoElaborazione, cp.commessaSelezionata, tariffaUtilizzata, new AsyncCallback<Boolean>() {
 
 								@Override
@@ -173,11 +175,16 @@ public CenterLayout_FoglioFatturazione(){}
 									}
 								}
 
-							});				
+					});				
 				}			
 			}
 		});
 				
+		//Date d= new Date();
+		//String data= d.toString();
+		//String mese= ClientUtility.meseToLong(ClientUtility.traduciMeseToIt(data.substring(4, 7)));
+		//String anno= data.substring(data.length()-4, data.length());
+			
 		txtfldUsername.setVisible(false);
 		
 		smplcmbxMese.setFieldLabel("Mese");
@@ -187,14 +194,16 @@ public CenterLayout_FoglioFatturazione(){}
 		 for(String l : DatiComboBox.getMese()){
 			 smplcmbxMese.add(l);}
 		smplcmbxMese.setTriggerAction(TriggerAction.ALL);
-
+			
 		smplcmbxAnno.setFieldLabel("Anno");
 		smplcmbxAnno.setName("anno");
 		smplcmbxAnno.setWidth(75);
 		smplcmbxAnno.setEmptyText("Anno..");
 		smplcmbxAnno.setAllowBlank(false);
 		 for(String l : DatiComboBox.getAnno()){
-			 smplcmbxAnno.add(l);}
+			 smplcmbxAnno.add(l);
+			 smplcmbxAnno.select(1);
+		 }
 		smplcmbxAnno.setTriggerAction(TriggerAction.ALL);
 
 		
@@ -504,8 +513,8 @@ public CenterLayout_FoglioFatturazione(){}
 	private class CntpnlDatiFatturazioneOrdine extends ContentPanel{	
 		private boolean nuovo =true;
 		private String commessaSelezionata=new String();
-		private TextField<String> txtfldSALAttuale= new TextField<String>();
-		private TextField<String> txtfldPCLAttuale= new TextField<String>();
+		private TextField<String> txtfldSALIniziale= new TextField<String>();
+		private TextField<String> txtfldPCLIniziale= new TextField<String>();
 		private TextField<String> txtfldTotOre= new TextField<String>();
 		private TextField<String> txtfldOreOrdine= new TextField<String>();
 		private TextField<String> txtfldOreResiduoOrdine= new TextField<String>();
@@ -517,6 +526,8 @@ public CenterLayout_FoglioFatturazione(){}
 		private TextField<String> txtfldDiffScaricateEseguite= new TextField<String>();
 		private TextField<String> txtfldTotFatturato= new TextField<String>();
 		private TextField<String> txtfldOreEseguiteRegistrate= new TextField<String>();
+		private Text txtSalTotale= new Text();
+		private Text txtPclTotale= new Text();
 		
 		private Text txtOreDaFatturare= new Text();
 		private Text txtVariazioneSal= new Text();
@@ -559,8 +570,8 @@ public CenterLayout_FoglioFatturazione(){}
 		    cntpnlGrid.setButtonAlign(HorizontalAlignment.CENTER);  
 		    cntpnlGrid.setLayout(new FitLayout());  
 		    cntpnlGrid.setHeaderVisible(false);
-		    cntpnlGrid.setWidth(270);
-		    cntpnlGrid.setHeight(250);
+		    cntpnlGrid.setWidth(575);
+		    cntpnlGrid.setHeight(140);
 		    cntpnlGrid.setScrollMode(Scroll.AUTO);
 		
 			final ListStore<RiepilogoOreTotaliCommesse> store = new ListStore<RiepilogoOreTotaliCommesse>();  
@@ -604,15 +615,17 @@ public CenterLayout_FoglioFatturazione(){}
 			
 			ContentPanel cp= new ContentPanel();
 			cp.setHeaderVisible(false);
-			cp.setSize(350, 150);
+			cp.setSize(575, 110);
 			cp.setBorders(false);
 			cp.setBodyBorder(false);
 			cp.setFrame(false);
 			cp.setLayout(new RowLayout(Orientation.HORIZONTAL));
-			cp.setStyleAttribute("padding-left", "12px");
+			cp.setStyleAttribute("padding-left", "5px");
+			cp.setStyleAttribute("padding-top", "5px");
 			
 			LayoutContainer layoutCol1=new LayoutContainer();
 			LayoutContainer layoutCol2=new LayoutContainer();
+			LayoutContainer layoutCol3=new LayoutContainer();
 			
 			FormLayout layout= new FormLayout();
 			layout.setLabelWidth(80);
@@ -624,11 +637,16 @@ public CenterLayout_FoglioFatturazione(){}
 			layout.setLabelAlign(LabelAlign.LEFT);
 			layoutCol2.setLayout(layout);
 			
-			txtfldSALAttuale.setFieldLabel("SAL attuale");
-			txtfldSALAttuale.setEnabled(false);
+			layout= new FormLayout();
+			layout.setLabelWidth(80);
+			layout.setLabelAlign(LabelAlign.LEFT);
+			layoutCol3.setLayout(layout);
 			
-			txtfldPCLAttuale.setFieldLabel("PCL attuale");
-			txtfldPCLAttuale.setEnabled(false);
+			txtfldSALIniziale.setFieldLabel("SAL iniziale");
+			txtfldSALIniziale.setEnabled(false);
+			
+			txtfldPCLIniziale.setFieldLabel("PCL iniziale");
+			txtfldPCLIniziale.setEnabled(false);
 			
 			txtfldTotOre.setFieldLabel("Totale");
 			txtfldTotOre.setEnabled(false);
@@ -646,23 +664,28 @@ public CenterLayout_FoglioFatturazione(){}
 			txtfldOreEseguiteRegistrate.setFieldLabel("Ore Eseguite");
 			txtfldOreEseguiteRegistrate.setEnabled(true);
 			txtfldOreEseguiteRegistrate.setValue("0.00");
-			//txtfldOreEseguite.setStyleAttribute("padding-top", "10px");
-			
-			layoutCol1.add(txtfldSALAttuale, new FormData("95%"));
-			layoutCol1.add(txtfldPCLAttuale, new FormData("95%"));
-			
+			txtfldOreEseguiteRegistrate.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
+			txtfldOreEseguiteRegistrate.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+								
+			layoutCol1.add(txtfldSALIniziale, new FormData("95%"));
+			layoutCol1.add(txtfldPCLIniziale, new FormData("95%"));
+						
 			layoutCol2.add(txtfldOreOrdine, new FormData("95%"));
 			layoutCol2.add(txtfldOreResiduoOrdine, new FormData("95%"));
 			layoutCol2.add(txtfldCostoOrario, new FormData("95%"));
 			layoutCol2.add(txtfldOreEseguiteRegistrate, new FormData("95%"));		
 			
-			RowData data = new RowData(.47, 1);
+			layoutCol3.add(txtSalTotale, new FormData("95%"));
+			layoutCol3.add(txtPclTotale, new FormData("95%"));
+			
+			RowData data = new RowData(.33, 1);
 			data.setMargins(new Margins(5));
 			
 			cp.add(layoutCol2, data);
 			cp.add(layoutCol1, data);
+			cp.add(layoutCol3, data);
 			
-			HorizontalPanel hp1=new HorizontalPanel();
+			VerticalPanel hp1=new VerticalPanel();
 			hp1.add(cntpnlGrid);
 			hp1.add(cp);
 						
@@ -677,17 +700,21 @@ public CenterLayout_FoglioFatturazione(){}
 			
 			ContentPanel cp1=new ContentPanel();
 			cp1.setHeaderVisible(false);
-			cp1.setSize(575, 90);
+			cp1.setSize(575, 80);
 			cp1.setBorders(false);
 			cp1.setBodyBorder(false);
 			cp1.setFrame(false);
 			cp1.setLayout(new RowLayout(Orientation.HORIZONTAL));
-								
+							
+			txtSalTotale.setText("0.00");
+			txtPclTotale.setText("0.00");
+			txtPclTotale.setStyleAttribute("padding-top", "7px");
+			
 			txtfldOreDaFatturare.setFieldLabel("Ore da Fatturare");
 			txtfldOreDaFatturare.setEnabled(true);
 			txtfldOreDaFatturare.setAllowBlank(false);
 			txtfldOreDaFatturare.setValue("0.00");
-			txtfldOreDaFatturare.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|0.00|0.0|");
+			txtfldOreDaFatturare.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
 			txtfldOreDaFatturare.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
 			txtfldOreDaFatturare.addKeyListener(new KeyListener(){
 			      public void componentKeyUp(ComponentEvent event) {
@@ -723,7 +750,7 @@ public CenterLayout_FoglioFatturazione(){}
 			txtfldVariazioneSAL.setEnabled(true);
 			txtfldVariazioneSAL.setAllowBlank(false);
 			txtfldVariazioneSAL.setValue("0.00");
-			txtfldVariazioneSAL.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[-]{1}[0-9]+[.]{1}[0-5]{1}[0-9]{1}|0.00|0.0");
+			txtfldVariazioneSAL.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[-]{1}[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|[-]{1}[0-9]+[.]{1}[0]{1}|0.00|0.0");
 			txtfldVariazioneSAL.getMessages().setRegexText("Deve essere un numero nel formato 99.59 o -99.59");
 			txtfldVariazioneSAL.addKeyListener(new KeyListener(){
 				 public void componentKeyUp(ComponentEvent event) {
@@ -735,7 +762,8 @@ public CenterLayout_FoglioFatturazione(){}
 			    	  		String totaleEuro= new String();
 			    	  		
 			    	  		NumberFormat number = NumberFormat.getFormat("0.00");
-			    	  		//number=NumberFormat.getCurrencyFormat("EUR");
+			    	  		
+			    	  		txtSalTotale.setText("0.00");
 			    	  		
 			    	  		variazionePCL=String.valueOf(Float.valueOf(txtfldVariazionePCL.getValue().toString())*(-1));
 			    	  		scaricate=ClientUtility.aggiornaTotGenerale(txtfldOreDaFatturare.getValue().toString(), txtfldVariazioneSAL.getValue().toString());
@@ -751,6 +779,8 @@ public CenterLayout_FoglioFatturazione(){}
 			    	  		
 			    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldVariazioneSAL.getValue().toString()));
 			    	  		txtVariazioneSal.setText("("+totaleEuro+")");
+			    	  		
+			    	  		txtSalTotale.setText(ClientUtility.aggiornaTotGenerale(txtfldSALIniziale.getValue().toString(), txtfldVariazioneSAL.getValue().toString()));
 			    	  	}
 			      }			
 			});
@@ -759,7 +789,7 @@ public CenterLayout_FoglioFatturazione(){}
 			txtfldVariazionePCL.setEnabled(true);
 			txtfldVariazionePCL.setAllowBlank(false);
 			txtfldVariazionePCL.setValue("0.00");
-			txtfldVariazionePCL.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[-]{1}[0-9]+[.]{1}[0-5]{1}[0-9]{1}|0.00|0.0");
+			txtfldVariazionePCL.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[-]{1}[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|[-]{1}[0-9]+[.]{1}[0]{1}|0.00|0.0");
 			txtfldVariazionePCL.getMessages().setRegexText("Deve essere un numero nel formato 99.59 o -99.59");
 			txtfldVariazionePCL.addKeyListener(new KeyListener(){
 				 public void componentKeyUp(ComponentEvent event) {
@@ -770,6 +800,7 @@ public CenterLayout_FoglioFatturazione(){}
 			    	  		String variazionePCL= new String();
 			    	  		String totaleEuro=new String();
 			    	  		
+			    	  		txtPclTotale.setText("0.00");
 			    	  		NumberFormat number = NumberFormat.getFormat("0.00");
 			    	  		//number=NumberFormat.getCurrencyFormat("EUR");
 			    	  		
@@ -787,6 +818,8 @@ public CenterLayout_FoglioFatturazione(){}
 			    	  		
 			    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldVariazionePCL.getValue().toString()));
 			    	  		txtVariazionePcl.setText("("+totaleEuro+")");
+			    	  		
+			    	  		txtPclTotale.setText(ClientUtility.aggiornaTotGenerale(txtfldPCLIniziale.getValue().toString(), txtfldVariazionePCL.getValue().toString()));
 			    	  	}
 			      }			
 			});
@@ -937,9 +970,23 @@ public CenterLayout_FoglioFatturazione(){}
 		    column=new ColumnConfig();		
 		    column.setId("estensione");  
 		    column.setHeader("Estens.");  
-		    column.setWidth(35);  
+		    column.setWidth(50);  
 		    column.setRowHeader(true);  
 		    configs.add(column);
+		    
+		    column=new ColumnConfig();		
+		    column.setId("sal");  
+		    column.setHeader("Var.SAL");  
+		    column.setWidth(60);  
+		    column.setRowHeader(true);  
+		    configs.add(column); 
+		    
+		    column=new ColumnConfig();		
+		    column.setId("pcl");  
+		    column.setHeader("Var.PCL");  
+		    column.setWidth(60);  
+		    column.setRowHeader(true);  
+		    configs.add(column); 
 		    
 			 column=new ColumnConfig();		
 		    column.setId("numeroOrdine");  
@@ -950,15 +997,15 @@ public CenterLayout_FoglioFatturazione(){}
 		    
 		    column=new ColumnConfig();		
 		    column.setId("oreOrdine");
-		    column.setHeader("Ore");  
-		    column.setWidth(40);  
+		    column.setHeader("Ore Eseg.");  
+		    column.setWidth(65);  
 		    column.setRowHeader(true);  
 		    configs.add(column);
 		    
 		    column=new ColumnConfig();		
 		    column.setId("compilato");//flag per indicare se è già presente il foglio ore del mese  
-		    column.setHeader("C.");  
-		    column.setWidth(25);  
+		    column.setHeader("Compilato.");  
+		    column.setWidth(65);  
 		    column.setRowHeader(true);  
 		    configs.add(column);
 		    
@@ -1016,12 +1063,9 @@ public CenterLayout_FoglioFatturazione(){}
 			String delta= new String();
 			String scaricate= new String();
 			String totaleEuro= new String();
-			String variazionePCL= new String();
-			String variazioneSAL= new String();
-			
+				
 			NumberFormat number= NumberFormat.getFormat("0.00");
-			//number=NumberFormat.getCurrencyFormat("EUR");
-			
+						
 			HorizontalPanel hp= new HorizontalPanel();
 			CntpnlRiepilogoOreDipFatturazione cp;
 					
@@ -1034,39 +1078,44 @@ public CenterLayout_FoglioFatturazione(){}
 				//prelevo la lista di 
 				lista.addAll(store.getModels());
 					
+				//prendo il numero di ore eseguite dalla commessa selezionata
 				for(RiepilogoOreDipFatturazione riep: lista){
 					ncommessa=riep.getNumeroCommessa().substring(0,riep.getNumeroCommessa().indexOf("(")-1);			
-					if(ncommessa.compareTo(numeroCommessa)==0){
+					if(ncommessa.compareTo(numeroCommessa)==0 &&
+							(ncommessa.substring(ncommessa.length()-2, ncommessa.length()).compareTo("pa")!=0) &&
+								(riep.getDipendente().compareTo(".TOTALE")==0)){
 						String numeroFormattato= new String();
 						numeroFormattato=number.format(riep.getOreTotali());
 						totOre=	ClientUtility.aggiornaTotGenerale(totOre, numeroFormattato);
 					}
+						
 				}
 				if(!nuovo){
+					
 					scaricate=ClientUtility.aggiornaTotGenerale(result.getOreFatturate(), result.getVariazioneSal());
 					scaricate=ClientUtility.aggiornaTotGenerale(scaricate, result.getVariazionePcl());
-					delta=ClientUtility.calcoloDelta(scaricate, totOre);
+					//delta=ClientUtility.calcoloDelta(scaricate, totOre);
 									    
 					totaleEuro=number.format(result.getTariffaOraria()*Float.valueOf(result.getOreFatturate()));
-										
+						
+					txtSalTotale.setText(ClientUtility.aggiornaTotGenerale(result.getsalAttuale(), result.getVariazioneSal()));
+					txtPclTotale.setText(ClientUtility.aggiornaTotGenerale(result.getPclAttuale(), result.getVariazionePcl()));
+					
 					txtfldOreOrdine.setValue(result.getOreOrdine());
 					txtfldOreResiduoOrdine.setValue(result.getResiduoOre());
 					txtfldCostoOrario.setValue(String.valueOf(result.getTariffaOraria()));
-					txtfldSALAttuale.setValue(result.getsalAttuale());
-					txtfldPCLAttuale.setValue(result.getPclAttuale());
+					txtfldSALIniziale.setValue(result.getsalAttuale());
+					txtfldPCLIniziale.setValue(result.getPclAttuale());
 					txtfldOreDaFatturare.setValue(result.getOreFatturate());
 					txtfldVariazioneSAL.setValue(result.getVariazioneSal());
 					txtfldVariazionePCL.setValue(result.getVariazionePcl());
-					//txtfldOreScaricate.setValue(result.getOreScaricate());
-					//txtfldOreEseguiteRegistrate.setValue(totOre);//TODO se le voglio far compilare dai PM le prendo dalla result
-					
+						
 					txtfldOreEseguiteRegistrate.setValue(result.getOreEseguiteRegistrate());
 					
 					txtfldTotFatturato.setValue(totaleEuro);
 					
 					delta=ClientUtility.calcoloDelta(scaricate, result.getOreEseguiteRegistrate());//se uso l'inserimento manuale
 					txtfldDiffScaricateEseguite.setValue(delta);
-					
 					
 					txtfldOreScaricate.setValue(scaricate);
 					txtfldOreDaFatturare.setValue(result.getOreFatturate());
@@ -1088,18 +1137,21 @@ public CenterLayout_FoglioFatturazione(){}
 					
 				}else{
 									
+					txtSalTotale.setText(ClientUtility.aggiornaTotGenerale(result.getsalAttuale(), result.getVariazioneSal()));
+					txtPclTotale.setText(ClientUtility.aggiornaTotGenerale(result.getPclAttuale(), result.getVariazionePcl()));
+					
 					txtfldOreOrdine.setValue(result.getOreOrdine());
 					txtfldOreResiduoOrdine.setValue(result.getResiduoOre());
 					txtfldCostoOrario.setValue(String.valueOf(result.getTariffaOraria()));
-					txtfldSALAttuale.setValue(result.getsalAttuale());
-					txtfldPCLAttuale.setValue(result.getPclAttuale());
+					txtfldSALIniziale.setValue(result.getsalAttuale());
+					txtfldPCLIniziale.setValue(result.getPclAttuale());
 					txtfldOreDaFatturare.setValue(result.getOreFatturate());
 					txtfldVariazioneSAL.setValue(result.getVariazioneSal());
 					txtfldVariazionePCL.setValue(result.getVariazionePcl());
 					txtfldOreScaricate.setValue("0.00");
 					
-					//txtfldOreEseguiteRegistrate.setValue(totOre);
-					txtfldOreEseguiteRegistrate.setValue(result.getOreEseguiteRegistrate());
+					txtfldOreEseguiteRegistrate.setValue(totOre);
+					//txtfldOreEseguiteRegistrate.setValue(result.getOreEseguiteRegistrate());
 					
 					txtfldTotFatturato.setValue("0.00");
 					txtfldDiffScaricateEseguite.setValue("0.00");
