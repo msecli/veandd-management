@@ -357,6 +357,38 @@ public class ClientUtility {
 		return mese;
 	}
 	
+	public static String meseToLong(String month) {
+		String mese=new String();
+		
+		if(month.compareTo("Gen") ==0)
+			mese="Gennaio";
+		if(month.compareTo("Feb") ==0)
+			mese="Febbraio";
+		if(month.compareTo("Mar") ==0)
+			mese="Marzo";
+		if(month.compareTo("Apr") ==0)
+			mese="Aprile";
+		if(month.compareTo("Mag") ==0)
+			mese="Maggio";
+		if(month.compareTo("Giu") ==0)
+			mese="Giugno";
+		if(month.compareTo("Lug") ==0)
+			mese="Luglio";
+		if(month.compareTo("Ago") ==0)
+			mese="Agosto";
+		if(month.compareTo("Set") ==0)
+			mese="Settembre";
+		if(month.compareTo("Ott") ==0)
+			mese="Ottobre";
+		if(month.compareTo("Nov") ==0)
+			mese="Novembre";
+		if(month.compareTo("Dic") ==0)
+			mese="Dicembre";
+		
+		return mese;
+	}
+	
+	
 	public static String traduciMeseToIt(String month){
 		String mese=new String();
 		
