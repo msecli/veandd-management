@@ -1,7 +1,6 @@
 package gestione.pack.server;
 
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
-import gestione.pack.client.model.RiepilogoOreDipCommesseGiornaliero;
 import gestione.pack.shared.AssociazionePtoA;
 import gestione.pack.shared.Commessa;
 import gestione.pack.shared.DatiOreMese;
@@ -766,6 +765,7 @@ public class ServerUtility {
 			
 	}
 
+	
 	private static Boolean exportListaDatiOreMese(List<DatiOreMese> listaDatiMese) {
 				
 		Boolean saveRecordOK=true;
@@ -780,6 +780,7 @@ public class ServerUtility {
 		else
 			return false;
 	}
+	
 
 	private static Boolean saveDateG(DatiOreMese d) {
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
@@ -801,7 +802,6 @@ public class ServerUtility {
 			session.close();
 		}		
 	}
-	
 	
 	
 	public static Boolean getRiepilogoGiornalieroCommesse(

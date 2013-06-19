@@ -1171,8 +1171,7 @@ public CenterLayout_FoglioFatturazione(){}
 	    	  		txtVariazioneSal.setText("("+totaleEuro+")");
 	    	  		
 	    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldVariazionePCL.getValue().toString()));
-	    	  		txtVariazionePcl.setText("("+totaleEuro+")");
-					
+	    	  		txtVariazionePcl.setText("("+totaleEuro+")");				
 				}
 			
 			} catch (Exception e) {
