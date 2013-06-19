@@ -242,11 +242,19 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			config.setCloseable(true);
 			config.setAnchor("left");
 			config.setMouseOffset(new int[]{0, -5});
-			//config.setMinWidth(150);
 			btnMostraIntervalli.setToolTip(config);
 			btnMostraIntervalli.setIconAlign(IconAlign.TOP);
 			btnMostraIntervalli.setSize(26, 26);
-			
+			btnMostraIntervalli.addSelectionListener(new SelectionListener<ButtonEvent>() {
+				
+				@Override
+				public void componentSelected(ButtonEvent ce) {
+					//TODO Al click far scrivere gli orari nelle caselle
+					
+					
+				}
+			});
+					
 			btnInviaCommenti.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.escl1()));
 			btnInviaCommenti.setToolTip("Segnala eventuali problemi o anomalie.");
 			btnInviaCommenti.setSize(26, 26);

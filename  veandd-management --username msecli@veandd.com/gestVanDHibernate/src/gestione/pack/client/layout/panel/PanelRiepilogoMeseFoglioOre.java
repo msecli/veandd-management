@@ -14,6 +14,7 @@ import java.util.Map;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.js.JsonConverter;
@@ -29,6 +30,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridViewConfig;
 import com.extjs.gxt.ui.client.widget.grid.GroupSummaryView;
 import com.extjs.gxt.ui.client.widget.grid.SummaryColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
@@ -195,6 +197,20 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	    gridRiepilogo.setBorders(false);  
 	    gridRiepilogo.setView(summary);  
 	    gridRiepilogo.getView().setShowDirtyCells(false);
+	   
+	    gridRiepilogo.getView().setViewConfig(new GridViewConfig(){
+	    	@Override
+	        public String getRowStyle(ModelData model, int rowIndex, ListStore<ModelData> ds) {
+	            if (model != null) {
+	                                    //TODO: put your conditions here
+	                if (!(Boolean)model.get("compilato")) 
+	                    return "red-row";
+	                
+	            }
+				return "";            
+	    	}
+	    });
+	    
 	    cntpnlGrid.add(gridRiepilogo);
 	    cntpnlGrid.setTopComponent(btnBar);
 	    
@@ -249,6 +265,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 
 	private List<ColumnConfig> createColumnsCollaboratori() {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
+		
 		final NumberFormat number = NumberFormat.getFormat("0.00");
 		
 		SummaryColumnConfig<Double> column=new SummaryColumnConfig<Double>();		
@@ -314,10 +331,11 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 					int colIndex,
 					ListStore<RiepilogoFoglioOreModel> store,
 					Grid<RiepilogoFoglioOreModel> grid) {
+				
+				
 				Float n=model.get(property);
 				return number.format(n);
-			}
-			  	
+			}			  	
 		});
 	    columnOreViaggio.setSummaryRenderer(new SummaryRenderer() {  
 	   			@Override
