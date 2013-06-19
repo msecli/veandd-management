@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
@@ -2936,6 +2937,37 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						listaDettGiorno.addAll(f.getDettaglioOreGiornalieres());
 				}
 				
+				
+				//precompilo la lista di giorni con tutti i giorni lavorativi del mese in modo tale da segnalare una eventuale mancata compilazione
+				for(int i=1; i<=ServerUtility.getGiorniMese(mese, anno);i++){
+					String g= new String();	
+					String dataCompLow=new String();
+					String dataCompUpp=new String();
+					String giornoW= new String();
+					String meseApp= new String();
+					Date d= new Date();
+					
+					meseApp=(mese.substring(0,1).toLowerCase()+mese.substring(1,3));
+					
+					if(i<10)
+						g="0"+String.valueOf(i);
+					else
+						g=String.valueOf(i);
+					
+					dataCompLow=(g+"-"+meseApp+"-"+anno);
+					dataCompUpp=(anno+"-"+mese+"-"+g);
+					
+					formatter=new SimpleDateFormat("dd-MMM-yyyy");
+					d=formatter.parse(dataCompLow);
+					giornoW=d.toString().substring(0,3);
+					if(giornoW.compareTo("Sun")!=0 && !ServerUtility.isFestivo(dataCompUpp)){				
+						giorno= new RiepilogoFoglioOreModel(0, data, dataCompLow, "", Float.valueOf("0.00"), Float.valueOf("0.00"), Float.valueOf("0.00"),
+								Float.valueOf("0.00"), Float.valueOf("0.00"), Float.valueOf("0.00"), Float.valueOf("0.00"),Float.valueOf("0.00"), "", "", false);
+						listaGiorni.add(giorno);					
+					}
+				}
+							
+				//considero la lista di giorni eventualmente compilati
 				for(DettaglioOreGiornaliere d:listaDettGiorno){
 					String day=new String();
 					String oreTotali= "0.00";
@@ -2961,21 +2993,27 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						oreTotali=(d.getTotaleOreGiorno());
 					}
 					
-					//TODO ricercare le timbrature nel giorno in esame e contarle; se sono dispari dare il flag mancanti
 					Date gRiferimento=d.getGiornoRiferimento();
 					formatter = new SimpleDateFormat("dd/MM/yy",Locale.ITALIAN);
 					String giornoR=formatter.format(gRiferimento);
 					@SuppressWarnings("unchecked")
 					List<DettaglioTimbrature> listaT=(List<DettaglioTimbrature>)session.createQuery("from DettaglioTimbrature where numeroBadge=:nBadge and giorno=:giorno")
 							.setParameter("nBadge", p.getNumeroBadge()).setParameter("giorno", giornoR).list();
-					
-					
+								
 					giorno= new RiepilogoFoglioOreModel(d.getIdDettaglioOreGiornaliere(), data, day, p.getTipologiaOrario(), Float.valueOf(d.getTotaleOreGiorno()),  Float.valueOf(d.getOreViaggio()), 
 							 Float.valueOf(d.getDeltaOreViaggio()),  Float.valueOf(oreTotali),  Float.valueOf(d.getOreFerie()),  Float.valueOf(d.getOrePermesso()) ,  Float.valueOf(d.getOreAssenzeRecupero()),
-							 Float.valueOf(d.getOreStraordinario()), d.getGiustificativo(), d.getNoteAggiuntive());
-					listaGiorni.add(giorno);
-				}
-				
+							 Float.valueOf(d.getOreStraordinario()), d.getGiustificativo(), d.getNoteAggiuntive(), true);
+					
+					Iterator<RiepilogoFoglioOreModel> itr = listaGiorni.iterator();
+					while(itr.hasNext()) {
+				         RiepilogoFoglioOreModel g = itr.next();
+				         String dd=g.get("giorno");
+							if(dd.compareTo((String)giorno.get("giorno"))==0){
+								int index=listaGiorni.indexOf(g);
+								listaGiorni.set(index, giorno);							
+							}
+				    }								
+				}				
 				
 				//Calcolo il monte ore Totale a recupero che deve considerare tutti i mesi e non solo il corrente
 				String monteOreRecuperoTotale= "0.00";
@@ -2993,15 +3031,14 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 								
 								}		
 							}
-						}
-										
+						}								
 					}		
 				}
 				
 				monteOreRecuperoTotale=ServerUtility.aggiornaMonteOreRecuperoTotale(monteOreRecuperoTotale, p.getOreRecupero());
 				//aggiunta di un campo nella tabella fogliooremese che indiche le ore a recupero residue ai mesi precedenti
 				giorno=new RiepilogoFoglioOreModel(0, data, "RESIDUI", "", Float.valueOf(0),Float.valueOf(0) , Float.valueOf(0), Float.valueOf(0), 
-						Float.valueOf(0), Float.valueOf(0), Float.valueOf(monteOreRecuperoTotale), Float.valueOf(0), "", "");
+						Float.valueOf(0), Float.valueOf(0), Float.valueOf(monteOreRecuperoTotale), Float.valueOf(0), "", "", true);
 				listaGiorni.add(giorno);
 				
 				tx.commit();
@@ -4131,7 +4168,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}finally{
 			session.close();
 		}
-		
 		
 	}
 
