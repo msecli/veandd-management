@@ -2936,8 +2936,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					if(f.getMeseRiferimento().compareTo(data)==0)
 						listaDettGiorno.addAll(f.getDettaglioOreGiornalieres());
 				}
-				
-				
+							
 				//precompilo la lista di giorni con tutti i giorni lavorativi del mese in modo tale da segnalare una eventuale mancata compilazione
 				for(int i=1; i<=ServerUtility.getGiorniMese(mese, anno);i++){
 					String g= new String();	
@@ -2957,7 +2956,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					dataCompLow=(g+"-"+meseApp+"-"+anno);
 					dataCompUpp=(anno+"-"+mese+"-"+g);
 					
-					formatter=new SimpleDateFormat("dd-MMM-yyyy");
+					formatter=new SimpleDateFormat("dd-MMM-yyyy",Locale.ITALIAN);
 					d=formatter.parse(dataCompLow);
 					giornoW=d.toString().substring(0,3);
 					if(giornoW.compareTo("Sun")!=0 && !ServerUtility.isFestivo(dataCompUpp)){				
@@ -3580,6 +3579,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 				listaFF.addAll(c.getFoglioFatturaziones());			
 				
+				//Considero tutti i FF compilati in mesi differenti da quello in esame
 				for(FoglioFatturazione f1:listaFF){
 					if(f1.getMeseCorrente().compareTo(mese)!=0){
 						sommaVariazioniPcl=ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, f1.getVariazionePCL());
@@ -3587,6 +3587,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					}
 				}
 			
+				//Aggiungo anche un eventuale SAL/PCL iniziale sulla commessa
 				sommaVariazioniSal=ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, c.getSalAttuale());
 				sommaVariazioniPcl=ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, c.getPclAttuale());
 				
@@ -3598,8 +3599,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						foglioModel= new FoglioFatturazioneModel("#", "0.0", "0.0", Float.valueOf(tariffaUtilizzata), "0.0", sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.0", "0.0", "0.0", "", "0");
 					}
 					else{	
-						sommaVariazioniSal=ServerUtility.getDifference(sommaVariazioniSal, f.getVariazioneSAL());
-						sommaVariazioniPcl=ServerUtility.getDifference(sommaVariazioniPcl, f.getVariazionePCL());
+						//sommaVariazioniSal=ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f.getVariazioneSAL());
+						//sommaVariazioniPcl=ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, f.getVariazionePCL());
 						foglioModel= new FoglioFatturazioneModel("#", "0.0", "0.0", Float.valueOf(tariffaUtilizzata), f.getOreEseguite(),
 								sommaVariazioniSal, sommaVariazioniPcl, f.getOreFatturare(), f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione());
 					}		
@@ -3612,8 +3613,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 								sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.0", "0.0", "0.0", "", "0");
 					}
 					else{			
-						sommaVariazioniSal=ServerUtility.getDifference(sommaVariazioniSal, f.getVariazioneSAL());
-						sommaVariazioniPcl=ServerUtility.getDifference(sommaVariazioniPcl, f.getVariazionePCL());
+						//sommaVariazioniSal=ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f.getVariazioneSAL());
+						//sommaVariazioniPcl=ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, f.getVariazionePCL());
 						foglioModel= new FoglioFatturazioneModel(o.getCodiceOrdine(), o.getOreBudget(), o.getOreResidueBudget(),Float.valueOf(tariffaUtilizzata), f.getOreEseguite(),
 								sommaVariazioniSal, sommaVariazioniPcl, f.getOreFatturare(), f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione());
 					}		
