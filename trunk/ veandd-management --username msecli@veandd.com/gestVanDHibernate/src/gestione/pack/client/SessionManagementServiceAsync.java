@@ -14,9 +14,10 @@ public interface SessionManagementServiceAsync {
 
 	void logOut(AsyncCallback<Void> callback);
 
-	void setDataInSession(String mese, String operazione, String username, AsyncCallback<Boolean> asyncCallback);
+	void setDataInSession(String mese, String sede, String username,
+			String operazione, AsyncCallback<Boolean> asyncCallback);
 
 	void setDataInSession(String dataRif, String username,
-			AsyncCallback<Boolean> asyncCallback);
+			String operazione, AsyncCallback<Boolean> asyncCallback);
 
 }

@@ -67,7 +67,7 @@ public class GestVanDHibernate implements EntryPoint {
 	    setModal(true);
 	    setBodyBorder(true);
 	    setBodyStyle("padding: 8px; background: none");
-	    setWidth(380);
+	    setWidth(450);
 	    setResizable(false);
 	    setClosable(false);
 	    

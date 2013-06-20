@@ -764,6 +764,201 @@ public class ServerUtility {
 		}
 			
 	}
+	
+	
+	//PER IL SINGOLO DIPENDENTE //TODO
+	public static Boolean PrintRiepilogoOreMese(String dataRif, String sedeOperativa, String username){
+		List<DettaglioOreGiornaliere> listaDettGiorno= new ArrayList<DettaglioOreGiornaliere>();
+		List<FoglioOreMese> listaMesi=new ArrayList<FoglioOreMese>();
+		DatiOreMese datoG= new DatiOreMese();		
+		
+		List<DatiOreMese> listaDatiMese= new ArrayList<DatiOreMese>();
+		Boolean exportOk= false;
+		
+		String sumTotGiorno="0.00";
+		String sumOreViaggio="0.00";
+		String sumDeltaOreViaggio="0.00";
+		String sumOreTotali="0.00";
+		String sumOreRecupero="0.00";
+		String sumOreFerie="0.00";
+		String sumOrePermesso="0.00";
+		String sumOreStraordinario="0.00";
+		String sumDeltaGiorno="0.00";
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {
+			tx = session.beginTransaction();
+			
+			Personale p=(Personale) session.createQuery("from Personale where username=:username")
+					.setParameter("username", username).uniqueResult();
+						  		
+			 if(!p.getFoglioOreMeses().isEmpty()){
+								
+				listaMesi.addAll(p.getFoglioOreMeses());
+				for(FoglioOreMese f:listaMesi){
+					if(f.getMeseRiferimento().compareTo(dataRif)==0){
+						
+						listaDettGiorno.addAll(f.getDettaglioOreGiornalieres());
+						Collections.sort(listaDettGiorno, new Comparator<DettaglioOreGiornaliere>(){
+							  public int compare(DettaglioOreGiornaliere s1, DettaglioOreGiornaliere s2) {
+								 return s1.getGiornoRiferimento().compareTo(s2.getGiornoRiferimento());
+							  }
+							});
+						break;
+					}
+				}
+				
+				for(DettaglioOreGiornaliere d:listaDettGiorno){
+					
+					datoG=new DatiOreMese();
+					
+					String day=new String();
+					String oreTotali= "0.00";
+					
+					DateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy",Locale.ITALIAN);
+					day=formatter.format(d.getGiornoRiferimento());
+					
+					if(d.getOreViaggio().compareTo("0.00")!=0){
+						if(Float.valueOf(d.getDeltaOreGiorno())<0){
+					
+							if(Float.valueOf(d.getOreViaggio())>Math.abs(Float.valueOf(d.getDeltaOreGiorno()))){							
+								oreTotali=(p.getTipologiaOrario()+".00");					
+							}								
+							if(Float.valueOf(d.getOreViaggio())<=Math.abs(Float.valueOf(d.getDeltaOreGiorno()))){
+								String oreTotGenerale=ServerUtility.aggiornaTotGenerale(d.getTotaleOreGiorno(), d.getOreViaggio());			
+								oreTotali=(oreTotGenerale);
+							}
+						}else					
+						if(Float.valueOf(d.getDeltaOreGiorno())>=0){			
+							oreTotali=d.getTotaleOreGiorno();
+						}
+						
+					}else{						
+						oreTotali=(d.getTotaleOreGiorno());
+					}
+										
+					Date gRiferimento=d.getGiornoRiferimento();
+					formatter = new SimpleDateFormat("dd/MM/yy",Locale.ITALIAN);
+					String giornoR=formatter.format(gRiferimento);
+										
+					datoG.setUsername(p.getCognome()+" "+p.getNome());
+					datoG.setGiornoRiferimento(giornoR);
+					datoG.setTotGiorno(d.getTotaleOreGiorno());
+					datoG.setOreViaggio(d.getOreViaggio());
+					datoG.setDeltaOreViaggio(d.getDeltaOreViaggio());
+					datoG.setOreTotali(oreTotali);
+					datoG.setOreFerie(d.getOreFerie());
+					datoG.setOrePermesso(d.getOrePermesso());
+					datoG.setOreRecupero(d.getOreAssenzeRecupero());
+					datoG.setOreStraordinario(d.getOreStraordinario());
+					datoG.setGiustificativo(d.getGiustificativo());
+					datoG.setNoteAggiuntive(d.getNoteAggiuntive());
+					datoG.setDeltaGiornaliero(d.getDeltaOreGiorno());
+					
+					listaDatiMese.add(datoG);
+					
+					sumTotGiorno=ServerUtility.aggiornaTotGenerale(sumTotGiorno,d.getTotaleOreGiorno());
+					sumOreViaggio=ServerUtility.aggiornaTotGenerale(sumOreViaggio, d.getOreViaggio());
+					sumDeltaOreViaggio=ServerUtility.aggiornaTotGenerale(sumDeltaOreViaggio, d.getDeltaOreViaggio());
+					sumOreTotali=ServerUtility.aggiornaTotGenerale(sumOreTotali, oreTotali);
+					sumOreRecupero=ServerUtility.aggiornaTotGenerale(sumOreRecupero, d.getOreAssenzeRecupero());
+					sumOreFerie=ServerUtility.aggiornaTotGenerale(sumOreFerie, d.getOreFerie());
+					sumOrePermesso=ServerUtility.aggiornaTotGenerale(sumOrePermesso, d.getOrePermesso());
+					sumOreStraordinario=ServerUtility.aggiornaTotGenerale(sumOreStraordinario, d.getOreStraordinario());
+					sumDeltaGiorno=ServerUtility.aggiornaTotGenerale(sumDeltaGiorno, d.getDeltaOreGiorno());
+				}
+				
+				//Elaboro il residuo per le ore a recupero
+				String monteOreRecuperoTotale= p.getOreRecupero();
+				List<DettaglioOreGiornaliere> listaGiorniM= new ArrayList<DettaglioOreGiornaliere>();			
+				listaMesi.clear();
+				if(!p.getFoglioOreMeses().isEmpty()){
+					listaMesi.addAll(p.getFoglioOreMeses());
+					for(FoglioOreMese f1:listaMesi){
+						if(f1.getMeseRiferimento().compareTo("Feb2013")!=0 && f1.getMeseRiferimento().compareTo(dataRif)!=0){//per omettere le ore inserite nel mese di prova di Feb2013 e quelle relative al mese in corso
+							listaGiorniM.clear();
+							if(!f1.getDettaglioOreGiornalieres().isEmpty()){
+								listaGiorniM.addAll(f1.getDettaglioOreGiornalieres());
+								for(DettaglioOreGiornaliere d:listaGiorniM){
+									monteOreRecuperoTotale=ServerUtility.aggiornaTotGenerale(d.getOreAssenzeRecupero(), monteOreRecuperoTotale);	
+								}		
+							}
+						}									
+					}		
+				}
+				
+				datoG=new DatiOreMese();
+				datoG.setUsername(p.getCognome()+" "+p.getNome());
+				datoG.setGiornoRiferimento("RESIDUI");
+				datoG.setTotGiorno("");
+				datoG.setOreViaggio("");
+				datoG.setDeltaOreViaggio("");
+				datoG.setOreTotali("");
+				datoG.setOreFerie("");
+				datoG.setOrePermesso("");
+				datoG.setOreRecupero(monteOreRecuperoTotale);
+				datoG.setOreStraordinario("");
+				datoG.setGiustificativo("");
+				datoG.setNoteAggiuntive("");
+				datoG.setDeltaGiornaliero("");
+				listaDatiMese.add(datoG);
+				
+				datoG=new DatiOreMese();
+				datoG.setUsername(p.getCognome()+" "+p.getNome());
+				datoG.setGiornoRiferimento("TOTALE");
+				datoG.setTotGiorno(sumTotGiorno);
+				datoG.setOreViaggio(sumOreViaggio);
+				datoG.setDeltaOreViaggio(sumDeltaOreViaggio);
+				datoG.setOreTotali(sumOreTotali);
+				datoG.setOreFerie(sumOreFerie);
+				datoG.setOrePermesso(sumOreFerie);
+				datoG.setOreRecupero(ServerUtility.aggiornaTotGenerale(sumOreRecupero, monteOreRecuperoTotale));
+				datoG.setOreStraordinario(sumOreStraordinario);
+				datoG.setGiustificativo("");
+				datoG.setNoteAggiuntive("");
+				datoG.setDeltaGiornaliero(sumDeltaGiorno);
+				listaDatiMese.add(datoG);
+				
+				//resetto a 0 il necessario
+				listaDettGiorno.clear();
+				listaMesi.clear();
+				
+				sumTotGiorno="0.00";
+				sumOreViaggio="0.00";
+				sumDeltaOreViaggio="0.00";
+				sumOreTotali="0.00";
+				sumOreRecupero="0.00";
+				sumOreFerie="0.00";
+				sumOrePermesso="0.00";
+				sumOreStraordinario="0.00";
+				sumDeltaGiorno="0.00";
+								
+			}
+		 
+		  
+		  session.createSQLQuery("truncate datioremese").executeUpdate();
+		    
+		  tx.commit();
+		  		  
+		  exportOk=exportListaDatiOreMese(listaDatiMese);
+		  
+		  if(exportOk)
+			  return true;
+		  else 
+			  return false;
+				 
+		} catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return null;
+		} finally {
+			session.close();
+		}
+			
+	}
 
 	
 	private static Boolean exportListaDatiOreMese(List<DatiOreMese> listaDatiMese) {
