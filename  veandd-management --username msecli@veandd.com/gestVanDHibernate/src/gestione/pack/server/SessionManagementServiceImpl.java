@@ -126,6 +126,7 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 	       return descrizione;
 	    }
 	
+	
 	@Override
 	public void logOut() {
 		HttpServletRequest request = this.getThreadLocalRequest();
@@ -135,14 +136,16 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 
 
 	@Override
-	public boolean setDataInSession(String mese, String sede, String username) {
+	public boolean setDataInSession(String mese, String sede, String username, String operazione) {
 		try {
 			 HttpServletRequest request = this.getThreadLocalRequest();
 		   	 HttpSession httpSession = request.getSession();
 		   	   
 		   	 httpSession.setAttribute("mese", mese);
-		   	 httpSession.setAttribute("username", "");
+		   	 httpSession.setAttribute("username", username);
 		   	 httpSession.setAttribute("sede", sede);
+		   	 httpSession.setAttribute("operazione", operazione);
+		   	 
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -152,13 +155,14 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 
 
 	@Override
-	public boolean setDataInSession(String dataRif, String username) {
+	public boolean setDataInSession(String dataRif, String username, String operazione) {
 		try {
 			 HttpServletRequest request = this.getThreadLocalRequest();
 		   	 HttpSession httpSession = request.getSession();
 		   	   
 		   	 httpSession.setAttribute("mese", dataRif);
 		   	 httpSession.setAttribute("username", username);
+		     httpSession.setAttribute("operazione", operazione);
 		   	 
 			return true;
 		} catch (Exception e) {

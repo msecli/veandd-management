@@ -45,16 +45,16 @@ public class PrintDataServlet extends HttpServlet  {
 
 		String dataRif = (String) httpSession.getAttribute("mese");
 		String username = (String) httpSession.getAttribute("username");
-		String sedeOperativa=(String) httpSession.getAttribute("sede");
+		String sedeOperativa=(String) httpSession.getAttribute("sede"); 
+		String operazione= (String) httpSession.getAttribute("operazione");
 		
-		if (username.compareTo("") == 0) {// se non ha valore allora stampo il
-											// report del riepilogo giornaliero
-											// altrimenti quello delle commesse
+		
+		if (operazione.compareTo("ALL") == 0) {
 
 			stampato = ServerUtility.PrintRiepilogoOreMese(dataRif, sedeOperativa);
 
 			if (stampato) {
-				List<DatiOreMese> lista = new ArrayList<DatiOreMese>();
+				//List<DatiOreMese> lista = new ArrayList<DatiOreMese>();
 
 				Session session = MyHibernateUtil.getSessionFactory()
 						.openSession();
@@ -95,7 +95,9 @@ public class PrintDataServlet extends HttpServlet  {
 			else
 				httpSession.setAttribute("result", stampato);
 		
-		}else{
+		}else
+		
+			if(operazione.compareTo("COMM")==0){
 			
 			String nome=username.substring(0, username.indexOf("."));
 			nome=nome.substring(0, 1).toUpperCase()+nome.substring(1,nome.length());
@@ -108,10 +110,9 @@ public class PrintDataServlet extends HttpServlet  {
 			stampato = ServerUtility.getRiepilogoGiornalieroCommesse(username, dataRif);
 
 			if (stampato) {
-				List<DatiOreMese> lista = new ArrayList<DatiOreMese>();
+				//List<DatiOreMese> lista = new ArrayList<DatiOreMese>();
 
-				Session session = MyHibernateUtil.getSessionFactory()
-						.openSession();
+				Session session = MyHibernateUtil.getSessionFactory().openSession();
 				Transaction tx = null;
 				tx = session.beginTransaction();
 
@@ -152,5 +153,56 @@ public class PrintDataServlet extends HttpServlet  {
 			else
 				httpSession.setAttribute("result", stampato);	//TODO effettuare il controllo sul return	
 		}
+		
+		else {
+			//operazione ONE
+			stampato = ServerUtility.PrintRiepilogoOreMese(dataRif, sedeOperativa, username);
+
+			if (stampato) {
+				//List<DatiOreMese> lista = new ArrayList<DatiOreMese>();
+
+				Session session = MyHibernateUtil.getSessionFactory()
+						.openSession();
+				Transaction tx = null;
+				tx = session.beginTransaction();
+
+				Map parameters = new HashMap();
+				parameters.put(JRHibernateQueryExecuterFactory.PARAMETER_HIBERNATE_SESSION,
+								session);// Parametri che usa il file jasper per
+										 // connettersi!
+				
+				JasperPrint jasperPrint;
+				FileInputStream fis;
+				BufferedInputStream bufferedInputStream;
+
+				try {
+
+					fis = new FileInputStream(Constanti.PATHAmazon+"JasperReport/ReportRiepilogoOre.jasper");
+										
+					bufferedInputStream = new BufferedInputStream(fis);
+
+					JasperReport jasperReport = (JasperReport) JRLoader
+							.loadObject(bufferedInputStream);
+
+					jasperPrint = JasperFillManager.fillReport(jasperReport,
+							parameters);
+
+					JasperExportManager.exportReportToPdfFile(jasperPrint,Constanti.PATHAmazon+"/FileStorage/RiepilogoOre_"+username+".pdf");
+
+				} catch (JRException e) {
+
+					e.printStackTrace();
+				}
+				tx.rollback();
+				session.close();
+				httpSession.setAttribute("result", stampato);
+			}
+			else
+				httpSession.setAttribute("result", stampato);
+				
+				
+				
+		}
+	
 	}
 }

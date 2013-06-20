@@ -1,6 +1,8 @@
 package gestione.pack.client.layout.panel;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
@@ -38,15 +40,75 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 		txtfldOreIntervallo.setMaxLength(5);
 		txtfldOreIntervallo.setItemId("oreLavoro");
 		txtfldOreIntervallo.setAllowBlank(false);
-		txtfldOreIntervallo.setRegex("[0-9]*[.]?[0-5]{1}[0-9]{1}|0.0");
+		txtfldOreIntervallo.setRegex("[0-9]*[.]?[0-5]{1}[0-9]{1}|0.0|0.00");
 		txtfldOreIntervallo.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+		txtfldOreIntervallo.addKeyListener(new KeyListener(){
+			 @Override
+		      public void componentKeyPress(ComponentEvent event) { 	  
+		    	int keyCode=event.getKeyCode();
+				if(keyCode==9){			
+					
+					if(txtfldOreIntervallo.getValue()==null)
+						txtfldOreIntervallo.setValue("0.00");
+					else{
+						String valore= txtfldOreIntervallo.getValue().toString();
+												
+						if(valore.compareTo("")==0)
+							valore ="0.00";
+						else
+							if(valore.indexOf(".")==-1)
+								valore=valore+".00";
+							else{
+								int index=valore.indexOf(".");
+								int length=valore.length();
+								
+								if(valore.substring(index+1, length).length()==1)
+									valore=valore+"0";		
+								else if(valore.substring(index+1, length).length()==0)
+									valore=valore+"00";
+							}
+						txtfldOreIntervallo.setValue(valore);
+					}
+				}	    		
+		      }
+		});
 		
 		txtfldOreViaggio.setFieldLabel("Ore Viaggio");
 		txtfldOreViaggio.setMaxLength(5);
 		txtfldOreViaggio.setItemId("oreViaggio");
 		txtfldOreViaggio.setAllowBlank(false);
-		txtfldOreIntervallo.setRegex("[0-9]*[.]?[0-5]{1}[0-9]{1}|0.0");
-		txtfldOreIntervallo.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+		txtfldOreViaggio.setRegex("[0-9]*[.]?[0-5]{1}[0-9]{1}|0.0|0.00");
+		txtfldOreViaggio.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+		txtfldOreViaggio.addKeyListener(new KeyListener(){
+			 @Override
+		      public void componentKeyPress(ComponentEvent event) { 	  
+		    	int keyCode=event.getKeyCode();
+				if(keyCode==9){			
+					
+					if(txtfldOreViaggio.getValue()==null)
+						txtfldOreViaggio.setValue("0.00");
+					else{
+						String valore= txtfldOreViaggio.getValue().toString();
+												
+						if(valore.compareTo("")==0)
+							valore ="0.00";
+						else
+							if(valore.indexOf(".")==-1)
+								valore=valore+".00";
+							else{
+								int index=valore.indexOf(".");
+								int length=valore.length();
+								
+								if(valore.substring(index+1, length).length()==1)
+									valore=valore+"0";		
+								else if(valore.substring(index+1, length).length()==0)
+									valore=valore+"00";
+							}
+						txtfldOreViaggio.setValue(valore);
+					}
+				}	    		
+		      }
+		});
 		
 		txtfldTotOreLavoro.setFieldLabel("Tot.Mese");
 		txtfldTotOreLavoro.setMaxLength(10);

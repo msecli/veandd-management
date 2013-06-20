@@ -27,9 +27,11 @@ import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.DatePickerEvent;
+import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -639,7 +641,8 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		    txtfld1I.getMessages().setRegexText("Deve essere nel formato 23:59.");
 		    if(statoRevisione==1)txtfld1I.setEnabled(false); 
 			txtfld1I.addKeyListener(new KeyListener() {
-			      public void componentKeyUp(ComponentEvent event) {		    		   
+				
+				  public void componentKeyUp(ComponentEvent event) {		    		   
 			    	  //carico il fldSet riferito ai giustificativi
 			    	  LayoutContainer lc= new LayoutContainer(); 
 			    	  LayoutContainer right= new LayoutContainer();
@@ -733,7 +736,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 							String valore= txtfld1I.getValue().toString();
 													
 							if(valore.compareTo("")==0)
-								valore ="0.00";
+								valore ="0:00";
 							else
 								if(valore.indexOf(":")==-1)
 									valore=valore+":00";
@@ -746,9 +749,87 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 									else if(valore.substring(index+1, length).length()==0)
 										valore=valore+"00";
 								}
-							txtfld1I.setValue(valore);
+									txtfld1I.setValue(valore);		
+							}	
+							LayoutContainer lc= new LayoutContainer(); 
+					    	  LayoutContainer right= new LayoutContainer();
+				   			  FldsetGiustificativi fldsetGiustificativo;
+				   			  lc=(LayoutContainer) getParent().getParent();
+				   			  right=(LayoutContainer) lc.getItemByItemId("right");
+				   			  fldsetGiustificativo=(FldsetGiustificativi) right.getItemByItemId("fldSetGiustificativi");
+					    	 		   			  
+					    	  if(hasValue(txtfld1I)){ //se 1I è corretto
+					    		   txtfld1I.clearInvalid();
+					    		   txtfld1I.setData("sorgente", "DIP");
+				    			   txtfld1U.setAllowBlank(false); //1U deve essere compilato
+				    			   if(hasValue(txtfld1U)){ //se 1U è corretto ricavo il parziale della differenza tra gli intervalli
+				    				   String sommaIntervalli= new String();  		   
+							    	   sommaIntervalli=ClientUtility.calcolaParzialeIntervalli(txtfld1I.getValue().toString(), txtfld1U.getValue().toString());
+							    	   
+							    	   if(sommaIntervalli.length()>5){//restituisce un errore se l'uscita è inferiore all'ingresso
+							    		   txtErrore.setVisible(true);
+							    		   txtErrore.setText(sommaIntervalli);
+							    		   btnConferma.setEnabled(false);
+							    		   disableField(txtfld1I);					    		   
+							    	   }
+							    	   else{	//se l'intervallo è corretto aggiorno il totale giornaliero 
+							    		   
+							    		   String totale= new String();
+							    		   String delta= new String();
+							    		   List<String> listaParziali= new ArrayList<String>();
+							    		   
+							    		   btnConferma.setEnabled(true);
+							    		   txtErrore.setVisible(false);
+							    		   enableField();
+							    		  
+							    		   txtfldSomma1.setValue(sommaIntervalli);
+							    	   	   listaParziali.add(txtfldSomma1.getValue().toString());
+							    		   listaParziali.add(txtfldSomma2.getValue().toString());
+							    		   listaParziali.add(txtfldSomma3.getValue().toString());
+							    		   listaParziali.add(txtfldSomma4.getValue().toString());
+							    		   listaParziali.add(txtfldSomma5.getValue().toString());
+							    	   
+							    		   totale=ClientUtility.calcolaTempo(listaParziali);
+							    		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
+							    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
+							    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
+							    		   if(d.compareTo("Sat")==0)
+							    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
+							    		   else
+							    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
+							    		   
+							    		   setFieldGiustificativo(fldsetGiustificativo, delta);    		   
+							    	   }
+				    			   } 
+				    		   } else { //se modifico 1I aggiorno il valore del totale generale azzerando il valore dell'intervallo
+				    			   List<String> listaParziali= new ArrayList<String>();
+				    			   String totale= new String();
+					    		   txtfldSomma1.setValue("0.0");
+					    		  
+					    		   txtfld1U.setAllowBlank(true);
+					    	   	   listaParziali.add(txtfldSomma1.getValue().toString());
+					    		   listaParziali.add(txtfldSomma2.getValue().toString());
+					    		   listaParziali.add(txtfldSomma3.getValue().toString());
+					    		   listaParziali.add(txtfldSomma4.getValue().toString());
+					    		   listaParziali.add(txtfldSomma5.getValue().toString());
+					    		   
+					    		   totale=ClientUtility.calcolaTempo(listaParziali);
+					    		  
+					    		   String delta=new String();
+				    			   delta=("-"+ fldsetGiustificativo.txtfldOrePreviste.getValue()+".00");
+					    		   if(totale.compareTo("0.00")!=0){
+					    			   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
+					    			   setFieldGiustificativo(fldsetGiustificativo, delta);
+					    		   }else enableFieldGiustificativo(fldsetGiustificativo);
+					    		   			    		   
+					    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
+					    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
+					    		   if(d.compareTo("Sat")==0)
+					    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
+					    		   else
+					    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);	   
+				    		   }
 						}
-					}	    		
 			      }    			      
 			 });		  
 			
@@ -845,7 +926,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 							String valore= txtfld1U.getValue().toString();
 													
 							if(valore.compareTo("")==0)
-								valore ="0.00";
+								valore ="0:00";
 							else
 								if(valore.indexOf(":")==-1)
 									valore=valore+":00";
@@ -859,7 +940,79 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 										valore=valore+"00";
 								}
 							txtfld1U.setValue(valore);
+							
 						}
+						 LayoutContainer lc= new LayoutContainer(); 
+			   			  FldsetGiustificativi fldsetGiustificativo= new FldsetGiustificativi();
+			   			  lc=(LayoutContainer) getParent().getParent();
+			   			  lc=(LayoutContainer) lc.getItemByItemId("right");
+			   			  fldsetGiustificativo=(FldsetGiustificativi) lc.getItemByItemId("fldSetGiustificativi");
+				    	  
+				    	  if(hasValue(txtfld1U)){
+				    		  txtfld1U.clearInvalid();
+				    		  txtfld1U.setData("sorgente", "DIP");
+			    			   txtfld1I.setAllowBlank(false);
+			    			   if(hasValue(txtfld1I)){
+			    				   String sommaIntervalli= new String();  		   
+						    	   sommaIntervalli=ClientUtility.calcolaParzialeIntervalli(txtfld1I.getValue().toString(), txtfld1U.getValue().toString());
+						    	   if(sommaIntervalli.length()>5){
+						    		   txtErrore.setVisible(true);
+						    		   txtErrore.setText(sommaIntervalli);
+						    		   btnConferma.setEnabled(false);
+						    		   disableField(txtfld1U);				    		   
+						    	   }else{	   
+						    		   String totale= new String();
+						    		   String delta= new String();
+						    		   List<String> listaParziali= new ArrayList<String>();
+						    		   
+						    		   btnConferma.setEnabled(true);
+						    		   txtErrore.setVisible(false);
+						    		   enableField();					    		   
+						    		   txtfldSomma1.setValue(sommaIntervalli);
+						    	   	   listaParziali.add(txtfldSomma1.getValue().toString());
+						    		   listaParziali.add(txtfldSomma2.getValue().toString());
+						    		   listaParziali.add(txtfldSomma3.getValue().toString());
+						    		   listaParziali.add(txtfldSomma4.getValue().toString());
+						    		   listaParziali.add(txtfldSomma5.getValue().toString());
+						    	   
+						    		   totale=ClientUtility.calcolaTempo(listaParziali);	  	
+						    		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
+						    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	   
+						    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
+						    		   if(d.compareTo("Sat")==0)
+						    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
+						    		   else
+						    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
+						    		   setFieldGiustificativo(fldsetGiustificativo, delta);
+						    	   }
+			    			   } 
+			    		   } else {
+			    			   List<String> listaParziali= new ArrayList<String>();
+			    			   String totale= new String();
+			    			   String delta=new String();
+			    			   txtfld1I.setAllowBlank(true);
+				    		   txtfldSomma1.setValue("0.0");
+				    		   delta=("-"+ fldsetGiustificativo.txtfldOrePreviste.getValue()+".00");
+				    		   
+				    		   listaParziali.add(txtfldSomma1.getValue().toString());
+				    		   listaParziali.add(txtfldSomma2.getValue().toString());
+				    		   listaParziali.add(txtfldSomma3.getValue().toString());
+				    		   listaParziali.add(txtfldSomma4.getValue().toString());
+				    		   listaParziali.add(txtfldSomma5.getValue().toString());
+
+				    		   totale=ClientUtility.calcolaTempo(listaParziali);
+				    		   if(totale.compareTo("0.00")!=0){
+				    			   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
+				    			   setFieldGiustificativo(fldsetGiustificativo, delta);
+				    		   }else enableFieldGiustificativo(fldsetGiustificativo);
+				    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
+				    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
+				    		   if(d.compareTo("Sat")==0)
+				    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
+				    		   else
+				    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
+				    		   
+			    		   }
 					}	    		
 			      }
 				 });
@@ -969,7 +1122,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 							String valore= txtfld2I.getValue().toString();
 													
 							if(valore.compareTo("")==0)
-								valore ="0.00";
+								valore ="0:00";
 							else
 								if(valore.indexOf(":")==-1)
 									valore=valore+":00";
@@ -984,6 +1137,90 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 								}
 							txtfld2I.setValue(valore);
 						}
+						 LayoutContainer lc= new LayoutContainer(); 
+			   			  FldsetGiustificativi fldsetGiustificativo= new FldsetGiustificativi();
+			   			  lc=(LayoutContainer) getParent().getParent();
+			   			  lc=(LayoutContainer) lc.getItemByItemId("right");
+			   			  fldsetGiustificativo=(FldsetGiustificativi) lc.getItemByItemId("fldSetGiustificativi");
+				    	  
+				    	  if(hasValue(txtfld2I)){
+				    		  txtfld2I.clearInvalid();
+				    		  txtfld2I.setData("sorgente", "DIP");
+				    		  //controllo che il valore di 2I sia maggiore dell'intervallo precedente
+				    		  if(!isMax(txtfld2I, txtfld1I)|| !isMax(txtfld2I, txtfld1U)){
+				    			  txtErrore.setVisible(true);
+				    			  txtErrore.setText("errore: Orario inferiore a quelle dell'intervallo precedente!");
+				    			  btnConferma.setEnabled(false);
+				    			  disableField(txtfld2I);
+				    			  
+				    		  }else{
+				    			  
+				    		  txtErrore.setVisible(false);  		    			  
+				    		  txtfld2U.setAllowBlank(false);
+				    		  enableField();
+				    		  
+			    			  if(hasValue(txtfld2U)){
+			    				   String sommaIntervalli= new String();  		   
+						    	   sommaIntervalli=ClientUtility.calcolaParzialeIntervalli(txtfld2I.getValue().toString(), txtfld2U.getValue().toString());
+						    	   if(sommaIntervalli.length()>5){
+						    		   txtErrore.setVisible(true);
+						    		   txtErrore.setText(sommaIntervalli);
+						    		   btnConferma.setEnabled(false);
+						    		   disableField(txtfld2I);
+						    	   }else{	   
+						    		   String totale= new String();
+						    		   String delta= new String();
+						    		   List<String> listaParziali= new ArrayList<String>();
+						    		   
+						    		   btnConferma.setEnabled(true);
+						    		   txtErrore.setVisible(false);
+						    		   enableField();
+						    		   txtfldSomma2.setValue(sommaIntervalli);
+						    	   	   listaParziali.add(txtfldSomma1.getValue().toString());
+						    		   listaParziali.add(txtfldSomma2.getValue().toString());
+						    		   listaParziali.add(txtfldSomma3.getValue().toString());
+						    		   listaParziali.add(txtfldSomma4.getValue().toString());
+						    		   listaParziali.add(txtfldSomma5.getValue().toString());
+						    	   
+						    		   totale=ClientUtility.calcolaTempo(listaParziali);
+						    		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
+						    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
+						    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);	 
+						    		   if(d.compareTo("Sat")==0)
+						    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
+						    		   else
+						    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
+						    		   setFieldGiustificativo(fldsetGiustificativo, delta);
+						    		   
+						    	   }
+			    			     } 
+			    			  }
+			    		   } else {
+			    			   List<String> listaParziali= new ArrayList<String>();
+			    			   String totale= new String();
+			    			   String delta=new String();
+				    		   txtfldSomma2.setValue("0.0");
+				    		   txtfld2U.setAllowBlank(true);
+				    		   delta=("-"+ fldsetGiustificativo.txtfldOrePreviste.getValue()+".00");
+				    	   	   listaParziali.add(txtfldSomma1.getValue().toString());
+				    		   listaParziali.add(txtfldSomma2.getValue().toString());
+				    		   listaParziali.add(txtfldSomma3.getValue().toString());
+				    		   listaParziali.add(txtfldSomma4.getValue().toString());
+				    		   listaParziali.add(txtfldSomma5.getValue().toString());
+
+				    		   totale=ClientUtility.calcolaTempo(listaParziali);
+				    		   if(totale.compareTo("0.00")!=0){
+				    			   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
+				    			   setFieldGiustificativo(fldsetGiustificativo, delta);
+				    		   }else enableFieldGiustificativo(fldsetGiustificativo);
+				    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
+				    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
+				    		   if(d.compareTo("Sat")==0)
+				    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
+				    		   else
+				    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
+				    		   
+			    		   }
 					}	    		
 			      }
 			});
@@ -1078,7 +1315,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 							String valore= txtfld2U.getValue().toString();
 													
 							if(valore.compareTo("")==0)
-								valore ="0.00";
+								valore ="0:00";
 							else
 								if(valore.indexOf(":")==-1)
 									valore=valore+":00";
@@ -1093,6 +1330,75 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 								}
 							txtfld2U.setValue(valore);
 						}
+						LayoutContainer lc= new LayoutContainer(); 
+			   			  FldsetGiustificativi fldsetGiustificativo= new FldsetGiustificativi();
+			   			  lc=(LayoutContainer) getParent().getParent();
+			   			  lc=(LayoutContainer) lc.getItemByItemId("right");
+			   			  fldsetGiustificativo=(FldsetGiustificativi) lc.getItemByItemId("fldSetGiustificativi");
+			   			   
+				    	  if(hasValue(txtfld2U)){
+				    		  txtfld2U.clearInvalid();
+				    		  txtfld2U.setData("sorgente", "DIP");
+			    			   txtfld2I.setAllowBlank(false);
+			    			   if(hasValue(txtfld2I)){
+			    				   String sommaIntervalli= new String();  		   
+						    	   sommaIntervalli=ClientUtility.calcolaParzialeIntervalli(txtfld2I.getValue().toString(), txtfld2U.getValue().toString());
+						    	   if(sommaIntervalli.length()>5){
+						    		   txtErrore.setVisible(true);
+						    		   txtErrore.setText(sommaIntervalli);
+						    		   btnConferma.setEnabled(false);
+						    		   disableField(txtfld2U);
+						    	   }else{	   
+						    		   String totale= new String();
+						    		   String delta= new String();
+						    		   List<String> listaParziali= new ArrayList<String>();
+						    		  
+						    		   btnConferma.setEnabled(true);
+						    		   txtErrore.setVisible(false);
+						    		   enableField();
+						    		   txtfldSomma2.setValue(sommaIntervalli);
+						    	   	   listaParziali.add(txtfldSomma1.getValue().toString());
+						    		   listaParziali.add(txtfldSomma2.getValue().toString());
+						    		   listaParziali.add(txtfldSomma3.getValue().toString());
+						    		   listaParziali.add(txtfldSomma4.getValue().toString());
+						    		   listaParziali.add(txtfldSomma5.getValue().toString());
+						    	   
+						    		   totale=ClientUtility.calcolaTempo(listaParziali);
+						    		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
+						    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
+						    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);	  
+						    		   if(d.compareTo("Sat")==0)
+						    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
+						    		   else
+						    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
+						    		   setFieldGiustificativo(fldsetGiustificativo, delta);
+						    	   }
+			    			   } 
+			    		   } else {
+			    			   List<String> listaParziali= new ArrayList<String>();
+			    			   String totale= new String();
+			    			   String delta=new String();
+			    			   txtfld2I.setAllowBlank(true);
+			    			   delta=("-"+ fldsetGiustificativo.txtfldOrePreviste.getValue()+".00");
+				    		   txtfldSomma2.setValue("0.0");    		   
+				    	   	   listaParziali.add(txtfldSomma1.getValue().toString());
+				    		   listaParziali.add(txtfldSomma2.getValue().toString());
+				    		   listaParziali.add(txtfldSomma3.getValue().toString());
+				    		   listaParziali.add(txtfldSomma4.getValue().toString());
+				    		   listaParziali.add(txtfldSomma5.getValue().toString());
+
+				    		   totale=ClientUtility.calcolaTempo(listaParziali);
+				    		   if(totale.compareTo("0.00")!=0){
+				    			   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
+				    			   setFieldGiustificativo(fldsetGiustificativo, delta);
+				    		   }else enableFieldGiustificativo(fldsetGiustificativo);
+				    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
+				    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
+				    		   if(d.compareTo("Sat")==0)
+				    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
+				    		   else
+				    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
+				    	  }
 					}	    		
 			      }
 			 });
@@ -1196,7 +1502,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 							String valore= txtfld3I.getValue().toString();
 													
 							if(valore.compareTo("")==0)
-								valore ="0.00";
+								valore ="0:00";
 							else
 								if(valore.indexOf(":")==-1)
 									valore=valore+":00";
@@ -1211,6 +1517,85 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 								}
 							txtfld3I.setValue(valore);
 						}
+						
+						LayoutContainer lc= new LayoutContainer(); 
+			   			  FldsetGiustificativi fldsetGiustificativo= new FldsetGiustificativi();
+			   			  lc=(LayoutContainer) getParent().getParent();
+			   			  lc=(LayoutContainer) lc.getItemByItemId("right");
+			   			  fldsetGiustificativo=(FldsetGiustificativi) lc.getItemByItemId("fldSetGiustificativi");
+				    	  if(hasValue(txtfld3I)){	
+				    		  txtfld3I.clearInvalid();
+				    		  txtfld3I.setData("sorgente", "DIP");
+				    		  if(!isMax(txtfld3I, txtfld2I)|| !isMax(txtfld3I, txtfld2U)){
+				    			  txtErrore.setVisible(true);
+				    			  txtErrore.setText("errore: Orario inferiore a quelle dell'intervallo precedente!");
+				    			  btnConferma.setEnabled(false);
+				    			  disableField(txtfld3I);
+				    		  }else{		    		  
+				    		  txtfld3U.setAllowBlank(false);
+				    		  txtErrore.setVisible(false);
+				    		  enableField();
+			    			   if(hasValue(txtfld3U)){
+			    				   String sommaIntervalli= new String();  		   
+						    	   sommaIntervalli=ClientUtility.calcolaParzialeIntervalli(txtfld3I.getValue().toString(), txtfld3U.getValue().toString());
+						    	   if(sommaIntervalli.length()>5){
+						    		   txtErrore.setVisible(true);
+						    		   txtErrore.setText(sommaIntervalli);
+						    		   btnConferma.setEnabled(false);
+						    		   disableField(txtfld3I);
+						    	   }else{	   
+						    		   String totale= new String();
+						    		   String delta= new String();
+						    		   List<String> listaParziali= new ArrayList<String>();
+						    		
+						    		   btnConferma.setEnabled(true);
+						    		   txtErrore.setVisible(false);
+						    		   enableField();
+						    		   txtfldSomma3.setValue(sommaIntervalli);
+						    	   	   listaParziali.add(txtfldSomma1.getValue().toString());
+						    		   listaParziali.add(txtfldSomma2.getValue().toString());
+						    		   listaParziali.add(txtfldSomma3.getValue().toString());
+						    		   listaParziali.add(txtfldSomma4.getValue().toString());
+						    		   listaParziali.add(txtfldSomma5.getValue().toString());
+						    	   
+						    		   totale=ClientUtility.calcolaTempo(listaParziali);
+						    		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
+						    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
+						    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);	   
+						    		   if(d.compareTo("Sat")==0)
+						    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
+						    		   else
+						    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
+						    		   setFieldGiustificativo(fldsetGiustificativo, delta);
+						    	   }
+			    			     } 
+			    			   }
+			    		   } else {
+			    			   List<String> listaParziali= new ArrayList<String>();
+			    			   String totale= new String();
+			    			   String delta=new String();
+			    			   txtfld3U.setAllowBlank(true);
+			    		       txtfldSomma3.setValue("0.0");
+			    		       delta=("-"+ fldsetGiustificativo.txtfldOrePreviste.getValue()+".00");
+				    	   	   listaParziali.add(txtfldSomma1.getValue().toString());
+				    		   listaParziali.add(txtfldSomma2.getValue().toString());
+				    		   listaParziali.add(txtfldSomma3.getValue().toString());
+				    		   listaParziali.add(txtfldSomma4.getValue().toString());
+				    		   listaParziali.add(txtfldSomma5.getValue().toString());
+
+				    		   totale=ClientUtility.calcolaTempo(listaParziali);
+				    		   if(totale.compareTo("0.00")!=0){
+				    			   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
+				    			   setFieldGiustificativo(fldsetGiustificativo, delta);
+				    		   }else enableFieldGiustificativo(fldsetGiustificativo);
+				    		   if(d.compareTo("Sat")==0)
+				    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
+				    		   else
+				    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
+				    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
+				    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
+				    		  
+			    		   }
 					}	    		
 			      }
 			 });
@@ -1305,7 +1690,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 							String valore= txtfld3U.getValue().toString();
 													
 							if(valore.compareTo("")==0)
-								valore ="0.00";
+								valore ="0:00";
 							else
 								if(valore.indexOf(":")==-1)
 									valore=valore+":00";
@@ -1320,6 +1705,75 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 								}
 							txtfld3U.setValue(valore);
 						}
+						 LayoutContainer lc= new LayoutContainer(); 
+			   			   FldsetGiustificativi fldsetGiustificativo= new FldsetGiustificativi();
+			   			   lc=(LayoutContainer) getParent().getParent();
+			   			   lc=(LayoutContainer) lc.getItemByItemId("right");
+			   			   fldsetGiustificativo=(FldsetGiustificativi) lc.getItemByItemId("fldSetGiustificativi");
+			   			   
+				    	  if(hasValue(txtfld3U)){
+				    		   txtfld3U.clearInvalid();
+				    		   txtfld3U.setData("sorgente", "DIP");
+			    			   txtfld3I.setAllowBlank(false);
+			    			   if(hasValue(txtfld3I)){
+			    				   String sommaIntervalli= new String();  		   
+						    	   sommaIntervalli=ClientUtility.calcolaParzialeIntervalli(txtfld3I.getValue().toString(), txtfld3U.getValue().toString());
+						    	   if(sommaIntervalli.length()>5){
+						    		   txtErrore.setVisible(true);
+						    		   txtErrore.setText(sommaIntervalli);
+						    		   btnConferma.setEnabled(false);
+						    		   disableField(txtfld3U);
+						    	   }else{	   
+						    		   String totale= new String();
+						    		   String delta= new String();
+						    		   List<String> listaParziali= new ArrayList<String>();
+						    		  
+						    		   btnConferma.setEnabled(true);
+						    		   txtErrore.setVisible(false);
+						    		   enableField();
+						    		   txtfldSomma3.setValue(sommaIntervalli);
+						    	   	   listaParziali.add(txtfldSomma1.getValue().toString());
+						    		   listaParziali.add(txtfldSomma2.getValue().toString());
+						    		   listaParziali.add(txtfldSomma3.getValue().toString());
+						    		   listaParziali.add(txtfldSomma4.getValue().toString());
+						    		   listaParziali.add(txtfldSomma5.getValue().toString());
+						    	   
+						    		   totale=ClientUtility.calcolaTempo(listaParziali);
+						    		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
+						    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
+						    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta); 
+						    		   if(d.compareTo("Sat")==0)
+						    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
+						    		   else
+						    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
+						    		   setFieldGiustificativo(fldsetGiustificativo, delta);
+						    	   }
+			    			   } 
+			    		   } else {
+			    			   List<String> listaParziali= new ArrayList<String>();
+			    			   String totale= new String();
+			    			   String delta=new String();
+			    			   txtfld3I.setAllowBlank(true);
+				    		   txtfldSomma3.setValue("0.0");
+				    		   delta=("-"+ fldsetGiustificativo.txtfldOrePreviste.getValue()+".00");
+				    	   	   listaParziali.add(txtfldSomma1.getValue().toString());
+				    		   listaParziali.add(txtfldSomma2.getValue().toString());
+				    		   listaParziali.add(txtfldSomma3.getValue().toString());
+				    		   listaParziali.add(txtfldSomma4.getValue().toString());
+				    		   listaParziali.add(txtfldSomma5.getValue().toString());
+				    	   
+				    		   totale=ClientUtility.calcolaTempo(listaParziali);
+				    		   if(totale.compareTo("0.00")!=0){
+				    			   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
+				    			   setFieldGiustificativo(fldsetGiustificativo, delta);
+				    		   }else enableFieldGiustificativo(fldsetGiustificativo);
+				    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
+				    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
+				    		   if(d.compareTo("Sat")==0)
+				    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
+				    		   else
+				    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);		    		   
+			    		   }
 					}	    		
 			      }
 			 });
@@ -1423,7 +1877,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 							String valore= txtfld4I.getValue().toString();
 													
 							if(valore.compareTo("")==0)
-								valore ="0.00";
+								valore ="0:00";
 							else
 								if(valore.indexOf(":")==-1)
 									valore=valore+":00";
@@ -1438,6 +1892,84 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 								}
 							txtfld4I.setValue(valore);
 						}
+						 LayoutContainer lc= new LayoutContainer(); 
+			   			  FldsetGiustificativi fldsetGiustificativo= new FldsetGiustificativi();
+			   			  lc=(LayoutContainer) getParent().getParent();
+			   			  lc=(LayoutContainer) lc.getItemByItemId("right");
+			   			  fldsetGiustificativo=(FldsetGiustificativi) lc.getItemByItemId("fldSetGiustificativi");
+			   			   
+				    	  if(hasValue(txtfld4I)){
+				    		  txtfld4I.clearInvalid();
+				    		  txtfld4I.setData("sorgente", "DIP");
+				    		  if(!isMax(txtfld4I, txtfld3I)|| !isMax(txtfld4I, txtfld3U)){
+				    			  txtErrore.setVisible(true);
+				    			  txtErrore.setText("errore: Orario inferiore a quelle dell'intervallo precedente!");
+				    			  btnConferma.setEnabled(false);
+				    			  disableField(txtfld4I);
+				    		  }else{
+				    		  txtErrore.setVisible(false); 
+			    			  txtfld4U.setAllowBlank(false);
+			    			  enableField();
+			    			   if(hasValue(txtfld4U)){
+			    				   String sommaIntervalli= new String();  		   
+						    	   sommaIntervalli=ClientUtility.calcolaParzialeIntervalli(txtfld4I.getValue().toString(), txtfld4U.getValue().toString());
+						    	   if(sommaIntervalli.length()>5){
+						    		   txtErrore.setVisible(true);
+						    		   txtErrore.setText(sommaIntervalli);
+						    		   btnConferma.setEnabled(false);
+						    		   disableField(txtfld4I);
+						    	   }else{	   
+						    		   String totale= new String();
+						    		   String delta= new String();
+						    		   List<String> listaParziali= new ArrayList<String>();
+						    		  
+						    		   btnConferma.setEnabled(true);
+						    		   txtErrore.setVisible(false);
+						    		   enableField();
+						    		   txtfldSomma4.setValue(sommaIntervalli);
+						    	   	   listaParziali.add(txtfldSomma1.getValue().toString());
+						    		   listaParziali.add(txtfldSomma2.getValue().toString());
+						    		   listaParziali.add(txtfldSomma3.getValue().toString());
+						    		   listaParziali.add(txtfldSomma4.getValue().toString());
+						    		   listaParziali.add(txtfldSomma5.getValue().toString());
+						    	   
+						    		   totale=ClientUtility.calcolaTempo(listaParziali);
+						    		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
+						    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
+						    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);   
+						    		   if(d.compareTo("Sat")==0)
+						    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
+						    		   else
+						    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
+						    		   setFieldGiustificativo(fldsetGiustificativo, delta);
+						    	   }
+			    			     } 
+			    			   }
+			    		   } else {
+			    			   List<String> listaParziali= new ArrayList<String>();
+			    			   String totale= new String();
+			    			   String delta=new String();
+			    			   txtfld4U.setAllowBlank(true);
+				    		   txtfldSomma4.setValue("0.0");
+				    		   delta=("-"+ fldsetGiustificativo.txtfldOrePreviste.getValue()+".00");
+				    	   	   listaParziali.add(txtfldSomma1.getValue().toString());
+				    		   listaParziali.add(txtfldSomma2.getValue().toString());
+				    		   listaParziali.add(txtfldSomma3.getValue().toString());
+				    		   listaParziali.add(txtfldSomma4.getValue().toString());
+				    		   listaParziali.add(txtfldSomma5.getValue().toString());
+				    	   
+				    		   totale=ClientUtility.calcolaTempo(listaParziali);
+				    		   if(totale.compareTo("0.00")!=0){
+				    			   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
+				    			   setFieldGiustificativo(fldsetGiustificativo, delta);
+				    		   }else enableFieldGiustificativo(fldsetGiustificativo);
+				    		   if(d.compareTo("Sat")==0)
+				    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
+				    		   else
+				    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
+				    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
+				    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);	    		  
+			    		   }
 					}	    		
 			      }
 			 });
@@ -1534,7 +2066,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 							String valore= txtfld4U.getValue().toString();
 													
 							if(valore.compareTo("")==0)
-								valore ="0.00";
+								valore ="0:00";
 							else
 								if(valore.indexOf(":")==-1)
 									valore=valore+":00";
@@ -1549,6 +2081,77 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 								}
 							txtfld4U.setValue(valore);
 						}
+						LayoutContainer lc= new LayoutContainer(); 
+			   			   FldsetGiustificativi fldsetGiustificativo= new FldsetGiustificativi();
+			   			   lc=(LayoutContainer) getParent().getParent();
+			   			   lc=(LayoutContainer) lc.getItemByItemId("right");
+			   			   fldsetGiustificativo=(FldsetGiustificativi) lc.getItemByItemId("fldSetGiustificativi");
+			   			   
+				    	  if(hasValue(txtfld4U)){
+				    		   txtfld4U.clearInvalid();
+				    		   txtfld4U.setData("sorgente", "DIP");
+			    			   txtfld4I.setAllowBlank(false);
+			    			   if(hasValue(txtfld4I)){
+			    				   String sommaIntervalli= new String();  		   
+						    	   sommaIntervalli=ClientUtility.calcolaParzialeIntervalli(txtfld4I.getValue().toString(), txtfld4U.getValue().toString());
+						    	   if(sommaIntervalli.length()>5){
+						    		   txtErrore.setVisible(true);
+						    		   txtErrore.setText(sommaIntervalli);
+						    		   btnConferma.setEnabled(false);
+						    		   disableField(txtfld4U);
+						    	   }else{	   
+						    		   String totale= new String();
+						    		   String delta= new String();
+						    		   List<String> listaParziali= new ArrayList<String>();
+						    		  
+						    		   btnConferma.setEnabled(true);
+						    		   txtErrore.setVisible(false);
+						    		   enableField();
+						    		   txtfldSomma4.setValue(sommaIntervalli);
+						    	   	   listaParziali.add(txtfldSomma1.getValue().toString());
+						    		   listaParziali.add(txtfldSomma2.getValue().toString());
+						    		   listaParziali.add(txtfldSomma3.getValue().toString());
+						    		   listaParziali.add(txtfldSomma4.getValue().toString());
+						    		   listaParziali.add(txtfldSomma5.getValue().toString());
+						    	   
+						    		   totale=ClientUtility.calcolaTempo(listaParziali);
+						    		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
+						    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
+						    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);   
+						    		   if(d.compareTo("Sat")==0)
+						    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
+						    		   else
+						    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
+						    		   setFieldGiustificativo(fldsetGiustificativo, delta);
+						    	   }
+			    			   } 
+			    		   } else {
+			    			   List<String> listaParziali= new ArrayList<String>();
+			    			   String totale= new String();
+			    			   String delta=new String();
+			    			   txtfld4I.setAllowBlank(true);
+				    		   txtfldSomma4.setValue("0.0");
+				    		   delta=("-"+ fldsetGiustificativo.txtfldOrePreviste.getValue()+".00");
+				    	   	   listaParziali.add(txtfldSomma1.getValue().toString());
+				    		   listaParziali.add(txtfldSomma2.getValue().toString());
+				    		   listaParziali.add(txtfldSomma3.getValue().toString());
+				    		   listaParziali.add(txtfldSomma4.getValue().toString());
+				    		   listaParziali.add(txtfldSomma5.getValue().toString());
+				    	   
+				    		   
+				    		   totale=ClientUtility.calcolaTempo(listaParziali);
+				    		   if(totale.compareTo("0.00")!=0){
+				    			   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
+				    			   setFieldGiustificativo(fldsetGiustificativo, delta);
+				    		   }else enableFieldGiustificativo(fldsetGiustificativo);
+				    		   if(d.compareTo("Sat")==0)
+				    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
+				    		   else
+				    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
+				    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
+				    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
+				    		  
+			    		   }	
 					}	    		
 			      }
 			 });
@@ -1655,7 +2258,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 							String valore= txtfld5I.getValue().toString();
 													
 							if(valore.compareTo("")==0)
-								valore ="0.00";
+								valore ="0:00";
 							else
 								if(valore.indexOf(":")==-1)
 									valore=valore+":00";
@@ -1766,7 +2369,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 							String valore= txtfld5U.getValue().toString();
 													
 							if(valore.compareTo("")==0)
-								valore ="0.00";
+								valore ="0:00";
 							else
 								if(valore.indexOf(":")==-1)
 									valore=valore+":00";
@@ -2679,6 +3282,35 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 						smplcmbxAltroGiustificativo.setEmptyText("Giustificativo..");
 					}
 				}	
+				
+				 @Override
+			      public void componentKeyPress(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfldOreViaggio.getValue()==null)
+							txtfldOreViaggio.setValue("0.00");
+						else{
+							String valore= txtfldOreViaggio.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(".")==-1)
+									valore=valore+".00";
+								else{
+									int index=valore.indexOf(".");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfldOreViaggio.setValue(valore);
+						}
+					}	    		
+			      }
 			});
 			
 			txtfldDeltaViaggio.setEnabled(false);
@@ -2733,6 +3365,36 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			txtfldRecupero.setFieldLabel("Ore a Recupero");
 			//chbxRecupero.setLabelSeparator("");
 			if(statoRevisione==1)txtfldRecupero.setEnabled(false);
+			txtfldRecupero.addKeyListener(new KeyListener(){
+				 @Override
+			      public void componentKeyPress(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfldFerie.getValue()==null)
+							txtfldFerie.setValue("0.00");
+						else{
+							String valore= txtfldFerie.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(".")==-1)
+									valore=valore+".00";
+								else{
+									int index=valore.indexOf(".");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfldFerie.setValue(valore);
+						}
+					}	    		
+			      }
+			});
 						
 			//smplcmbxAltroGiustificativo.setEnabled(true);
 			smplcmbxAltroGiustificativo.setEmptyText("Giustificativo..");
@@ -2751,6 +3413,36 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			txtfldFerie.setRegex("[-]{1}[0-9]+[.]?[0-5]{1}[0-9]{1}|0.00|0.0");
 			txtfldFerie.getMessages().setRegexText("Deve essere un numero nel formato -99.59");
 			if(statoRevisione==1)txtfldFerie.setEnabled(false);
+			txtfldFerie.addKeyListener(new KeyListener(){
+				 @Override
+			      public void componentKeyPress(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfldFerie.getValue()==null)
+							txtfldFerie.setValue("0.00");
+						else{
+							String valore= txtfldFerie.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(".")==-1)
+									valore=valore+".00";
+								else{
+									int index=valore.indexOf(".");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfldFerie.setValue(valore);
+						}
+					}	    		
+			      }
+			});
 			
 			txtfldPermesso.setValue(result.getOrePermesso());
 			txtfldPermesso.setAllowBlank(false);
@@ -2759,6 +3451,36 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			txtfldPermesso.setRegex("[-]{1}[0-9]+[.]?[0-5]{1}[0-9]{1}|0.00|0.0");
 			txtfldPermesso.getMessages().setRegexText("Deve essere un numero nel formato -99.59");
 			if(statoRevisione==1)txtfldPermesso.setEnabled(false);
+			txtfldPermesso.addKeyListener(new KeyListener(){
+				 @Override
+			      public void componentKeyPress(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfldPermesso.getValue()==null)
+							txtfldPermesso.setValue("0.00");
+						else{
+							String valore= txtfldPermesso.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(".")==-1)
+									valore=valore+".00";
+								else{
+									int index=valore.indexOf(".");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfldPermesso.setValue(valore);
+						}
+					}	    		
+			      }
+			});
 			
 			txtfldStraordinario.setValue(result.getOreStraordinario());
 			txtfldStraordinario.setAllowBlank(false);
@@ -2768,6 +3490,37 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			txtfldStraordinario.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
 			txtfldStraordinario.setWidth(50);
 			if(statoRevisione==1)txtfldStraordinario.setEnabled(false);
+			txtfldStraordinario.addKeyListener(new KeyListener(){
+				 @Override
+			      public void componentKeyPress(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfldStraordinario.getValue()==null)
+							txtfldStraordinario.setValue("0.00");
+						else{
+							String valore= txtfldStraordinario.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(".")==-1)
+									valore=valore+".00";
+								else{
+									int index=valore.indexOf(".");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfldStraordinario.setValue(valore);
+						}
+					}	    		
+			      }
+			});
+
 			
 			txtrNoteAggiuntive.setEmptyText("Note Aggiuntive..");
 			txtrNoteAggiuntive.setHeight(70);

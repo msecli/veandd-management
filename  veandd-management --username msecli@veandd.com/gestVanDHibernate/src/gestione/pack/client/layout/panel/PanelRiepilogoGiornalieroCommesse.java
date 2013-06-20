@@ -97,7 +97,7 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 				
 			    dataRif=mese+anno;
 			    
-				SessionManagementService.Util.getInstance().setDataInSession(dataRif, username, new AsyncCallback<Boolean>() {
+				SessionManagementService.Util.getInstance().setDataInSession(dataRif, username, "COMM", new AsyncCallback<Boolean>() {
 
 					@Override
 					public void onFailure(Throwable caught) {
