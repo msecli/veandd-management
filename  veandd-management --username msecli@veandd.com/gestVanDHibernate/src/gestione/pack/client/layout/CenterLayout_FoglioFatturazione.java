@@ -1087,8 +1087,7 @@ public CenterLayout_FoglioFatturazione(){}
 						String numeroFormattato= new String();
 						numeroFormattato=number.format(riep.getOreTotali());
 						totOre=	ClientUtility.aggiornaTotGenerale(totOre, numeroFormattato);
-					}
-						
+					}					
 				}
 				if(!nuovo){
 					

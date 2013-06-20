@@ -769,6 +769,35 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);		    		   
 		    		   }
 			      }
+			      
+			      @Override
+			      public void componentKeyPress(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfld1I.getValue()==null)
+							txtfld1I.setValue("0:00");
+						else{
+							String valore= txtfld1I.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(":")==-1)
+									valore=valore+":00";
+								else{
+									int index=valore.indexOf(":");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfld1I.setValue(valore);
+						}
+					}	    		
+			      }
 			 });		    
 		    
 			txtfld1U.setItemId("1U");
@@ -849,6 +878,35 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);    		   
 		    		   }
 			    	 }
+			      
+			      @Override
+			      public void componentKeyPress(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfld1U.getValue()==null)
+							txtfld1U.setValue("0:00");
+						else{
+							String valore= txtfld1U.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(":")==-1)
+									valore=valore+":00";
+								else{
+									int index=valore.indexOf(":");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfld1U.setValue(valore);
+						}
+					}	    		
+			      }
 				 });
 
 			txtfld2I.setItemId("2I");
@@ -942,6 +1000,35 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			    		   
 		    		   }
 		    	  }
+			      
+			      @Override
+			      public void componentKeyPress(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfld2I.getValue()==null)
+							txtfld2I.setValue("0:00");
+						else{
+							String valore= txtfld2I.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(":")==-1)
+									valore=valore+":00";
+								else{
+									int index=valore.indexOf(":");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfld2I.setValue(valore);
+						}
+					}	    		
+			      }
 			});
 			
 			txtfld2U.setItemId("2U");
@@ -1021,6 +1108,35 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
 			    	  }
 		    	   }
+			      
+			      @Override
+			      public void componentKeyPress(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfld2U.getValue()==null)
+							txtfld2U.setValue("0:00");
+						else{
+							String valore= txtfld2U.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(":")==-1)
+									valore=valore+":00";
+								else{
+									int index=valore.indexOf(":");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfld2U.setValue(valore);
+						}
+					}	    		
+			      }
 			 });
 
 			txtfld3I.setItemId("3I");
@@ -1109,6 +1225,35 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			    		  
 		    		   }
 		    	   }
+			      
+			      @Override
+			      public void componentKeyPress(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfld3I.getValue()==null)
+							txtfld3I.setValue("0:00");
+						else{
+							String valore= txtfld3I.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(":")==-1)
+									valore=valore+":00";
+								else{
+									int index=valore.indexOf(":");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfld3I.setValue(valore);
+						}
+					}	    		
+			      }
 			 });
 
 			txtfld3U.setItemId("3U");
@@ -1188,6 +1333,35 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);		    		   
 		    		   }
 		    	   }
+			      
+			      @Override
+			      public void componentKeyPress(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfld3U.getValue()==null)
+							txtfld3U.setValue("0:00");
+						else{
+							String valore= txtfld3U.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(":")==-1)
+									valore=valore+":00";
+								else{
+									int index=valore.indexOf(":");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfld3U.setValue(valore);
+						}
+					}	    		
+			      }
 			 });
 
 			txtfld4I.setItemId("4I");
@@ -1277,6 +1451,35 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			    		  
 		    		   }
 		    	   }
+			      
+			      @Override
+			      public void componentKeyPress(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfld4I.getValue()==null)
+							txtfld4I.setValue("0:00");
+						else{
+							String valore= txtfld4I.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(":")==-1)
+									valore=valore+":00";
+								else{
+									int index=valore.indexOf(":");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfld4I.setValue(valore);
+						}
+					}	    		
+			      }
 			 });
 
 			txtfld4U.setItemId("4U");
@@ -1357,6 +1560,35 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
 			    		  
 		    		   }		    	     
+			      }
+			      
+			      @Override
+			      public void componentKeyPress(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfld4U.getValue()==null)
+							txtfld4U.setValue("0:00");
+						else{
+							String valore= txtfld4U.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(":")==-1)
+									valore=valore+":00";
+								else{
+									int index=valore.indexOf(":");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfld4U.setValue(valore);
+						}
+					}	    		
 			      }
 			 });
 
@@ -1450,6 +1682,35 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			    		   
 		    		   }
 		    	   }
+			      
+			      @Override
+			      public void componentKeyPress(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfld5I.getValue()==null)
+							txtfld5I.setValue("0:00");
+						else{
+							String valore= txtfld5I.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(":")==-1)
+									valore=valore+":00";
+								else{
+									int index=valore.indexOf(":");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfld5I.setValue(valore);
+						}
+					}	    		
+			      }
 			 });
 
 			txtfld5U.setItemId("5U");
@@ -1532,6 +1793,35 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			    		   
 		    		   }
 		    	   }
+			      
+			      @Override
+			      public void componentKeyPress(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfld5U.getValue()==null)
+							txtfld5U.setValue("0:00");
+						else{
+							String valore= txtfld5U.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(":")==-1)
+									valore=valore+":00";
+								else{
+									int index=valore.indexOf(":");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfld5U.setValue(valore);
+						}
+					}	    		
+			      }
 			 });
 
 			FormLayout layout = new FormLayout();
