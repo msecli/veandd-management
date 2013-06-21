@@ -400,37 +400,6 @@ public class ServerUtility {
 			
 			return totale;
 					
-		/*String totale= new String();
-		String totA= new String();
-		String totB=new String();
-		String giornoA=new String();
-		String giornoB=new String();
-		int a, b, totMinuti;
-
-		totA=totOre.substring(0,totOre.indexOf("."));
-		totB=totOre.substring(totOre.indexOf(".")+1, totOre.length());	
-		
-		if(totaleOreGiorno.indexOf(".")!=-1){
-			giornoA= totaleOreGiorno.substring(0, totaleOreGiorno.indexOf("."));
-			giornoB= totaleOreGiorno.substring(totaleOreGiorno.indexOf(".")+1, totaleOreGiorno.length());
-		}else{
-			giornoA= totaleOreGiorno.substring(0, totaleOreGiorno.length());
-			giornoB= "0.0";
-			
-		}
-		
-		a=Integer.parseInt(totA)*60+ Integer.parseInt(giornoA)*60;
-		b=Integer.parseInt(totB) + Integer.parseInt(giornoB);
-		totMinuti=a+b;
-		
-		totA=String.valueOf(totMinuti/60);
-		if(totMinuti%60 < 10)
-			totB=String.valueOf("0"+totMinuti%60);
-		else
-			totB=String.valueOf(totMinuti%60);
-			
-		totale=(totA+"."+totB);
-		return totale;*/
 	}
 
 	

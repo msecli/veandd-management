@@ -180,13 +180,14 @@ public CenterLayout_FoglioFatturazione(){}
 			}
 		});
 				
-		//Date d= new Date();
-		//String data= d.toString();
-		//String mese= ClientUtility.meseToLong(ClientUtility.traduciMeseToIt(data.substring(4, 7)));
-		//String anno= data.substring(data.length()-4, data.length());
+		Date d= new Date();
+		String data= d.toString();
+		String mese= ClientUtility.meseToLong(ClientUtility.traduciMeseToIt(data.substring(4, 7)));
+		String anno= data.substring(data.length()-4, data.length());
 			
 		txtfldUsername.setVisible(false);
 		
+		smplcmbxMese.setWidth(110);
 		smplcmbxMese.setFieldLabel("Mese");
 		smplcmbxMese.setName("mese");
 		smplcmbxMese.setEmptyText("Mese..");
@@ -194,6 +195,7 @@ public CenterLayout_FoglioFatturazione(){}
 		 for(String l : DatiComboBox.getMese()){
 			 smplcmbxMese.add(l);}
 		smplcmbxMese.setTriggerAction(TriggerAction.ALL);
+		smplcmbxMese.setSimpleValue(mese);
 			
 		smplcmbxAnno.setFieldLabel("Anno");
 		smplcmbxAnno.setName("anno");
@@ -205,7 +207,7 @@ public CenterLayout_FoglioFatturazione(){}
 			 smplcmbxAnno.select(1);
 		 }
 		smplcmbxAnno.setTriggerAction(TriggerAction.ALL);
-
+		smplcmbxAnno.setSimpleValue(anno);
 		
 		smplcmbxPM = new SimpleComboBox<String>();
 		smplcmbxPM.setFieldLabel("Project Manager");
@@ -369,6 +371,7 @@ public CenterLayout_FoglioFatturazione(){}
 		           }
 		         }
 		    }); 		   
+		    
 		    
 		    ContentPanel cntpnlGrid= new ContentPanel();
 		    cntpnlGrid.setBodyBorder(false);  
@@ -765,7 +768,7 @@ public CenterLayout_FoglioFatturazione(){}
 			    	  		
 			    	  		txtSalTotale.setText("0.00");
 			    	  		
-			    	  		variazionePCL=String.valueOf(Float.valueOf(txtfldVariazionePCL.getValue().toString())*(-1));
+			    	  		variazionePCL=number.format(Float.valueOf(txtfldVariazionePCL.getValue().toString())*(-1));
 			    	  		scaricate=ClientUtility.aggiornaTotGenerale(txtfldOreDaFatturare.getValue().toString(), txtfldVariazioneSAL.getValue().toString());
 			    	  		scaricate=ClientUtility.aggiornaTotGenerale(scaricate, variazionePCL);
 			    	  		txtfldOreScaricate.setValue(scaricate);
@@ -799,12 +802,15 @@ public CenterLayout_FoglioFatturazione(){}
 			    	  		String delta= new String();
 			    	  		String variazionePCL= new String();
 			    	  		String totaleEuro=new String();
+			    	  		String decimali= new String();
 			    	  		
 			    	  		txtPclTotale.setText("0.00");
 			    	  		NumberFormat number = NumberFormat.getFormat("0.00");
 			    	  		//number=NumberFormat.getCurrencyFormat("EUR");
 			    	  		
-			    	  		variazionePCL=String.valueOf(Float.valueOf(txtfldVariazionePCL.getValue().toString())*(-1));
+			    	  		//variazionePCL=String.valueOf(Float.valueOf(txtfldVariazionePCL.getValue().toString())*(-1));
+			    	  		variazionePCL=number.format(Float.valueOf(txtfldVariazionePCL.getValue().toString())*(-1));
+			    	  					    	  		
 			    	  		scaricate=ClientUtility.aggiornaTotGenerale(txtfldOreDaFatturare.getValue().toString(), txtfldVariazioneSAL.getValue().toString());
 			    	  		scaricate=ClientUtility.aggiornaTotGenerale(scaricate, variazionePCL);
 			    	  		txtfldOreScaricate.setValue(scaricate);
@@ -959,6 +965,7 @@ public CenterLayout_FoglioFatturazione(){}
 		private List<ColumnConfig> createColumns() {
 			
 			List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
+			final NumberFormat number = NumberFormat.getFormat("0.00");
 			
 			ColumnConfig column=new ColumnConfig();		
 		    column.setId("numeroCommessa");  
@@ -978,7 +985,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    column.setId("sal");  
 		    column.setHeader("Var.SAL");  
 		    column.setWidth(60);  
-		    column.setRowHeader(true);  
+		    column.setRowHeader(true); 
 		    configs.add(column); 
 		    
 		    column=new ColumnConfig();		

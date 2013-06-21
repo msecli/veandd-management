@@ -14,8 +14,6 @@
  *******************************************************************************/
 package gestione.pack.server;
 
-import java.util.Date;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 

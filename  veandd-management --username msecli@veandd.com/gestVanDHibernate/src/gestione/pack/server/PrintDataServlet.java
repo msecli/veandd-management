@@ -187,7 +187,8 @@ public class PrintDataServlet extends HttpServlet  {
 					jasperPrint = JasperFillManager.fillReport(jasperReport,
 							parameters);
 
-					JasperExportManager.exportReportToPdfFile(jasperPrint,Constanti.PATHAmazon+"/FileStorage/RiepilogoOre_"+username+".pdf");
+					
+					JasperExportManager.exportReportToPdfFile(jasperPrint,Constanti.PATHAmazon+"FileStorage/RiepilogoOre_"+username+".pdf");
 
 				} catch (JRException e) {
 

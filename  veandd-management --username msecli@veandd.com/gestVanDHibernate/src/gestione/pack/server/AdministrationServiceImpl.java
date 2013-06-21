@@ -15,6 +15,8 @@ F * Copyright 2011 Google Inc. All Rights Reserved.
 package gestione.pack.server;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -3386,8 +3388,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		try {
 			tx = session.beginTransaction();
 			
-			listaCommesse = (List<Commessa>) session.createQuery("from Commessa where matricolaPM=:pm")
-					.setParameter("pm", pm).list() ; //seleziono tuttle le commesse per pm indicato
+			listaCommesse = (List<Commessa>) session.createQuery("from Commessa where matricolaPM=:pm or matricolaPM=:tutti")
+					.setParameter("pm", pm).setParameter("tutti", "Tutti").list() ; //seleziono tuttle le commesse per pm indicato
 
 			for (Commessa c : listaCommesse) {
 				if (c.getAttivitas().size() > 0)
@@ -4025,6 +4027,12 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Float pcl=(float) 0.0;
 		numEstensione=numEstensione.toLowerCase();
 		
+		
+		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+	    formatSymbols.setDecimalSeparator('.');
+	    String pattern="0.00";
+	    DecimalFormat d= new DecimalFormat(pattern,formatSymbols);
+	    
 		if(numCommessa.compareTo("")!=0){
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
@@ -4120,9 +4128,11 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			String pclTotale="0.00";
 			
 			for(RiepilogoOreTotaliCommesse r: listaRiep){
+				String salF=d.format(r.get("sal"));
+				String pclF=d.format(r.get("pcl"));
 				oreEseguite=ServerUtility.aggiornaTotGenerale(oreEseguite, r.getOreOrdine());	
-				salTotale=ServerUtility.aggiornaTotGenerale(salTotale, String.valueOf(r.get("sal")));
-				pclTotale=ServerUtility.aggiornaTotGenerale(pclTotale, String.valueOf(r.get("pcl")));
+				salTotale=ServerUtility.aggiornaTotGenerale(salTotale, salF);
+				pclTotale=ServerUtility.aggiornaTotGenerale(pclTotale, pclF);
 			}
 			riep= new RiepilogoOreTotaliCommesse("TOTALE", "", Float.valueOf(salTotale), Float.valueOf(pclTotale), "", oreEseguite , Float.valueOf("0.00"), "");
 			listaRiep.add(riep);

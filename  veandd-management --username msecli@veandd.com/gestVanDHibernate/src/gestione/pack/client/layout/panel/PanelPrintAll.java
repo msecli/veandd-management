@@ -281,7 +281,7 @@ public class PanelPrintAll extends LayoutContainer {
 		@Override
 		public void onSubmitComplete(final SubmitCompleteEvent event) {
 			
-			String nome= cmbxDipendente.getValue().get("username").toString();
+			String nome= cmbxDipendente.getValue().getUsername().toString();
 			
 			Window.open("/FileStorage/RiepilogoOre_"+nome+".pdf", "_blank", "1");
 			/*if(event.getResults().isEmpty()){
