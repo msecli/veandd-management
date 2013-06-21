@@ -726,7 +726,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			      
 			      //Uso il TAB per un auto completamento dei campi ore
 			      @Override
-			      public void componentKeyPress(ComponentEvent event) { 	  
+			      public void componentKeyDown(ComponentEvent event) { 	  
 			    	int keyCode=event.getKeyCode();
 					if(keyCode==9){			
 						
@@ -916,7 +916,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			    	 }
 			      
 			      @Override
-			      public void componentKeyPress(ComponentEvent event) { 	  
+			      public void componentKeyDown(ComponentEvent event) { 	  
 			    	int keyCode=event.getKeyCode();
 					if(keyCode==9){			
 						
@@ -1112,7 +1112,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		    	  }
 			      
 			      @Override
-			      public void componentKeyPress(ComponentEvent event) { 	  
+			      public void componentKeyDown(ComponentEvent event) { 	  
 			    	int keyCode=event.getKeyCode();
 					if(keyCode==9){			
 						
@@ -1305,7 +1305,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		    	   }
 			      
 			      @Override
-			      public void componentKeyPress(ComponentEvent event) { 	  
+			      public void componentKeyDown(ComponentEvent event) { 	  
 			    	int keyCode=event.getKeyCode();
 					if(keyCode==9){			
 						
@@ -1492,7 +1492,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		    	   }
 			      
 			      @Override
-			      public void componentKeyPress(ComponentEvent event) { 	  
+			      public void componentKeyDown(ComponentEvent event) { 	  
 			    	int keyCode=event.getKeyCode();
 					if(keyCode==9){			
 						
@@ -1680,7 +1680,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		    	   }
 			      
 			      @Override
-			      public void componentKeyPress(ComponentEvent event) { 	  
+			      public void componentKeyDown(ComponentEvent event) { 	  
 			    	int keyCode=event.getKeyCode();
 					if(keyCode==9){			
 						
@@ -1867,7 +1867,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		    	   }
 			      
 			      @Override
-			      public void componentKeyPress(ComponentEvent event) { 	  
+			      public void componentKeyDown(ComponentEvent event) { 	  
 			    	int keyCode=event.getKeyCode();
 					if(keyCode==9){			
 						
@@ -2056,7 +2056,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			      }
 			      
 			      @Override
-			      public void componentKeyPress(ComponentEvent event) { 	  
+			      public void componentKeyDown(ComponentEvent event) { 	  
 			    	int keyCode=event.getKeyCode();
 					if(keyCode==9){			
 						
@@ -2248,7 +2248,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		    	   }
 			      
 			      @Override
-			      public void componentKeyPress(ComponentEvent event) { 	  
+			      public void componentKeyDown(ComponentEvent event) { 	  
 			    	int keyCode=event.getKeyCode();
 					if(keyCode==9){			
 						
@@ -2359,7 +2359,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		    	   }
 			      
 			      @Override
-			      public void componentKeyPress(ComponentEvent event) { 	  
+			      public void componentKeyDown(ComponentEvent event) { 	  
 			    	int keyCode=event.getKeyCode();
 					if(keyCode==9){			
 						
@@ -3284,7 +3284,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 				}	
 				
 				 @Override
-			      public void componentKeyPress(ComponentEvent event) { 	  
+			      public void componentKeyDown(ComponentEvent event) { 	  
 			    	int keyCode=event.getKeyCode();
 					if(keyCode==9){			
 						
@@ -3367,7 +3367,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			if(statoRevisione==1)txtfldRecupero.setEnabled(false);
 			txtfldRecupero.addKeyListener(new KeyListener(){
 				 @Override
-			      public void componentKeyPress(ComponentEvent event) { 	  
+			      public void componentKeyDown(ComponentEvent event) { 	  
 			    	int keyCode=event.getKeyCode();
 					if(keyCode==9){			
 						
@@ -3415,7 +3415,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			if(statoRevisione==1)txtfldFerie.setEnabled(false);
 			txtfldFerie.addKeyListener(new KeyListener(){
 				 @Override
-			      public void componentKeyPress(ComponentEvent event) { 	  
+			      public void componentKeyDown(ComponentEvent event) { 	  
 			    	int keyCode=event.getKeyCode();
 					if(keyCode==9){			
 						
@@ -3453,7 +3453,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			if(statoRevisione==1)txtfldPermesso.setEnabled(false);
 			txtfldPermesso.addKeyListener(new KeyListener(){
 				 @Override
-			      public void componentKeyPress(ComponentEvent event) { 	  
+			      public void componentKeyDown(ComponentEvent event) { 	  
 			    	int keyCode=event.getKeyCode();
 					if(keyCode==9){			
 						
@@ -3492,7 +3492,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			if(statoRevisione==1)txtfldStraordinario.setEnabled(false);
 			txtfldStraordinario.addKeyListener(new KeyListener(){
 				 @Override
-			      public void componentKeyPress(ComponentEvent event) { 	  
+			      public void componentKeyDown(ComponentEvent event) { 	  
 			    	int keyCode=event.getKeyCode();
 					if(keyCode==9){			
 						

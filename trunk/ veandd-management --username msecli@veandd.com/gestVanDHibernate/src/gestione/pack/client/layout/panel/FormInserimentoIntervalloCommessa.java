@@ -44,7 +44,7 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 		txtfldOreIntervallo.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
 		txtfldOreIntervallo.addKeyListener(new KeyListener(){
 			 @Override
-		      public void componentKeyPress(ComponentEvent event) { 	  
+		      public void componentKeyDown(ComponentEvent event) { 	  
 		    	int keyCode=event.getKeyCode();
 				if(keyCode==9){			
 					
@@ -81,7 +81,7 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 		txtfldOreViaggio.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
 		txtfldOreViaggio.addKeyListener(new KeyListener(){
 			 @Override
-		      public void componentKeyPress(ComponentEvent event) { 	  
+		      public void componentKeyDown(ComponentEvent event) { 	  
 		    	int keyCode=event.getKeyCode();
 				if(keyCode==9){			
 					
