@@ -1,6 +1,7 @@
 package gestione.pack.client.layout.panel;
 
 
+import java.util.Date;
 import java.util.List;
 
 import gestione.pack.client.AdministrationService;
@@ -36,7 +37,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
-import com.sun.org.apache.bcel.internal.generic.NEW;
+
 
 /*
  * Stampa del riepilogo delle ore, nel mese, discriminato per sede operativa 
@@ -52,6 +53,7 @@ public class PanelPrintAll extends LayoutContainer {
     private SimpleComboBox<String> smplcmbxMese;
     private SimpleComboBox<String> smplcmbxSede= new SimpleComboBox<String>();
     private ComboBox<PersonaleModel> cmbxDipendente= new ComboBox<PersonaleModel>();
+    private int operazione;
 	
 	private static String url= "/gestvandhibernate/PrintDataServlet";
 	
@@ -76,6 +78,11 @@ public class PanelPrintAll extends LayoutContainer {
 	    HorizontalPanel hpAll= new HorizontalPanel();
 	    hpAll.setSpacing(6);
 	    
+	    Date d= new Date();
+		String data= d.toString();
+		String mese= ClientUtility.meseToLong(ClientUtility.traduciMeseToIt(data.substring(4, 7)));
+		String anno= data.substring(data.length()-4, data.length());
+	    
 	    smplcmbxMese= new SimpleComboBox<String>();
 	    smplcmbxMese.setFieldLabel("Mese");
 		smplcmbxMese.setName("mese");
@@ -84,6 +91,7 @@ public class PanelPrintAll extends LayoutContainer {
 		 for(String l : DatiComboBox.getMese()){
 			 smplcmbxMese.add(l);}
 		smplcmbxMese.setTriggerAction(TriggerAction.ALL);
+		smplcmbxMese.setSimpleValue(mese);
 		
 		smplcmbxAnno = new SimpleComboBox<String>();
 		smplcmbxAnno.setFieldLabel("Anno");
@@ -94,6 +102,7 @@ public class PanelPrintAll extends LayoutContainer {
 		 for(String l : DatiComboBox.getAnno()){
 			 smplcmbxAnno.add(l);}
 		smplcmbxAnno.setTriggerAction(TriggerAction.ALL);
+		smplcmbxAnno.setSimpleValue(anno);
 		
 		smplcmbxSede.setFieldLabel("Sede");
 		smplcmbxSede.setWidth(65);
@@ -154,6 +163,7 @@ public class PanelPrintAll extends LayoutContainer {
 		 for(String l : DatiComboBox.getMese()){
 			 smplcmbxMese.add(l);}
 		smplcmbxMese.setTriggerAction(TriggerAction.ALL);
+		smplcmbxMese.setSimpleValue(mese);
 		
 		smplcmbxAnno = new SimpleComboBox<String>();
 		smplcmbxAnno.setFieldLabel("Anno");
@@ -164,6 +174,7 @@ public class PanelPrintAll extends LayoutContainer {
 		 for(String l : DatiComboBox.getAnno()){
 			 smplcmbxAnno.add(l);}
 		smplcmbxAnno.setTriggerAction(TriggerAction.ALL);
+		smplcmbxAnno.setSimpleValue(anno);
 	    
 		HorizontalPanel hpSingolo= new HorizontalPanel();
 	    hpSingolo.setSpacing(6);
@@ -198,7 +209,15 @@ public class PanelPrintAll extends LayoutContainer {
 		@Override
 		public void onSubmitComplete(final SubmitCompleteEvent event) {
 			
-			Window.open("/FileStorage/RiepilogoTotali.pdf", "_blank", "1");
+			
+			if(operazione==0)
+				Window.open("/FileStorage/RiepilogoTotali.pdf", "_blank", "1");
+			else{
+				String nome= cmbxDipendente.getValue().getUsername().toString();
+				
+				Window.open("/FileStorage/RiepilogoOre_"+nome+".pdf", "_blank", "1");
+			}
+				
 			/*if(event.getResults().isEmpty()){
 				Window.open(ConstantiMSG.PATHAmazon+"FileStorage/RiepilogoTotali.pdf", "_blank", "1");
 			}
@@ -219,6 +238,8 @@ public class PanelPrintAll extends LayoutContainer {
 			data=meseCorrente+anno;
 			String sedeOperativa=smplcmbxSede.getRawValue().toString();
 			//String username="";
+			
+			operazione=0;
 			
 			if(smplcmbxAnno.isValid()&&smplcmbxMese.isValid())
 			SessionManagementService.Util.getInstance().setDataInSession(data, sedeOperativa ,"", "ALL", new AsyncCallback<Boolean>() {
@@ -253,6 +274,7 @@ public class PanelPrintAll extends LayoutContainer {
 			data=meseCorrente+anno;
 			String username=cmbxDipendente.getValue().getUsername().toString();
 			
+			operazione=1;
 			
 			if(smplcmbxAnno.isValid()&&smplcmbxMese.isValid())
 			SessionManagementService.Util.getInstance().setDataInSession(data, "" , username, "ONE", new AsyncCallback<Boolean>() {
@@ -281,9 +303,14 @@ public class PanelPrintAll extends LayoutContainer {
 		@Override
 		public void onSubmitComplete(final SubmitCompleteEvent event) {
 			
-			String nome= cmbxDipendente.getValue().getUsername().toString();
-			
-			Window.open("/FileStorage/RiepilogoOre_"+nome+".pdf", "_blank", "1");
+
+			if(operazione==0)
+				Window.open("/FileStorage/RiepilogoTotali.pdf", "_blank", "1");
+			else{
+				String nome= cmbxDipendente.getValue().getUsername().toString();
+				
+				Window.open("/FileStorage/RiepilogoOre_"+nome+".pdf", "_blank", "1");
+			}
 			/*if(event.getResults().isEmpty()){
 				Window.open(ConstantiMSG.PATHAmazon+"FileStorage/RiepilogoTotali.pdf", "_blank", "1");
 			}

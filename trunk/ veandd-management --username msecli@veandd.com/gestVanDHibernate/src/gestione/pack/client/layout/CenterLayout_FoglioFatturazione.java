@@ -12,7 +12,6 @@ import gestione.pack.client.model.RiepilogoOreTotaliCommesse;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.DatiComboBox;
 import gestione.pack.client.model.FoglioFatturazioneModel;
-import gestione.pack.server.ServerUtility;
 
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -669,6 +668,35 @@ public CenterLayout_FoglioFatturazione(){}
 			txtfldOreEseguiteRegistrate.setValue("0.00");
 			txtfldOreEseguiteRegistrate.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
 			txtfldOreEseguiteRegistrate.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+			txtfldOreEseguiteRegistrate.addKeyListener(new KeyListener(){
+				 public void componentKeyDown(ComponentEvent event) { 	  
+				    	int keyCode=event.getKeyCode();
+						if(keyCode==9){			
+							
+							if(txtfldOreEseguiteRegistrate.getValue()==null)
+								txtfldOreEseguiteRegistrate.setValue("0.00");
+							else{
+								String valore= txtfldOreEseguiteRegistrate.getValue().toString();
+														
+								if(valore.compareTo("")==0)
+									valore ="0.00";
+								else
+									if(valore.indexOf(".")==-1)
+										valore=valore+".00";
+									else{
+										int index=valore.indexOf(".");
+										int length=valore.length();
+										
+										if(valore.substring(index+1, length).length()==1)
+											valore=valore+"0";		
+										else if(valore.substring(index+1, length).length()==0)
+											valore=valore+"00";
+									}
+								txtfldOreEseguiteRegistrate.setValue(valore);
+							}						
+						}
+				 }
+			});
 								
 			layoutCol1.add(txtfldSALIniziale, new FormData("95%"));
 			layoutCol1.add(txtfldPCLIniziale, new FormData("95%"));
@@ -747,6 +775,59 @@ public CenterLayout_FoglioFatturazione(){}
 							txtOreDaFatturare.setText("("+totaleEuro+")");
 			    	  	}
 			      }
+			      
+			      public void componentKeyDown(ComponentEvent event) { 	  
+				    	int keyCode=event.getKeyCode();
+						if(keyCode==9){			
+							
+							if(txtfldOreDaFatturare.getValue()==null)
+								txtfldOreDaFatturare.setValue("0.00");
+							else{
+								String valore= txtfldOreDaFatturare.getValue().toString();
+														
+								if(valore.compareTo("")==0)
+									valore ="0.00";
+								else
+									if(valore.indexOf(".")==-1)
+										valore=valore+".00";
+									else{
+										int index=valore.indexOf(".");
+										int length=valore.length();
+										
+										if(valore.substring(index+1, length).length()==1)
+											valore=valore+"0";		
+										else if(valore.substring(index+1, length).length()==0)
+											valore=valore+"00";
+									}
+								txtfldOreDaFatturare.setValue(valore);
+							}
+							if(hasValue(txtfldOreDaFatturare)&&txtfldOreDaFatturare.getValue()!=null){
+				    	  		txtfldOreDaFatturare.clearInvalid();
+				    	  		String scaricate= new String();
+				    	  		String delta= new String();
+				    	  		String totaleEuro= new String();
+				    	  		String variazionePCL= new String();
+				    	  		NumberFormat number = NumberFormat.getFormat("0.00");
+				    	  		//number=NumberFormat.getCurrencyFormat("EUR");
+				    	  		variazionePCL=String.valueOf(Float.valueOf(txtfldVariazionePCL.getValue().toString())*(-1));
+				    	  		
+				    	  		scaricate=ClientUtility.aggiornaTotGenerale(txtfldOreDaFatturare.getValue().toString(), txtfldVariazioneSAL.getValue().toString());
+				    	  		scaricate=ClientUtility.aggiornaTotGenerale(scaricate, variazionePCL);
+				    	  		txtfldOreScaricate.setValue(scaricate);
+				    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldOreScaricate.getValue().toString()));
+				    	  		txtOreScaricate.setText("("+totaleEuro+")");
+				    	  		
+				    	  		delta=ClientUtility.calcoloDelta(scaricate, txtfldOreEseguiteRegistrate.getValue().toString());
+				    	  		txtfldDiffScaricateEseguite.setValue(delta);
+				    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldDiffScaricateEseguite.getValue().toString()));
+				    	  		txtMargine.setText("("+totaleEuro+")");
+								
+				    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldOreDaFatturare.getValue().toString()));				
+								txtfldTotFatturato.setValue(totaleEuro);
+								txtOreDaFatturare.setText("("+totaleEuro+")");
+				    	  	}
+						}	    		
+				      }
 			});
 			
 			txtfldVariazioneSAL.setFieldLabel("Variazione SAL");
@@ -785,7 +866,65 @@ public CenterLayout_FoglioFatturazione(){}
 			    	  		
 			    	  		txtSalTotale.setText(ClientUtility.aggiornaTotGenerale(txtfldSALIniziale.getValue().toString(), txtfldVariazioneSAL.getValue().toString()));
 			    	  	}
-			      }			
+			      }	
+				 
+				 public void componentKeyDown(ComponentEvent event) { 	  
+				    	int keyCode=event.getKeyCode();
+						if(keyCode==9){			
+							
+							if(txtfldVariazioneSAL.getValue()==null)
+								txtfldVariazioneSAL.setValue("0.00");
+							else{
+								String valore= txtfldVariazioneSAL.getValue().toString();
+														
+								if(valore.compareTo("")==0)
+									valore ="0.00";
+								else
+									if(valore.indexOf(".")==-1)
+										valore=valore+".00";
+									else{
+										int index=valore.indexOf(".");
+										int length=valore.length();
+										
+										if(valore.substring(index+1, length).length()==1)
+											valore=valore+"0";		
+										else if(valore.substring(index+1, length).length()==0)
+											valore=valore+"00";
+									}
+								txtfldVariazioneSAL.setValue(valore);
+							}
+							
+							if(hasValue(txtfldVariazioneSAL)&&txtfldVariazioneSAL.getValue()!=null){
+				    	  		txtfldVariazioneSAL.clearInvalid();
+				    	  		String scaricate= new String();
+				    	  		String delta= new String();
+				    	  		String variazionePCL= new String();
+				    	  		String totaleEuro= new String();
+				    	  		
+				    	  		NumberFormat number = NumberFormat.getFormat("0.00");
+				    	  		
+				    	  		txtSalTotale.setText("0.00");
+				    	  		
+				    	  		variazionePCL=number.format(Float.valueOf(txtfldVariazionePCL.getValue().toString())*(-1));
+				    	  		scaricate=ClientUtility.aggiornaTotGenerale(txtfldOreDaFatturare.getValue().toString(), txtfldVariazioneSAL.getValue().toString());
+				    	  		scaricate=ClientUtility.aggiornaTotGenerale(scaricate, variazionePCL);
+				    	  		txtfldOreScaricate.setValue(scaricate);
+				    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldOreScaricate.getValue().toString()));
+				    	  		txtOreScaricate.setText("("+totaleEuro+")");
+				    	  		
+				    	  		delta=ClientUtility.calcoloDelta(scaricate, txtfldOreEseguiteRegistrate.getValue().toString());
+				    	  		txtfldDiffScaricateEseguite.setValue(delta);
+				    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldDiffScaricateEseguite.getValue().toString()));
+				    	  		txtMargine.setText("("+totaleEuro+")");
+				    	  		
+				    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldVariazioneSAL.getValue().toString()));
+				    	  		txtVariazioneSal.setText("("+totaleEuro+")");
+				    	  		
+				    	  		txtSalTotale.setText(ClientUtility.aggiornaTotGenerale(txtfldSALIniziale.getValue().toString(), txtfldVariazioneSAL.getValue().toString()));
+				    	  	}
+						}	    		
+				      }
+				 
 			});
 			
 			txtfldVariazionePCL.setFieldLabel("Variazione PCL");
@@ -827,7 +966,67 @@ public CenterLayout_FoglioFatturazione(){}
 			    	  		
 			    	  		txtPclTotale.setText(ClientUtility.aggiornaTotGenerale(txtfldPCLIniziale.getValue().toString(), txtfldVariazionePCL.getValue().toString()));
 			    	  	}
-			      }			
+			      }	
+				 
+				 public void componentKeyDown(ComponentEvent event) { 	  
+				    	int keyCode=event.getKeyCode();
+						if(keyCode==9){			
+							
+							if(txtfldVariazionePCL.getValue()==null)
+								txtfldVariazionePCL.setValue("0.00");
+							else{
+								String valore= txtfldVariazionePCL.getValue().toString();
+														
+								if(valore.compareTo("")==0)
+									valore ="0.00";
+								else
+									if(valore.indexOf(".")==-1)
+										valore=valore+".00";
+									else{
+										int index=valore.indexOf(".");
+										int length=valore.length();
+										
+										if(valore.substring(index+1, length).length()==1)
+											valore=valore+"0";		
+										else if(valore.substring(index+1, length).length()==0)
+											valore=valore+"00";
+									}
+								txtfldVariazionePCL.setValue(valore);
+							}
+							
+							if(hasValue(txtfldVariazioneSAL)&&txtfldVariazionePCL.getValue()!=null){
+				    	  		txtfldVariazionePCL.clearInvalid();
+				    	  		String scaricate= new String();
+				    	  		String delta= new String();
+				    	  		String variazionePCL= new String();
+				    	  		String totaleEuro=new String();
+				    	  		String decimali= new String();
+				    	  		
+				    	  		txtPclTotale.setText("0.00");
+				    	  		NumberFormat number = NumberFormat.getFormat("0.00");
+				    	  		//number=NumberFormat.getCurrencyFormat("EUR");
+				    	  		
+				    	  		//variazionePCL=String.valueOf(Float.valueOf(txtfldVariazionePCL.getValue().toString())*(-1));
+				    	  		variazionePCL=number.format(Float.valueOf(txtfldVariazionePCL.getValue().toString())*(-1));
+				    	  					    	  		
+				    	  		scaricate=ClientUtility.aggiornaTotGenerale(txtfldOreDaFatturare.getValue().toString(), txtfldVariazioneSAL.getValue().toString());
+				    	  		scaricate=ClientUtility.aggiornaTotGenerale(scaricate, variazionePCL);
+				    	  		txtfldOreScaricate.setValue(scaricate);
+				    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldOreScaricate.getValue().toString()));
+				    	  		txtOreScaricate.setText("("+totaleEuro+")");
+				    	  		
+				    	  		delta=ClientUtility.calcoloDelta(scaricate, txtfldOreEseguiteRegistrate.getValue().toString());
+				    	  		txtfldDiffScaricateEseguite.setValue(delta);
+				    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldDiffScaricateEseguite.getValue().toString()));
+				    	  		txtMargine.setText("("+totaleEuro+")");
+				    	  		
+				    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldVariazionePCL.getValue().toString()));
+				    	  		txtVariazionePcl.setText("("+totaleEuro+")");
+				    	  		
+				    	  		txtPclTotale.setText(ClientUtility.aggiornaTotGenerale(txtfldPCLIniziale.getValue().toString(), txtfldVariazionePCL.getValue().toString()));
+				    	  	}
+						}	    		
+				      }
 			});
 			
 			txtfldOreScaricate.setFieldLabel("Ore Scaricate");
@@ -1109,7 +1308,7 @@ public CenterLayout_FoglioFatturazione(){}
 					
 					txtfldOreOrdine.setValue(result.getOreOrdine());
 					txtfldOreResiduoOrdine.setValue(result.getResiduoOre());
-					txtfldCostoOrario.setValue(String.valueOf(result.getTariffaOraria()));
+					txtfldCostoOrario.setValue(number.format(result.getTariffaOraria()));
 					txtfldSALIniziale.setValue(result.getsalAttuale());
 					txtfldPCLIniziale.setValue(result.getPclAttuale());
 					txtfldOreDaFatturare.setValue(result.getOreFatturate());
@@ -1148,7 +1347,7 @@ public CenterLayout_FoglioFatturazione(){}
 					
 					txtfldOreOrdine.setValue(result.getOreOrdine());
 					txtfldOreResiduoOrdine.setValue(result.getResiduoOre());
-					txtfldCostoOrario.setValue(String.valueOf(result.getTariffaOraria()));
+					txtfldCostoOrario.setValue(number.format(result.getTariffaOraria()));
 					txtfldSALIniziale.setValue(result.getsalAttuale());
 					txtfldPCLIniziale.setValue(result.getPclAttuale());
 					txtfldOreDaFatturare.setValue(result.getOreFatturate());
