@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import gestione.pack.client.AdministrationService;
+import gestione.pack.client.model.CommessaModel;
 import gestione.pack.client.model.RdoCompletaModel;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -19,6 +20,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.GroupingStore;
+import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -716,12 +718,11 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		
 		try {
 			store.removeAll();
+			store.setStoreSorter(new StoreSorter<RdoCompletaModel>());  
+		    store.setDefaultSort("numeroCommessa", SortDir.ASC);
 			store.add(lista);
-			store.setSortDir(SortDir.ASC);
-			store.groupBy("cliente");
-			    		    	
+						    		    	
 		} catch (NullPointerException e) {
-
 				e.printStackTrace();
 		}	
 	}

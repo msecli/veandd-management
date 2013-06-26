@@ -7,10 +7,12 @@ import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.layout.panel.DialogAssociaPtoA;
 import gestione.pack.client.model.*;
+import gestione.pack.client.utility.MyImages;
 
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
@@ -20,9 +22,11 @@ import com.extjs.gxt.ui.client.dnd.ListViewDropTarget;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 
+import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.WindowListener;
 
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.GroupingStore;
@@ -38,6 +42,7 @@ import com.extjs.gxt.ui.client.widget.Text;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
@@ -68,9 +73,9 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 	private ColumnModel cmCommessa;
 	
 	private Button btnAssocia= new Button("Associa");
-	private Button btnRemove= new Button("Delete");
+	private Button btnRemove= new Button();
 	private Button btnReset= new Button("X");
-	private Button btnAdd= new Button("Add");
+	private Button btnAdd= new Button();
 	private Button btnRefresh= new Button("R");
 	private SimpleComboBox<String> smplcmbxCommessa= new SimpleComboBox<String>();
 		
@@ -200,11 +205,13 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 			  else Window.alert("E' necessario selezionare dei dipendenti per effettuare l'associazione!");
 			}
 		});
+			
 		
-		
-		btnRemove.setBorders(true);
-		btnRemove.setHeight("23px");
-		btnRemove.setEnabled(false);	
+		btnRemove.setEnabled(false);
+		btnRemove.setToolTip("Elimina Dipendente");
+		btnRemove.setSize(26, 26);
+		btnRemove.setIconAlign(IconAlign.TOP);
+		btnRemove.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.elimina()));
 		btnRemove.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			
 			@Override
@@ -269,21 +276,37 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 			}
 		});
 			
-		
-		btnAdd.setBorders(true);
-		btnAdd.setHeight("23px");
+				
 		btnAdd.setEnabled(false);
+		btnAdd.setSize(26, 26);
+		btnAdd.setToolTip("Aggiungi Dipendente.");
+		btnAdd.setIconAlign(IconAlign.TOP);
+		btnAdd.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.add()));
 		btnAdd.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			
 			@Override
 			public void componentSelected(ButtonEvent ce) {
 				
 				Dialog d =new  DialogAssociaPtoA(txtfldCommessa.getValue().toString());
-				d.show();			
+				d.show();	
+				
+				d.addListener(Events.Hide, new Listener<ComponentEvent>() {
+				     
+					@Override
+					public void handleEvent(ComponentEvent be) {
+						try {
+							caricaTabellaDati();
+						} catch (Exception e) {
+							e.printStackTrace();
+							Window.alert("error: Impossibile caricare i dati in tabella.");
+						}
+						
+				    }
+				});
 			}
 		});
 		
-		
+		/*
 		btnRefresh.setBorders(true);
 		btnRefresh.setEnabled(false);
 		btnRefresh.setStyleAttribute("margin-right", "5px");
@@ -299,11 +322,11 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 					Window.alert("error: Impossibile caricare i dati in tabella.");
 				}				
 			}
-		});
+		});*/
 		
 		
 		ToolBar toolBar = new ToolBar();
-		toolBar.add(btnRefresh);
+		//toolBar.add(btnRefresh);
 		toolBar.add(btnRemove);
 		toolBar.add(btnAdd);
 		toolBar.setBorders(true);
@@ -366,8 +389,7 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 			e.printStackTrace();
 			Window.alert("error: Problema createColumns().");			
 		}	
-	    
-			
+	    			
 		//Vista per permettere il grouping
 		GroupingView view = new GroupingView();  
 	    view.setShowGroupedColumn(false);  
