@@ -251,14 +251,11 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			btnInviaCommenti.setToolTip("Segnala eventuali problemi o anomalie.");
 			btnInviaCommenti.setSize(26, 26);
 			btnInviaCommenti.setIconAlign(IconAlign.TOP);
-			btnInviaCommenti.addSelectionListener(new SelectionListener<ButtonEvent>() {
-				
+			btnInviaCommenti.addSelectionListener(new SelectionListener<ButtonEvent>() {			
 				@Override
 				public void componentSelected(ButtonEvent ce) {
 					Dialog d =new  DialogInvioCommenti(txtfldUsername.getValue().toString());
-					d.show();
-					//Dialog d= new dlgProva();
-					//d.show();			
+					d.show();	
 				}
 			});		
 			
