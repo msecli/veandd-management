@@ -61,5 +61,16 @@ public interface MyImages extends ClientBundle{
 	
 	@Source("Icone/azzera.png")
 	ImageResource azzera();
+	
+	@Source("Icone/Close20x20.png")
+	ImageResource chiudiCommessa();
+	
+	@Source("Icone/add.png")
+	ImageResource add();
+	
+	@Source("Icone/elimina.png")
+	ImageResource elimina();
+	
+	
 }
 

@@ -11,8 +11,10 @@ import gestione.pack.client.layout.panel.DialogAssociaOrdine;
 import gestione.pack.client.model.CommessaModel;
 import gestione.pack.client.model.PersonaleModel;
 import gestione.pack.client.utility.DatiComboBox;
+import gestione.pack.client.utility.MyImages;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.Style.SortDir;
@@ -20,6 +22,7 @@ import com.extjs.gxt.ui.client.binding.FormBinding;
 import com.extjs.gxt.ui.client.binding.SimpleComboBoxFieldBinding;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
@@ -36,6 +39,7 @@ import com.extjs.gxt.ui.client.widget.Text;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
@@ -112,14 +116,14 @@ public class PanelCommessa extends LayoutContainer {
 		horPanel.setStyleAttribute("padding", "5px");
 		horPanel.setSpacing(5);
 		
-		btnOrdine = new Button("Ordine");
+		btnOrdine = new Button();
+		btnOrdine.setSize(26, 26);
 		btnOrdine.setEnabled(false);
-		btnOrdine.setHeight("18px");
-		btnOrdine.setBorders(true);
 		btnOrdine.setToolTip("Associa un ordine.");
-		btnOrdine.setStyleAttribute("font-size", "80%");
-		btnOrdine.setStyleAttribute("margin-left", "5px");
+		btnOrdine.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.datiTimb()));
+		btnOrdine.setIconAlign(IconAlign.TOP);
 		
+		/*
 		btnRefresh=new Button("R");
 		btnRefresh.setEnabled(true);
 		btnRefresh.setHeight("18px");
@@ -128,21 +132,20 @@ public class PanelCommessa extends LayoutContainer {
 		btnRefresh.setToolTip("Refresh dei dati in tabella.");
 		btnRefresh.setStyleAttribute("font-size", "80%");
 		btnRefresh.setStyleAttribute("margin-left", "5px");
-		
-		btnClose= new Button("Chiudi");
+		*/
+		btnClose= new Button();
+		btnClose.setSize(26, 26);
 		btnClose.setEnabled(false);
-		btnClose.setHeight("18px");
-		btnClose.setBorders(true);
-		btnClose.setToolTip("Chiusura della commessa.");
-		btnClose.setStyleAttribute("font-size", "80%");
-				
+		btnClose.setToolTip("Chiudi la commessa.");
+		btnClose.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.chiudiCommessa()));	
+		btnClose.setIconAlign(IconAlign.TOP);
+		
 		ToolBar toolBar = new ToolBar();	
 		toolBar.add(btnClose);
 		toolBar.add(btnOrdine);
 		toolBar.setBorders(true);
 		toolBar.setHeight("30px");
 		toolBar.setAlignment(HorizontalAlignment.RIGHT);
-		toolBar.add(btnRefresh);
 		toolBar.setStyleAttribute("margin-bottom", "1px");
 		toolBar.setBorders(false);
 		
@@ -471,11 +474,28 @@ public class PanelCommessa extends LayoutContainer {
 			@Override
 			public void componentSelected(ButtonEvent ce) {		
 				Dialog d =new  DialogAssociaOrdine(txtfldIdCommessa.getValue().toString());
-				d.show();				
+				d.show();		
+				
+				d.addListener(Events.Hide, new Listener<ComponentEvent>() {
+				     
+					@Override
+					public void handleEvent(ComponentEvent be) {
+						try {
+							if(txtRuolo.getText().compareTo("AMM")==0 || txtRuolo.getText().compareTo("UA")==0 )
+								caricaTabellaDati("");
+							else caricaTabellaDati(txtCognome.getText());
+						} catch (Exception e) {
+							e.printStackTrace();
+							Window.alert("error: Impossibile caricare i dati in tabella.");
+						}
+						
+				    }
+				});
+				
 			}		
 		});
 		
-			
+		/*	
 		btnRefresh.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {			
@@ -485,7 +505,7 @@ public class PanelCommessa extends LayoutContainer {
 			}	
 			
 		});
-		
+		*/
 		
 		btnClose.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
