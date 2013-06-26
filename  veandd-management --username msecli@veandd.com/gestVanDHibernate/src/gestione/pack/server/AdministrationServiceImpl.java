@@ -3351,6 +3351,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 
 //------------------------------------------------------FATTURAZIONE---------------------------------------------
 	
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<RiepilogoOreDipFatturazione> getRiepilogoOreDipFatturazione(String mese, String pm) {
@@ -4026,8 +4027,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Float sal=(float) 0.0;
 		Float pcl=(float) 0.0;
 		numEstensione=numEstensione.toLowerCase();
-		
-		
+				
 		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
 	    formatSymbols.setDecimalSeparator('.');
 	    String pattern="0.00";
@@ -4053,6 +4053,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						}
 						else {
 							numeroOrdine="#";
+							
 						}
 				    
 						listaFF.addAll(comm.getFoglioFatturaziones());
@@ -4075,10 +4076,14 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 								}
 							}
 					
-					riep= new RiepilogoOreTotaliCommesse(comm.getNumeroCommessa(), comm.getEstensione(),sal,pcl, numeroOrdine, oreEseguite, Float.valueOf("0.00"), flagCompilato);
-					listaRiep.add(riep);
+				  
+				   	riep= new RiepilogoOreTotaliCommesse(comm.getNumeroCommessa(), comm.getEstensione(),sal,pcl, numeroOrdine, oreEseguite, Float.valueOf("0.00"), flagCompilato);
+				   	listaRiep.add(riep);
 				    oreEseguite="0.00";
+				    sal=Float.valueOf("0.00");
+					pcl=Float.valueOf("0.00");
 				    flagCompilato="No";
+				   
 				    numeroOrdine="#";	
 				    listaFF.clear();
 				  }
