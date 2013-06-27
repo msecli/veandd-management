@@ -209,6 +209,8 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	            }
 				return "";            
 	    	}
+	    	
+	    	
 	    });
 	    
 	    cntpnlGrid.add(gridRiepilogo);
@@ -279,6 +281,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 				return "Totale Ore:";
 	   			}     			
 		});  
+	    
 	    configs.add(column); 
 	    
 	    SummaryColumnConfig<Double> columnOreTimbrature=new SummaryColumnConfig<Double>();		
