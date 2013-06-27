@@ -1210,11 +1210,32 @@ public CenterLayout_FoglioFatturazione(){}
 		    
 		    column=new ColumnConfig();		
 		    column.setId("compilato");//flag per indicare se è già presente il foglio ore del mese  
-		    column.setHeader("Compilato.");  
-		    column.setWidth(65);  
+		    column.setHeader("");  
+		    column.setWidth(20);  
 		    column.setRowHeader(true);  
-		    configs.add(column);
-		    
+		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
+
+				@Override
+				public Object render(RiepilogoOreTotaliCommesse model, String property,
+						ColumnData config, int rowIndex, int colIndex,
+						ListStore<RiepilogoOreTotaliCommesse> store, Grid<RiepilogoOreTotaliCommesse> grid) {
+					
+					String numeroCommessa=model.get("numeroCommessa");
+					if(numeroCommessa.compareTo("TOTALE")!=0)
+					{
+						String color = "#F08080";
+						String flag=model.get("compilato");
+						if(flag.compareTo("Si")==0)
+							color = "#90EE90";                    
+						config.style = config.style + ";background-color:" + color + ";";									
+					}
+					else{
+						config.style = config.style + ";background-color:" + "#FFFFFF" + ";";
+					}
+					return "";
+				}
+			});
+		    configs.add(column);	    
 		    return configs;
 		}
 		
@@ -1296,10 +1317,9 @@ public CenterLayout_FoglioFatturazione(){}
 					}					
 				}
 				if(!nuovo){
-					
+	
 					scaricate=ClientUtility.aggiornaTotGenerale(result.getOreFatturate(), result.getVariazioneSal());
 					scaricate=ClientUtility.aggiornaTotGenerale(scaricate, result.getVariazionePcl());
-					//delta=ClientUtility.calcoloDelta(scaricate, totOre);
 									    
 					totaleEuro=number.format(result.getTariffaOraria()*Float.valueOf(result.getOreFatturate()));
 						
