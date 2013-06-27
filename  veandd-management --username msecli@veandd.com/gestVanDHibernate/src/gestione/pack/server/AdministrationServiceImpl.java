@@ -634,6 +634,16 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		Rda r=new Rda();
 		Ordine o= new Ordine();
+		float oreResidue;
+		float oreOrdine;
+		oreOrdine=Float.valueOf(oreDisp);
+		oreResidue=Float.valueOf(oreRes);	
+		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+	    formatSymbols.setDecimalSeparator('.');
+	    String pattern="0.00";
+	    DecimalFormat d= new DecimalFormat(pattern,formatSymbols);
+		oreRes=d.format(oreResidue);
+		oreDisp=d.format(oreOrdine);
 		
 		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
 		Transaction tx= null;	
@@ -3358,7 +3368,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		List<RiepilogoOreDipFatturazione> listaR= new ArrayList<RiepilogoOreDipFatturazione>();
 		List<Commessa> listaCommesse= new ArrayList<Commessa>();
+		List<Commessa> listaCommesseTutti= new ArrayList<Commessa>();
 		List<Attivita> listaAttivita= new ArrayList<Attivita>();
+		List<Attivita> listaAttivitaTutti= new ArrayList<Attivita>();
 		
 		List<AssociazionePtoA> listaAssociazioni= new ArrayList<AssociazionePtoA>();
 		List<Personale> listaP=new ArrayList<Personale>();
@@ -3389,16 +3401,19 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		try {
 			tx = session.beginTransaction();
 			
-			listaCommesse = (List<Commessa>) session.createQuery("from Commessa where matricolaPM=:pm or matricolaPM=:tutti")
-					.setParameter("pm", pm).setParameter("tutti", "Tutti").list() ; //seleziono tuttle le commesse per pm indicato
+			listaCommesse = (List<Commessa>) session.createQuery("from Commessa where matricolaPM=:pm")
+					.setParameter("pm", pm).list() ; //seleziono tuttle le commesse per pm indicato
+			listaCommesseTutti = (List<Commessa>) session.createQuery("from Commessa where matricolaPM=:tutti")
+					.setParameter("tutti", "Tutti").list() ;
 
 			for (Commessa c : listaCommesse) {
 				if (c.getAttivitas().size() > 0)
-					listaAttivita.add(c.getAttivitas().iterator().next());
+					//listaAttivita.add(c.getAttivitas().iterator().next());
+					listaAttivita.addAll(c.getAttivitas());
 			}
 
 			for (Attivita a : listaAttivita) {  // in questo caso la lista  Attivita rappresenta la lista di commesse associate al PM
-												// selezionato ottengo tutte le associazioni e quindi tutti i dipendenti associati a quella commessa
+												// selezionato: ottengo tutte le associazioni e quindi tutti i dipendenti associati a quella commessa
 				listaAssociazioni.addAll(a.getAssociazionePtoas());
 				commessa = a.getCommessa().getNumeroCommessa();
 				estensione = a.getCommessa().getEstensione();
@@ -3463,7 +3478,84 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					listaP.clear();
 					listaAssociazioni.clear();
 				}
+			
+			
+			//Considero adesso le commesse "Tutti"
+			
+			for (Commessa c : listaCommesseTutti) {
+				if (c.getAttivitas().size() > 0)
+					listaAttivitaTutti.addAll(c.getAttivitas());
+			}
+			
+			for (Commessa c:listaCommesseTutti){	//Considero tutte le commesse tutti e per ognuna di queste prendo tutte le attività e quindi tutti i gruppi dipendenti
+			 for (Attivita a : listaAttivitaTutti) {  												
+			  if(a.getCommessa().getCodCommessa()==c.getCodCommessa()){				
+				listaAssociazioni.addAll(a.getAssociazionePtoas());
+				commessa = a.getCommessa().getNumeroCommessa();
+				estensione = a.getCommessa().getEstensione();
+
+				if(a.getCommessa().getOrdines().size()>0)
+					cliente=a.getCommessa().getOrdines().iterator().next().getRda().getCliente().getRagioneSociale();
+				else cliente="#";
+
+				numeroCommessa =(commessa + "." + estensione+" ("+cliente+")"); //una stringa più dettagliata che descriva la commessa
+
+				for (AssociazionePtoA ass : listaAssociazioni) { // per tutte le associazioni della  commessa considerata prelevo i dipendenti
+					listaP.add(ass.getPersonale());
+				}
+			  }
+			  listaAssociazioni.clear();
+			  
+			  }
+				for (Personale p : listaP) { // per ogni dipendente in questa commessa selezioni i fogli ore del mese desiderato
+					dipendente = p.getCognome() + " " + p.getNome();
+
+					for (FoglioOreMese f : p.getFoglioOreMeses()) {
+						if (f.getMeseRiferimento().compareTo(mese) == 0) { //se è il mese cercato
+							listaGiorni.addAll(f.getDettaglioOreGiornalieres()); //prendo tutti i giorni
+
+							for (DettaglioOreGiornaliere giorno : listaGiorni) { 
+								listaIntervalli.addAll(giorno.getDettaglioIntervalliCommesses());
+
+								for (DettaglioIntervalliCommesse d : listaIntervalli) { //se c'è un intervallo per la commessa selezionata ricavo le ore
+									if (commessa.compareTo(d.getNumeroCommessa()) == 0 && estensione.compareTo(d.getEstensioneCommessa()) == 0) {
+										oreLavoro = d.getOreLavorate();
+										oreViaggio = d.getOreViaggio();
+										oreTotMeseLavoro = ServerUtility.aggiornaTotGenerale(oreTotMeseLavoro,oreLavoro);
+										oreTotMeseViaggio = ServerUtility.aggiornaTotGenerale(oreTotMeseViaggio,oreViaggio);
+									}	
+									oreLavoro="0.0";
+									oreViaggio="0.0";										
+								}
+								listaIntervalli.clear();
+							}
+							listaGiorni.clear();
+							oreSommaLavoroViaggio = ServerUtility.aggiornaTotGenerale(oreTotMeseLavoro, oreTotMeseViaggio);
+							riep = new RiepilogoOreDipFatturazione(numeroCommessa, dipendente, Float.valueOf(oreTotMeseLavoro), Float.valueOf(oreTotMeseViaggio), Float.valueOf(oreSommaLavoroViaggio));
+							listaR.add(riep);
+
+							//	Per ogni dipendente incremento il totale sulla commessa in esame
+							oreTotLavoroCommessa=ServerUtility.aggiornaTotGenerale(oreTotLavoroCommessa, oreTotMeseLavoro);
+							oreTotViaggioCommessa=ServerUtility.aggiornaTotGenerale(oreTotViaggioCommessa, oreTotMeseViaggio);
+							oreTotCommessa=ServerUtility.aggiornaTotGenerale(oreTotLavoroCommessa, oreTotViaggioCommessa);
+
+							oreTotMeseLavoro="0.0";
+							oreTotMeseViaggio="0.0";
+							oreSommaLavoroViaggio="0.0";
+						}
+						
+					}//end ciclo su mesi(fatto solo una volta per il mese necessario)
 							
+				}//end ciclo su lista persone nella stessa commessa
+
+				riep = new RiepilogoOreDipFatturazione(numeroCommessa, ".TOTALE", Float.valueOf(oreTotLavoroCommessa), Float.valueOf(oreTotViaggioCommessa), Float.valueOf(oreTotCommessa));
+				listaR.add(riep);
+				oreTotLavoroCommessa="0.0";
+				oreTotViaggioCommessa="0.0";
+				oreTotCommessa="0.0";
+		 
+			}
+						
 			tx.commit();
 			
 		} catch (Exception e) {
@@ -3730,7 +3822,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean insertDatiFoglioFatturazione(String oreEseguite,
 			String salIniziale, String pclIniziale, String oreFatturare,
@@ -3774,7 +3865,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 			if(c.getOrdines().iterator().hasNext()){//se è presente un ordine
 				o=c.getOrdines().iterator().next();
-				if(c.getFoglioFatturaziones().size()>0){ //calcolo le ore residue
+				
+				if(Float.valueOf(o.getOreBudget())!=0)//se le ore ordine sono "0" allora lo considero come ordine aperto e non calcolo le ore residue
+				 if(c.getFoglioFatturaziones().size()>0){ //calcolo le ore residue
 					listaf.addAll(c.getFoglioFatturaziones());
 					oreResidueBudget=o.getOreBudget();
 					for(FoglioFatturazione f1:listaf){			
@@ -3782,7 +3875,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					}	
 					oreResidueBudget=ServerUtility.getDifference(oreResidueBudget, oreFatturare);
 					o.setOreResidueBudget(oreResidueBudget);
-				}else{
+				 }else{
 					//se il numero di ore residue è inferiore al numero totale devo prendere in considerazione le residue
 					if(Float.valueOf(o.getOreBudget()) > Float.valueOf(oreResidueBudget))
 					{
@@ -3792,7 +3885,12 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						oreResidueBudget=ServerUtility.getDifference(o.getOreBudget(), oreFatturare);
 						o.setOreResidueBudget(oreResidueBudget);
 					}
+				 }
+				else{
+					oreResidueBudget="0.00";
+					o.setOreResidueBudget(oreResidueBudget);
 				}
+					
 			}
 			else o=null;
 							
