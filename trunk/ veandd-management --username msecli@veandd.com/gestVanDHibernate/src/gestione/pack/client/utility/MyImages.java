@@ -71,6 +71,8 @@ public interface MyImages extends ClientBundle{
 	@Source("Icone/elimina.png")
 	ImageResource elimina();
 	
+	@Source("Icone/search.png")
+	ImageResource search();	
 	
 }
 

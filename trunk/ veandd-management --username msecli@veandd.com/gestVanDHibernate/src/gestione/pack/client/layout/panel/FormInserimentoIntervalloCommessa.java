@@ -37,7 +37,7 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 		txtfldNumeroCommessa.setEnabled(false);
 
 		txtfldOreIntervallo.setFieldLabel("Ore Lavoro");
-		txtfldOreIntervallo.setMaxLength(5);
+		txtfldOreIntervallo.setMaxLength(7);
 		txtfldOreIntervallo.setItemId("oreLavoro");
 		txtfldOreIntervallo.setAllowBlank(false);
 		txtfldOreIntervallo.setRegex("[0-9]*[.]?[0-5]{1}[0-9]{1}|0.0|0.00");
@@ -74,7 +74,7 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 		});
 		
 		txtfldOreViaggio.setFieldLabel("Ore Viaggio");
-		txtfldOreViaggio.setMaxLength(5);
+		txtfldOreViaggio.setMaxLength(7);
 		txtfldOreViaggio.setItemId("oreViaggio");
 		txtfldOreViaggio.setAllowBlank(false);
 		txtfldOreViaggio.setRegex("[0-9]*[.]?[0-5]{1}[0-9]{1}|0.0|0.00");

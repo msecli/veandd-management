@@ -2046,6 +2046,121 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	
 //-------------------------------------------------FOGLIO ORE----------------------------------------------
 
+	//FOGLIO ORE COLOCATION
+	@Override
+	public boolean insertFoglioOreGiorno(String username, Date giorno,
+			List<IntervalliCommesseModel> intervalliC) {
+		
+		Personale p= new Personale();
+		FoglioOreMese foglioOre=new FoglioOreMese();
+		DettaglioOreGiornaliere dettOreGiornaliero= new DettaglioOreGiornaliere();
+		
+		Set<DettaglioOreGiornaliere> listaDettOreGiorno= new HashSet<DettaglioOreGiornaliere>();
+		
+		String data=new String();
+		String mese=new String();
+		String anno= new String();
+				
+		int idDettGiorno;
+		boolean intervalliCommPresenti;
+		
+		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
+		anno=formatter.format(giorno);
+		formatter = new SimpleDateFormat("MMM",Locale.ITALIAN);
+		mese=formatter.format(giorno);
+	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
+	    formatter = new SimpleDateFormat("dd");
+	    
+		data=(mese+anno);//sostituito la ricerca su mese con quella su data
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try{
+			
+			tx=session.beginTransaction();	
+			p=(Personale)session.createQuery("from Personale where username=:username").setParameter("username", username).uniqueResult();
+			
+			foglioOre=(FoglioOreMese) session.createQuery("from FoglioOreMese where id_personale=:id and meseRiferimento=:mese").setParameter("id", p.getId_PERSONALE())
+					.setParameter("mese", data).uniqueResult();
+			
+			if(foglioOre==null){	
+				foglioOre=new FoglioOreMese();
+				foglioOre.setPersonale(p);
+				foglioOre.setMeseRiferimento(data);
+				foglioOre.setStatoRevisioneMese("0");
+				p.getFoglioOreMeses().add(foglioOre);
+				
+				session.save(p);
+				tx.commit();
+				    		
+				createDettaglioGiornaliero(username, giorno, "0.00", "0.00", "0.00", 
+						"0.00", "0.00", "0.00", "0.00", "0.00", "", "", "0");
+								
+				createDettaglioIntervalliCommesse(intervalliC, username, giorno);			
+			}
+			
+			else //il mese è già stato creato quindi prelevo il foglio ore del mese
+			{				
+				listaDettOreGiorno.addAll(foglioOre.getDettaglioOreGiornalieres()); 		
+				//controllo che il giorno sia già presente
+				if(giornoPresente(listaDettOreGiorno, giorno)){
+					
+					dettOreGiornaliero=(DettaglioOreGiornaliere)session.createQuery("from DettaglioOreGiornaliere where giornoRiferimento=:giorno and id_foglio_ore=:idFoglioOre")
+							.setParameter("giorno", giorno).setParameter("idFoglioOre", foglioOre.getIdFoglioOre()).uniqueResult();
+					
+					idDettGiorno=dettOreGiornaliero.getIdDettaglioOreGiornaliere();
+														
+					if(dettOreGiornaliero.getDettaglioIntervalliCommesses().isEmpty())
+						intervalliCommPresenti=false;
+					else intervalliCommPresenti=true;
+					
+					tx.commit();
+					
+					//controllo che gli intervalli di commesse e IU esistano già
+					
+					if(intervalliCommPresenti)
+						editDettaglioIntervalliCommesse(intervalliC, idDettGiorno);
+					else
+						createDettaglioIntervalliCommesse(intervalliC, username, giorno);
+				}
+				else{
+					//se il giorno  non è presente lo "creo"
+					dettOreGiornaliero.setFoglioOreMese(foglioOre);
+					dettOreGiornaliero.setGiornoRiferimento(giorno);
+					dettOreGiornaliero.setTotaleOreGiorno("0.00");
+					dettOreGiornaliero.setDeltaOreGiorno("0.00");
+					dettOreGiornaliero.setOreAssenzeRecupero("0.00");
+					dettOreGiornaliero.setOreViaggio("0.00");
+					dettOreGiornaliero.setDeltaOreViaggio("0.00");
+					dettOreGiornaliero.setOreStraordinario("0.00");
+					dettOreGiornaliero.setOreFerie("0.00");
+					dettOreGiornaliero.setOrePermesso("0.00");
+					//dettOreGiornaliero.setOreExtFest(oreExtFest);
+					dettOreGiornaliero.setGiustificativo("");
+					dettOreGiornaliero.setNoteAggiuntive("");
+					dettOreGiornaliero.setStatoRevisione("0");
+					foglioOre.getDettaglioOreGiornalieres().add(dettOreGiornaliero);
+																	
+					session.save(foglioOre);
+					tx.commit();
+					
+					createDettaglioIntervalliCommesse(intervalliC, username, giorno);
+				}			
+			}			
+			return true;
+			
+		}catch (Exception e) {
+			if (tx!=null)
+	    		tx.rollback();	
+			e.printStackTrace();
+			return false;
+		}finally{
+			session.close();
+		}
+		
+	}
+
 	
 	@Override
 	public boolean insertFoglioOreGiorno(String username, Date giornoRiferimento,
@@ -2085,8 +2200,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		try {
 				tx=session.beginTransaction();
-				
-				
+								
 				p=(Personale)session.createQuery("from Personale where username=:username").setParameter("username", username).uniqueResult();
 				
 				foglioOre=(FoglioOreMese) session.createQuery("from FoglioOreMese where id_personale=:id and meseRiferimento=:mese").setParameter("id", p.getId_PERSONALE())
@@ -2425,20 +2539,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			idDett=dettGiorno.getIdDettaglioOreGiornaliere();
 			
 			tx.commit();
-			/*
-			for(int i=0; i<=10; i++){
-				//serve mettere il controllo che se il valore è "" allora non lo creo
-				intervallo=intervalliIU.get(i*2);//0,4,8,12,16
-				movimento="i"+String.valueOf(i+1);
-				if(intervallo.compareTo("")!=0)//
-					createIntervalloIU(idDett, intervallo, movimento, "M" );
-				
-				intervallo=intervalliIU.get(i*2+1);//1,3,5,7,9
-				movimento="u"+String.valueOf(i+1);
-				if(intervallo.compareTo("")!=0)//
-					createIntervalloIU(idDett, intervallo, movimento, "M");			
-			}	
-			*/
+			
 			for(int i=0; i<=4; i++){
 				//serve mettere il controllo che se il valore è "" allora non lo creo
 				intervallo=intervalliIU.get(i*4);//0,4,8,12,16
@@ -3545,7 +3646,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						}
 						
 					}//end ciclo su mesi(fatto solo una volta per il mese necessario)
-							
+											
 				}//end ciclo su lista persone nella stessa commessa
 
 				riep = new RiepilogoOreDipFatturazione(numeroCommessa, ".TOTALE", Float.valueOf(oreTotLavoroCommessa), Float.valueOf(oreTotViaggioCommessa), Float.valueOf(oreTotCommessa));
@@ -3553,6 +3654,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				oreTotLavoroCommessa="0.0";
 				oreTotViaggioCommessa="0.0";
 				oreTotCommessa="0.0";
+				listaP.clear();
 		 
 			}
 						
@@ -3576,9 +3678,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		String commessa= new String();
 		String estensione= new String();
-		String mesePrecedente=new String();
-		String salAttuale= new String();
-		String pclAttuale= new String();
 		String tariffaUtilizzata= new String();
 		String sommaVariazioniSal= "0.00";
 		String sommaVariazioniPcl= "0.00";
@@ -3596,7 +3695,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		int codCommessa;
 		
-		mesePrecedente=ServerUtility.getMesePrecedente(mese);
+		//mesePrecedente=ServerUtility.getMesePrecedente(mese);
 		commessa=numeroCommessa.substring(0, numeroCommessa.indexOf("."));
 		estensione=numeroCommessa.substring(numeroCommessa.indexOf(".")+1, numeroCommessa.length());
 		
@@ -3708,9 +3807,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 								sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.0", "0.0", "0.0", "", "0");
 					}
 					else{			
-						//sommaVariazioniSal=ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f.getVariazioneSAL());
-						//sommaVariazioniPcl=ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, f.getVariazionePCL());
-						foglioModel= new FoglioFatturazioneModel(o.getCodiceOrdine(), o.getOreBudget(), o.getOreResidueBudget(),Float.valueOf(tariffaUtilizzata), f.getOreEseguite(),
+						//tariffa utilizza prendo quella registrata al momento della registrazione del foglio fatturazione
+						foglioModel= new FoglioFatturazioneModel(o.getCodiceOrdine(), o.getOreBudget(), o.getOreResidueBudget(),Float.valueOf(f.getTariffaUtilizzata()), f.getOreEseguite(),
 								sommaVariazioniSal, sommaVariazioniPcl, f.getOreFatturare(), f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione());
 					}		
 				}	
@@ -4414,5 +4512,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}
 	}
 
+	
 	
 }

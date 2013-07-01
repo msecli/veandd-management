@@ -24,6 +24,7 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -36,6 +37,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Text;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -281,6 +283,8 @@ public class PanelCommessa extends LayoutContainer {
 							public void componentSelected(ButtonEvent ce) {
 						    	 if(frmpnlCommessa.isValid()){
 										
+						    		final NumberFormat number = NumberFormat.getFormat("0.00");
+						    		
 									String numCommessa = new String(); 	
 									String estensione= new String();
 									String tipoCommessa= new String();
@@ -294,7 +298,7 @@ public class PanelCommessa extends LayoutContainer {
 									String salAttuale="0.0";
 									String pclAttuale="0.0";
 									//Date dataInizio=new Date();
-												  	
+																								
 									if(txtfldNumeroCommessa.getRawValue().isEmpty()){ numCommessa="";}else{numCommessa=txtfldNumeroCommessa.getValue().toString();}
 									if(txtfldEstensione.getRawValue().isEmpty()){ estensione="";}else{estensione=txtfldEstensione.getValue().toString();}
 									if(!txtfldOreLavoro.getRawValue().isEmpty()){oreLavoro=txtfldOreLavoro.getValue().toString();}
@@ -677,36 +681,182 @@ public class PanelCommessa extends LayoutContainer {
 		txtfldOreLavoro=new TextField<String>();
 		txtfldOreLavoro.setFieldLabel("Ore Lavoro");
 		txtfldOreLavoro.setName("oreLavoro");
-		txtfldOreLavoro.setRegex("[0-9]*[.]?[0-9]+");
-		txtfldOreLavoro.getMessages().setRegexText("Deve essere un numero");
+		txtfldOreLavoro.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
+		txtfldOreLavoro.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
 		frmPanel.add(txtfldOreLavoro, new FormData("60%"));
+		txtfldOreLavoro.addKeyListener(new KeyListener(){
+			 public void componentKeyDown(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfldOreLavoro.getValue()==null)
+							txtfldOreLavoro.setValue("0.00");
+						else{
+							String valore= txtfldOreLavoro.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(".")==-1)
+									valore=valore+".00";
+								else{
+									int index=valore.indexOf(".");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfldOreLavoro.setValue(valore);
+						}						
+					}
+			 }
+		});
 		
 		txtfldOreLavoroResidue=new TextField<String>();
 		txtfldOreLavoroResidue.setFieldLabel("Ore Residue");
 		txtfldOreLavoroResidue.setName("oreLavoroResidue");
-		txtfldOreLavoroResidue.setRegex("[0-9]*[.]?[0-9]+");
-		txtfldOreLavoroResidue.getMessages().setRegexText("Deve essere un numero");
+		txtfldOreLavoroResidue.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
+		txtfldOreLavoroResidue.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+		txtfldOreLavoroResidue.addKeyListener(new KeyListener(){
+			 public void componentKeyDown(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfldOreLavoroResidue.getValue()==null)
+							txtfldOreLavoroResidue.setValue("0.00");
+						else{
+							String valore= txtfldOreLavoroResidue.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(".")==-1)
+									valore=valore+".00";
+								else{
+									int index=valore.indexOf(".");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfldOreLavoroResidue.setValue(valore);
+						}						
+					}
+			 }
+		});
 		frmPanel.add(txtfldOreLavoroResidue, new FormData("60%"));
 		
 		txtfldTariffa=new TextField<String>();
 		txtfldTariffa.setFieldLabel("Tariffa (pre-Ordine)");
 		txtfldTariffa.setName("tariffaSal");
-		txtfldTariffa.setRegex("[0-9]*[.]?[0-9]+");
-		txtfldTariffa.getMessages().setRegexText("Deve essere un numero");
+		txtfldTariffa.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
+		txtfldTariffa.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+		txtfldTariffa.addKeyListener(new KeyListener(){
+			 public void componentKeyDown(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfldTariffa.getValue()==null)
+							txtfldTariffa.setValue("0.00");
+						else{
+							String valore= txtfldTariffa.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(".")==-1)
+									valore=valore+".00";
+								else{
+									int index=valore.indexOf(".");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfldTariffa.setValue(valore);
+						}						
+					}
+			 }
+		});
+		
 		frmPanel.add(txtfldTariffa, new FormData("60%"));
 		
 		txtfldSalAttuale=new TextField<String>();
 		txtfldSalAttuale.setFieldLabel("SAL Iniziale");
 		txtfldSalAttuale.setName("salAttuale");
-		txtfldSalAttuale.setRegex("[0-9]*[.]?[0-9]+");
-		txtfldSalAttuale.getMessages().setRegexText("Deve essere un numero");
+		txtfldSalAttuale.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
+		txtfldSalAttuale.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+		txtfldSalAttuale.addKeyListener(new KeyListener(){
+			 public void componentKeyDown(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfldSalAttuale.getValue()==null)
+							txtfldSalAttuale.setValue("0.00");
+						else{
+							String valore= txtfldSalAttuale.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(".")==-1)
+									valore=valore+".00";
+								else{
+									int index=valore.indexOf(".");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfldSalAttuale.setValue(valore);
+						}						
+					}
+			 }
+		});
 		frmPanel.add(txtfldSalAttuale, new FormData("60%"));
 
 		txtfldPclAttuale=new TextField<String>();
 		txtfldPclAttuale.setFieldLabel("PCL Iniziale");
 		txtfldPclAttuale.setName("pclAttuale");
-		txtfldPclAttuale.setRegex("[0-9]*[.]?[0-9]+");
-		txtfldPclAttuale.getMessages().setRegexText("Deve essere un numero");
+		txtfldPclAttuale.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
+		txtfldPclAttuale.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+		txtfldPclAttuale.addKeyListener(new KeyListener(){
+			 public void componentKeyDown(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfldPclAttuale.getValue()==null)
+							txtfldPclAttuale.setValue("0.00");
+						else{
+							String valore= txtfldPclAttuale.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(".")==-1)
+									valore=valore+".00";
+								else{
+									int index=valore.indexOf(".");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfldPclAttuale.setValue(valore);
+						}						
+					}
+			 }
+		});
 		frmPanel.add(txtfldPclAttuale, new FormData("60%"));
 		
 		txtrDescrizione = new TextArea();

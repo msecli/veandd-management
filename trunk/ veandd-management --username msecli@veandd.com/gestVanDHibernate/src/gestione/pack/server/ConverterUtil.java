@@ -615,7 +615,8 @@ public class ConverterUtil {
 						//c'è il giorno e cerco gli intervalli commesse
 						intervalloCommessa=(DettaglioIntervalliCommesse)session.createQuery("from DettaglioIntervalliCommesse " +
 								"where id_dettaglio_ore=:id and numeroCommessa=:numeroCommessa and estensioneCommessa=:estensione")
-								.setParameter("id", d.getIdDettaglioOreGiornaliere()).setParameter("numeroCommessa", numeroCommessa).setParameter("estensione", estensione).uniqueResult();	
+								.setParameter("id", d.getIdDettaglioOreGiornaliere()).setParameter("numeroCommessa", numeroCommessa)
+								.setParameter("estensione", estensione).uniqueResult();	
 						
 						if(intervalloCommessa==null){ //non è presente alcun intervallo commesse
 							tx.commit();
