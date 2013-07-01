@@ -66,12 +66,6 @@ public class BodyLayout_Administration extends LayoutContainer {
 		container.setLayout(layout);
 		container.setBorders(false);
 		
-/*
-		viewport.setStyleAttribute("margin-left", "-5px");
-		viewport.setStyleAttribute("margin-top", "-5px");
-		viewport.setStyleAttribute("padding-right", "10px");
-		viewport.setStyleAttribute("padding-bottom", "12px");
-*/
 		viewport.setStyleAttribute("padding", "3px");
 		ContentPanel north = new ContentPanel();
 		ContentPanel west = new ContentPanel();			
@@ -328,6 +322,20 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    btnPresenzeDipendenti.setWidth("100%");
 	    cp.add(btnPresenzeDipendenti);
 	    
+	    Button btnRilevColocation = new Button();
+	    btnRilevColocation.setToolTip("Rilevazione Presenze Colocation");
+	    btnRilevColocation.setHeight(65);
+	    btnRilevColocation.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.presenzeDip()));
+	    btnRilevColocation.setIconAlign(IconAlign.BOTTOM);
+	    btnRilevColocation.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	          center.removeAll();
+	        	center.add(new CenterLayout_RilevazioneOreColocation());
+	        	center.layout(true);}      
+	      });
+	    btnRilevColocation.setWidth("100%");
+	    cp.add(btnRilevColocation);	    
+	    
 	    Button btnLoadTimbrature = new Button();
 	    btnLoadTimbrature.setToolTip("Upload Timbrature");
 	    btnLoadTimbrature.setHeight(64);
@@ -357,6 +365,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    cp.add(btnPrintRiepilogo);
 	    
 	    cp.setButtonAlign(HorizontalAlignment.CENTER);
+	    	    
 	    panel.add(cp);
 	      
 	    
@@ -421,7 +430,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 //----------------------------------------------------------------------------------------------
 	    
 	   
-	   center.add(new CenterLayout_FoglioFatturazione());
+	   center.add(new CenterLayout_RilevazioneOreColocation());
 	    
 	   container.add(north, northData);
 	   container.add(west, westData);

@@ -1185,13 +1185,35 @@ public CenterLayout_FoglioFatturazione(){}
 		    column.setHeader("Var.SAL");  
 		    column.setWidth(60);  
 		    column.setRowHeader(true); 
+		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
+
+				@Override
+				public Object render(RiepilogoOreTotaliCommesse model, String property,
+						ColumnData config, int rowIndex, int colIndex,
+						ListStore<RiepilogoOreTotaliCommesse> store, Grid<RiepilogoOreTotaliCommesse> grid) {
+					
+					Float n=model.get(property);
+					return number.format(n);
+				}
+			});
 		    configs.add(column); 
 		    
 		    column=new ColumnConfig();		
 		    column.setId("pcl");  
 		    column.setHeader("Var.PCL");  
 		    column.setWidth(60);  
-		    column.setRowHeader(true);  
+		    column.setRowHeader(true); 
+		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
+
+				@Override
+				public Object render(RiepilogoOreTotaliCommesse model, String property,
+						ColumnData config, int rowIndex, int colIndex,
+						ListStore<RiepilogoOreTotaliCommesse> store, Grid<RiepilogoOreTotaliCommesse> grid) {
+					
+					Float n=model.get(property);
+					return number.format(n);
+				}
+			});
 		    configs.add(column); 
 		    
 			 column=new ColumnConfig();		
@@ -1290,6 +1312,7 @@ public CenterLayout_FoglioFatturazione(){}
 			String delta= new String();
 			String scaricate= new String();
 			String totaleEuro= new String();
+			String variazionePCL=new String();
 				
 			NumberFormat number= NumberFormat.getFormat("0.00");
 						
@@ -1317,9 +1340,12 @@ public CenterLayout_FoglioFatturazione(){}
 					}					
 				}
 				if(!nuovo){
+					
+	    	  		variazionePCL=number.format(Float.valueOf(result.getVariazionePcl())*(-1));
+	    	  		
 	
 					scaricate=ClientUtility.aggiornaTotGenerale(result.getOreFatturate(), result.getVariazioneSal());
-					scaricate=ClientUtility.aggiornaTotGenerale(scaricate, result.getVariazionePcl());
+					scaricate=ClientUtility.aggiornaTotGenerale(scaricate, variazionePCL);
 									    
 					totaleEuro=number.format(result.getTariffaOraria()*Float.valueOf(result.getOreFatturate()));
 						

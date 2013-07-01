@@ -19,7 +19,9 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoader;
 import com.extjs.gxt.ui.client.data.PagingModelMemoryProxy;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -662,9 +664,38 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    txtfldCostoOrario.setName("costoOrario");
 	    frmpnlAnagrPersonale.add(txtfldCostoOrario, new FormData("55%"));
 	    txtfldCostoOrario.setFieldLabel("Costo Orario");
-	    txtfldCostoOrario.setRegex("[0-9]*[.]?[0-9]+");
 	    txtfldCostoOrario.setValue("0.0");
-		txtfldCostoOrario.getMessages().setRegexText("Deve essere un numero eventualmente nel formato 11.111");
+	    txtfldCostoOrario.setRegex("[0-9]+[.]{1}[0-9]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
+	    txtfldCostoOrario.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+	    txtfldCostoOrario.addKeyListener(new KeyListener(){
+			 public void componentKeyDown(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfldCostoOrario.getValue()==null)
+							txtfldCostoOrario.setValue("0.00");
+						else{
+							String valore= txtfldCostoOrario.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(".")==-1)
+									valore=valore+".00";
+								else{
+									int index=valore.indexOf(".");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfldCostoOrario.setValue(valore);
+						}						
+					}
+			 }
+		});
 	    
 	    txtfldCostoStruttura = new TextField<String>();
 	    txtfldCostoStruttura.setMaxLength(7);
@@ -672,9 +703,38 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    txtfldCostoStruttura.setValue("0.0");
 	    frmpnlAnagrPersonale.add(txtfldCostoStruttura, new FormData("55%"));
 	    txtfldCostoStruttura.setFieldLabel("Costo Struttura");
-	    txtfldCostoStruttura.setRegex("[0-9]*[.]?[0-9]+");
-		txtfldCostoStruttura.getMessages().setRegexText("Deve essere un numero eventualmente nel formato 11.111");
-		txtfldCostoStruttura.setStyleAttribute("padding-bottom", "10px");	    
+	    txtfldCostoStruttura.setRegex("[0-9]+[.]{1}[0-9]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
+	    txtfldCostoStruttura.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+	    txtfldCostoStruttura.addKeyListener(new KeyListener(){
+			 public void componentKeyDown(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfldCostoStruttura.getValue()==null)
+							txtfldCostoStruttura.setValue("0.00");
+						else{
+							String valore= txtfldCostoStruttura.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(".")==-1)
+									valore=valore+".00";
+								else{
+									int index=valore.indexOf(".");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfldCostoStruttura.setValue(valore);
+						}						
+					}
+			 }
+		});
+	    txtfldCostoStruttura.setStyleAttribute("padding-bottom", "10px");	    
 		
 	    FieldSet fldstNewFieldset = new FieldSet();
 	    frmpnlAnagrPersonale.add(fldstNewFieldset, new FormData("95%"));
@@ -696,8 +756,37 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    txtfldOreDirette.setName("oreDirette");
 	    txtfldOreDirette.setValue("0");
 	    txtfldOreDirette.setFieldLabel("Ore Dirette");
-	    txtfldOreDirette.setRegex("[0-9]*[.]?[0-9]+");
-		txtfldOreDirette.getMessages().setRegexText("Deve essere un numero");
+	    txtfldOreDirette.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0|0");
+	    txtfldOreDirette.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+	    txtfldOreDirette.addKeyListener(new KeyListener(){
+			 public void componentKeyDown(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfldOreDirette.getValue()==null)
+							txtfldOreDirette.setValue("0.00");
+						else{
+							String valore= txtfldOreDirette.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(".")==-1)
+									valore=valore+".00";
+								else{
+									int index=valore.indexOf(".");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfldOreDirette.setValue(valore);
+						}						
+					}
+			 }
+		});
 	    left.add(txtfldOreDirette, new FormData("50%"));
 	 	    
 	    txtfldOreIndirette = new TextField<String>();
@@ -705,8 +794,37 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    txtfldOreIndirette.setName("oreIndirette");
 	    txtfldOreIndirette.setValue("0");
 	    left.add(txtfldOreIndirette, new FormData("50%"));
-	    txtfldOreIndirette.setRegex("[0-9]*[.]?[0-9]+");
-		txtfldOreIndirette.getMessages().setRegexText("Deve essere un numero");
+	    txtfldOreIndirette.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0|0");
+	    txtfldOreIndirette.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+	    txtfldOreIndirette.addKeyListener(new KeyListener(){
+			 public void componentKeyDown(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfldOreIndirette.getValue()==null)
+							txtfldOreIndirette.setValue("0.00");
+						else{
+							String valore= txtfldOreIndirette.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(".")==-1)
+									valore=valore+".00";
+								else{
+									int index=valore.indexOf(".");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfldOreIndirette.setValue(valore);
+						}						
+					}
+			 }
+		});
 	    txtfldOreIndirette.setFieldLabel("Ore Indirette");
 	    
 	    txtfldExt = new TextField<String>();
@@ -715,8 +833,37 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    txtfldExt.setValue("0");
 	    left.add(txtfldExt, new FormData("50%"));
 	    txtfldExt.setFieldLabel("Ex/Festivi");
-	    txtfldExt.setRegex("[-]?[0-9]*[.]?[0-9]+");
-		txtfldExt.getMessages().setRegexText("Deve essere un numero");
+	    txtfldExt.setRegex("[-]?[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0|0");
+	    txtfldExt.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+	    txtfldExt.addKeyListener(new KeyListener(){
+			 public void componentKeyDown(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfldExt.getValue()==null)
+							txtfldExt.setValue("0.00");
+						else{
+							String valore= txtfldExt.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(".")==-1)
+									valore=valore+".00";
+								else{
+									int index=valore.indexOf(".");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfldExt.setValue(valore);
+						}						
+					}
+			 }
+		});
 	    
 	    LayoutContainer right = new LayoutContainer();  
 	    right.setStyleAttribute("padding-left", "10px");  
@@ -729,24 +876,111 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    txtfldPermessi.setValue("0.0");
 	    right.add(txtfldPermessi, new FormData("50%"));
 	    txtfldPermessi.setFieldLabel("Permessi");
-	    txtfldPermessi.setRegex("[-]?[0-9]*[.]?[0-9]+");
-		txtfldPermessi.getMessages().setRegexText("Deve essere un numero");
+	    txtfldPermessi.setRegex("[-]?[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0|0");
+	    txtfldPermessi.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+	    txtfldPermessi.addKeyListener(new KeyListener(){
+			 public void componentKeyDown(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfldPermessi.getValue()==null)
+							txtfldPermessi.setValue("0.00");
+						else{
+							String valore= txtfldPermessi.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(".")==-1)
+									valore=valore+".00";
+								else{
+									int index=valore.indexOf(".");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfldPermessi.setValue(valore);
+						}						
+					}
+			 }
+		});
 	    
 	    txtfldFerie = new TextField<String>();
 	    txtfldFerie.setName("ferie");
 	    txtfldFerie.setValue("0.0");
 	    right.add(txtfldFerie, new FormData("50%"));
 	    txtfldFerie.setFieldLabel("Ferie");
-	    txtfldFerie.setRegex("[-]?[0-9]*[.]?[0-9]+");
-		txtfldFerie.getMessages().setRegexText("Deve essere un numero");
+	    txtfldFerie.setRegex("[-]?[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0|0");
+	    txtfldFerie.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+	    txtfldFerie.addKeyListener(new KeyListener(){
+			 public void componentKeyDown(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfldFerie.getValue()==null)
+							txtfldFerie.setValue("0.00");
+						else{
+							String valore= txtfldFerie.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(".")==-1)
+									valore=valore+".00";
+								else{
+									int index=valore.indexOf(".");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfldFerie.setValue(valore);
+						}						
+					}
+			 }
+		});
 		
 		txtfldOreRecupero=new TextField<String>();
 		txtfldOreRecupero.setName("oreRecupero");
 		txtfldOreRecupero.setValue("0.0");
 		right.add(txtfldOreRecupero, new FormData("50%"));
 	    txtfldOreRecupero.setFieldLabel("Ore Recupero");
-	    txtfldOreRecupero.setRegex("[-]?[0-9]*[.]?[0-9]+");
-		txtfldOreRecupero.getMessages().setRegexText("Deve essere un numero");
+	    txtfldOreRecupero.setRegex("[-]?[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0|0");
+	    txtfldOreRecupero.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+	    txtfldOreRecupero.addKeyListener(new KeyListener(){
+			 public void componentKeyDown(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfldOreRecupero.getValue()==null)
+							txtfldOreRecupero.setValue("0.00");
+						else{
+							String valore= txtfldOreRecupero.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(".")==-1)
+									valore=valore+".00";
+								else{
+									int index=valore.indexOf(".");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfldOreRecupero.setValue(valore);
+						}						
+					}
+			 }
+		});
 	    
 	    main.add(left, new ColumnData(100));
 	    left.setWidth("50%");
