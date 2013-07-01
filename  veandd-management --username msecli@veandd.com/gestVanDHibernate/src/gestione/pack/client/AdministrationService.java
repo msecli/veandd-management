@@ -228,6 +228,10 @@ public interface AdministrationService extends RemoteService {
 			List<IntervalliCommesseModel> intervalliC, String oreRecuperoTot,
 			String noteAggiuntive);
 	
+	boolean insertFoglioOreGiorno(String username, Date giorno,
+			List<IntervalliCommesseModel> intervalliC);
+
+	
 	List<IntervalliIUModel> loadIntervalliIU(String username, Date data)throws IllegalArgumentException;
 
 	GiustificativiModel loadGiustificativi(String username, Date giorno)throws IllegalArgumentException;

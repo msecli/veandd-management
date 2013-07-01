@@ -209,6 +209,10 @@ public interface AdministrationServiceAsync {
 	/*void getOrePreviste(String username, AsyncCallback<String> asyncCallback);
 
 	void loadFoglioOre(AsyncCallback<Boolean> asyncCallback);*/
+	
+	void insertFoglioOreGiorno(String username, Date giorno,
+			List<IntervalliCommesseModel> intervalliC,
+			AsyncCallback<Boolean> asyncCallback);
 
 	void loadIntervalliIU(String username, Date data,
 			AsyncCallback<List<IntervalliIUModel>> asyncCallback);
@@ -274,7 +278,5 @@ public interface AdministrationServiceAsync {
 	void getRiepilogoGiornalieroCommesse(String username, Date data,
 			AsyncCallback<List<RiepilogoOreDipCommesseGiornaliero>> asyncCallback);
 
-	
-
-		
+			
 }
