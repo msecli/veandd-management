@@ -16,6 +16,8 @@ import gestione.pack.client.utility.DatiComboBox;
 import gestione.pack.client.utility.MyImages;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -2577,6 +2579,13 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 		
 		private void caricaFieldSet(List<IntervalliCommesseModel> result) {
 			List<IntervalliCommesseModel> lista = new ArrayList<IntervalliCommesseModel>();
+			
+			Collections.sort(result, new Comparator<IntervalliCommesseModel>(){
+				  public int compare(IntervalliCommesseModel s1, IntervalliCommesseModel s2) {
+				    return s1.getNumeroCommessa().compareToIgnoreCase(s2.getNumeroCommessa());
+				  }
+			});
+		
 			lista.addAll(result);
 
 			int size;

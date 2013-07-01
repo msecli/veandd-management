@@ -8,14 +8,18 @@ import java.util.List;
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.model.CommessaModel;
 import gestione.pack.client.model.RdoCompletaModel;
+import gestione.pack.client.utility.MyImages;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -44,10 +48,12 @@ import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 
@@ -71,6 +77,8 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 	private VerticalPanel hpLayout;
 	
 	private GroupingStore<RdoCompletaModel>store = new GroupingStore<RdoCompletaModel>();
+	private GroupingStore<RdoCompletaModel> storeCompleto= new GroupingStore<RdoCompletaModel>();
+	private GroupingStore<RdoCompletaModel> storeResult= new GroupingStore<RdoCompletaModel>();
 	private Grid<RdoCompletaModel> gridRiepilogo;
 	private ColumnModel cm;
 	
@@ -432,8 +440,37 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			txtfldTariffaOraria=new TextField<String>();
 			txtfldTariffaOraria.setFieldLabel("Tariffa Oraria");
 			txtfldTariffaOraria.setName("tariffaOraria");
-			txtfldTariffaOraria.setRegex("[0-9]+[.][0-9]+|[0-9]+");
-			txtfldTariffaOraria.getMessages().setRegexText("Deve essere un numero, eventualmente nel formato 99.99");
+			txtfldTariffaOraria.setRegex("[0-9]+[.]{1}[0-9]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
+			txtfldTariffaOraria.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+			txtfldTariffaOraria.addKeyListener(new KeyListener(){
+				 public void componentKeyDown(ComponentEvent event) { 	  
+				    	int keyCode=event.getKeyCode();
+						if(keyCode==9){			
+							
+							if(txtfldTariffaOraria.getValue()==null)
+								txtfldTariffaOraria.setValue("0.00");
+							else{
+								String valore= txtfldTariffaOraria.getValue().toString();
+														
+								if(valore.compareTo("")==0)
+									valore ="0.00";
+								else
+									if(valore.indexOf(".")==-1)
+										valore=valore+".00";
+									else{
+										int index=valore.indexOf(".");
+										int length=valore.length();
+										
+										if(valore.substring(index+1, length).length()==1)
+											valore=valore+"0";		
+										else if(valore.substring(index+1, length).length()==0)
+											valore=valore+"00";
+									}
+								txtfldTariffaOraria.setValue(valore);
+							}						
+						}
+				 }
+			});
 			
 			txtfldNumeroRisorse=new TextField<String>();
 			txtfldNumeroRisorse.setFieldLabel("Num. Risorse");
@@ -444,14 +481,72 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			txtfldNumeroOre=new TextField<String>();
 			txtfldNumeroOre.setFieldLabel("Num. Ore");
 			txtfldNumeroOre.setName("numeroOre");
-			txtfldNumeroOre.setRegex("[0-9]+[.][0-9]+|[0-9]+");
-			txtfldNumeroOre.getMessages().setRegexText("Deve essere un numero, eventualmente nel formato 99.99");
+			txtfldNumeroOre.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
+			txtfldNumeroOre.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+			txtfldNumeroOre.addKeyListener(new KeyListener(){
+				 public void componentKeyDown(ComponentEvent event) { 	  
+				    	int keyCode=event.getKeyCode();
+						if(keyCode==9){			
+							
+							if(txtfldNumeroOre.getValue()==null)
+								txtfldNumeroOre.setValue("0.00");
+							else{
+								String valore= txtfldNumeroOre.getValue().toString();
+														
+								if(valore.compareTo("")==0)
+									valore ="0.00";
+								else
+									if(valore.indexOf(".")==-1)
+										valore=valore+".00";
+									else{
+										int index=valore.indexOf(".");
+										int length=valore.length();
+										
+										if(valore.substring(index+1, length).length()==1)
+											valore=valore+"0";		
+										else if(valore.substring(index+1, length).length()==0)
+											valore=valore+"00";
+									}
+								txtfldNumeroOre.setValue(valore);
+							}						
+						}
+				 }
+			});
 			
 			txtfldNumeroOreResidue=new TextField<String>();
 			txtfldNumeroOreResidue.setFieldLabel("Ore Residue");
 			txtfldNumeroOreResidue.setName("numeroOreResidue");
-			txtfldNumeroOreResidue.setRegex("[0-9]+[.][0-9]+|[0-9]+");
-			txtfldNumeroOreResidue.getMessages().setRegexText("Deve essere un numero, eventualmente nel formato 99.99");
+			txtfldNumeroOreResidue.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
+			txtfldNumeroOreResidue.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+			txtfldNumeroOreResidue.addKeyListener(new KeyListener(){
+				 public void componentKeyDown(ComponentEvent event) { 	  
+				    	int keyCode=event.getKeyCode();
+						if(keyCode==9){			
+							
+							if(txtfldNumeroOreResidue.getValue()==null)
+								txtfldNumeroOreResidue.setValue("0.00");
+							else{
+								String valore= txtfldNumeroOreResidue.getValue().toString();
+														
+								if(valore.compareTo("")==0)
+									valore ="0.00";
+								else
+									if(valore.indexOf(".")==-1)
+										valore=valore+".00";
+									else{
+										int index=valore.indexOf(".");
+										int length=valore.length();
+										
+										if(valore.substring(index+1, length).length()==1)
+											valore=valore+"0";		
+										else if(valore.substring(index+1, length).length()==0)
+											valore=valore+"00";
+									}
+								txtfldNumeroOreResidue.setValue(valore);
+							}						
+						}
+				 }
+			});
 			
 			layoutCol3.add(txtfldNumeroOrdine,new FormData("85%"));
 			layoutCol3.add(dtfldDataInizioOrdine,new FormData("85%"));
@@ -590,7 +685,46 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		            }
 		          }     
 		    }); 
-				    		   		    	    	    
+				    	
+		    //barra per casella ricerca
+		    ToolBar tlbarSearchField= new ToolBar();
+		    final TextField<String> txtfldsearch= new TextField<String>();
+		    Button btnSearch= new Button();
+		    
+		    btnSearch.setSize(16, 16);
+		    btnSearch.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.search()));
+		    btnSearch.setIconAlign(IconAlign.TOP);
+		    btnSearch.setEnabled(false);
+		    
+		    
+		    //TODO Ricerca
+		    storeResult=store;
+		    txtfldsearch.addKeyListener(new KeyListener(){
+		    	 public void componentKeyUp(ComponentEvent event) {
+		    		 
+		    		 if(txtfldsearch.getRawValue().isEmpty()){
+		    			 gridRiepilogo.reconfigure(store, cm);
+		    		 }else{
+		    		 	    		 	    		 
+		    			 String campo= txtfldsearch.getValue().toString();
+		    			 List<RdoCompletaModel> lista= new ArrayList<RdoCompletaModel>();
+		    			 lista.addAll(storeResult.getModels());
+		    			 storeResult.removeAll();
+		    			 for(RdoCompletaModel r:lista){
+		    				 if(r.getNumeroCommessa().compareTo(campo)==0 || r.getNumeroOfferta().compareTo(campo)==0 || 
+		    						 r.getNumeroOrdine().compareTo(campo)==0 || r.getNumeroRda().compareTo(campo)==0){
+		    					 storeResult.add(r);		    				 
+		    				 }
+		    			 }
+		    			 gridRiepilogo.reconfigure(storeResult, cm);	    		
+		    		 } 
+		    	 }
+		    	  	 
+		    });		   
+		    
+		    tlbarSearchField.add(txtfldsearch);
+		    tlbarSearchField.add(btnSearch);
+		    
 		    ContentPanel cntpnlGrid= new ContentPanel();
 		    cntpnlGrid.setBodyBorder(false);  
 		    cntpnlGrid.setBorders(false);
@@ -601,6 +735,8 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    cntpnlGrid.setHeight(360);
 		    cntpnlGrid.setScrollMode(Scroll.AUTOY);
 		    cntpnlGrid.add(gridRiepilogo);
+		    cntpnlGrid.setTopComponent(tlbarSearchField);
+		    
 		    
 		    add(cntpnlGrid);		  	
 		}
@@ -688,8 +824,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    configs.add(column);
 		    
 		    return configs;
-		}
-	
+		}	
 	}
 	
 	private void caricaTabellaDati() {

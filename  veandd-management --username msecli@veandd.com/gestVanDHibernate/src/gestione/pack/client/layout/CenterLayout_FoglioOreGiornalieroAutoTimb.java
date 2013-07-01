@@ -3306,6 +3306,56 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 								}
 							txtfldOreViaggio.setValue(valore);
 						}
+						
+						String oreRecuperoOld=txtfldRecupero.getValue().toString();
+						if(hasValueOreViaggio(txtfldOreViaggio)){
+							txtfldOreViaggio.clearInvalid();
+							String oreTotGenerale= new String();
+							String deltaGiorno= new String();
+							String oreViaggio= new String();
+							String deltaViaggio= new String();
+							String orePreviste=(txtfldOrePreviste.getValue().toString()+".00");
+											
+							oreTotGenerale=txtfldTotGenerale.getValue().toString();
+							deltaGiorno=txtfldOreDelta.getValue().toString();
+							oreViaggio=txtfldOreViaggio.getValue().toString();
+							
+							if(Float.valueOf(deltaGiorno)<0){
+								if(Float.valueOf(oreViaggio)>Math.abs(Float.valueOf(deltaGiorno))){
+									deltaViaggio=ClientUtility.aggiornaTotGenerale(oreViaggio, deltaGiorno);	
+									
+									txtfldDeltaViaggio.setValue(deltaViaggio);
+									txtfldRecupero.setValue("0.00");
+									//il delta viaggio è positivo e setto il giustificativo a ore viaggio
+									smplcmbxAltroGiustificativo.setAllowBlank(false);
+									smplcmbxAltroGiustificativo.setSimpleValue("27.Ore Viaggio");
+									txtfldOreTotEffettive.setValue(orePreviste);
+								}								
+								if(Float.valueOf(oreViaggio)<=Math.abs(Float.valueOf(deltaGiorno))){
+									oreTotGenerale=ClientUtility.aggiornaTotGenerale(oreTotGenerale, oreViaggio);
+									//deltaGiorno=;
+									//Resta un residuo di ore a recupero
+									txtfldRecupero.setValue(number.format(Float.valueOf(ClientUtility.calcoloDelta(oreTotGenerale, orePreviste))));
+									txtfldDeltaViaggio.setValue("0.00");//deltaViaggio è 0 in quanto non dovranno essere contabilizzate come ore viaggio
+									txtfldOreTotEffettive.setValue(oreTotGenerale);
+								}
+							}else
+							
+							if(Float.valueOf(deltaGiorno)>=0){
+								txtfldDeltaViaggio.setValue(oreViaggio);
+								//il delta viaggio è positivo e setto il giustificativo a ore viaggio
+								smplcmbxAltroGiustificativo.setAllowBlank(false);
+								txtfldOreTotEffettive.setValue(oreTotGenerale);
+							}
+							
+						}else{
+							txtfldRecupero.setValue(oreRecuperoOld);
+							txtfldDeltaViaggio.setValue("0.00");
+							txtfldOreTotEffettive.setValue("0.00");
+							smplcmbxAltroGiustificativo.clear();
+							smplcmbxAltroGiustificativo.setAllowBlank(true);
+							smplcmbxAltroGiustificativo.setEmptyText("Giustificativo..");
+						}					
 					}	    		
 			      }
 			});
