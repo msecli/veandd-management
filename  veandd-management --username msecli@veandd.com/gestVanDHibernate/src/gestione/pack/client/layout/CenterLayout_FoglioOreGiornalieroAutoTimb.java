@@ -115,7 +115,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		bodyContainer.setLayout(new FlowLayout());
 		bodyContainer.setBorders(false);		
 						
-		ContentPanel cntpnlFoglioOre = new ContentPanel(); //pannello esterno
+	/*	ContentPanel cntpnlFoglioOre = new ContentPanel(); //pannello esterno
 		cntpnlFoglioOre.setHeading("Foglio Ore.");
 		cntpnlFoglioOre.setHeaderVisible(true);
 		cntpnlFoglioOre.setCollapsible(false);
@@ -124,7 +124,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		cntpnlFoglioOre.setHeight(h-55);
 		cntpnlFoglioOre.setScrollMode(Scroll.AUTO);
 		cntpnlFoglioOre.setLayout(new RowLayout(Orientation.VERTICAL));
-		
+		*/
 		ContentPanel cntpnlGuida= new ContentPanel();
 		cntpnlGuida.setHeading("?");
 		cntpnlGuida.setHeaderVisible(true);
@@ -136,10 +136,11 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		
 		cntpnlGuida.add(txtGuida);
 		
-		cntpnlFoglioOre.add(new CreateFormIntervalliOre());		
-		cntpnlFoglioOre.add(txtfldUsername);
+		//cntpnlFoglioOre.add(new CreateFormIntervalliOre());		
+		//cntpnlFoglioOre.add(txtfldUsername);
 		
-		bodyContainer.add(cntpnlFoglioOre);
+		bodyContainer.add(txtfldUsername);
+		bodyContainer.add(new CreateFormIntervalliOre());
 		
 		layoutContainer.add(bodyContainer, new FitData(5, 5, 5, 8));
 		add(layoutContainer);			

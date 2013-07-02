@@ -101,7 +101,7 @@ public CenterLayout_FoglioFatturazione(){}
 		hpLayout.setItemId("hpLayout");
 		hpLayout.setStyleAttribute("margin-left", "5px");
 				
-		ContentPanel cntpnlLayout = new ContentPanel(); //pannello esterno
+		/*ContentPanel cntpnlLayout = new ContentPanel(); //pannello esterno
 		cntpnlLayout.setHeading("Fatturazione.");
 		cntpnlLayout.setHeaderVisible(true);
 		cntpnlLayout.setCollapsible(false);
@@ -109,10 +109,11 @@ public CenterLayout_FoglioFatturazione(){}
 		cntpnlLayout.setWidth(w-215);
 		cntpnlLayout.setHeight(h-55);
 		cntpnlLayout.setScrollMode(Scroll.AUTO);
+		*/
 		
 		ContentPanel cntpnlFoglioFatturazione= new ContentPanel();
 		cntpnlFoglioFatturazione.setHeading("Foglio di Fatturazione.");
-		cntpnlFoglioFatturazione.setHeaderVisible(true);
+		cntpnlFoglioFatturazione.setHeaderVisible(false);
 		cntpnlFoglioFatturazione.setCollapsible(false);
 		cntpnlFoglioFatturazione.setBorders(false);
 		cntpnlFoglioFatturazione.setWidth(1120);
@@ -120,7 +121,7 @@ public CenterLayout_FoglioFatturazione(){}
 		cntpnlFoglioFatturazione.setFrame(true);
 		cntpnlFoglioFatturazione.setButtonAlign(HorizontalAlignment.CENTER);
 		cntpnlFoglioFatturazione.setStyleAttribute("padding-left", "7px");
-		cntpnlFoglioFatturazione.setStyleAttribute("margin-top", "5px");
+		cntpnlFoglioFatturazione.setStyleAttribute("margin-top", "15px");
 		
 		cntpnlFoglioFatturazione.addButton(btnSalva);
 		btnSalva.setEnabled(false);
@@ -173,7 +174,6 @@ public CenterLayout_FoglioFatturazione(){}
 										Window.alert("error: Impossibile inserire i dati del foglio fatturazione!");
 									}
 								}
-
 					});				
 				}			
 			}
@@ -257,8 +257,10 @@ public CenterLayout_FoglioFatturazione(){}
 		
 		cntpnlFoglioFatturazione.setTopComponent(horizontalPanel);
 		cntpnlFoglioFatturazione.add(hpLayout);
-		cntpnlLayout.add(cntpnlFoglioFatturazione);
-	    bodyContainer.add(cntpnlLayout);
+		
+		//cntpnlLayout.add(cntpnlFoglioFatturazione);
+	    
+		bodyContainer.add(cntpnlFoglioFatturazione);
 	   				
 		layoutContainer.add(bodyContainer, new FitData(5, 5, 5, 8));
 		add(layoutContainer);

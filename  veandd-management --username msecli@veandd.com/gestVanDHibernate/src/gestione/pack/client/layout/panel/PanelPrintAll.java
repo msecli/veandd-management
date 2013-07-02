@@ -51,6 +51,7 @@ public class PanelPrintAll extends LayoutContainer {
 	private com.google.gwt.user.client.ui.FormPanel fp1= new com.google.gwt.user.client.ui.FormPanel();
 	private SimpleComboBox<String> smplcmbxAnno;
     private SimpleComboBox<String> smplcmbxMese;
+    private SimpleComboBox<String> smplcmbxMeseAll;
     private SimpleComboBox<String> smplcmbxSede= new SimpleComboBox<String>();
     private ComboBox<PersonaleModel> cmbxDipendente= new ComboBox<PersonaleModel>();
     private int operazione;
@@ -83,15 +84,15 @@ public class PanelPrintAll extends LayoutContainer {
 		String mese= ClientUtility.meseToLong(ClientUtility.traduciMeseToIt(data.substring(4, 7)));
 		String anno= data.substring(data.length()-4, data.length());
 	    
-	    smplcmbxMese= new SimpleComboBox<String>();
-	    smplcmbxMese.setFieldLabel("Mese");
-		smplcmbxMese.setName("mese");
-		smplcmbxMese.setEmptyText("Mese..");
-		smplcmbxMese.setAllowBlank(false);
+		smplcmbxMeseAll= new SimpleComboBox<String>();
+		smplcmbxMeseAll.setFieldLabel("Mese");
+		smplcmbxMeseAll.setName("mese");
+		smplcmbxMeseAll.setEmptyText("Mese..");
+		smplcmbxMeseAll.setAllowBlank(false);
 		 for(String l : DatiComboBox.getMese()){
-			 smplcmbxMese.add(l);}
-		smplcmbxMese.setTriggerAction(TriggerAction.ALL);
-		smplcmbxMese.setSimpleValue(mese);
+			 smplcmbxMeseAll.add(l);}
+		 smplcmbxMeseAll.setTriggerAction(TriggerAction.ALL);
+		 smplcmbxMeseAll.setSimpleValue(mese);
 		
 		smplcmbxAnno = new SimpleComboBox<String>();
 		smplcmbxAnno.setFieldLabel("Anno");
@@ -123,7 +124,7 @@ public class PanelPrintAll extends LayoutContainer {
 	    btnPrint.setWidth("100%");
 	    
 	    hpAll.add(smplcmbxAnno);
-	  	hpAll.add(smplcmbxMese);
+	  	hpAll.add(smplcmbxMeseAll);
 	  	hpAll.add(smplcmbxSede);
 	  	hpAll.add(fp);
 	  	
@@ -234,14 +235,14 @@ public class PanelPrintAll extends LayoutContainer {
 			
 			String data= new String();
 			String anno=smplcmbxAnno.getRawValue().toString();
-			String meseCorrente=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
+			String meseCorrente=ClientUtility.traduciMese(smplcmbxMeseAll.getRawValue().toString());
 			data=meseCorrente+anno;
 			String sedeOperativa=smplcmbxSede.getRawValue().toString();
 			//String username="";
 			
 			operazione=0;
 			
-			if(smplcmbxAnno.isValid()&&smplcmbxMese.isValid())
+			if(smplcmbxAnno.isValid()&&smplcmbxMeseAll.isValid())
 			SessionManagementService.Util.getInstance().setDataInSession(data, sedeOperativa ,"", "ALL", new AsyncCallback<Boolean>() {
 
 				@Override
