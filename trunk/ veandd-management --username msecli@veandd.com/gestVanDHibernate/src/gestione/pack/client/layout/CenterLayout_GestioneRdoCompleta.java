@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 
 import gestione.pack.client.AdministrationService;
-import gestione.pack.client.model.CommessaModel;
 import gestione.pack.client.model.RdoCompletaModel;
 import gestione.pack.client.utility.MyImages;
 
@@ -79,6 +78,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 	private GroupingStore<RdoCompletaModel>store = new GroupingStore<RdoCompletaModel>();
 	private GroupingStore<RdoCompletaModel> storeCompleto= new GroupingStore<RdoCompletaModel>();
 	private GroupingStore<RdoCompletaModel> storeResult= new GroupingStore<RdoCompletaModel>();
+	private List<RdoCompletaModel> lista= new ArrayList<RdoCompletaModel>();
 	private Grid<RdoCompletaModel> gridRiepilogo;
 	private ColumnModel cm;
 	
@@ -123,7 +123,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 				
 		ContentPanel cntpnlLayout= new ContentPanel();
 		cntpnlLayout.setHeading("Dati Rdo.");
-		cntpnlLayout.setHeaderVisible(true);
+		cntpnlLayout.setHeaderVisible(false);
 		cntpnlLayout.setCollapsible(false);
 		cntpnlLayout.setBorders(false);
 		cntpnlLayout.setWidth(860);
@@ -131,7 +131,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		cntpnlLayout.setFrame(true);
 		cntpnlLayout.setButtonAlign(HorizontalAlignment.CENTER);
 		cntpnlLayout.setStyleAttribute("padding-left", "7px");
-		cntpnlLayout.setStyleAttribute("margin-top", "5px");
+		cntpnlLayout.setStyleAttribute("margin-top", "15px");
 		
 		btnSave= new Button("Save");
 		btnEdit=new Button("Edit");
@@ -327,9 +327,10 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		hpLayout.add(new CntpnlGridRdo());
 		
 		cntpnlLayout.add(hpLayout);	
-		cntpnlRdo.add(cntpnlLayout);
 		
-	    bodyContainer.add(cntpnlRdo);    
+		//cntpnlRdo.add(cntpnlLayout);
+		
+	    bodyContainer.add(cntpnlLayout);    
 	   				
 		layoutContainer.add(bodyContainer, new FitData(5, 5, 5, 8));
 		add(layoutContainer);
@@ -481,7 +482,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			txtfldNumeroOre=new TextField<String>();
 			txtfldNumeroOre.setFieldLabel("Num. Ore");
 			txtfldNumeroOre.setName("numeroOre");
-			txtfldNumeroOre.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
+			txtfldNumeroOre.setRegex("[0-9]+[.]{1}[0-9]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
 			txtfldNumeroOre.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
 			txtfldNumeroOre.addKeyListener(new KeyListener(){
 				 public void componentKeyDown(ComponentEvent event) { 	  
@@ -516,7 +517,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			txtfldNumeroOreResidue=new TextField<String>();
 			txtfldNumeroOreResidue.setFieldLabel("Ore Residue");
 			txtfldNumeroOreResidue.setName("numeroOreResidue");
-			txtfldNumeroOreResidue.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
+			txtfldNumeroOreResidue.setRegex("[0-9]+[.]{1}[0-9]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
 			txtfldNumeroOreResidue.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
 			txtfldNumeroOreResidue.addKeyListener(new KeyListener(){
 				 public void componentKeyDown(ComponentEvent event) { 	  
@@ -691,35 +692,38 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    final TextField<String> txtfldsearch= new TextField<String>();
 		    Button btnSearch= new Button();
 		    
-		    btnSearch.setSize(16, 16);
+		    btnSearch.setSize(26, 26);
 		    btnSearch.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.search()));
 		    btnSearch.setIconAlign(IconAlign.TOP);
 		    btnSearch.setEnabled(false);
 		    
 		    
 		    //TODO Ricerca
-		    storeResult=store;
+		    
 		    txtfldsearch.addKeyListener(new KeyListener(){
 		    	 public void componentKeyUp(ComponentEvent event) {
 		    		 
 		    		 if(txtfldsearch.getRawValue().isEmpty()){
+		    			 storeResult.removeAll();
+		    			 store.removeAll();
+		    			 store.add(storeCompleto.getModels());
 		    			 gridRiepilogo.reconfigure(store, cm);
 		    		 }else{
 		    		 	    		 	    		 
-		    			 String campo= txtfldsearch.getValue().toString();
-		    			 List<RdoCompletaModel> lista= new ArrayList<RdoCompletaModel>();
-		    			 lista.addAll(storeResult.getModels());
+		    			 String campo= txtfldsearch.getValue().toString();	    			 
+		    			 
 		    			 storeResult.removeAll();
 		    			 for(RdoCompletaModel r:lista){
-		    				 if(r.getNumeroCommessa().compareTo(campo)==0 || r.getNumeroOfferta().compareTo(campo)==0 || 
-		    						 r.getNumeroOrdine().compareTo(campo)==0 || r.getNumeroRda().compareTo(campo)==0){
+		    				 if(r.getNumeroCommessa().contains(campo) || r.getNumeroOfferta().compareTo(campo)==0 || 
+		    						 r.getNumeroOrdine().contains(campo) || r.getNumeroRda().compareTo(campo)==0){
 		    					 storeResult.add(r);		    				 
 		    				 }
 		    			 }
-		    			 gridRiepilogo.reconfigure(storeResult, cm);	    		
+		    			 lista.clear();
+		    			 lista.addAll(store.getModels());
+		    			 gridRiepilogo.reconfigure(storeResult, cm);			 
 		    		 } 
-		    	 }
-		    	  	 
+		    	 }	    	  	 
 		    });		   
 		    
 		    tlbarSearchField.add(txtfldsearch);
@@ -736,8 +740,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    cntpnlGrid.setScrollMode(Scroll.AUTOY);
 		    cntpnlGrid.add(gridRiepilogo);
 		    cntpnlGrid.setTopComponent(tlbarSearchField);
-		    
-		    
+		    	    
 		    add(cntpnlGrid);		  	
 		}
 
@@ -856,6 +859,9 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			store.setStoreSorter(new StoreSorter<RdoCompletaModel>());  
 		    store.setDefaultSort("numeroCommessa", SortDir.ASC);
 			store.add(lista);
+			storeResult.add(store.getModels());
+			storeCompleto.add(store.getModels());
+			lista.addAll(store.getModels());
 						    		    	
 		} catch (NullPointerException e) {
 				e.printStackTrace();

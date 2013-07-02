@@ -10,6 +10,7 @@ import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.layout.panel.DialogAssociaOrdine;
 import gestione.pack.client.model.CommessaModel;
 import gestione.pack.client.model.PersonaleModel;
+import gestione.pack.client.model.RdoCompletaModel;
 import gestione.pack.client.utility.DatiComboBox;
 import gestione.pack.client.utility.MyImages;
 
@@ -68,6 +69,9 @@ public class PanelCommessa extends LayoutContainer {
 	
 	private FormPanel frmpnlCommessa= new FormPanel();
 	private GroupingStore<CommessaModel>store = new GroupingStore<CommessaModel>();
+	private GroupingStore<CommessaModel> storeCompleto= new GroupingStore<CommessaModel>();
+	private GroupingStore<CommessaModel> storeResult= new GroupingStore<CommessaModel>();
+	private List<CommessaModel> lista= new ArrayList<CommessaModel>();
 	
 	private FormBinding formBindingsCommessa;
 	private Grid<CommessaModel> gridCommessa;
@@ -142,7 +146,12 @@ public class PanelCommessa extends LayoutContainer {
 		btnClose.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.chiudiCommessa()));	
 		btnClose.setIconAlign(IconAlign.TOP);
 		
-		ToolBar toolBar = new ToolBar();	
+		final TextField<String> txtfldsearch= new TextField<String>();
+		Button btnSearch= new Button();
+		
+		ToolBar toolBar = new ToolBar();
+		toolBar.add(txtfldsearch);
+		toolBar.add(btnSearch);
 		toolBar.add(btnClose);
 		toolBar.add(btnOrdine);
 		toolBar.setBorders(true);
@@ -150,6 +159,35 @@ public class PanelCommessa extends LayoutContainer {
 		toolBar.setAlignment(HorizontalAlignment.RIGHT);
 		toolBar.setStyleAttribute("margin-bottom", "1px");
 		toolBar.setBorders(false);
+	    
+	    btnSearch.setSize(26, 26);
+	    btnSearch.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.search()));
+	    btnSearch.setIconAlign(IconAlign.TOP);
+	    btnSearch.setEnabled(false);
+	        
+		txtfldsearch.addKeyListener(new KeyListener(){
+		    	 public void componentKeyUp(ComponentEvent event) {
+		    		 
+		    		 if(txtfldsearch.getRawValue().isEmpty()){
+		    			 storeResult.removeAll();
+		    			 store.removeAll();
+		    			 store.add(storeCompleto.getModels());
+		    			 gridCommessa.reconfigure(store, cmCommessa);
+		    		 }else{
+		    		 	    		 	    		 
+		    			 String campo= txtfldsearch.getValue().toString();	    			 	    			 
+		    			 storeResult.removeAll();
+		    			 for(CommessaModel r:lista){
+		    				 if(r.getNumeroCommessa().contains(campo)){
+		    					 storeResult.add(r);		    				 
+		    				 }
+		    			 }
+		    			 lista.clear();
+		    			 lista.addAll(store.getModels());
+		    			 gridCommessa.reconfigure(storeResult, cmCommessa);			 
+		    		 } 
+		    	 }	    	  	 
+		    });	
 		
 		ContentPanel cntpnlVistaDati= new ContentPanel();
 		cntpnlVistaDati.setBorders(false);     
@@ -681,7 +719,7 @@ public class PanelCommessa extends LayoutContainer {
 		txtfldOreLavoro=new TextField<String>();
 		txtfldOreLavoro.setFieldLabel("Ore Lavoro");
 		txtfldOreLavoro.setName("oreLavoro");
-		txtfldOreLavoro.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
+		txtfldOreLavoro.setRegex("[0-9]+[.]{1}[0-9]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
 		txtfldOreLavoro.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
 		frmPanel.add(txtfldOreLavoro, new FormData("60%"));
 		txtfldOreLavoro.addKeyListener(new KeyListener(){
@@ -717,7 +755,7 @@ public class PanelCommessa extends LayoutContainer {
 		txtfldOreLavoroResidue=new TextField<String>();
 		txtfldOreLavoroResidue.setFieldLabel("Ore Residue");
 		txtfldOreLavoroResidue.setName("oreLavoroResidue");
-		txtfldOreLavoroResidue.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
+		txtfldOreLavoroResidue.setRegex("[0-9]+[.]{1}[0-9]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
 		txtfldOreLavoroResidue.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
 		txtfldOreLavoroResidue.addKeyListener(new KeyListener(){
 			 public void componentKeyDown(ComponentEvent event) { 	  
@@ -753,8 +791,8 @@ public class PanelCommessa extends LayoutContainer {
 		txtfldTariffa=new TextField<String>();
 		txtfldTariffa.setFieldLabel("Tariffa (pre-Ordine)");
 		txtfldTariffa.setName("tariffaSal");
-		txtfldTariffa.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
-		txtfldTariffa.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+		txtfldTariffa.setRegex("[0-9]+[.]{1}[0-9]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
+		txtfldTariffa.getMessages().setRegexText("Deve essere un numero nel formato 99.99");
 		txtfldTariffa.addKeyListener(new KeyListener(){
 			 public void componentKeyDown(ComponentEvent event) { 	  
 			    	int keyCode=event.getKeyCode();
