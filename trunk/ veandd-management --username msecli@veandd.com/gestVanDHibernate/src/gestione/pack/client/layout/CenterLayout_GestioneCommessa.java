@@ -32,9 +32,8 @@ public class CenterLayout_GestioneCommessa extends LayoutContainer{
 		LayoutContainer bodyContainer = new LayoutContainer();
 		bodyContainer.setLayout(new FlowLayout());
 		bodyContainer.setBorders(false);		
-		
-						
-		ContentPanel cntpnlCommessa = new ContentPanel();
+								
+	/*	ContentPanel cntpnlCommessa = new ContentPanel();
 		cntpnlCommessa.setHeading("Gestione Commessa");
 		cntpnlCommessa.setHeaderVisible(true);
 		cntpnlCommessa.setCollapsible(false);
@@ -42,11 +41,10 @@ public class CenterLayout_GestioneCommessa extends LayoutContainer{
 		cntpnlCommessa.setWidth(w-215);
 		cntpnlCommessa.setHeight(h-55);
 		cntpnlCommessa.setScrollMode(Scroll.AUTO);
+			
+		cntpnlCommessa.add(new PanelCommessa());*/
 		
-		
-		cntpnlCommessa.add(new PanelCommessa());
-		
-		bodyContainer.add(cntpnlCommessa);
+		bodyContainer.add(new PanelCommessa());
 		
 		layoutContainer.add(bodyContainer, new FitData(5, 5, 5, 8));
 		add(layoutContainer);

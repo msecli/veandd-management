@@ -45,6 +45,8 @@ public class DettaglioOreGiornaliere extends LightEntity implements IsSerializab
 
 	private String oreStraordinario;
 
+	private String oreAbbuono;
+	
 	private String statoRevisione;
 
 	private String totaleOreGiorno;
@@ -195,6 +197,14 @@ public class DettaglioOreGiornaliere extends LightEntity implements IsSerializab
 
 	public void setNoteAggiuntive(String noteAggiuntive) {
 		this.noteAggiuntive = noteAggiuntive;
+	}
+
+	public String getOreAbbuono() {
+		return oreAbbuono;
+	}
+
+	public void setOreAbbuono(String oreAbbuono) {
+		this.oreAbbuono = oreAbbuono;
 	}
 
 }

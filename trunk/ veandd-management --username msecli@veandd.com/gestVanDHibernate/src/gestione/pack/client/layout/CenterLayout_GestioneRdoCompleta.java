@@ -127,7 +127,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		cntpnlLayout.setCollapsible(false);
 		cntpnlLayout.setBorders(false);
 		cntpnlLayout.setWidth(860);
-		cntpnlLayout.setHeight(680);
+		cntpnlLayout.setHeight(850);
 		cntpnlLayout.setFrame(true);
 		cntpnlLayout.setButtonAlign(HorizontalAlignment.CENTER);
 		cntpnlLayout.setStyleAttribute("padding-left", "7px");
@@ -736,7 +736,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    cntpnlGrid.setLayout(new FitLayout());  
 		    cntpnlGrid.setHeaderVisible(false);
 		    cntpnlGrid.setWidth(820);
-		    cntpnlGrid.setHeight(360);
+		    cntpnlGrid.setHeight(560);
 		    cntpnlGrid.setScrollMode(Scroll.AUTOY);
 		    cntpnlGrid.add(gridRiepilogo);
 		    cntpnlGrid.setTopComponent(tlbarSearchField);

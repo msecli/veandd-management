@@ -191,9 +191,19 @@ public class BodyLayout_Dipendente extends LayoutContainer {
 	    btnGestionePresenze.setIconAlign(IconAlign.BOTTOM);
 	    btnGestionePresenze.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
-	          center.removeAll();
-	        	center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb());
-	        	center.layout(true);}      
+	        	if(txtfldTipologiaLavoratore.getValue().toString().compareTo("C")!=0){
+	        		center.removeAll();
+	 	        	center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb());
+	 	        	center.layout(true);    
+	        	}            	  
+	            else{
+	            	center.removeAll();
+	            	center.add(new CenterLayout_FoglioOreGiornaliero_Collaboratori());
+	            	center.layout(true);
+	            }
+	         
+	        	
+	        }
 	      });
 	    btnGestionePresenze.setWidth("100%");
 	    

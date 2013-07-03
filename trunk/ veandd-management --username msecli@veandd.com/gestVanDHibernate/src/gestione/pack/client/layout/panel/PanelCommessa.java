@@ -283,7 +283,7 @@ public class PanelCommessa extends LayoutContainer {
 	    cntpnlGrid.setLayout(new FitLayout());  
 	    cntpnlGrid.setHeaderVisible(false);
 	    cntpnlGrid.setWidth(616);
-	    cntpnlGrid.setHeight(475);
+	    cntpnlGrid.setHeight(760);
 	    cntpnlGrid.setScrollMode(Scroll.AUTOY);
 	    cntpnlGrid.add(gridCommessa);
 	    cntpnlGrid.setTopComponent(toolBar);
@@ -297,9 +297,9 @@ public class PanelCommessa extends LayoutContainer {
 		horPanel.add(cntpnlVistaDati);
 		
 		ContentPanel cntpnlLayout= new ContentPanel();
-		cntpnlLayout.setHeaderVisible(true);
+		cntpnlLayout.setHeaderVisible(false);
 		cntpnlLayout.setHeading("Dati Commesse.");
-		cntpnlLayout.setSize(1030, 590);
+		cntpnlLayout.setSize(1030, 850);
 		cntpnlLayout.setFrame(true);
 		cntpnlLayout.add(horPanel);
 		cntpnlLayout.setButtonAlign(HorizontalAlignment.CENTER);
@@ -307,6 +307,8 @@ public class PanelCommessa extends LayoutContainer {
 		cntpnlLayout.addButton(btnEdit);
 		cntpnlLayout.addButton(btnDelete);
 		cntpnlLayout.addButton(btnReset);
+		//cntpnlLayout.setStyleAttribute("padding-left", "7px");
+		cntpnlLayout.setStyleAttribute("margin-top", "15px");
 		
 		bodyContainer.add(cntpnlLayout);    
 			
