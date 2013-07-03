@@ -224,7 +224,8 @@ public interface AdministrationService extends RemoteService {
 			String totOreGenerale, String delta, String oreViaggio,
 			String oreAssRecupero, String deltaOreViaggio,
 			String giustificativo, String oreStraordinario, String oreFerie,
-			String orePermesso, String revisione, List<String> intervalliIU,
+			String orePermesso, String revisione, String oreAbbuono,
+			List<String> intervalliIU,
 			List<IntervalliCommesseModel> intervalliC, String oreRecuperoTot,
 			String noteAggiuntive);
 	
