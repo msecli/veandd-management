@@ -203,7 +203,7 @@ public interface AdministrationServiceAsync {
 			String totOreGenerale, String delta, String oreViaggio,
 			String oreAssRecupero, String deltaOreViaggio,
 			String giustificativo, String oreStraordinario, String oreFerie, String orePermesso, 
-			String revisione, List<String> intervalliIU,
+			String revisione, String oreAbbuono, List<String> intervalliIU,
 			List<IntervalliCommesseModel> intervalliC, String oreRecuperoTot,
 			String noteAggiuntive, AsyncCallback<Boolean> asyncCallback);
 	/*void getOrePreviste(String username, AsyncCallback<String> asyncCallback);
