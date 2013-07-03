@@ -166,9 +166,9 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 		cntpnlGrid.setBodyBorder(false);         
 		cntpnlGrid.setLayout(new FitLayout());  
 		cntpnlGrid.setHeaderVisible(false);
-		cntpnlGrid.setWidth(975);
-		cntpnlGrid.setHeight(290);
-		cntpnlGrid.setScrollMode(Scroll.AUTOY);
+		cntpnlGrid.setWidth(1100);
+		cntpnlGrid.setHeight(370);
+		cntpnlGrid.setScrollMode(Scroll.AUTO);
 				
 		caricaTabellaDati();
 	    
@@ -201,11 +201,9 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	    gridRiepilogo.getView().setViewConfig(new GridViewConfig(){
 	    	@Override
 	        public String getRowStyle(ModelData model, int rowIndex, ListStore<ModelData> ds) {
-	            if (model != null) {
-	                                    //TODO: put your conditions here
+	            if (model != null) {	                                    
 	                if (!(Boolean)model.get("compilato")) 
-	                    return "red-row";
-	                
+	                    return "red-row";               
 	            }
 				return "";            
 	    	}
@@ -221,7 +219,8 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 		cntpnlLayout.setCollapsible(false);
 		cntpnlLayout.setExpanded(true);
 		cntpnlLayout.setHeading("Riepilogo Giornaliero.");
-		cntpnlLayout.setSize(990, 300);
+		cntpnlLayout.setSize(990, 410);
+		cntpnlLayout.setScrollMode(Scroll.AUTOX);
 		cntpnlLayout.setFrame(true);
 		cntpnlLayout.add(cntpnlGrid);
 	    
@@ -273,7 +272,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 		SummaryColumnConfig<Double> column=new SummaryColumnConfig<Double>();		
 	    column.setId("giorno");  
 	    column.setHeader("Giorno");  
-	    column.setWidth(80);  
+	    column.setWidth(70);  
 	    column.setRowHeader(true);  
 	    column.setSummaryRenderer(new SummaryRenderer() {
 			@Override
@@ -376,6 +375,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 		return configs;
 	}
 	
+	
 	private List<ColumnConfig> createColumns() {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 		final NumberFormat number = NumberFormat.getFormat("0.00");
@@ -383,7 +383,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 		SummaryColumnConfig<Double> column=new SummaryColumnConfig<Double>();		
 	    column.setId("giorno");  
 	    column.setHeader("Giorno");  
-	    column.setWidth(80);  
+	    column.setWidth(70);  
 	    column.setRowHeader(true);  
 	    column.setSummaryRenderer(new SummaryRenderer() {
 			@Override
@@ -395,8 +395,8 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	    
 	    SummaryColumnConfig<Double> columnOreTimbrature=new SummaryColumnConfig<Double>();		
 	    columnOreTimbrature.setId("oreTimbrature");  
-	    columnOreTimbrature.setHeader("Ore Timb.");  
-	    columnOreTimbrature.setWidth(55);    
+	    columnOreTimbrature.setHeader("Timbrature");  
+	    columnOreTimbrature.setWidth(50);    
 	    columnOreTimbrature.setRowHeader(true); 
 	    columnOreTimbrature.setSummaryType(SummaryType.SUM);  
 	    columnOreTimbrature.setAlignment(HorizontalAlignment.RIGHT);  	
@@ -419,6 +419,8 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	   				String tot="0.00";
 	   				store1.add(store.getModels());
 	   				for(RiepilogoFoglioOreModel riep: store1.getModels()){
+	   					
+	   					//CALCOLO IL TOTALE
 	   					tot=ClientUtility.aggiornaTotGenerale(tot, number.format(riep.getOreTimbrature()));
 	   				}
 	   				
@@ -431,8 +433,8 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	    
 	    SummaryColumnConfig<Double> columnOreViaggio=new SummaryColumnConfig<Double>();		
 	    columnOreViaggio.setId("oreViaggio");  
-	    columnOreViaggio.setHeader("Ore Viaggio");  
-	    columnOreViaggio.setWidth(55);    
+	    columnOreViaggio.setHeader("Viaggio");  
+	    columnOreViaggio.setWidth(50);    
 	    columnOreViaggio.setRowHeader(true); 
 	    columnOreViaggio.setSummaryType(SummaryType.SUM);  
 	    columnOreViaggio.setAlignment(HorizontalAlignment.RIGHT);  	
@@ -467,8 +469,8 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	    
 	    SummaryColumnConfig<Double> columnDeltaViaggio=new SummaryColumnConfig<Double>();		
 	    columnDeltaViaggio.setId("deltaViaggio");  
-	    columnDeltaViaggio.setHeader("Delta Viaggio");  
-	    columnDeltaViaggio.setWidth(55);    
+	    columnDeltaViaggio.setHeader("D.Viaggio");  
+	    columnDeltaViaggio.setWidth(50);    
 	    columnDeltaViaggio.setRowHeader(true); 
 	    columnDeltaViaggio.setSummaryType(SummaryType.SUM);  
 	    columnDeltaViaggio.setAlignment(HorizontalAlignment.RIGHT);  	
@@ -502,8 +504,8 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	  
 	    SummaryColumnConfig<Double> columnOreTotali=new SummaryColumnConfig<Double>();		
 	    columnOreTotali.setId("oreTotali");  
-	    columnOreTotali.setHeader("Ore Totali");  
-	    columnOreTotali.setWidth(55);    
+	    columnOreTotali.setHeader("Totali");  
+	    columnOreTotali.setWidth(50);    
 	    columnOreTotali.setRowHeader(true); 
 	    columnOreTotali.setSummaryType(SummaryType.SUM);  
 	    columnOreTotali.setAlignment(HorizontalAlignment.RIGHT);    
@@ -536,8 +538,8 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	    
 	    SummaryColumnConfig<Double> columnOreFerie=new SummaryColumnConfig<Double>();		
 	    columnOreFerie.setId("oreFerie");  
-	    columnOreFerie.setHeader("Ore Ferie");  
-	    columnOreFerie.setWidth(55);    
+	    columnOreFerie.setHeader("Ferie");  
+	    columnOreFerie.setWidth(50);    
 	    columnOreFerie.setRowHeader(true); 
 	    columnOreFerie.setSummaryType(SummaryType.SUM);  
 	    columnOreFerie.setAlignment(HorizontalAlignment.RIGHT);    
@@ -570,8 +572,8 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	    
 	    SummaryColumnConfig<Double> columnOrePermesso=new SummaryColumnConfig<Double>();		
 	    columnOrePermesso.setId("orePermesso");  
-	    columnOrePermesso.setHeader("Perm. (ROL)");  
-	    columnOrePermesso.setWidth(55);    
+	    columnOrePermesso.setHeader("Perm.(ROL)");  
+	    columnOrePermesso.setWidth(50);    
 	    columnOrePermesso.setRowHeader(true); 
 	    columnOrePermesso.setSummaryType(SummaryType.SUM);  
 	    columnOrePermesso.setAlignment(HorizontalAlignment.RIGHT);    
@@ -604,8 +606,8 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	    
 	    SummaryColumnConfig<Double> columnOreStraordinario=new SummaryColumnConfig<Double>();		
 	    columnOreStraordinario.setId("oreStraordinario");  
-	    columnOreStraordinario.setHeader("Straordin.");  
-	    columnOreStraordinario.setWidth(55);    
+	    columnOreStraordinario.setHeader("Strao.");  
+	    columnOreStraordinario.setWidth(50);    
 	    columnOreStraordinario.setRowHeader(true); 
 	    columnOreStraordinario.setSummaryType(SummaryType.SUM);  
 	    columnOreStraordinario.setAlignment(HorizontalAlignment.RIGHT);    
@@ -638,8 +640,8 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	    
 	    SummaryColumnConfig<Double> columnOreRecupero=new SummaryColumnConfig<Double>();		
 	    columnOreRecupero.setId("oreRecupero");  
-	    columnOreRecupero.setHeader("Ore a Recupero");  
-	    columnOreRecupero.setWidth(55);    
+	    columnOreRecupero.setHeader("Recupero");  
+	    columnOreRecupero.setWidth(50);    
 	    columnOreRecupero.setRowHeader(true); 
 	    columnOreRecupero.setSummaryType(SummaryType.SUM);  
 	    columnOreRecupero.setAlignment(HorizontalAlignment.RIGHT);    
@@ -668,12 +670,46 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 					return number.format(n);
 			}  
 	    });      
-	    configs.add(columnOreRecupero); 		
+	    configs.add(columnOreRecupero); 
+	    
+	    SummaryColumnConfig<Double> columnOreAbbuono=new SummaryColumnConfig<Double>();		
+	    columnOreAbbuono.setId("oreAbbuono");  
+	    columnOreAbbuono.setHeader("Abbuono");  
+	    columnOreAbbuono.setWidth(50);    
+	    columnOreAbbuono.setRowHeader(true); 
+	    columnOreAbbuono.setSummaryType(SummaryType.SUM);  
+	    columnOreAbbuono.setAlignment(HorizontalAlignment.RIGHT);    
+	    columnOreAbbuono.setRenderer(new GridCellRenderer<RiepilogoFoglioOreModel>() {
+			@Override
+			public Object render(RiepilogoFoglioOreModel model,
+					String property, ColumnData config, int rowIndex,
+					int colIndex,
+					ListStore<RiepilogoFoglioOreModel> store,
+					Grid<RiepilogoFoglioOreModel> grid) {
+				Float n=model.get(property);
+				return number.format(n);
+			}			
+		});
+	    columnOreAbbuono.setSummaryRenderer(new SummaryRenderer() {  
+	   			@Override
+			public String render(Number value, Map<String, Number> data) {
+	   				GroupingStore<RiepilogoFoglioOreModel>store1 = new GroupingStore<RiepilogoFoglioOreModel>();
+	   				String tot="0.00";
+	   				store1.add(store.getModels());
+	   				for(RiepilogoFoglioOreModel riep: store1.getModels()){
+	   					tot=ClientUtility.aggiornaTotGenerale(tot, number.format(riep.getOreAbbuono()));
+	   				}
+	   				
+	   				Float n=Float.valueOf(tot);
+					return number.format(n);
+			}  
+	    });      
+	    configs.add(columnOreAbbuono); 
 	        
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("giustificativo");  
 	    column.setHeader("Giustificativo");  
-	    column.setWidth(120);  
+	    column.setWidth(70);  
 	    column.setRowHeader(true);  
 	    column.setAlignment(HorizontalAlignment.RIGHT);  
 	    configs.add(column); 
@@ -681,7 +717,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("note");  
 	    column.setHeader("noteAggiuntive");  
-	    column.setWidth(180);  
+	    column.setWidth(200);  
 	    column.setRowHeader(true);  
 	    column.setAlignment(HorizontalAlignment.RIGHT);  
 	    configs.add(column); 

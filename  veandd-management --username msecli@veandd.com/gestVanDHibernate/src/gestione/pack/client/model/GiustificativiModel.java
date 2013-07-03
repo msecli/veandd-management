@@ -13,7 +13,8 @@ public class GiustificativiModel extends BaseModel implements IsSerializable{
 	public GiustificativiModel(){}
 	
 	public GiustificativiModel(String orePreviste, String totGenerale, String delta, String oreViaggio, String oreDeltaViaggio, 
-			String oreRecupero,  String giustificativo, String statoRevisione,  String straordinario, String oreFerie, String orePermesso, String noteAggiuntive){
+			String oreRecupero,  String giustificativo, String statoRevisione,  String straordinario, String oreFerie, String orePermesso, 
+			String oreAbbuono, String noteAggiuntive){
 		
 		set("orePreviste",orePreviste);
 		set("totGenerale",totGenerale);
@@ -27,6 +28,7 @@ public class GiustificativiModel extends BaseModel implements IsSerializable{
 		set("orePermesso", orePermesso);
 		set("straordinario", straordinario);
 		set("noteAggiuntive", noteAggiuntive);
+		set("oreAbbuono", oreAbbuono);
 	}
 	
 	public String getOrePreviste(){

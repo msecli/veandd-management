@@ -26,12 +26,10 @@ import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.DatePickerEvent;
-import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -210,7 +208,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			setHeading("Dettaglio Ore.");
 			setHeaderVisible(false);
 			setWidth(1060);
-			setHeight(915);
+			setHeight(1050);
 			setStyleAttribute("padding-left", "10px");
 			setStyleAttribute("padding-top", "10px");
 			setBorders(false);
@@ -266,7 +264,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			frm.setBorders(false);
 			frm.setItemId("formPanel");
 			frm.setWidth(1060);
-			frm.setHeight(890);
+			frm.setHeight(1030);
 			frm.setStyleAttribute("padding-left", "0px");
 			frm.setStyleAttribute("padding-top", "0px");
 			frm.setScrollMode(Scroll.AUTO);
@@ -333,6 +331,8 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					TextField<String> txtfldFerie=new TextField<String>();
 					TextField<String> txtfldPermesso=new TextField<String>();
 					TextField<String> txtfldStraordinario=new TextField<String>();
+					TextField<String> txtfldAbbuono=new TextField<String>();
+					
 					TextField<String> txtfldRecupero=new TextField<String>();
 					TextField<String> txtfldRecuperoTotale= new TextField<String>();
 					TextField<String> txtfldOreViaggio= new TextField<String>();
@@ -381,6 +381,8 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					txtfldPermesso=fldSetGiustificativi.txtfldPermesso;
 					txtfldStraordinario=fldSetGiustificativi.txtfldStraordinario;
 					txtfldRecupero=fldSetGiustificativi.txtfldRecupero;
+					txtfldAbbuono=fldSetGiustificativi.txtfldAbbuono;
+					
 					smplcmbxGiustificativo=fldSetGiustificativi.smplcmbxAltroGiustificativo;
 					txtfldOreViaggio=fldSetGiustificativi.txtfldOreViaggio;
 					txtfldDeltaOreViaggio=fldSetGiustificativi.txtfldDeltaViaggio;
@@ -396,9 +398,12 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					String oreAssRecupero=txtfldRecupero.getValue().toString();
 					String oreFerie=txtfldFerie.getValue().toString();
 					String orePermesso=txtfldPermesso.getValue().toString();
+					String oreAbbuono=txtfldAbbuono.getValue().toString();
+					
 					String noteAggiuntive="";
 					String oreRecuperoTot= txtfldRecuperoTotale.getValue().toString();
 					String giustificativo=new String();
+					
 										
 					if(!smplcmbxGiustificativo.getRawValue().isEmpty())
 						giustificativo=smplcmbxGiustificativo.getRawValue().toString();
@@ -415,7 +420,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					if(fldSetIntervalliIU.numeroInseriti()%2==0){ 
 						if(controlloDati.compareTo("OK")==0){	
 							AdministrationService.Util.getInstance().insertFoglioOreGiorno(username, giorno, totOreGenerale, delta, oreViaggio, oreAssRecupero, deltaOreViaggio, 
-									giustificativo, oreStraordinario, oreFerie, orePermesso, "0", intervalliIU, intervalliC, oreRecuperoTot, noteAggiuntive, new AsyncCallback<Boolean>() {
+									giustificativo, oreStraordinario, oreFerie, orePermesso, "0", oreAbbuono, intervalliIU, intervalliC, oreRecuperoTot, noteAggiuntive, new AsyncCallback<Boolean>() {
 
 								@Override
 								public void onFailure(Throwable caught) {
@@ -533,7 +538,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					return controllo="E' stato indicato un numero di ore di straordinario o recupero diverso dal valore del delta giornaliero \n" +
 							"ma non e' stato indicato un giustificativo.";
 				else
-				if(sommaStrRec.compareTo(delta)==0 && giustificativo.compareTo("")!=0)
+				if(sommaStrRec.compareTo(delta)==0 && giustificativo.compareTo("")!=0 && giustificativo.compareTo("23.Abbuono")!=0)
 					return controllo="E' stato indicato un numero di ore uguale al valore del delta giornaliero \n" +
 							"ed e' anche stato indicato un giustificativo.";			
 			}
@@ -545,7 +550,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					return controllo="E' stato indicato un numero di ore diverso dal valore del delta giornaliero \n" +
 							"ma non e' stato indicato un giustificativo.";	
 				else
-					if(sommaGiustificativi.compareTo(delta)==0 && giustificativo.compareTo("")!=0)
+					if(sommaGiustificativi.compareTo(delta)==0 && giustificativo.compareTo("")!=0 && giustificativo.compareTo("23.Abbuono")!=0)
 						return controllo="E' stato indicato un numero di ore uguale al valore del delta giornaliero \n" +
 								"ed e' anche stato indicato un giustificativo.";
 			}		
@@ -2784,8 +2789,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					txtfld4U.setEnabled(true);
 					txtfld5I.setEnabled(true);
 					txtfld5U.setEnabled(true);					
-				}
-				
+				}				
 			}	
 			else 
 				aggiornaTotaleIntervalli();
@@ -2797,6 +2801,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		   List<String> listaParziali= new ArrayList<String>();
 		   String totale=new String();
 		   String delta=new String();
+		   String abbuono=new String();
 		   
 		   LayoutContainer lc= new LayoutContainer(); 
 	       LayoutContainer right= new LayoutContainer();
@@ -2811,7 +2816,10 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
   		   listaParziali.add(txtfldSomma4.getValue().toString());
   		   listaParziali.add(txtfldSomma5.getValue().toString());
   	   
+  		   abbuono="-"+fldsetGiustificativo.txtfldAbbuono.getValue();
   		   totale=ClientUtility.calcolaTempo(listaParziali);
+  		   totale=ClientUtility.aggiornaTotGenerale(totale, abbuono);
+  		   
   		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
   		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
   		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
@@ -3090,6 +3098,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		public TextField<String> txtfldStraordinario=new TextField<String>();
 		public TextField<String> txtfldPermesso=new TextField<String>();
 		public TextField<String> txtfldRecupero=new TextField<String>();
+		public TextField<String> txtfldAbbuono=new TextField<String>();
 		
 		public TextField<String> txtfldOreDelta= new TextField<String>();
 		public TextField<String> txtfldOrePreviste= new TextField<String>();
@@ -3444,7 +3453,6 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			      }
 			});
 						
-			//smplcmbxAltroGiustificativo.setEnabled(true);
 			smplcmbxAltroGiustificativo.setEmptyText("Giustificativo..");
 			smplcmbxAltroGiustificativo.setFieldLabel("Giustificativo");
 			for(String l : DatiComboBox.getGiustificativi()){
@@ -3453,6 +3461,18 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			if(result.getGiustificativo().compareTo("")!=0)
 				smplcmbxAltroGiustificativo.setSimpleValue(result.getGiustificativo());		    
 			if(statoRevisione==1)smplcmbxAltroGiustificativo.setEnabled(false);
+						
+			smplcmbxAltroGiustificativo.addListener(Events.Select, new Listener<BaseEvent>(){
+				@Override
+				public void handleEvent(BaseEvent be) {	
+					if(smplcmbxAltroGiustificativo.getRawValue().compareTo("23.Abbuono")==0)
+						txtfldAbbuono.setEnabled(true);
+					else
+						txtfldAbbuono.setEnabled(false);
+						txtfldAbbuono.setValue("0.00");
+				}		
+			});
+			
 			
 			txtfldFerie.setValue(result.getOreFerie());
 			txtfldFerie.setAllowBlank(false);
@@ -3568,6 +3588,117 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					}	    		
 			      }
 			});
+			
+			
+			txtfldAbbuono.setValue((String) result.get("oreAbbuono"));
+			txtfldAbbuono.setAllowBlank(false);
+			txtfldAbbuono.setFieldLabel("Abbuono/Scarto");		
+			txtfldAbbuono.setRegex("[0-9]+[.]?[0-5]{1}[0-9]{1}|0.00|0.0");
+			txtfldAbbuono.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+			txtfldAbbuono.setWidth(50);
+			if(txtfldAbbuono.getValue().compareTo("0.00")==0)
+				txtfldAbbuono.setEnabled(false);
+			else
+				txtfldAbbuono.setEnabled(true);			
+			txtfldAbbuono.addKeyListener(new KeyListener(){
+				
+				@Override
+				public void componentKeyUp(ComponentEvent event) {
+					
+					String oreTot=txtfldTotGenerale.getValue().toString();
+					String oreAbbuono=txtfldAbbuono.getValue().toString();
+					String delta=new String();					
+					List<String> listaParziali= new ArrayList<String>();
+	    										
+					LayoutContainer lc= new LayoutContainer(); 
+		   			FldsetIntervalliIU fldsetIntervalliIU= new FldsetIntervalliIU();
+		   			lc=(LayoutContainer) getParent().getParent();
+		   			lc=(LayoutContainer) lc.getItemByItemId("left");
+		   			fldsetIntervalliIU=(FldsetIntervalliIU) lc.getItemByItemId("fldSetIntervalliIU");
+					
+		    		delta=("-"+ txtfldOrePreviste.getValue()+".00");
+		    	   	
+		    		listaParziali.add(fldsetIntervalliIU.txtfldSomma1.getValue().toString());
+		    		listaParziali.add(fldsetIntervalliIU.txtfldSomma2.getValue().toString());
+		    		listaParziali.add(fldsetIntervalliIU.txtfldSomma3.getValue().toString());
+		    		listaParziali.add(fldsetIntervalliIU.txtfldSomma4.getValue().toString());
+		    		listaParziali.add(fldsetIntervalliIU.txtfldSomma5.getValue().toString());
+					
+					oreAbbuono="-" + oreAbbuono;					
+					
+					oreTot=ClientUtility.calcolaTempo(listaParziali);
+					oreTot=ClientUtility.aggiornaTotGenerale(oreTot, oreAbbuono);
+					
+					txtfldTotGenerale.setValue(oreTot);
+						    			    			    		
+		    		delta=ClientUtility.calcoloDelta(oreTot, txtfldOrePreviste.getValue().toString());
+		    		txtfldOreDelta.setValue(delta);
+		    		txtfldRecupero.setValue(delta);
+		    		
+				}				
+				
+				@Override
+			      public void componentKeyDown(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfldAbbuono.getValue()==null)
+							txtfldAbbuono.setValue("0.00");
+						else{
+							String valore= txtfldAbbuono.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(".")==-1)
+									valore=valore+".00";
+								else{
+									int index=valore.indexOf(".");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfldAbbuono.setValue(valore);
+							String oreTot=txtfldTotGenerale.getValue().toString();
+							String oreAbbuono=txtfldAbbuono.getValue().toString();
+							String delta=new String();					
+							List<String> listaParziali= new ArrayList<String>();
+			    										
+							LayoutContainer lc= new LayoutContainer(); 
+				   			FldsetIntervalliIU fldsetIntervalliIU= new FldsetIntervalliIU();
+				   			lc=(LayoutContainer) getParent().getParent();
+				   			lc=(LayoutContainer) lc.getItemByItemId("left");
+				   			fldsetIntervalliIU=(FldsetIntervalliIU) lc.getItemByItemId("fldSetIntervalliIU");
+							
+				    		delta=("-"+ txtfldOrePreviste.getValue()+".00");
+				    	   	
+				    		listaParziali.add(fldsetIntervalliIU.txtfldSomma1.getValue().toString());
+				    		listaParziali.add(fldsetIntervalliIU.txtfldSomma2.getValue().toString());
+				    		listaParziali.add(fldsetIntervalliIU.txtfldSomma3.getValue().toString());
+				    		listaParziali.add(fldsetIntervalliIU.txtfldSomma4.getValue().toString());
+				    		listaParziali.add(fldsetIntervalliIU.txtfldSomma5.getValue().toString());
+							
+							oreAbbuono="-" + oreAbbuono;					
+							
+							oreTot=ClientUtility.calcolaTempo(listaParziali);
+							oreTot=ClientUtility.aggiornaTotGenerale(oreTot, oreAbbuono);
+							
+							txtfldTotGenerale.setValue(oreTot);
+								    			    			    		
+				    		delta=ClientUtility.calcoloDelta(oreTot, txtfldOrePreviste.getValue().toString());
+				    		txtfldOreDelta.setValue(delta);
+				    		txtfldRecupero.setValue(delta);
+						
+						}
+												
+					}	    		
+			      }
+				
+				
+			});
 
 			
 			txtrNoteAggiuntive.setEmptyText("Note Aggiuntive..");
@@ -3589,7 +3720,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			
 			ContentPanel cp2= new ContentPanel();
 			cp2.setHeaderVisible(false);
-			cp2.setSize(320, 110);
+			cp2.setSize(320, 140);
 			cp2.setBorders(false);
 			cp2.setBodyBorder(false);
 			cp2.setFrame(false);
@@ -3661,6 +3792,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			layoutCol1.add(txtfldRecupero, new FormData("100%"));
 			
 			layoutCol6.add(smplcmbxAltroGiustificativo, new FormData("100%"));
+			layoutCol6.add(txtfldAbbuono, new FormData("20%"));			
 			layoutCol6.add(txtrNoteAggiuntive, new FormData("100%"));
 			
 			layoutCol2.add(btnAssegnaOreFerie);
@@ -3804,7 +3936,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			setItemId("fldSetIntervalliC");
 			setBorders(true);
 			setHeading("Dettaglio Commesse.");
-			setHeight(365);
+			setHeight(390);
 			setScrollMode(Scroll.AUTOY);
 			setExpanded(true);
 			setCollapsible(false);

@@ -2095,7 +2095,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				tx.commit();
 				    		
 				createDettaglioGiornaliero(username, giorno, "0.00", "0.00", "0.00", 
-						"0.00", "0.00", "0.00", "0.00", "0.00", "", "", "0");
+						"0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "", "", "0");
 								
 				createDettaglioIntervalliCommesse(intervalliC, username, giorno);			
 			}
@@ -2167,7 +2167,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			String totOreGenerale, String delta, String oreViaggio,
 			String oreAssRecupero, String deltaOreViaggio,
 			String giustificativo, String oreStraordinario, String oreFerie, String orePermesso, 
-			String revisione, List<String> intervalliIU,
+			String revisione, String oreAbbuono, List<String> intervalliIU,
 			List<IntervalliCommesseModel> intervalliC, String oreRecuperoTot, String noteAggiuntive)
 			throws IllegalArgumentException {
 		
@@ -2234,7 +2234,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					    
 					
 					createDettaglioGiornaliero(username, giornoRiferimento, totOreGenerale, delta, oreViaggio, 
-							oreAssRecupero, deltaOreViaggio, oreStraordinario, oreFerie, orePermesso, giustificativo, noteAggiuntive, revisione);
+							oreAssRecupero, deltaOreViaggio, oreStraordinario, oreFerie, orePermesso, oreAbbuono, giustificativo, noteAggiuntive, revisione);
 								
 					createDettaglioIntervalliIU(intervalliIU ,username, giornoRiferimento);
 					createDettaglioIntervalliCommesse(intervalliC, username, giornoRiferimento);			
@@ -2259,7 +2259,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						dettOreGiornaliero.setOreStraordinario(oreStraordinario);
 						dettOreGiornaliero.setOreFerie(oreFerie);
 						dettOreGiornaliero.setOrePermesso(orePermesso);
-						//dettOreGiornaliero.setOreExtFest(oreExtFest);
+						dettOreGiornaliero.setOreAbbuono(oreAbbuono);
 						dettOreGiornaliero.setGiustificativo(giustificativo);
 						dettOreGiornaliero.setNoteAggiuntive(noteAggiuntive);
 						dettOreGiornaliero.setStatoRevisione(revisione);
@@ -2297,7 +2297,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						dettOreGiornaliero.setOreStraordinario(oreStraordinario);
 						dettOreGiornaliero.setOreFerie(oreFerie);
 						dettOreGiornaliero.setOrePermesso(orePermesso);
-						//dettOreGiornaliero.setOreExtFest(oreExtFest);
+						dettOreGiornaliero.setOreAbbuono(oreAbbuono);
 						dettOreGiornaliero.setGiustificativo(giustificativo);
 						dettOreGiornaliero.setNoteAggiuntive(noteAggiuntive);
 						dettOreGiornaliero.setStatoRevisione(revisione);
@@ -2324,7 +2324,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 
 
 	private void createDettaglioGiornaliero(String username, Date giornoRiferimento, String totOreGenerale, String delta, String oreViaggio, 
-			String oreAssRecupero, String deltaOreViaggio, String oreStraordinario, String oreFerie, String orePermesso, String giustificativo, String noteAggiuntive, String revisione) {
+			String oreAssRecupero, String deltaOreViaggio, String oreStraordinario, String oreFerie, String orePermesso, String oreAbbuono ,
+			String giustificativo, String noteAggiuntive, String revisione) {
 		
 		DettaglioOreGiornaliere dettOreGiornaliero= new DettaglioOreGiornaliere();
 		Personale p= new Personale();
@@ -2360,6 +2361,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			dettOreGiornaliero.setDeltaOreGiorno(delta);
 			dettOreGiornaliero.setOreAssenzeRecupero(oreAssRecupero);
 			dettOreGiornaliero.setOreStraordinario(oreStraordinario);
+			dettOreGiornaliero.setOreAbbuono(oreAbbuono);
 			dettOreGiornaliero.setOreFerie(oreFerie);
 			dettOreGiornaliero.setOrePermesso(orePermesso);
 			dettOreGiornaliero.setOreViaggio(oreViaggio);
@@ -2864,7 +2866,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			if(orePreviste.compareTo("A")==0)
 				orePreviste="8";
 			
-			giust=new GiustificativiModel(orePreviste, "0.00", ("-"+orePreviste+".00"), "0.00", "0.00", "0.00", "", "0", "0.00", "0.00", "0.00", "");
+			giust=new GiustificativiModel(orePreviste, "0.00", ("-"+orePreviste+".00"), "0.00", "0.00", "0.00", "", "0", "0.00", "0.00", "0.00","0.00", "");
 			
 			foglioOre=(FoglioOreMese)session.createQuery("from FoglioOreMese where id_personale=:id and meseRiferimento=:mese")
 						.setParameter("id", p.getId_PERSONALE()).setParameter("mese", data).uniqueResult();
@@ -2882,7 +2884,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				if(formattedDate.equals(d.getGiornoRiferimento().toString()))
 				{
 					giust=new GiustificativiModel(orePreviste, d.getTotaleOreGiorno(), d.getDeltaOreGiorno(), d.getOreViaggio(), d.getDeltaOreViaggio()
-							, d.getOreAssenzeRecupero(), d.getGiustificativo(), d.getStatoRevisione(), d.getOreStraordinario(), d.getOreFerie(), d.getOrePermesso(), d.getNoteAggiuntive());	
+							, d.getOreAssenzeRecupero(), d.getGiustificativo(), d.getStatoRevisione(), d.getOreStraordinario(), d.getOreFerie(), d.getOrePermesso(),d.getOreAbbuono(), d.getNoteAggiuntive());	
 				}
 			}
 				
@@ -3074,7 +3076,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					giornoW=d.toString().substring(0,3);
 					if(giornoW.compareTo("Sun")!=0 && !ServerUtility.isFestivo(dataCompUpp)){				
 						giorno= new RiepilogoFoglioOreModel(0, data, dataCompLow, "", Float.valueOf("0.00"), Float.valueOf("0.00"), Float.valueOf("0.00"),
-								Float.valueOf("0.00"), Float.valueOf("0.00"), Float.valueOf("0.00"), Float.valueOf("0.00"),Float.valueOf("0.00"), "", "", false);
+								Float.valueOf("0.00"), Float.valueOf("0.00"), Float.valueOf("0.00"), Float.valueOf("0.00"),Float.valueOf("0.00"),Float.valueOf("0.00"),
+									"", "", false);
 						listaGiorni.add(giorno);					
 					}
 				}
@@ -3114,7 +3117,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 								
 					giorno= new RiepilogoFoglioOreModel(d.getIdDettaglioOreGiornaliere(), data, day, p.getTipologiaOrario(), Float.valueOf(d.getTotaleOreGiorno()),  Float.valueOf(d.getOreViaggio()), 
 							 Float.valueOf(d.getDeltaOreViaggio()),  Float.valueOf(oreTotali),  Float.valueOf(d.getOreFerie()),  Float.valueOf(d.getOrePermesso()) ,  Float.valueOf(d.getOreAssenzeRecupero()),
-							 Float.valueOf(d.getOreStraordinario()), d.getGiustificativo(), d.getNoteAggiuntive(), true);
+							 Float.valueOf(d.getOreStraordinario()), Float.valueOf(d.getOreAbbuono()), d.getGiustificativo(), d.getNoteAggiuntive(), true);
 					
 					Iterator<RiepilogoFoglioOreModel> itr = listaGiorni.iterator();
 					while(itr.hasNext()) {
@@ -3150,7 +3153,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				monteOreRecuperoTotale=ServerUtility.aggiornaMonteOreRecuperoTotale(monteOreRecuperoTotale, p.getOreRecupero());
 				//aggiunta di un campo nella tabella fogliooremese che indiche le ore a recupero residue ai mesi precedenti
 				giorno=new RiepilogoFoglioOreModel(0, data, "RESIDUI", "", Float.valueOf(0),Float.valueOf(0) , Float.valueOf(0), Float.valueOf(0), 
-						Float.valueOf(0), Float.valueOf(0), Float.valueOf(monteOreRecuperoTotale), Float.valueOf(0), "", "", true);
+						Float.valueOf(0), Float.valueOf(0), Float.valueOf(monteOreRecuperoTotale), Float.valueOf(0), Float.valueOf(0), "", "", true);
 				listaGiorni.add(giorno);
 				
 				tx.commit();

@@ -734,8 +734,8 @@ public class ServerUtility {
 			
 	}
 	
-	
-	//PER IL SINGOLO DIPENDENTE //TODO
+	//TODO aggiunta abbuono anche tabella datioremese
+	//PER IL SINGOLO DIPENDENTE
 	public static Boolean PrintRiepilogoOreMese(String dataRif, String sedeOperativa, String username){
 		List<DettaglioOreGiornaliere> listaDettGiorno= new ArrayList<DettaglioOreGiornaliere>();
 		List<FoglioOreMese> listaMesi=new ArrayList<FoglioOreMese>();
@@ -753,6 +753,7 @@ public class ServerUtility {
 		String sumOrePermesso="0.00";
 		String sumOreStraordinario="0.00";
 		String sumDeltaGiorno="0.00";
+		String sumOreAbbuono="0.00";
 		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
@@ -825,6 +826,7 @@ public class ServerUtility {
 					datoG.setGiustificativo(d.getGiustificativo());
 					datoG.setNoteAggiuntive(d.getNoteAggiuntive());
 					datoG.setDeltaGiornaliero(d.getDeltaOreGiorno());
+					
 					
 					listaDatiMese.add(datoG);
 					

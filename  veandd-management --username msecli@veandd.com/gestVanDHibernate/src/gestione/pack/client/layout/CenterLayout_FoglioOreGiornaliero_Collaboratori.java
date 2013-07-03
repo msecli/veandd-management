@@ -7,6 +7,7 @@ import gestione.pack.client.utility.MyImages;
 import gestione.pack.client.layout.CenterLayout_FoglioOreGiornalieroAutoTimb.FldsetGiustificativi;
 import gestione.pack.client.layout.panel.DialogInvioCommenti;
 import gestione.pack.client.layout.panel.FormInserimentoIntervalloCommessa;
+import gestione.pack.client.layout.panel.PanelRiepilogoGiornalieroCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoMeseFoglioOre;
 import gestione.pack.client.model.GiustificativiModel;
 import gestione.pack.client.model.IntervalliCommesseModel;
@@ -80,12 +81,13 @@ public class CenterLayout_FoglioOreGiornaliero_Collaboratori extends LayoutConta
 	
 	private TextField<String> txtfldUsername= new TextField<String>();
 	private TextField<String> txtfldRuolo= new TextField<String>();
-	private Button btnMostraIntervalli= new Button();
-	private Button btnInviaCommenti= new Button();
+
 	private int statoRevisione=0;
 	
-	private Button btnConferma= new Button();
-			
+	private Button btnConferma= new Button();		
+	private Button btnInviaCommenti= new Button();
+	private Button btnRiepilogoCommesse= new Button();
+	
 	public DateField dtfldGiorno= new DateField(); //settato al momento della creazione del form sul valore del datefield interno
 												   //quando viene cambiata la data viene resettato anche questo 
 	
@@ -143,15 +145,13 @@ public class CenterLayout_FoglioOreGiornaliero_Collaboratori extends LayoutConta
 	}
 	
 	
-	public void selectLayout() {
-					
+	public void selectLayout() {					
 			BodyLayout_Dipendente lcDip = new BodyLayout_Dipendente();
 			if (getParent().getParent().getParent().getParent().getClass().equals(lcDip.getClass())) {
 				lcDip = (BodyLayout_Dipendente) getParent().getParent().getParent().getParent();
 				txtfldUsername.setValue(lcDip.txtfldUsername.getValue().toString());
 				txtfldRuolo.setValue("DIP");
-			}
-				
+			}			
 	}
 
 
@@ -162,8 +162,7 @@ public class CenterLayout_FoglioOreGiornaliero_Collaboratori extends LayoutConta
 		private LayoutContainer left = new LayoutContainer();
 		private LayoutContainer right = new LayoutContainer();	
 		private LayoutContainer main = new LayoutContainer();	
-		private PanelRiepilogoMeseFoglioOre pnlRiepilogo;//= new PanelRiepilogoMeseFoglioOre(txtfldUsername.getValue().toString(), giornoRiferimento.getValue());
-		
+				
 		CreateFormIntervalliOre() {
 			
 			setLabelWidth(30);
@@ -171,8 +170,8 @@ public class CenterLayout_FoglioOreGiornaliero_Collaboratori extends LayoutConta
 			setButtonAlign(HorizontalAlignment.CENTER);
 			setHeading("Dettaglio Ore.");
 			setHeaderVisible(false);
-			setWidth(1060);
-			setHeight(915);
+			setWidth(680);
+			setHeight(480);
 			setStyleAttribute("padding-left", "10px");
 			setStyleAttribute("padding-top", "10px");
 			setBorders(false);
@@ -199,17 +198,6 @@ public class CenterLayout_FoglioOreGiornaliero_Collaboratori extends LayoutConta
 			buttonBarTop.setWidth(570);
 			buttonBarTop.setItemId("buttonBar");
 				
-			btnMostraIntervalli.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.datiTimb()));
-			ToolTipConfig config= new ToolTipConfig();
-			config.setTitle("Dati rilevati dalla timbratrice:");
-			config.setCloseable(true);
-			config.setAnchor("left");
-			config.setMouseOffset(new int[]{0, -5});
-			config.setMinWidth(150);
-			btnMostraIntervalli.setToolTip(config);
-			btnMostraIntervalli.setIconAlign(IconAlign.TOP);
-			btnMostraIntervalli.setSize(26, 26);
-			
 			btnInviaCommenti.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.escl1()));
 			btnInviaCommenti.setToolTip("Segnala eventuali problemi o anomalie.");
 			btnInviaCommenti.setSize(26, 26);
@@ -224,6 +212,24 @@ public class CenterLayout_FoglioOreGiornaliero_Collaboratori extends LayoutConta
 					//d.show();			
 				}
 			});		
+			
+			btnRiepilogoCommesse.setEnabled(true);
+			btnRiepilogoCommesse.setSize(26, 26);
+			btnRiepilogoCommesse.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riep_comm()));
+			btnRiepilogoCommesse.setToolTip("Riepilogo Commesse");
+			btnRiepilogoCommesse.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+				@Override
+				public void componentSelected(ButtonEvent ce) {
+					Dialog d= new Dialog();
+					d.setHeaderVisible(true);
+					d.setHeading("Riepilogo dettagliato (Commesse).");
+					d.setSize(550, 605);
+					d.add(new PanelRiepilogoGiornalieroCommesse(txtfldUsername.getValue().toString(), giornoRiferimento.getValue()));
+					d.setButtons("");
+					d.show();			
+				}
+			});			
 			
 			buttonBarTop.add(giornoRiferimento);
 						
@@ -255,23 +261,19 @@ public class CenterLayout_FoglioOreGiornaliero_Collaboratori extends LayoutConta
 			btnBarOperazioni.setHeight(28);
 			btnBarOperazioni.setAlignment(HorizontalAlignment.LEFT);
 			btnBarOperazioni.setBorders(false);
-			//btnBarOperazioni.add(btnMostraIntervalli);
+			btnBarOperazioni.add(btnRiepilogoCommesse);
 			btnBarOperazioni.add(btnInviaCommenti);
 			btnBarOperazioni.add(btnConferma);
 				
-			right.add(new FldsetGiustificativi());
-			//right.add(new FldsetRiepilogo());
 			
 			left.add(btnBarOperazioni);
-			left.add(buttonBarTop);
-			left.add(new FldsetIntervalliIU());
+			left.add(buttonBarTop);			
 			left.add(new FldsetIntervalliCommesse());
 
 			main.add(left);
 			main.add(right);
 			
 			frm.add(main);
-			frm.add(new PanelRiepilogoMeseFoglioOre(txtfldUsername.getValue().toString(), giornoRiferimento.getValue(), "C"));
 			frm.layout(true);
 			add(frm);
 			
@@ -289,27 +291,12 @@ public class CenterLayout_FoglioOreGiornaliero_Collaboratori extends LayoutConta
 					String username= new String();
 					Date giorno=new Date();
 					DateField dtfld= new DateField();
-					String controlloDati= new String(); //quando viene effettuato il controllo dei dati inseriti restituisce OK o errori
 					
 					username=txtfldUsername.getValue().toString();
 					
-					TextField<String> txtfldTotGenerale=new TextField<String>();
-					TextField<String> txtfldDeltaGiorno=new TextField<String>();
-					TextField<String> txtfldFerie=new TextField<String>();
-					TextField<String> txtfldPermesso=new TextField<String>();
-					TextField<String> txtfldStraordinario=new TextField<String>();
-					TextField<String> txtfldRecupero=new TextField<String>();
-					TextField<String> txtfldRecuperoTotale= new TextField<String>();
-					TextField<String> txtfldOreViaggio= new TextField<String>();
-					TextField<String> txtfldDeltaOreViaggio= new TextField<String>();
-					TextArea txtrNote= new TextArea();
-					
-					SimpleComboBox<String> smplcmbxGiustificativo=new SimpleComboBox <String>();
-								
-					List<String> intervalliIU= new ArrayList<String>();
 					List<IntervalliCommesseModel> intervalliC= new ArrayList<IntervalliCommesseModel>();
 															
-					FldsetIntervalliIU fldSetIntervalliIU;
+					
 					FldsetIntervalliCommesse fldSetIntervalliC;
 					FldsetGiustificativi fldSetGiustificativi;
 					//FldsetRiepilogo fldSetRiepilogoTotale;
@@ -320,8 +307,7 @@ public class CenterLayout_FoglioOreGiornaliero_Collaboratori extends LayoutConta
 					lc=(LayoutContainer) frm.getItemByItemId("main");
 					//Intervalli IU
 					lc=(LayoutContainer) lc.getItemByItemId("left");
-					fldSetIntervalliIU=(FldsetIntervalliIU) lc.getItemByItemId("fldSetIntervalliIU");							
-					intervalliIU=elaboraIntervalliIU(fldSetIntervalliIU);
+								
 					
 					//Data
 					bttnBar=(ButtonBar) lc.getItemByItemId("buttonBar");
@@ -338,49 +324,8 @@ public class CenterLayout_FoglioOreGiornaliero_Collaboratori extends LayoutConta
 					lcR=(LayoutContainer)lcR.getItemByItemId("right");
 					fldSetGiustificativi=(FldsetGiustificativi) lcR.getItemByItemId("fldSetGiustificativi");
 					
-					//fldSetRiepilogoTotale=(FldsetRiepilogo) lcR.getItemByItemId("fldSetRiepilogo");
 					
-					txtfldTotGenerale=fldSetGiustificativi.txtfldTotGenerale;
-					txtfldDeltaGiorno=fldSetGiustificativi.txtfldOreDelta;
-					txtfldFerie=fldSetGiustificativi.txtfldFerie;
-					txtfldPermesso=fldSetGiustificativi.txtfldPermesso;
-					txtfldStraordinario=fldSetGiustificativi.txtfldStraordinario;
-					txtfldRecupero=fldSetGiustificativi.txtfldRecupero;
-					smplcmbxGiustificativo=fldSetGiustificativi.smplcmbxAltroGiustificativo;
-					txtfldOreViaggio=fldSetGiustificativi.txtfldOreViaggio;
-					txtfldDeltaOreViaggio=fldSetGiustificativi.txtfldDeltaViaggio;
-					//txtfldRecuperoTotale=fldSetRiepilogoTotale.txtfldOreRecuperoMonteTotale;
-					txtrNote=fldSetGiustificativi.txtrNoteAggiuntive;
-					//txtfldOreTotali=fldSetGiustificativi.txtfldOreTotEffettive;
-					
-					String totOreGenerale=txtfldTotGenerale.getValue().toString();
-					String delta="0.00";
-					String oreViaggio=txtfldTotGenerale.getValue().toString();
-					String deltaOreViaggio="0.00";
-					String oreStraordinario="0.00";
-					String oreAssRecupero="0.00";
-					String oreFerie="0.00";
-					String orePermesso="0.00";
-					String noteAggiuntive="";
-					String oreRecuperoTot= "0.00";
-					String giustificativo=new String();
-										
-					if(!smplcmbxGiustificativo.getRawValue().isEmpty())
-						giustificativo=smplcmbxGiustificativo.getRawValue().toString();
-					else giustificativo="";
-					if(!txtrNote.getRawValue().isEmpty())
-						noteAggiuntive=txtrNote.getValue().toString();
-					
-					try {
-						controlloDati=checkCoerenzaDatiInput(fldSetGiustificativi, fldSetIntervalliC);
-					} catch (Exception e) {
-						e.printStackTrace();
-						controlloDati="error: Impossibile effettuare i controlli di correttezza sui dati inseriti.";
-					}
-					
-						if(controlloDati.compareTo("OK")==0){	
-							AdministrationService.Util.getInstance().insertFoglioOreGiorno(username, giorno, totOreGenerale, delta, oreViaggio, oreAssRecupero, deltaOreViaggio, 
-									giustificativo, oreStraordinario, oreFerie, orePermesso, "0", intervalliIU, intervalliC, oreRecuperoTot, noteAggiuntive, new AsyncCallback<Boolean>() {
+							AdministrationService.Util.getInstance().insertFoglioOreGiorno(username, giorno, intervalliC, new AsyncCallback<Boolean>() {
 
 								@Override
 								public void onFailure(Throwable caught) {
@@ -397,8 +342,7 @@ public class CenterLayout_FoglioOreGiornaliero_Collaboratori extends LayoutConta
 									}					
 								}	
 							});	
-						}else
-							Window.alert(controlloDati);
+						
 						
 				 }			
 			  }
@@ -423,33 +367,21 @@ public class CenterLayout_FoglioOreGiornaliero_Collaboratori extends LayoutConta
 			buttonBarTop.setWidth(570);
 			buttonBarTop.setItemId("buttonBar");
 
-			btnMostraIntervalli.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.datiTimb()));
-			ToolTipConfig config= new ToolTipConfig();
-			config.setTitle("Dati rilevati dalla timbratrice:");
-			config.setCloseable(true);
-			config.setAnchor("left");
-			config.setMouseOffset(new int[]{0, -5});
-			//config.setMinWidth(150);
-			btnMostraIntervalli.setToolTip(config);			
-			
 			buttonBarTop.add(giornoRiferimento);
 			
 			ButtonBar btnBarOperazioni= new ButtonBar();
 			btnBarOperazioni.setAlignment(HorizontalAlignment.LEFT);
 			btnBarOperazioni.setBorders(false);
-			//btnBarOperazioni.add(btnMostraIntervalli);
+			btnBarOperazioni.add(btnRiepilogoCommesse);
 			btnBarOperazioni.add(btnInviaCommenti);
 			btnBarOperazioni.add(btnConferma);
 			
 			left.removeAll();
 			right.removeAll();
 			
-			right.add(new FldsetGiustificativi());
-		//	right.add(new FldsetRiepilogo());
-			
+						
 			left.add(btnBarOperazioni);
 			left.add(buttonBarTop);
-			left.add(new FldsetIntervalliIU());
 			left.add(new FldsetIntervalliCommesse());
 			
 			main.removeAll();
@@ -457,614 +389,12 @@ public class CenterLayout_FoglioOreGiornaliero_Collaboratori extends LayoutConta
 			main.add(right);
 			main.layout(true);
 			
-			pnlRiepilogo=new PanelRiepilogoMeseFoglioOre(txtfldUsername.getValue().toString(), giornoRiferimento.getValue(), "C");
-			frm.getItemByItemId("pnlRiepilogo").removeFromParent();
-			frm.add(pnlRiepilogo);
 			frm.layout(true);
 		}			
 	}
 	
 	
-	private String checkCoerenzaDatiInput(FldsetGiustificativi fldSetGiustificativi, FldsetIntervalliCommesse fldSetIntervalliC) {
-		String controllo= "OK";
-		String totOreLavoro= "0.0";
-		String totOreGenerale=fldSetGiustificativi.txtfldTotGenerale.getValue();
-		String delta=fldSetGiustificativi.txtfldOreDelta.getValue();
-		String giustificativo = fldSetGiustificativi.smplcmbxAltroGiustificativo.getRawValue();
-		String oreRecupero= fldSetGiustificativi.txtfldRecupero.getValue().toString();
-		List<IntervalliCommesseModel> listaC= new ArrayList<IntervalliCommesseModel>();
-		listaC= elaboraIntervalliC(fldSetIntervalliC);
-		String oreStraordinario=fldSetGiustificativi.txtfldStraordinario.getValue();
-		String orePermessi= fldSetGiustificativi.txtfldPermesso.getValue();
-		String oreFerie= fldSetGiustificativi.txtfldFerie.getValue();
-		String oreViaggio= fldSetGiustificativi.txtfldOreViaggio.getValue();
-				
-						
-		return controllo;
-	}
-
-	
-	public class FldsetIntervalliIU extends FieldSet {
-						
-		private TextField<String> txtfld1I = new TextField<String>();
-		private TextField<String> txtfld1U = new TextField<String>();
-		private TextField<String> txtfld2I = new TextField<String>();
-		private TextField<String> txtfld2U = new TextField<String>();
-		private TextField<String> txtfld3I = new TextField<String>();
-		private TextField<String> txtfld3U = new TextField<String>();
-		private TextField<String> txtfld4I = new TextField<String>();
-		private TextField<String> txtfld4U = new TextField<String>();
-		private TextField<String> txtfld5I = new TextField<String>();
-		private TextField<String> txtfld5U = new TextField<String>();
-		private TextField<String> txtfldSomma1= new TextField<String>();
-		private TextField<String> txtfldSomma2= new TextField<String>();
-		private TextField<String> txtfldSomma3= new TextField<String>();
-		private TextField<String> txtfldSomma4= new TextField<String>();
-		private TextField<String> txtfldSomma5= new TextField<String>();
 		
-		private String isNew= new String();
-		
-		private String username= new String();
-		private Date data= new Date();
-		
-		private Text txtErrore= new Text();
-		
-		public FldsetIntervalliIU() {		
-			username=txtfldUsername.getValue().toString();
-			data=dtfldGiorno.getValue();
-			
-			setIntervalli();
-			
-			AdministrationService.Util.getInstance().loadIntervalliIU(username, data, new AsyncCallback<List<IntervalliIUModel>>() {
-				
-				@Override
-				public void onSuccess(List<IntervalliIUModel> result) {
-					if(result.equals(null))
-						Window.alert("error: Impossibile accedere ai dati sugli orari.");
-					else
-					if(result.isEmpty())
-						load("new",result);
-						else load("old",result);
-				}
-
-				@Override
-				public void onFailure(Throwable caught) {
-					Window.alert("Errore di connessione on loadIntervalliIU();");
-				}
-			});		
-			
-		}
-		
-		private void load(String tipo, List<IntervalliIUModel> result) {
-			
-			setBorders(true);
-			setHeading("Dettaglio Giornaliero.");
-			setItemId("fldSetIntervalliIU");
-			
-			isNew=tipo;
-			
-			LayoutContainer layoutCol1 = new LayoutContainer();
-			layoutCol1.setItemId("lay1");
-			LayoutContainer layoutCol2 = new LayoutContainer();
-			LayoutContainer layoutCol3 = new LayoutContainer();
-			LayoutContainer layoutCol4 = new LayoutContainer();
-			LayoutContainer layoutCol5 = new LayoutContainer();
-
-			ContentPanel cp = new ContentPanel();
-			cp.setItemId("cp");
-			cp.setHeaderVisible(false);
-			cp.setSize(580, 85);
-			cp.setBorders(false);
-			cp.setBodyBorder(false);
-			cp.setFrame(false);
-			cp.setLayout(new RowLayout(Orientation.HORIZONTAL));
-			cp.setStyleAttribute("padding-top", "15px");
-			
-			txtErrore.setVisible(false);					
-			
-			txtfld1I.setItemId("1I");
-			txtfld1I.setFieldLabel("I");
-			txtfld1I.setMaxLength(5);
-			txtfld1I.setRegex("[0-1][0-9]:[0-5][0-9]|[0-9]{1}:[0-5][0-9]|[2][0-3]:[0-5][0-9]");
-		    txtfld1I.getMessages().setRegexText("Deve essere nel formato 23:59.");
-		        
-	 
-			txtfld1U.setItemId("1U");
-			txtfld1U.setFieldLabel("U");
-			txtfld1U.setMaxLength(5);
-			txtfld1U.setRegex("[0-1][0-9]:[0-5][0-9]|[0-9]{1}:[0-5][0-9]|[2][0-3]:[0-5][0-9]");
-		    txtfld1U.getMessages().setRegexText("Deve essere nel formato 23:59");
-	 
-
-			txtfld2I.setItemId("2I");
-			txtfld2I.setFieldLabel("I");
-			txtfld2I.setMaxLength(5);
-			txtfld2I.setRegex("[0-1][0-9]:[0-5][0-9]|[0-9]{1}:[0-5][0-9]|[2][0-3]:[0-5][0-9]");
-		    txtfld2I.getMessages().setRegexText("Deve essere nel formato 23:59");
-		   			
-			txtfld2U.setItemId("2U");
-			txtfld2U.setFieldLabel("U");
-			txtfld2U.setMaxLength(5);
-			txtfld2U.setRegex("[0-1][0-9]:[0-5][0-9]|[0-9]{1}:[0-5][0-9]|[2][0-3]:[0-5][0-9]");
-		    txtfld2U.getMessages().setRegexText("Deve essere nel formato 23:59");
-		    
-
-			txtfld3I.setItemId("3I");
-			txtfld3I.setFieldLabel("I");
-			txtfld3I.setMaxLength(5);
-			txtfld3I.setRegex("[0-1][0-9]:[0-5][0-9]|[0-9]{1}:[0-5][0-9]|[2][0-3]:[0-5][0-9]");
-		    txtfld3I.getMessages().setRegexText("Deve essere nel formato 23:59");
-		   
-
-			txtfld3U.setItemId("3U");
-			txtfld3U.setFieldLabel("U");
-			txtfld3U.setMaxLength(5);
-			txtfld3U.setRegex("[0-1][0-9]:[0-5][0-9]|[0-9]{1}:[0-5][0-9]|[2][0-3]:[0-5][0-9]");
-		    txtfld3U.getMessages().setRegexText("Deve essere nel formato 23:59");
-		   
-
-			txtfld4I.setItemId("4I");
-			txtfld4I.setFieldLabel("I");
-			txtfld4I.setMaxLength(5);
-			txtfld4I.setRegex("[0-1][0-9]:[0-5][0-9]|[0-9]{1}:[0-5][0-9]|[2][0-3]:[0-5][0-9]");
-		    txtfld4I.getMessages().setRegexText("Deve essere nel formato 23:59");
-		    
-
-			txtfld4U.setItemId("4U");
-			txtfld4U.setFieldLabel("U");
-			txtfld4U.setMaxLength(5);
-			txtfld4U.setRegex("[0-1][0-9]:[0-5][0-9]|[0-9]{1}:[0-5][0-9]|[2][0-3]:[0-5][0-9]");
-		    txtfld4U.getMessages().setRegexText("Deve essere nel formato 23:59");
-		  
-
-			txtfld5I.setItemId("5I");
-			txtfld5I.setFieldLabel("I");
-			txtfld5I.setMaxLength(5);
-			txtfld5I.setRegex("[0-1][0-9]:[0-5][0-9]|[0-9]{1}:[0-5][0-9]|[2][0-3]:[0-5][0-9]");
-		    txtfld5I.getMessages().setRegexText("Deve essere nel formato 23:59");
-		   
-
-			txtfld5U.setItemId("5U");
-			txtfld5U.setFieldLabel("U");
-			txtfld5U.setMaxLength(5);
-			txtfld5U.setRegex("[0-1][0-9]:[0-5][0-9]|[0-9]{1}:[0-5][0-9]|[2][0-3]:[0-5][0-9]");
-		    txtfld5U.getMessages().setRegexText("Deve essere nel formato 23:59");
-		    
-
-			FormLayout layout = new FormLayout();
-			layout.setLabelWidth(25);
-			layoutCol1.setLayout(layout);
-			layoutCol1.add(txtfld1I, new FormData("80%"));
-			layoutCol1.add(txtfld1U, new FormData("80%"));
-
-			layout = new FormLayout();
-			layout.setLabelWidth(25);
-			layoutCol2.setLayout(layout);
-			layoutCol2.add(txtfld2I, new FormData("80%"));
-			layoutCol2.add(txtfld2U, new FormData("80%"));
-
-			layout = new FormLayout();
-			layout.setLabelWidth(25);
-			layoutCol3.setLayout(layout);
-			layoutCol3.add(txtfld3I, new FormData("80%"));
-			layoutCol3.add(txtfld3U, new FormData("80%"));
-
-			layout = new FormLayout();
-			layout.setLabelWidth(25);
-			layoutCol4.setLayout(layout);
-			layoutCol4.add(txtfld4I, new FormData("80%"));
-			layoutCol4.add(txtfld4U, new FormData("80%"));
-
-			layout = new FormLayout();
-			layout.setLabelWidth(25);
-			layoutCol5.setLayout(layout);
-			layoutCol5.add(txtfld5I, new FormData("80%"));
-			layoutCol5.add(txtfld5U, new FormData("80%"));
-
-			RowData data = new RowData(.2, 1);
-			data.setMargins(new Margins(5));
-			cp.add(layoutCol1, data);
-			cp.add(layoutCol2, data);
-			cp.add(layoutCol3, data);
-			cp.add(layoutCol4, data);
-			cp.add(layoutCol5, data);
-
-			ButtonBar buttonBar = new ButtonBar();
-			buttonBar.setAlignment(HorizontalAlignment.CENTER);
-			buttonBar.setStyleAttribute("padding-bottom", "5px");
-			buttonBar.setBorders(false);
-			buttonBar.setWidth(570);
-			buttonBar.add(txtErrore);
-			
-			if(tipo=="new"){
-
-				txtfldSomma1.setValue("0.0");
-				txtfldSomma2.setValue("0.0");
-				txtfldSomma3.setValue("0.0");
-				txtfldSomma4.setValue("0.0");
-				txtfldSomma5.setValue("0.0");	
-				
-				txtfld1I.setEmptyText("#");
-				txtfld1U.setEmptyText("#");
-				txtfld2I.setEmptyText("#");
-				txtfld2U.setEmptyText("#");
-				txtfld3I.setEmptyText("#");
-				txtfld3U.setEmptyText("#");
-				txtfld4I.setEmptyText("#");
-				txtfld4U.setEmptyText("#");
-				txtfld5I.setEmptyText("#");
-				txtfld5U.setEmptyText("#");
-				
-				txtfld1I.setData("sorgente", "");
-				txtfld1U.setData("sorgente", "");
-				txtfld2I.setData("sorgente", "");
-				txtfld2U.setData("sorgente", "");
-				txtfld3I.setData("sorgente", "");
-				txtfld3U.setData("sorgente", "");
-				txtfld4I.setData("sorgente", "");
-				txtfld4U.setData("sorgente", "");
-				txtfld5I.setData("sorgente", "");
-				txtfld5U.setData("sorgente", "");
-				
-			}
-			else{	
-				setIntervalli();			
-			}		
-			add(cp);
-			add(buttonBar);
-			layout(true);
-		}
-	
-	
-		private void setIntervalli() {
-			
-			txtfld1I.setData("sorgente", "");
-			txtfld1U.setData("sorgente", "");
-			txtfld2I.setData("sorgente", "");
-			txtfld2U.setData("sorgente", "");
-			txtfld3I.setData("sorgente", "");
-			txtfld3U.setData("sorgente", "");
-			txtfld4I.setData("sorgente", "");
-			txtfld4U.setData("sorgente", "");
-			txtfld5I.setData("sorgente", "");
-			txtfld5U.setData("sorgente", "");
-			
-			txtfld1I.setValue("");
-			txtfld1U.setValue("");
-			txtfld2I.setValue("");
-			txtfld2U.setValue("");
-			txtfld3I.setValue("");
-			txtfld3U.setValue("");
-			txtfld4I.setValue("");
-			txtfld4U.setValue("");
-			txtfld5I.setValue("");
-			txtfld5U.setValue("");
-				
-			txtfld1I.setEnabled(false);
-			txtfld1U.setEnabled(false);
-			txtfld2I.setEnabled(false);
-			txtfld2U.setEnabled(false);
-			txtfld3I.setEnabled(false);
-			txtfld3U.setEnabled(false);
-			txtfld4I.setEnabled(false);
-			txtfld4U.setEnabled(false);
-			txtfld5I.setEnabled(false);
-			txtfld5U.setEnabled(false);	
-			
-		}
-				
-	}
-	
-	
-	public class FldsetGiustificativi extends FieldSet {	
-		public SimpleComboBox<String> smplcmbxAltroGiustificativo=new SimpleComboBox<String>();
-		public TextField<String> txtfldFerie=new TextField<String>();
-		public TextField<String> txtfldStraordinario=new TextField<String>();
-		public TextField<String> txtfldPermesso=new TextField<String>();
-		public TextField<String> txtfldRecupero=new TextField<String>();
-		
-		public TextField<String> txtfldOreDelta= new TextField<String>();
-		public TextField<String> txtfldOrePreviste= new TextField<String>();
-		public TextField<String> txtfldTotGenerale= new TextField<String>();
-		public TextField<String> txtfldOreViaggio= new TextField<String>();
-		public TextField<String> txtfldDeltaViaggio= new TextField<String>();
-		public TextField<String> txtfldOreTotEffettive= new TextField<String>();
-		public TextArea txtrNoteAggiuntive= new TextArea();
-		
-		private String username= new String();
-		private Date data= new Date();
-		
-		public FldsetGiustificativi(){
-			
-			username=txtfldUsername.getValue().toString();
-			data=dtfldGiorno.getValue();
-			
-			AdministrationService.Util.getInstance().loadGiustificativi(username, data, new AsyncCallback<GiustificativiModel>() {
-				
-				@Override
-				public void onSuccess(GiustificativiModel result) {
-					if(result==null)
-						Window.alert("error: Impossibile accedere ai dati sui giustificativi.");
-					else
-						load(result);		
-				}
-				
-				@Override
-				public void onFailure(Throwable caught) {
-					Window.alert("Errore di connessione on loadGiustificativi()");
-				}
-			});					
-		}	
-		
-		private void load(GiustificativiModel result) {
-			
-			final NumberFormat number = NumberFormat.getFormat("0.00");
-			
-			if(result.getStatoRevisione().compareTo("0")!=0){
-				statoRevisione=1;
-				btnConferma.setEnabled(false);
-			}
-			
-			setBorders(true);
-			setHeading("Giustificativo.");
-			setItemId("fldSetGiustificativi");
-			
-			LayoutContainer layoutCol1=new LayoutContainer();
-			LayoutContainer layoutCol2=new LayoutContainer();
-			LayoutContainer layoutCol3=new LayoutContainer();
-			LayoutContainer layoutCol4=new LayoutContainer();
-			LayoutContainer layoutCol5=new LayoutContainer();
-			
-			txtfldOrePreviste.setName("orePreviste");
-			txtfldOrePreviste.setEnabled(false);
-			txtfldOrePreviste.setFieldLabel("Ore Previste");	
-			txtfldOrePreviste.setValue("0.00");
-			
-			txtfldTotGenerale.setEnabled(false);
-			txtfldTotGenerale.setFieldLabel("Tot.Generale");
-			txtfldTotGenerale.setValue(result.getTotGenerale());
-			
-			txtfldOreDelta.setEnabled(false);
-			txtfldOreDelta.setFieldLabel("Delta Giornaliero");
-			txtfldOreDelta.setValue("0.00");
-			
-			txtfldOreViaggio.setEnabled(false);
-			txtfldOreViaggio.setAllowBlank(false);
-			txtfldOreViaggio.setValue(result.getOreViaggio());
-			txtfldOreViaggio.setFieldLabel("Ore Viaggio");
-			txtfldOreViaggio.setRegex("[0-9]+[.][0-5]{1}[0-9]{1}|0.00|0.0");
-			txtfldOreViaggio.getMessages().setRegexText("Deve essere un numero nel formato 99.59");		
-						
-			txtfldDeltaViaggio.setEnabled(false);
-			txtfldDeltaViaggio.setValue("0.00");
-			txtfldDeltaViaggio.setFieldLabel("Delta Viaggio");
-			
-			txtfldOreTotEffettive.setEnabled(false);
-			txtfldOreTotEffettive.setFieldLabel("Ore Totali");
-			txtfldOreTotEffettive.setValue("0.00");
-						
-			txtfldRecupero.setValue("0.00");
-			txtfldRecupero.setAllowBlank(false);
-			//txtfldRecupero.setEnabled(true);
-			txtfldRecupero.setFieldLabel("Ore a Recupero");
-			//chbxRecupero.setLabelSeparator("");
-			if(statoRevisione==1)txtfldRecupero.setEnabled(false);
-						
-			//smplcmbxAltroGiustificativo.setEnabled(true);
-			smplcmbxAltroGiustificativo.setEmptyText("Giustificativo..");
-			smplcmbxAltroGiustificativo.setFieldLabel("Giustificativo");
-			for(String l : DatiComboBox.getGiustificativi()){
-		    	smplcmbxAltroGiustificativo.add(l);}
-			smplcmbxAltroGiustificativo.setTriggerAction(TriggerAction.ALL);
-			if(result.getGiustificativo().compareTo("")!=0)
-				smplcmbxAltroGiustificativo.setSimpleValue(result.getGiustificativo());		    
-			if(statoRevisione==1)smplcmbxAltroGiustificativo.setEnabled(false);
-			
-			txtfldFerie.setValue("0.00");
-			txtfldFerie.setAllowBlank(false);
-			txtfldFerie.setFieldLabel("Ferie");
-			//chbxFerie.setLabelSeparator("");
-			txtfldFerie.setRegex("[-]{1}[0-9]+[.]?[0-5]{1}[0-9]{1}|0.00|0.0");
-			txtfldFerie.getMessages().setRegexText("Deve essere un numero nel formato -99.59");
-			if(statoRevisione==1)txtfldFerie.setEnabled(false);
-			
-			txtfldPermesso.setValue("0.00");
-			txtfldPermesso.setAllowBlank(false);
-			txtfldPermesso.setFieldLabel("Permesso(ROL)");
-			//chbxPermesso.setLabelSeparator("");
-			txtfldPermesso.setRegex("[-]{1}[0-9]+[.]?[0-5]{1}[0-9]{1}|0.00|0.0");
-			txtfldPermesso.getMessages().setRegexText("Deve essere un numero nel formato -99.59");
-			if(statoRevisione==1)txtfldPermesso.setEnabled(false);
-			
-			txtfldStraordinario.setValue("0.00");
-			txtfldStraordinario.setAllowBlank(false);
-			txtfldStraordinario.setFieldLabel("Straordinario");		
-			//chbxStraordinario.setLabelSeparator("");
-			txtfldStraordinario.setRegex("[0-9]+[.]?[0-5]{1}[0-9]{1}|0.00|0.0");
-			txtfldStraordinario.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
-			if(statoRevisione==1)txtfldStraordinario.setEnabled(false);
-			
-			txtrNoteAggiuntive.setEmptyText("Note Aggiuntive..");
-			txtrNoteAggiuntive.setHeight(70);
-			txtrNoteAggiuntive.setLabelSeparator("");
-			txtrNoteAggiuntive.setMaxLength(250);
-			txtrNoteAggiuntive.setValue(result.get("noteAggiuntive").toString());
-			if(statoRevisione==1)txtrNoteAggiuntive.setEnabled(false);
-					
-			ContentPanel cp= new ContentPanel();
-			cp.setHeaderVisible(false);
-			cp.setSize(320, 210);
-			cp.setBorders(false);
-			cp.setBodyBorder(false);
-			cp.setFrame(false);
-			cp.setLayout(new RowLayout(Orientation.HORIZONTAL));
-			cp.setStyleAttribute("padding-top", "0px");
-			cp.setStyleAttribute("padding-left", "15px");
-			
-			ContentPanel cp1= new ContentPanel();
-			cp1.setHeaderVisible(false);
-			cp1.setSize(320, 120);
-			cp1.setBorders(false);
-			cp1.setBodyBorder(false);
-			cp1.setFrame(false);
-			cp1.setLayout(new RowLayout(Orientation.HORIZONTAL));
-			cp1.setStyleAttribute("padding-top", "5px");
-			cp1.setStyleAttribute("padding-left", "15px");
-					
-			FormLayout layout= new FormLayout();
-			layout.setLabelWidth(95);
-			layout.setLabelAlign(LabelAlign.LEFT);
-			layoutCol1.setLayout(layout);
-			layoutCol1.setWidth(290);
-					
-			layout= new FormLayout();
-			layout.setLabelWidth(10);
-			layout.setLabelAlign(LabelAlign.LEFT);
-			layoutCol2.setLayout(layout);
-			layoutCol2.setWidth(55);
-			
-			layout=new FormLayout();
-			layout.setLabelWidth(90);
-			layout.setLabelAlign(LabelAlign.TOP);
-			layoutCol3.setLayout(layout);
-						
-			layout=new FormLayout();
-			layout.setLabelWidth(90);
-			layout.setLabelAlign(LabelAlign.TOP);
-			layoutCol4.setLayout(layout);
-			
-			layout=new FormLayout();
-			layout.setLabelWidth(90);
-			layout.setLabelAlign(LabelAlign.TOP);
-			layoutCol5.setLayout(layout);
-								
-			//layoutCol1.add(txtfldFerie, new FormData("50%"));
-			//layoutCol1.add(txtfldPermesso, new FormData("50%"));
-			//layoutCol1.add(txtfldStraordinario, new FormData("50%"));		
-			//layoutCol1.add(txtfldRecupero, new FormData("50%"));
-			layoutCol1.add(smplcmbxAltroGiustificativo, new FormData("100%"));
-			layoutCol1.add(txtrNoteAggiuntive, new FormData("100%"));
-			
-		    layoutCol3.add(txtfldOrePreviste, new FormData("50%"));
-			layoutCol3.add(txtfldOreViaggio, new FormData("50%"));
-			
-			layoutCol4.add(txtfldOreDelta, new FormData("50%"));
-			layoutCol4.add(txtfldOreTotEffettive, new FormData("50%"));
-			
-			layoutCol5.add(txtfldTotGenerale, new FormData("50%"));
-			layoutCol5.add(txtfldDeltaViaggio, new FormData("50%"));			
-			
-			RowData data = new RowData(.2, 1);
-			data.setMargins(new Margins(5));
-			
-			cp1.add(layoutCol3, new RowData(.33,1));
-			cp1.add(layoutCol5, new RowData(.33,1));
-			cp1.add(layoutCol4, new RowData(.33,1));
-			
-			cp.add(layoutCol1, data);
-			cp.add(layoutCol2, data);
-			
-			add(cp1);
-			add(cp);
-			layout(true);
-		}	
-		
-		protected boolean hasValueOreViaggio(TextField<String> field) {
-		    return field.getValue() != null && field.isValid();
-		}	
-	}
-
-	
-	public class FldsetRiepilogo extends FieldSet {					
-		private TextField<String> txtfldOreStraordinarioMese= new TextField<String>();
-		private TextField<String> txtfldOreAssenzaMese=new TextField<String>();
-		private TextField<String> txtfldOreLavorateMese= new TextField<String>();
-		private TextField<String> txtfldOreRecuperoMonteMese= new TextField<String>();
-		private TextField<String> txtfldOreRecuperoMonteTotale= new TextField<String>();
-		
-		private String username= new String();
-		private Date data= new Date();
-		
-		public FldsetRiepilogo() {
-			
-			username=txtfldUsername.getValue().toString();
-			data=dtfldGiorno.getValue();
-
-			AdministrationService.Util.getInstance().loadRiepilogoMese(username, data, new AsyncCallback<RiepilogoOreModel>() {
-				
-				@Override
-				public void onSuccess(RiepilogoOreModel result) {
-					if(result==null)
-						Window.alert("error: Impossibile accedere ai dati di riepilogo mensile.");
-					else
-						load(result);
-				}
-				
-				@Override
-				public void onFailure(Throwable caught) {
-					Window.alert("Errore di connessione on loadRiepilogoMese();");
-				}
-			});		
-		}
-		
-		private void load(RiepilogoOreModel result) {
-			
-			setBorders(true);
-			setHeading("Riepilogo Ore (Mensile).");
-			setItemId("fldSetRiepilogo");
-			
-			LayoutContainer layoutCol1 = new LayoutContainer();
-
-			FormLayout layout = new FormLayout();
-			layout.setLabelWidth(135);
-			layout.setLabelAlign(LabelAlign.LEFT);
-			layoutCol1.setLayout(layout);
-
-			ContentPanel cp = new ContentPanel();
-			cp.setHeaderVisible(false);
-			cp.setSize(320, 145);
-			cp.setBorders(false);
-			cp.setBodyBorder(false);
-			cp.setFrame(false);
-			cp.setLayout(new RowLayout(Orientation.HORIZONTAL));
-			cp.setStyleAttribute("padding-top", "5px");
-			cp.setStyleAttribute("padding-left", "25px");
-
-			txtfldOreStraordinarioMese.setFieldLabel("Ore Straordinario");
-			txtfldOreStraordinarioMese.setEnabled(false);
-			txtfldOreStraordinarioMese.setValue(result.getOreStraordinario());
-			
-			txtfldOreAssenzaMese.setFieldLabel("Ore Assenza");
-			txtfldOreAssenzaMese.setEnabled(false);
-			txtfldOreAssenzaMese.setValue(result.getOreAssenza());
-			
-			txtfldOreLavorateMese.setFieldLabel("Tot. Generale");
-			txtfldOreLavorateMese.setEnabled(false);
-			txtfldOreLavorateMese.setValue(result.getTotOreGenerale());
-
-			txtfldOreRecuperoMonteMese.setFieldLabel("Ore a Recupero(Mese)");
-			txtfldOreRecuperoMonteMese.setEnabled(false);
-			txtfldOreRecuperoMonteMese.setValue(result.getOreRecupero());
-			
-			txtfldOreRecuperoMonteTotale.setFieldLabel("Ore a Recupero(Totale)");
-			txtfldOreRecuperoMonteTotale.setEnabled(false);
-			txtfldOreRecuperoMonteTotale.setValue(result.getOreRecuperoTotale());
-
-			layoutCol1.add(txtfldOreLavorateMese, new FormData("95%"));
-			//layoutCol1.add(txtfldOreAssenzaMese, new FormData("95%"));
-			//layoutCol1.add(txtfldOreStraordinarioMese, new FormData("95%"));
-			//layoutCol1.add(txtfldOreRecuperoMonteMese, new FormData("95%"));
-			//layoutCol1.add(txtfldOreRecuperoMonteTotale, new FormData("95%"));
-
-			RowData data = new RowData(.8, 1);
-			data.setMargins(new Margins(5));
-
-			cp.add(layoutCol1, data);
-			add(cp);
-			layout(true);
-		}
-	}
-	
 	
 	public class FldsetIntervalliCommesse extends FieldSet {
 
@@ -1203,124 +533,6 @@ public class CenterLayout_FoglioOreGiornaliero_Collaboratori extends LayoutConta
 		return intervalliC;
 	}
 	
-	//aggiungere, dopo il value la sorgente
-	private List<String> elaboraIntervalliIU(FldsetIntervalliIU fldSetIntervalliIU) {
-		
-		TextField<String> txtfld;		
-		List<String> listaIntervalli= new ArrayList<String>(10);
-		
-		txtfld=new TextField<String>();
-		txtfld=fldSetIntervalliIU.txtfld1I;
-		if(!txtfld.getRawValue().isEmpty()){
-			listaIntervalli.add(txtfld.getValue().toString());
-			listaIntervalli.add(txtfld.getData("sorgente").toString());
-		}
-		else {
-			listaIntervalli.add("");
-			listaIntervalli.add("");
-		}
-		
-		txtfld=new TextField<String>();
-		txtfld=fldSetIntervalliIU.txtfld1U;
-		if(!txtfld.getRawValue().isEmpty()){
-			listaIntervalli.add(txtfld.getValue().toString());
-			listaIntervalli.add(txtfld.getData("sorgente").toString());
-		}
-		else {
-			listaIntervalli.add("");
-			listaIntervalli.add("");
-		}
-		
-		txtfld=new TextField<String>();
-		txtfld=fldSetIntervalliIU.txtfld2I;
-		if(!txtfld.getRawValue().isEmpty()){
-			listaIntervalli.add(txtfld.getValue().toString());
-			listaIntervalli.add(txtfld.getData("sorgente").toString());
-		}
-		else {
-			listaIntervalli.add("");
-			listaIntervalli.add("");
-		}
-		
-		txtfld=new TextField<String>();
-		txtfld=fldSetIntervalliIU.txtfld2U;
-		if(!txtfld.getRawValue().isEmpty()){
-			listaIntervalli.add(txtfld.getValue().toString());
-			listaIntervalli.add(txtfld.getData("sorgente").toString());
-		}
-		else {
-			listaIntervalli.add("");
-			listaIntervalli.add("");
-		}
-		
-		txtfld=new TextField<String>();
-		txtfld=fldSetIntervalliIU.txtfld3I;
-		if(!txtfld.getRawValue().isEmpty()){
-			listaIntervalli.add(txtfld.getValue().toString());
-			listaIntervalli.add(txtfld.getData("sorgente").toString());
-		}
-		else {
-			listaIntervalli.add("");
-			listaIntervalli.add("");
-		}
-		
-		txtfld=new TextField<String>();
-		txtfld=fldSetIntervalliIU.txtfld3U;
-		if(!txtfld.getRawValue().isEmpty()){
-			listaIntervalli.add(txtfld.getValue().toString());
-			listaIntervalli.add(txtfld.getData("sorgente").toString());
-		}
-		else {
-			listaIntervalli.add("");
-			listaIntervalli.add("");
-		}
-		
-		txtfld=new TextField<String>();
-		txtfld=fldSetIntervalliIU.txtfld4I;
-		if(!txtfld.getRawValue().isEmpty()){
-			listaIntervalli.add(txtfld.getValue().toString());
-			listaIntervalli.add(txtfld.getData("sorgente").toString());
-		}
-		else {
-			listaIntervalli.add("");
-			listaIntervalli.add("");
-		}
-		
-		txtfld=new TextField<String>();
-		txtfld=fldSetIntervalliIU.txtfld4U;
-		if(!txtfld.getRawValue().isEmpty()){
-			listaIntervalli.add(txtfld.getValue().toString());
-			listaIntervalli.add(txtfld.getData("sorgente").toString());
-		}
-		else {
-			listaIntervalli.add("");
-			listaIntervalli.add("");
-		}
-		
-		txtfld=new TextField<String>();
-		txtfld=fldSetIntervalliIU.txtfld5I;
-		if(!txtfld.getRawValue().isEmpty()){
-			listaIntervalli.add(txtfld.getValue().toString());
-			listaIntervalli.add(txtfld.getData("sorgente").toString());
-		}
-		else {
-			listaIntervalli.add("");
-			listaIntervalli.add("");
-		}
-		
-		txtfld=new TextField<String>();
-		txtfld=fldSetIntervalliIU.txtfld5U;
-		if(!txtfld.getRawValue().isEmpty()){
-			listaIntervalli.add(txtfld.getValue().toString());
-			listaIntervalli.add(txtfld.getData("sorgente").toString());
-		}
-		else {
-			listaIntervalli.add("");
-			listaIntervalli.add("");
-		}
-		
-		return listaIntervalli;
-	}	
 }
 
 
