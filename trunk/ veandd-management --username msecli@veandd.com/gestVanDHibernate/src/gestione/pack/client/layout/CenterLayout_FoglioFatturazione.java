@@ -116,8 +116,8 @@ public CenterLayout_FoglioFatturazione(){}
 		cntpnlFoglioFatturazione.setHeaderVisible(false);
 		cntpnlFoglioFatturazione.setCollapsible(false);
 		cntpnlFoglioFatturazione.setBorders(false);
-		cntpnlFoglioFatturazione.setWidth(1120);
-		cntpnlFoglioFatturazione.setHeight(680);
+		cntpnlFoglioFatturazione.setWidth(1090);
+		cntpnlFoglioFatturazione.setHeight(800);
 		cntpnlFoglioFatturazione.setFrame(true);
 		cntpnlFoglioFatturazione.setButtonAlign(HorizontalAlignment.CENTER);
 		cntpnlFoglioFatturazione.setStyleAttribute("padding-left", "7px");
@@ -381,7 +381,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    cntpnlGrid.setLayout(new FitLayout());  
 		    cntpnlGrid.setHeaderVisible(false);
 		    cntpnlGrid.setWidth(420);
-		    cntpnlGrid.setHeight(550);
+		    cntpnlGrid.setHeight(705);
 		    cntpnlGrid.setScrollMode(Scroll.AUTOY);
 		    cntpnlGrid.add(gridRiepilogo);
 		   	    

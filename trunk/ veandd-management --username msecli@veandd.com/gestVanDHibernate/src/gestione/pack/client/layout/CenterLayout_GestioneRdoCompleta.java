@@ -328,8 +328,6 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		
 		cntpnlLayout.add(hpLayout);	
 		
-		//cntpnlRdo.add(cntpnlLayout);
-		
 	    bodyContainer.add(cntpnlLayout);    
 	   				
 		layoutContainer.add(bodyContainer, new FitData(5, 5, 5, 8));
@@ -697,9 +695,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    btnSearch.setIconAlign(IconAlign.TOP);
 		    btnSearch.setEnabled(false);
 		    
-		    
-		    //TODO Ricerca
-		    
+	    
 		    txtfldsearch.addKeyListener(new KeyListener(){
 		    	 public void componentKeyUp(ComponentEvent event) {
 		    		 

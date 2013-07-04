@@ -473,6 +473,7 @@ public class ConverterUtil {
 		String commessa = new String();
 		String nome = new String();
 		String cognome = new String();
+		String attivita= new String();
 		int idAssociazione=ass.getIdAssociazionePa();
 		
 		Session session = MyHibernateUtil.getSessionFactory().openSession();
@@ -484,7 +485,8 @@ public class ConverterUtil {
 			a=ass.getAttivita();
 			nome=ass.getPersonale().getNome();
 			cognome=ass.getPersonale().getCognome();
-			commessa=a.getCommessa().getNumeroCommessa()+"."+a.getCommessa().getEstensione();
+			commessa=a.getCommessa().getNumeroCommessa()+"."+a.getCommessa().getEstensione()+"("+a.getCommessa().getDenominazioneAttivita()+")";
+			attivita=ass.getAttivita().getCommessa().getDenominazioneAttivita();
 			
 			tx.commit();
 			
@@ -497,7 +499,7 @@ public class ConverterUtil {
 			session.close();
 		}
 		
-		pModel = new PersonaleAssociatoModel(idAssociazione, commessa, nome, cognome);
+		pModel = new PersonaleAssociatoModel(idAssociazione, commessa, nome, cognome, attivita);
 		pModelList.add(pModel);
 		
 		return pModelList;

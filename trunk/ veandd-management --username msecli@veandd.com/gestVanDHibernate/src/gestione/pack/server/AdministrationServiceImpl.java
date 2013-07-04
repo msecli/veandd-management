@@ -1928,8 +1928,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		List<PersonaleAssociatoModel> listaDTO = new ArrayList<PersonaleAssociatoModel>();
 		String cognomeApp= new String();
 		
-		try {
-			
+		try {		
 			cognome=cognome.substring(0,1).toUpperCase()+cognome.substring(1,cognome.length());
 			if (listaC != null) {
 				for (AssociazionePtoA a : listaC) {//si differenzia con Tutti

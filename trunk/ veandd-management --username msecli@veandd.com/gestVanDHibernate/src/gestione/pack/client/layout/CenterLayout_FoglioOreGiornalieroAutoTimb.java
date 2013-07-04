@@ -208,7 +208,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			setHeading("Dettaglio Ore.");
 			setHeaderVisible(false);
 			setWidth(1060);
-			setHeight(1050);
+			setHeight(1070);
 			setStyleAttribute("padding-left", "10px");
 			setStyleAttribute("padding-top", "10px");
 			setBorders(false);

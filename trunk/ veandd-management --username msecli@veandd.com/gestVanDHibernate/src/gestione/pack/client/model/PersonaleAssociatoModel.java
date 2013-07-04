@@ -9,12 +9,13 @@ public class PersonaleAssociatoModel extends BaseModel implements IsSerializable
 
 	public PersonaleAssociatoModel(){}
 	
-	public PersonaleAssociatoModel(int idAssociazione, String commessa, String nome, String cognome){
+	public PersonaleAssociatoModel(int idAssociazione, String commessa, String nome, String cognome, String attivita){
 		
 		set("idAssociazione", idAssociazione);
 		set("commessa", commessa);//viene settato a numCommessa+estensione
 		set("nome", nome);
-        set("cognome", cognome);		
+        set("cognome", cognome);	
+        set("attivita", attivita);
 	}
 		
 	public int getIdAssociazione(){
