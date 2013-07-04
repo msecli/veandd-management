@@ -107,21 +107,22 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 		bodyContainer.setLayout(new FlowLayout());
 		bodyContainer.setBorders(false);		
 						
-		ContentPanel cntpnlCommessa = new ContentPanel(); //pannello esterno
+		/*ContentPanel cntpnlCommessa = new ContentPanel(); //pannello esterno
 		cntpnlCommessa.setHeading("Gestione Dipendenti");
 		cntpnlCommessa.setHeaderVisible(true);
 		cntpnlCommessa.setCollapsible(false);
 		cntpnlCommessa.setBorders(false);
 		cntpnlCommessa.setWidth(w-215);
 		cntpnlCommessa.setHeight(h-55);
-		cntpnlCommessa.setScrollMode(Scroll.AUTO);
+		cntpnlCommessa.setScrollMode(Scroll.AUTO);*/
 		
 		ContentPanel cntpnlVista = new ContentPanel(); //Pannello contenente Form e Grid
 		cntpnlVista.setHeading("Associazione Commesse Dipendenti.");
 		cntpnlVista.setFrame(true);
+		cntpnlVista.setHeaderVisible(false);
 		cntpnlVista.setLayout(new RowLayout(Orientation.HORIZONTAL));
 		cntpnlVista.setWidth(1050);
-		cntpnlVista.setHeight(580);
+		cntpnlVista.setHeight(870);
 		cntpnlVista.setStyleAttribute("padding", "10px");
 		
 		ContentPanel cntpnlSelezioni= new ContentPanel(); //Pannello contenente liste dati (Form)
@@ -132,11 +133,11 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 		cntpnlSelezioni.setStyleAttribute("padding-top", "10px");
 		cntpnlSelezioni.setStyleAttribute("padding-left", "10px");
 		cntpnlSelezioni.setWidth(520);
-		cntpnlSelezioni.setHeight(520);
+		cntpnlSelezioni.setHeight(800);
 		
 		ContentPanel cntpnlListe = new ContentPanel(); //pannello contenente le due liste
 		cntpnlListe.setHeaderVisible(false);
-		cntpnlListe.setSize(500, 420);
+		cntpnlListe.setSize(500, 690);
 		cntpnlListe.setFrame(true);
 		cntpnlListe.setLayout(new RowLayout(Orientation.HORIZONTAL));
 		cntpnlListe.setStyleAttribute("padding-top", "5px");
@@ -144,10 +145,11 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 		ContentPanel cntpnlGrid = new ContentPanel();
 		cntpnlGrid.setHeaderVisible(false);
 		cntpnlGrid.setLayout(new FitLayout()); 
-		cntpnlGrid.setBorders(false);
+		cntpnlGrid.setBodyBorder(false);
 		cntpnlGrid.setFrame(false);
-		cntpnlGrid.setSize(490, 502);
+		cntpnlGrid.setSize(490, 780);
 		cntpnlGrid.setStyleAttribute("padding-left", "10px");
+		cntpnlGrid.setStyleAttribute("margin-top", "15px");
 		cntpnlGrid.setScrollMode(Scroll.AUTOY);
 		
 		ButtonBar buttonBar= new ButtonBar();
@@ -329,7 +331,7 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 		//toolBar.add(btnRefresh);
 		toolBar.add(btnRemove);
 		toolBar.add(btnAdd);
-		toolBar.setBorders(true);
+		toolBar.setBorders(false);
 		toolBar.setHeight("30px");
 		toolBar.setAlignment(HorizontalAlignment.RIGHT);
 		toolBar.setStyleAttribute("margin-bottom", "1px");		
@@ -405,7 +407,7 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 		
 	    storeGrid.groupBy("commessa");
 		gridCommessa = new Grid<PersonaleAssociatoModel>(storeGrid, cmCommessa);   
-	    gridCommessa.setBorders(true);  
+	    gridCommessa.setBorders(false);  
 	    gridCommessa.setStripeRows(true);  
 	    gridCommessa.setColumnLines(true);  
 	    gridCommessa.setColumnReordering(true);  
@@ -465,9 +467,9 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 		cntpnlVista.add(cntpnlSelezioni,new RowData());
 		cntpnlVista.add(cntpnlGrid, new RowData());
 		
-		cntpnlCommessa.add(cntpnlVista);
+		//cntpnlCommessa.add(cntpnlVista);
 
-		bodyContainer.add(cntpnlCommessa);
+		bodyContainer.add(cntpnlVista);
 
 		layoutContainer.add(bodyContainer, new FitData(5, 5, 5, 8));
 		add(layoutContainer);
