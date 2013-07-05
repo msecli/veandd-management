@@ -281,5 +281,10 @@ public interface AdministrationServiceAsync {
 	void getRiepilogoMeseFoglioOre(Date value, String pm, String sede,
 			AsyncCallback<List<RiepilogoFoglioOreModel>> asyncCallback);
 
+	void confermaGiorniDipendente(String username, Date data, AsyncCallback<Boolean> asyncCallback);
+
+	void confermaGiorniTuttiDipendenti(String string, Date data,
+			AsyncCallback<Boolean> asyncCallback);
+
 			
 }

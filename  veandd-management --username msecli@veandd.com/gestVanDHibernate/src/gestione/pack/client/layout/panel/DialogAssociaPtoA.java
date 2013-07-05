@@ -40,6 +40,7 @@ public class DialogAssociaPtoA  extends Dialog{
 	
 	public DialogAssociaPtoA(String comm){
 		
+		comm=comm.substring(0, comm.indexOf("("));
 		commessa=comm;
 		
 		setLayout(new FitLayout());

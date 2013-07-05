@@ -100,7 +100,6 @@ public class PanelCommessa extends LayoutContainer {
 	private SimpleComboBox<String> smplcmbxTipoCommessa;
 	
 	private Button btnOrdine;
-	private Button btnRefresh;
 	private Button btnClose;
 	
 	protected void onRender(Element target, int index) {  
@@ -187,7 +186,7 @@ public class PanelCommessa extends LayoutContainer {
 		    			 gridCommessa.reconfigure(storeResult, cmCommessa);			 
 		    		 } 
 		    	 }	    	  	 
-		    });	
+		});	
 		
 		ContentPanel cntpnlVistaDati= new ContentPanel();
 		cntpnlVistaDati.setBorders(false);     
@@ -270,7 +269,7 @@ public class PanelCommessa extends LayoutContainer {
 	              formBindingsCommessa.unbind();  
 	            }
 	          }       
-	        }); 
+	    }); 
 			    
 	    formBindingsCommessa = new FormBinding(frmpnlCommessa, true);
 	    formBindingsCommessa.addFieldBinding(new SimpleComboBoxFieldBinding(smplcmbxPM, "pm"));
