@@ -288,6 +288,9 @@ public interface AdministrationService extends RemoteService {
 	List<RiepilogoOreDipCommesseGiornaliero> getRiepilogoGiornalieroCommesse(
 			String username, Date data)throws IllegalArgumentException;
 
+	List<RiepilogoFoglioOreModel> getRiepilogoMeseFoglioOre(Date value,
+			String pm, String sede);
+
 	
 	
 	

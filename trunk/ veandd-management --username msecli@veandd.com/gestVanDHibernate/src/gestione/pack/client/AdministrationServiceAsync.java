@@ -278,5 +278,8 @@ public interface AdministrationServiceAsync {
 	void getRiepilogoGiornalieroCommesse(String username, Date data,
 			AsyncCallback<List<RiepilogoOreDipCommesseGiornaliero>> asyncCallback);
 
+	void getRiepilogoMeseFoglioOre(Date value, String pm, String sede,
+			AsyncCallback<List<RiepilogoFoglioOreModel>> asyncCallback);
+
 			
 }

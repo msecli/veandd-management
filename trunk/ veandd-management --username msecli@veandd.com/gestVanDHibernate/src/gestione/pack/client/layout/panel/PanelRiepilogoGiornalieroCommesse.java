@@ -51,7 +51,6 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	private Grid<RiepilogoOreDipCommesseGiornaliero> gridRiepilogo;
 	private ColumnModel cmCommessa;
 	private String username= new String();
-	private String tLavoratore= new String();
 	private Date data;
 	private Button btnPrint= new Button();
 	
@@ -79,8 +78,7 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	    bodyContainer.setLayout(new FlowLayout());
 	  	bodyContainer.setBorders(false);
 	  	  	  	
-	  	//Button GXT
-	  	btnPrint.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.print()));
+	   	btnPrint.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.print()));
 		btnPrint.setToolTip("Stampa");
 		btnPrint.addSelectionListener(new SelectionListener<ButtonEvent>() {
 

@@ -4,6 +4,7 @@ package gestione.pack.client.layout;
 
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.layout.panel.PanelPrintAll;
+import gestione.pack.client.layout.panel.PanelRiepilogoSituazioneMensileOreDipendenti;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
 import gestione.pack.client.utility.MyImages;
@@ -363,6 +364,20 @@ public class BodyLayout_Administration extends LayoutContainer {
 	      });
 	    btnPrintRiepilogo.setWidth("100%");
 	    cp.add(btnPrintRiepilogo);
+	    
+	    Button btnRiepilogoMeseDip = new Button();
+	    btnRiepilogoMeseDip.setToolTip("Stampa");
+	    btnRiepilogoMeseDip.setHeight(65);
+	    btnRiepilogoMeseDip.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.printBig()));
+	    btnRiepilogoMeseDip.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoMeseDip.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	          center.removeAll();
+	        	center.add(new PanelRiepilogoSituazioneMensileOreDipendenti());
+	        	center.layout(true);}      
+	      });
+	    btnPrintRiepilogo.setWidth("100%");
+	    cp.add(btnRiepilogoMeseDip);
 	    
 	    cp.setButtonAlign(HorizontalAlignment.CENTER);
 	    	    

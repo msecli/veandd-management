@@ -276,7 +276,8 @@ public class ClientUtility {
 		ub=Integer.parseInt(txtUb);
 		
 		if(ua<ia) return totale="errore: L'orario di uscita e' inferiore a quello d'ingresso!";
-		if(ua==ia && ub<ib) return totale="errore: L'orario di uscita e' inferiore a quello d'ingresso!";
+		if(ua==ia && ub<=ib) return totale="errore: L'orario di uscita e' inferiore a quello d'ingresso!";
+		
 		
 		if(ub<ib){
 			resB=60-(ib-ub);
