@@ -308,27 +308,8 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 			}
 		});
 		
-		/*
-		btnRefresh.setBorders(true);
-		btnRefresh.setEnabled(false);
-		btnRefresh.setStyleAttribute("margin-right", "5px");
-		btnRefresh.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-				
-				try {
-					caricaTabellaDati();
-				} catch (Exception e) {
-					e.printStackTrace();
-					Window.alert("error: Impossibile caricare i dati in tabella.");
-				}				
-			}
-		});*/
-		
 		
 		ToolBar toolBar = new ToolBar();
-		//toolBar.add(btnRefresh);
 		toolBar.add(btnRemove);
 		toolBar.add(btnAdd);
 		toolBar.setBorders(false);
@@ -437,7 +418,7 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 	                
 	            }
 	          }
-	        }); 
+	    }); 
 	    
 	    		
 //-------------------------------------------------------------------------------------------------			    
@@ -634,6 +615,7 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 			}
 		});
 	}
+	
 	
 	private void getCommesseAperte() {	
 		AdministrationService.Util.getInstance().getCommesseAperte( new AsyncCallback<List<String>>() {

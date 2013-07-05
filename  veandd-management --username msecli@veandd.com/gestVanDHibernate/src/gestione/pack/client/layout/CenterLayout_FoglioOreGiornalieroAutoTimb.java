@@ -454,7 +454,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		}
 
 		protected void reloadFoglioOre() {
-			statoRevisione=0;
+			statoRevisione=0;//TODO
 			dtfldGiorno.setValue(giornoRiferimento.getValue());
 			
 			ButtonBar buttonBarTop = new ButtonBar();

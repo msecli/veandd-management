@@ -74,5 +74,8 @@ public interface MyImages extends ClientBundle{
 	@Source("Icone/search.png")
 	ImageResource search();	
 	
+	@Source("Icone/confirm.png")
+	ImageResource confirm();	
+	
 }
 

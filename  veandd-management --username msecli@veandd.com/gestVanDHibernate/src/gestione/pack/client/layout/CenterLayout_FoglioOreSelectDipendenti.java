@@ -527,7 +527,9 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			main.add(right);
 			main.layout(true);
 			
-			pnlRiepilogo=new PanelRiepilogoMeseFoglioOre(cmbxDipendente.getValue().getUsername().toString(), giornoRiferimento.getValue(),"");
+			String user=cmbxDipendente.getValue().getUsername();
+			
+			pnlRiepilogo=new PanelRiepilogoMeseFoglioOre(user, giornoRiferimento.getValue(),"");
 			frm.getItemByItemId("pnlRiepilogo").removeFromParent();
 			frm.add(pnlRiepilogo);
 			frm.layout(true);			
