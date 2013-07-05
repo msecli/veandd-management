@@ -3081,7 +3081,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						d=formatter.parse(dataCompLow);
 						giornoW=d.toString().substring(0,3);
 						if(giornoW.compareTo("Sun")!=0 && !ServerUtility.isFestivo(dataCompUpp)){				
-							giorno= new RiepilogoFoglioOreModel(0, p.getCognome()+" "+p.getNome() , data, dataCompLow, false);
+							giorno= new RiepilogoFoglioOreModel(0, p.getUsername() , p.getCognome()+" "+p.getNome(), data, dataCompLow, false);
 							listaGiorni.add(giorno);					
 						}
 					}
@@ -3093,7 +3093,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						formatter = new SimpleDateFormat("dd-MMM-yyyy",Locale.ITALIAN);
 						day=formatter.format(d.getGiornoRiferimento());
 								
-						giorno= new RiepilogoFoglioOreModel(d.getIdDettaglioOreGiornaliere(), p.getCognome()+" "+p.getNome(), data, day, true);
+						giorno= new RiepilogoFoglioOreModel(d.getIdDettaglioOreGiornaliere(), p.getUsername(), p.getCognome()+" "+p.getNome(), data, day, true);
 						
 						Iterator<RiepilogoFoglioOreModel> itr = listaGiorni.iterator();
 						while(itr.hasNext()) {
@@ -4629,6 +4629,108 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}
 	}
 
+	@Override
+	public boolean confermaGiorniDipendente(String username, Date data) throws IllegalArgumentException {
 	
-	
+		List<FoglioOreMese> listaF= new ArrayList<FoglioOreMese>();
+		List<DettaglioOreGiornaliere> listaD=new ArrayList<DettaglioOreGiornaliere>();
+		Personale p= new Personale();
+		
+		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
+		String anno=formatter.format(data);
+		formatter = new SimpleDateFormat("MMM",Locale.ITALIAN);
+		String mese=formatter.format(data);
+	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
+		
+	    String periodo=mese+anno;
+	    
+	    Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {
+						
+			tx=session.beginTransaction();
+			
+			p=(Personale)session.createQuery("from Personale where username=:username").setParameter("username", username).uniqueResult();
+			
+			listaF.addAll(p.getFoglioOreMeses());
+						
+			for(FoglioOreMese f:listaF){//scorro i mesi per trovare il foglio ore desiderato
+				if(f.getMeseRiferimento().compareTo(periodo)==0){
+					listaD.addAll(f.getDettaglioOreGiornalieres());
+					break;
+				}
+			}
+			
+			for(DettaglioOreGiornaliere d:listaD){
+				d.setStatoRevisione("1");
+			}
+			
+			tx.commit();
+			
+		} catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return false;
+		}finally{
+			session.close();
+		}
+		
+		return true;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean confermaGiorniTuttiDipendenti(String sede, Date data) {
+		List<FoglioOreMese> listaF= new ArrayList<FoglioOreMese>();
+		List<DettaglioOreGiornaliere> listaD=new ArrayList<DettaglioOreGiornaliere>();
+		List<Personale> listaP= new ArrayList<Personale>();
+		
+		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
+		String anno=formatter.format(data);
+		formatter = new SimpleDateFormat("MMM",Locale.ITALIAN);
+		String mese=formatter.format(data);
+	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
+		
+	    String periodo=mese+anno;
+	    
+	    Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {
+						
+			tx=session.beginTransaction();
+			
+			listaP=(List<Personale>)session.createQuery("from Personale where sedeOperativa=:sede").setParameter("sede", sede).list();	
+									
+			for(Personale p:listaP){
+				listaF.addAll(p.getFoglioOreMeses());
+				
+				for(FoglioOreMese f:listaF){//scorro i mesi per trovare il foglio ore desiderato
+					if(f.getMeseRiferimento().compareTo(periodo)==0){
+						listaD.addAll(f.getDettaglioOreGiornalieres());
+						break;
+					}
+				}
+				listaF.clear();				
+			}
+			
+			for(DettaglioOreGiornaliere d:listaD){
+				d.setStatoRevisione("1");
+			}
+			tx.commit();
+			
+		} catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return false;
+		}finally{
+			session.close();
+		}
+		
+		return true;
+	}
+
 }
