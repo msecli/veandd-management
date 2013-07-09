@@ -37,13 +37,14 @@ public class RiepilogoFoglioOreModel extends BaseModel implements IsSerializable
 	}
 
 	public RiepilogoFoglioOreModel(int idDettaglioGiorno, String username,
-			String nome, String mese, String giorno, boolean compilato) {		
+			String nome, String mese, String giorno, boolean compilato, String confermato) {		
 		set("idDettaglio", idDettaglioGiorno);
 		set("username",username);
 		set("nome",nome);
 		set("mese", mese);
 		set("giorno", giorno);
 		set("compilato",compilato);
+		set("confermato", confermato);
 	}
 
 	public int getDettaglioGiorno(){

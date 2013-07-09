@@ -460,7 +460,7 @@ public class DialogRilevazionePresenze extends Dialog {
 				
 		if (listaC.size()>0){
 			for(IntervalliCommesseModel c:listaC){
-				totOreLavoro=ClientUtility.calcolaOreLavoro(totOreLavoro, c.getOreLavoro());		
+				totOreLavoro=ClientUtility.aggiornaTotGenerale(totOreLavoro, c.getOreLavoro());		
 			}
 			if(totOreLavoro.compareTo(totOreGenerale)!=0)
 				return controllo="Le ore indicate sulle commesse non sono coerenti con il numero di ore ricavate dagli intervalli I/U.";			

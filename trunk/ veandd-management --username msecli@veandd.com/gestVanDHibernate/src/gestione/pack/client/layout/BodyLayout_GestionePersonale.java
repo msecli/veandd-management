@@ -2,6 +2,7 @@ package gestione.pack.client.layout;
 
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.layout.panel.PanelPrintAll;
+import gestione.pack.client.layout.panel.PanelRiepilogoSituazioneMensileOreDipendenti;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
 import gestione.pack.client.utility.MyImages;
@@ -255,6 +256,34 @@ public class BodyLayout_GestionePersonale extends LayoutContainer {
 	      });
 	    btnPresenzeDipendenti.setWidth("100%");
 	    cp.add(btnPresenzeDipendenti);
+	    
+	    Button btnRilevColocation = new Button();
+	    btnRilevColocation.setToolTip("Rilevazione Presenze Colocation/Collaboratori");
+	    btnRilevColocation.setHeight(65);
+	    btnRilevColocation.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.rilevColocation()));
+	    btnRilevColocation.setIconAlign(IconAlign.BOTTOM);
+	    btnRilevColocation.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	          center.removeAll();
+	        	center.add(new CenterLayout_RilevazioneOreColocation());
+	        	center.layout(true);}      
+	      });
+	    btnRilevColocation.setWidth("100%");
+	    cp.add(btnRilevColocation);	    
+	    
+	    Button btnRiepilogoMeseDip = new Button();
+	    btnRiepilogoMeseDip.setToolTip("Riepilogo Situazione Mensile Dipendenti");
+	    btnRiepilogoMeseDip.setHeight(65);
+	    btnRiepilogoMeseDip.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnRiepilogoMeseDip.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoMeseDip.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelRiepilogoSituazioneMensileOreDipendenti());
+	        	center.layout(true);}      
+	      });
+	    btnRiepilogoMeseDip.setWidth("100%");
+	    cp.add(btnRiepilogoMeseDip);	 
 	    
 	    Button btnLoadTimbrature = new Button();
 	    btnLoadTimbrature.setToolTip("Upload Timbrature");

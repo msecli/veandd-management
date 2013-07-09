@@ -5,6 +5,7 @@ import gestione.pack.client.AdministrationService;
 import gestione.pack.client.utility.MyImages;
 
 import gestione.pack.client.layout.CenterLayout_FoglioOreGiornalieroAutoTimb.FldsetGiustificativi;
+import gestione.pack.client.layout.CenterLayout_FoglioOreSelectDipendenti.CreateFormIntervalliOre;
 import gestione.pack.client.layout.panel.DialogInvioCommenti;
 import gestione.pack.client.layout.panel.FormInserimentoIntervalloCommessa;
 import gestione.pack.client.layout.panel.PanelRiepilogoGiornalieroCommesse;
@@ -113,32 +114,9 @@ public class CenterLayout_FoglioOreGiornaliero_Collaboratori extends LayoutConta
 		LayoutContainer bodyContainer = new LayoutContainer();
 		bodyContainer.setLayout(new FlowLayout());
 		bodyContainer.setBorders(false);		
-						
-		ContentPanel cntpnlFoglioOre = new ContentPanel(); //pannello esterno
-		cntpnlFoglioOre.setHeading("Foglio Ore.");
-		cntpnlFoglioOre.setHeaderVisible(true);
-		cntpnlFoglioOre.setCollapsible(false);
-		cntpnlFoglioOre.setBorders(false);
-		cntpnlFoglioOre.setWidth(w-215);
-		cntpnlFoglioOre.setHeight(h-55);
-		cntpnlFoglioOre.setScrollMode(Scroll.AUTO);
-		cntpnlFoglioOre.setLayout(new RowLayout(Orientation.VERTICAL));
 		
-		ContentPanel cntpnlGuida= new ContentPanel();
-		cntpnlGuida.setHeading("?");
-		cntpnlGuida.setHeaderVisible(true);
-		cntpnlGuida.setCollapsible(true);
-		cntpnlGuida.setSize(150, 380);
-		
-		TextArea txtGuida= new TextArea();
-		txtGuida.setValue("sdsdsds");
-		
-		cntpnlGuida.add(txtGuida);
-		
-		cntpnlFoglioOre.add(new CreateFormIntervalliOre());		
-		cntpnlFoglioOre.add(txtfldUsername);
-		
-		bodyContainer.add(cntpnlFoglioOre);
+		bodyContainer.add(new CreateFormIntervalliOre());		
+		bodyContainer.add(txtfldUsername);
 		
 		layoutContainer.add(bodyContainer, new FitData(5, 5, 5, 8));
 		add(layoutContainer);			

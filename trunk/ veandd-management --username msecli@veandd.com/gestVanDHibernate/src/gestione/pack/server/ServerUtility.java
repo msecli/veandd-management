@@ -1156,6 +1156,30 @@ public class ServerUtility {
 			session.close();
 		}		
 	}
+	public static boolean isNotIncludedCommessa(List<DettaglioIntervalliCommesse> listaCommesse,
+			DettaglioIntervalliCommesse dett) {
+		
+		boolean trovata=false;
+		
+		if(listaCommesse.isEmpty())
+			return true;
+		
+		for(DettaglioIntervalliCommesse c:listaCommesse){
+					
+			String comp1= c.getNumeroCommessa()+"."+c.getEstensioneCommessa();
+			String comp2= dett.getNumeroCommessa()+"."+dett.getEstensioneCommessa();
+			
+			if(comp1.compareTo(comp2)==0){
+				trovata=true;
+			}
+		}
+		
+		if(trovata)
+			return false;
+		else
+			return true;
+				
+	}
 	
 }
 
