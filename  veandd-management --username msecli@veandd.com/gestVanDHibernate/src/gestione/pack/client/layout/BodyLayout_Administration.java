@@ -324,9 +324,9 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    cp.add(btnPresenzeDipendenti);
 	    
 	    Button btnRilevColocation = new Button();
-	    btnRilevColocation.setToolTip("Rilevazione Presenze Colocation");
+	    btnRilevColocation.setToolTip("Rilevazione Presenze Colocation/Collaboratori");
 	    btnRilevColocation.setHeight(65);
-	    btnRilevColocation.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.presenzeDip()));
+	    btnRilevColocation.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.rilevColocation()));
 	    btnRilevColocation.setIconAlign(IconAlign.BOTTOM);
 	    btnRilevColocation.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
@@ -336,6 +336,20 @@ public class BodyLayout_Administration extends LayoutContainer {
 	      });
 	    btnRilevColocation.setWidth("100%");
 	    cp.add(btnRilevColocation);	    
+	    
+	    Button btnRiepilogoMeseDip = new Button();
+	    btnRiepilogoMeseDip.setToolTip("Riepilogo Situazione Mensile Dipendenti");
+	    btnRiepilogoMeseDip.setHeight(65);
+	    btnRiepilogoMeseDip.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnRiepilogoMeseDip.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoMeseDip.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelRiepilogoSituazioneMensileOreDipendenti());
+	        	center.layout(true);}      
+	      });
+	    btnRiepilogoMeseDip.setWidth("100%");
+	    cp.add(btnRiepilogoMeseDip);	    
 	    
 	    Button btnLoadTimbrature = new Button();
 	    btnLoadTimbrature.setToolTip("Upload Timbrature");
@@ -358,27 +372,13 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    btnPrintRiepilogo.setIconAlign(IconAlign.BOTTOM);
 	    btnPrintRiepilogo.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
-	          center.removeAll();
+	        	center.removeAll();
 	        	center.add(new PanelPrintAll());
 	        	center.layout(true);}      
 	      });
 	    btnPrintRiepilogo.setWidth("100%");
 	    cp.add(btnPrintRiepilogo);
-	    
-	    Button btnRiepilogoMeseDip = new Button();
-	    btnRiepilogoMeseDip.setToolTip("Stampa");
-	    btnRiepilogoMeseDip.setHeight(65);
-	    btnRiepilogoMeseDip.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.printBig()));
-	    btnRiepilogoMeseDip.setIconAlign(IconAlign.BOTTOM);
-	    btnRiepilogoMeseDip.addSelectionListener(new SelectionListener<ButtonEvent>() {
-	        public void componentSelected(ButtonEvent ce) {
-	          center.removeAll();
-	        	center.add(new PanelRiepilogoSituazioneMensileOreDipendenti());
-	        	center.layout(true);}      
-	      });
-	    btnPrintRiepilogo.setWidth("100%");
-	    cp.add(btnRiepilogoMeseDip);
-	    
+	   	    
 	    cp.setButtonAlign(HorizontalAlignment.CENTER);
 	    	    
 	    panel.add(cp);
@@ -398,7 +398,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    Button btnRiepilogoMese = new Button("Report Dett. Ore");
 	    btnRiepilogoMese.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
-	          center.removeAll();
+	        	center.removeAll();
 	        	center.add(new CenterLayout_RiepilogoOreDipendentiCommesse());
 	        	center.layout(true);}      
 	      });
@@ -445,7 +445,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 //----------------------------------------------------------------------------------------------
 	    
 	   
-	   center.add(new CenterLayout_RilevazioneOreColocation());
+	   center.add(new CenterLayout_FoglioOreSelectDipendenti());
 	    
 	   container.add(north, northData);
 	   container.add(west, westData);

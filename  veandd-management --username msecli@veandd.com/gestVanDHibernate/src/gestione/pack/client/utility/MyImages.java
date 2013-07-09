@@ -75,7 +75,15 @@ public interface MyImages extends ClientBundle{
 	ImageResource search();	
 	
 	@Source("Icone/confirm.png")
-	ImageResource confirm();	
+	ImageResource confirm();
 	
+	@Source("Icone/rilevColocation64x64.png")
+	ImageResource rilevColocation();
+	
+	@Source("Icone/riepMensDip.png")
+	ImageResource riepMensDip();
+	
+	@Source("Icone/reload20x20.png")
+	ImageResource reload();
 }
 

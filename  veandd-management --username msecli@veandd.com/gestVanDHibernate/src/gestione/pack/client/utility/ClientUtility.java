@@ -187,7 +187,7 @@ public class ClientUtility {
 		return totale;
 	}
 
-	
+	/*
 	public static String calcolaOreViaggio(String totOreViaggio, String oreViaggioGiorno) {
 		String totale= new String();
 		String totA= new String();
@@ -254,7 +254,7 @@ public class ClientUtility {
 		return totale;
 	}
 	
-	
+	*/
 	public static String calcolaParzialeIntervalli(String ingresso, String uscita) {
 		String totale= new String();
 								
@@ -304,11 +304,27 @@ public class ClientUtility {
 			
 			parziale=listaParziali.get(i+1);
 			
-			a_1= Integer.parseInt(totale.substring(0,totale.indexOf(".")));
-			b_1= Integer.parseInt(totale.substring(totale.indexOf(".")+1, totale.length()));
+			if(totale.indexOf(".")!=-1){
+				a_1= Integer.parseInt(totale.substring(0,totale.indexOf(".")));
+				b_1= Integer.parseInt(totale.substring(totale.indexOf(".")+1, totale.length()));
+			}else{
+				a_1=Integer.parseInt(totale);
+				b_1=0;				
+			}
 			
-			a_2= Integer.parseInt(parziale.substring(0,parziale.indexOf(".")));
-			b_2= Integer.parseInt(parziale.substring(parziale.indexOf(".")+1, parziale.length()));
+			
+			if(parziale.indexOf(".")!=-1){
+				a_2= Integer.parseInt(parziale.substring(0,parziale.indexOf(".")));
+				b_2= Integer.parseInt(parziale.substring(parziale.indexOf(".")+1, parziale.length()));
+			}else{
+				if(parziale.length()<10){
+					a_2=Integer.parseInt(parziale);
+					b_2=0;				
+				}else{
+					a_2=0;
+					b_2=0;					
+				}					
+			}
 			
 			if(b_1+b_2>59){
 				totB=b_1 + b_2-60;

@@ -86,19 +86,8 @@ public class CenterLayout_RilevazioneOreColocation extends LayoutContainer{
 		bodyContainer.setLayout(new FlowLayout());
 		bodyContainer.setBorders(false);		
 						
-		ContentPanel cntpnlFoglioOre = new ContentPanel(); //pannello esterno
-		cntpnlFoglioOre.setHeading("Foglio Ore.");
-		cntpnlFoglioOre.setHeaderVisible(true);
-		cntpnlFoglioOre.setCollapsible(false);
-		cntpnlFoglioOre.setBorders(false);
-		cntpnlFoglioOre.setWidth(w-215);
-		cntpnlFoglioOre.setHeight(h-55);
-		cntpnlFoglioOre.setScrollMode(Scroll.AUTO);
-		
-		cntpnlFoglioOre.add(new CreateFormIntervalliOre());		
-		cntpnlFoglioOre.add(txtfldUsername);
-				
-		bodyContainer.add(cntpnlFoglioOre);
+		bodyContainer.add(new CreateFormIntervalliOre());
+		bodyContainer.add(txtfldUsername);
 
 		layoutContainer.add(bodyContainer, new FitData(5, 5, 5, 8));
 		add(layoutContainer);	
@@ -150,7 +139,7 @@ public class CenterLayout_RilevazioneOreColocation extends LayoutContainer{
 		public DateField giornoRiferimento= new DateField();
 		//private SimpleComboBox<String> smplcmbxDipendente= new SimpleComboBox<String>();
 		private ComboBox<PersonaleModel> cmbxDipendente= new ComboBox<PersonaleModel>();
-		private Button btnSend= new Button("Load"); 
+		private Button btnSend= new Button(); 
 		private LayoutContainer left = new LayoutContainer();
 		private LayoutContainer right = new LayoutContainer();	
 		private LayoutContainer main = new LayoutContainer();	
@@ -277,8 +266,7 @@ public class CenterLayout_RilevazioneOreColocation extends LayoutContainer{
 			btnBarOperazioni.add(btnRiepilogoCommesse);
 			btnBarOperazioni.add(btnInviaCommenti);
 			btnBarOperazioni.add(btnConferma);
-			
-			
+					
 			left.add(btnBarOperazioni);
 			left.add(buttonBarTop);
 
@@ -287,8 +275,10 @@ public class CenterLayout_RilevazioneOreColocation extends LayoutContainer{
 			frm.layout(true);
 			add(frm);
 			
-			btnSend.addSelectionListener(new SelectionListener<ButtonEvent>() {
-				
+			btnSend.setSize(26, 26);
+			btnSend.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.reload()));
+			btnSend.setToolTip("Carica Dati");
+			btnSend.addSelectionListener(new SelectionListener<ButtonEvent>() {				
 				@Override
 				public void componentSelected(ButtonEvent ce) {
 						txtfldUsername.setValue(cmbxDipendente.getValue().get("username").toString()); //setto il valore globale dell'username per il caricamento dei vari fieldset

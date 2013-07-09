@@ -178,7 +178,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 		public DateField giornoRiferimento= new DateField();
 		//private SimpleComboBox<String> smplcmbxDipendente= new SimpleComboBox<String>();
 		private ComboBox<PersonaleModel> cmbxDipendente= new ComboBox<PersonaleModel>();
-		private Button btnSend= new Button("Load"); 
+		private Button btnSend= new Button(); 
 		private LayoutContainer left = new LayoutContainer();
 		private LayoutContainer right = new LayoutContainer();	
 		private LayoutContainer main = new LayoutContainer();	
@@ -316,6 +316,9 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			frm.layout(true);
 			add(frm);
 			
+			btnSend.setSize(26, 26);
+			btnSend.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.reload()));
+			btnSend.setToolTip("Carica Dati");
 			btnSend.addSelectionListener(new SelectionListener<ButtonEvent>() {
 				
 				@Override
@@ -581,7 +584,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 
 		if (listaC.size()>0){
 			for(IntervalliCommesseModel c:listaC){
-				totOreLavoro=ClientUtility.calcolaOreLavoro(totOreLavoro, c.getOreLavoro());		
+				totOreLavoro=ClientUtility.aggiornaTotGenerale(totOreLavoro, c.getOreLavoro());		
 			}
 			if(totOreLavoro.compareTo(totOreGenerale)!=0)
 				return controllo="Le ore indicate sulle commesse non sono coerenti con il numero di ore ricavate dagli intervalli I/U.";			

@@ -6,6 +6,7 @@ import gestione.pack.client.layout.CenterLayout_FoglioOreSelectDipendenti;
 import gestione.pack.client.model.CommessaModel;
 import gestione.pack.client.model.PersonaleAssociatoModel;
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
+import gestione.pack.client.model.RiepilogoOreTotaliCommesse;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.MyImages;
 
@@ -38,8 +39,10 @@ import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GridGroupRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GridViewConfig;
 import com.extjs.gxt.ui.client.widget.grid.GroupColumnData;
@@ -162,6 +165,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	  	btnConferma.setStyleAttribute("padding-left", "2px");
 	  	btnConferma.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.confirm()));
 	  	btnConferma.setIconAlign(IconAlign.TOP);
+	  	btnConferma.setToolTip("Conferma mese per singolo dipendente.");
 	  	btnConferma.addSelectionListener(new SelectionListener<ButtonEvent>() {		
 			@Override
 			public void componentSelected(ButtonEvent ce) {
@@ -176,7 +180,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 					@Override
 					public void onSuccess(Boolean result) {
 						if(result==true)
-							Window.alert("Conferma avvenuta!");
+							caricaTabellaDati();
 						else
 							Window.alert("Non è stato possibile effettuare la conferma!");
 					}
@@ -189,6 +193,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	  	btnConfermaTutti.setStyleAttribute("padding-left", "2px");
 	  	btnConfermaTutti.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.confirm()));
 	  	btnConfermaTutti.setIconAlign(IconAlign.TOP);
+	  	btnConfermaTutti.setToolTip("Conferma mese per tutti i dipendenti.");
 	  	btnConfermaTutti.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
@@ -203,7 +208,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 					@Override
 					public void onSuccess(Boolean result) {
 						if(result==true)
-							Window.alert("Conferma avvenuta!");
+							caricaTabellaDati();
 						else
 							Window.alert("Non è stato possibile effettuare la conferma!");
 					}
@@ -215,6 +220,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	  	btnViewFoglioOre.setStyleAttribute("padding-left", "2px");
 	  	btnViewFoglioOre.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.datiTimb()));
 	  	btnViewFoglioOre.setIconAlign(IconAlign.TOP);
+	  	btnViewFoglioOre.setToolTip("Modifica dati.");
 	  	btnViewFoglioOre.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
@@ -318,8 +324,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	            	              
 	            } else {  
 	                
-	            	
-	            	
+	            	           	
 	            }
 	          }
 	    }); 
@@ -396,7 +401,9 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 			
 			store.removeAll();
 			store.add(result);
-			gridRiepilogo.reconfigure(store, cmCommessa);				
+			gridRiepilogo.reconfigure(store, cmCommessa);	
+			storeResult.add(store.getModels());
+			storeCompleto.add(store.getModels());
 		} catch (NullPointerException e) {
 			Window.alert("error: Impossibile effettuare il caricamento dati in tabella.");
 				e.printStackTrace();
@@ -427,8 +434,29 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("confermato");  
 	    column.setHeader("Confermato");  
-	    column.setWidth(100);  
+	    column.setWidth(20);  
 	    column.setRowHeader(true);  
+	    column.setRenderer(new GridCellRenderer<RiepilogoFoglioOreModel>() {
+
+			@Override
+			public Object render(RiepilogoFoglioOreModel model, String property,
+					ColumnData config, int rowIndex, int colIndex,
+					ListStore<RiepilogoFoglioOreModel> store, Grid<RiepilogoFoglioOreModel> grid) {
+				
+				String color = "#90EE90";
+				String confermato=model.get("confermato");
+				
+				if(confermato.compareTo("0")!=0)
+				{
+					config.style = config.style + ";background-color:" + color + ";";									
+				}
+				else{
+					color = "#F08080";  
+					config.style = config.style + ";background-color:" + color + ";";
+				}
+				return "";
+			}
+		});
 	      
 	    configs.add(column);
 	    	    	    	    	    
