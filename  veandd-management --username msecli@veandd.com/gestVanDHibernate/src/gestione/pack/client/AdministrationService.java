@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 import gestione.pack.client.model.ClienteModel;
+import gestione.pack.client.model.CommentiModel;
 import gestione.pack.client.model.CommessaModel;
 import gestione.pack.client.model.DatiFatturazioneCommessaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
@@ -289,11 +290,15 @@ public interface AdministrationService extends RemoteService {
 			String username, Date data)throws IllegalArgumentException;
 
 	List<RiepilogoFoglioOreModel> getRiepilogoMeseFoglioOre(Date value,
-			String pm, String sede)throws IllegalArgumentException;;
+			String pm, String sede)throws IllegalArgumentException;
 
-	boolean confermaGiorniDipendente(String username, Date data);
+	boolean confermaGiorniDipendente(String username, Date data) throws IllegalArgumentException;
 
-	boolean confermaGiorniTuttiDipendenti(String string, Date data);;
+	boolean confermaGiorniTuttiDipendenti(String string, Date data)throws IllegalArgumentException;
+
+	List<CommentiModel> getAllCommenti()throws IllegalArgumentException;
+
+	boolean deleteCommento(int d);
 
 	
 	

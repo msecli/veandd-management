@@ -1,12 +1,8 @@
 package gestione.pack.client.layout.panel;
 
 import gestione.pack.client.AdministrationService;
-import gestione.pack.client.layout.CenterLayout_FoglioOreGiornalieroAutoTimb;
-import gestione.pack.client.layout.CenterLayout_FoglioOreSelectDipendenti;
-import gestione.pack.client.model.CommessaModel;
-import gestione.pack.client.model.PersonaleAssociatoModel;
+import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
-import gestione.pack.client.model.RiepilogoOreTotaliCommesse;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.MyImages;
 
@@ -16,6 +12,7 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.IconAlign;
+import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.ModelData;
@@ -31,6 +28,7 @@ import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.button.Button;
 
@@ -51,6 +49,7 @@ import com.extjs.gxt.ui.client.widget.grid.SummaryColumnConfig;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -79,6 +78,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	private Button btnViewFoglioOre;
 	private Button btnSearch;
 	private DateField dtfldDataRiferimento;
+	private Text txtRuolo;
 	
 	public PanelRiepilogoSituazioneMensileOreDipendenti(){
 	
@@ -93,6 +93,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	    LayoutContainer layoutContainer= new LayoutContainer();
 	    layoutContainer.setBorders(false);
 	    layoutContainer.setLayout(fl);	
+	    layoutContainer.setScrollMode(Scroll.NONE);
 	  		
 	    LayoutContainer bodyContainer = new LayoutContainer();
 	    bodyContainer.setLayout(new FlowLayout());
@@ -102,6 +103,9 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	  	
 	  	dtfldDataRiferimento= new DateField();
 	  	dtfldDataRiferimento.setValue(new Date());
+	  	
+	  	txtRuolo=new Text();
+	  	recuperoSessionRuolo();
 	  	
 	   	smplcmbxPM = new SimpleComboBox<String>();
 		smplcmbxPM.setFieldLabel("Project Manager");
@@ -250,7 +254,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 		cntpnlGrid.setBodyBorder(false);         
 		cntpnlGrid.setLayout(new FitLayout());  
 		cntpnlGrid.setHeaderVisible(false);
-		cntpnlGrid.setWidth(550);
+		cntpnlGrid.setWidth(530);
 		cntpnlGrid.setHeight(840);
 		cntpnlGrid.setScrollMode(Scroll.AUTO);
 					    
@@ -266,7 +270,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	    	        
 	    GroupingView view = new GroupingView();  
 	    view.setShowGroupedColumn(false);  
-	    view.setForceFit(true);  
+	    view.setForceFit(false);  
 	    view.setStartCollapsed(true);
 	    view.setGroupRenderer(new GridGroupRenderer() {  
 	      public String render(GroupColumnData data) {  
@@ -337,13 +341,16 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 		cntpnlLayout.setCollapsible(false);
 		cntpnlLayout.setExpanded(true);
 		cntpnlLayout.setHeading("Riepilogo Giornaliero.");
-		cntpnlLayout.setSize(570, 860);
+		cntpnlLayout.setSize(1190, 865);
 		cntpnlLayout.setScrollMode(Scroll.AUTOX);
+		cntpnlLayout.setLayout(new RowLayout(Orientation.HORIZONTAL));
 		cntpnlLayout.setFrame(true);
-		cntpnlLayout.add(cntpnlGrid);
-	    
-		bodyContainer.add(cntpnlLayout);    
 		
+		cntpnlLayout.add(cntpnlGrid);
+	    cntpnlLayout.add(new PanelRichiesteDipendenti());
+		
+		bodyContainer.add(cntpnlLayout); 
+				
 		layoutContainer.add(bodyContainer, new FitData(5, 5, 5, 8));
 		add(layoutContainer);    
 	}
@@ -402,6 +409,9 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 			store.removeAll();
 			store.add(result);
 			gridRiepilogo.reconfigure(store, cmCommessa);	
+			
+			storeResult.removeAll();
+			storeCompleto.removeAll();
 			storeResult.add(store.getModels());
 			storeCompleto.add(store.getModels());
 		} catch (NullPointerException e) {
@@ -418,7 +428,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 		column=new SummaryColumnConfig<Double>();		
 		column.setId("nome");  
 		column.setHeader("Dipendente");  
-		column.setWidth(120);  
+		column.setWidth(160);  
 		column.setRowHeader(true);  
 		column.setAlignment(HorizontalAlignment.RIGHT);  
 		configs.add(column); 		    
@@ -427,14 +437,77 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	    column.setId("giorno");  
 	    column.setHeader("Giorno");  
 	    column.setWidth(100);  
-	    column.setRowHeader(true);  
-	      
+	    column.setRowHeader(true);        
 	    configs.add(column); 
 	    
+	    column=new SummaryColumnConfig<Double>();
+	    column.setId("i1");  
+		column.setHeader("I");  
+		column.setWidth(40);  
+		column.setRowHeader(true);  
+		column.setAlignment(HorizontalAlignment.RIGHT);  
+		configs.add(column);
+		
+		column=new SummaryColumnConfig<Double>();
+	    column.setId("u1");  
+		column.setHeader("U");  
+		column.setWidth(40);  
+		column.setRowHeader(true);  
+		column.setAlignment(HorizontalAlignment.RIGHT);  
+		configs.add(column);
+		
+		column=new SummaryColumnConfig<Double>();
+	    column.setId("i2");  
+		column.setHeader("I");  
+		column.setWidth(40);  
+		column.setRowHeader(true);  
+		column.setAlignment(HorizontalAlignment.RIGHT);  
+		configs.add(column);
+		
+		column=new SummaryColumnConfig<Double>();
+	    column.setId("u2");  
+		column.setHeader("U");  
+		column.setWidth(40);  
+		column.setRowHeader(true);  
+		column.setAlignment(HorizontalAlignment.RIGHT);  
+		configs.add(column);
+		
+		column=new SummaryColumnConfig<Double>();
+	    column.setId("i3");  
+		column.setHeader("I");  
+		column.setWidth(40);  
+		column.setRowHeader(true);  
+		column.setAlignment(HorizontalAlignment.RIGHT);  
+		configs.add(column);
+		
+		column=new SummaryColumnConfig<Double>();
+	    column.setId("u3");  
+		column.setHeader("U");  
+		column.setWidth(40);  
+		column.setRowHeader(true);  
+		column.setAlignment(HorizontalAlignment.RIGHT);  
+		configs.add(column);
+
+		column=new SummaryColumnConfig<Double>();
+	    column.setId("i4");  
+		column.setHeader("I");  
+		column.setWidth(40);  
+		column.setRowHeader(true);  
+		column.setAlignment(HorizontalAlignment.RIGHT);  
+		configs.add(column);
+		
+		column=new SummaryColumnConfig<Double>();
+	    column.setId("u4");  
+		column.setHeader("U");  
+		column.setWidth(40);  
+		column.setRowHeader(true);  
+		column.setAlignment(HorizontalAlignment.RIGHT);  
+		configs.add(column);
+		
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("confermato");  
 	    column.setHeader("Confermato");  
-	    column.setWidth(20);  
+	    column.setWidth(45);  
 	    column.setRowHeader(true);  
 	    column.setRenderer(new GridCellRenderer<RiepilogoFoglioOreModel>() {
 
@@ -463,4 +536,28 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 		return configs;
 	}
 
+	private void recuperoSessionRuolo() {		
+		SessionManagementService.Util.getInstance().getRuolo(new AsyncCallback<String>() {
+			
+			@Override
+			public void onSuccess(String result) {				
+				setRuolo(result);
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				
+				Window.alert("Error on getRuolo();");
+			}
+		});				
+	}
+	
+	public  void setRuolo(String result){
+		txtRuolo.setText(result);		
+		
+			if(txtRuolo.getText().compareTo("PM")==0){
+				btnConferma.disable();
+				btnConfermaTutti.disable();
+			}
+	}
 }
