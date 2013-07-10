@@ -85,5 +85,8 @@ public interface MyImages extends ClientBundle{
 	
 	@Source("Icone/reload20x20.png")
 	ImageResource reload();
+	
+	@Source("Icone/Login16x16.png")
+	ImageResource login();
 }
 

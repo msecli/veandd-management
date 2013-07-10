@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import gestione.pack.client.model.ClienteModel;
+import gestione.pack.client.model.CommentiModel;
 import gestione.pack.client.model.CommessaModel;
 import gestione.pack.client.model.DatiFatturazioneCommessaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
@@ -285,6 +286,10 @@ public interface AdministrationServiceAsync {
 
 	void confermaGiorniTuttiDipendenti(String string, Date data,
 			AsyncCallback<Boolean> asyncCallback);
+
+	void getAllCommenti(AsyncCallback<List<CommentiModel>> asyncCallback);
+
+	void deleteCommento(int id, AsyncCallback<Boolean> asyncCallback);
 
 			
 }

@@ -606,7 +606,7 @@ public CenterLayout_FoglioFatturazione(){}
 		            	}		            	
 		             } 	
 		          }          
-		        }); 
+		    }); 
 			
 		    cntpnlGrid.add(gridOrdine);
 		

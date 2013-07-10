@@ -19,6 +19,8 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -39,6 +41,7 @@ import org.hibernate.Transaction;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.model.ClienteModel;
+import gestione.pack.client.model.CommentiModel;
 import gestione.pack.client.model.CommessaModel;
 import gestione.pack.client.model.DatiFatturazioneCommessaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
@@ -3042,8 +3045,18 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		List<DettaglioOreGiornaliere> listaDettGiorno= new ArrayList<DettaglioOreGiornaliere>();
 		List<FoglioOreMese> listaMesi=new ArrayList<FoglioOreMese>();
 		List<Personale> listaP=new ArrayList<Personale>();
+		List<DettaglioIntervalliIU> listaDtt= new ArrayList<DettaglioIntervalliIU>();
 		
 		RiepilogoFoglioOreModel giorno;
+		
+		String i1=" ";
+		String u1=" ";
+		String i2=" ";
+		String u2=" ";
+		String i3=" ";
+		String u3=" ";
+		String i4=" ";
+		String u4=" ";
 		
 		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
 		String anno=formatter.format(dataRif);
@@ -3093,7 +3106,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						d=formatter.parse(dataCompLow);
 						giornoW=d.toString().substring(0,3);
 						if(giornoW.compareTo("Sun")!=0 && !ServerUtility.isFestivo(dataCompUpp)){				
-							giorno= new RiepilogoFoglioOreModel(0, p.getUsername() , p.getCognome()+" "+p.getNome(), data, dataCompLow, false, "0");
+							giorno= new RiepilogoFoglioOreModel(p.getUsername() , p.getCognome()+" "+p.getNome(), data, dataCompLow, false, "0"
+									,"","","","","","","","");
 							listaGiorni.add(giorno);					
 						}
 					}
@@ -3109,7 +3123,45 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						if(d.getStatoRevisione().compareTo("0")!=0)
 							confermato="2";
 						
-						giorno= new RiepilogoFoglioOreModel(d.getIdDettaglioOreGiornaliere(), p.getUsername(), p.getCognome()+" "+p.getNome(), data, day, true, confermato);
+						listaDtt.addAll(d.getDettaglioIntervalliIUs());
+						Collections.sort(listaDtt, new Comparator<DettaglioIntervalliIU>(){
+							  public int compare(DettaglioIntervalliIU s1, DettaglioIntervalliIU s2) {
+								  String p1=s1.getMovimento();
+								  String p2=s2.getMovimento();
+								  p1=new StringBuffer(p1).reverse().toString();
+								  p2=new StringBuffer(p2).reverse().toString();
+								  
+								 return p1.compareTo(p2);
+							  }
+						});
+						
+						if(listaDtt.size()>0)
+							i1=listaDtt.get(0).getOrario();
+						else i1="";
+						if(listaDtt.size()>1)
+							u1=listaDtt.get(1).getOrario();
+						else u1="";
+						if(listaDtt.size()>2)
+							i2=listaDtt.get(2).getOrario();
+						else i2="";
+						if(listaDtt.size()>3)
+							u2=listaDtt.get(3).getOrario();
+						else u2="";
+						if(listaDtt.size()>4)
+							i3=listaDtt.get(4).getOrario();
+						else i3="";
+						if(listaDtt.size()>5)
+							u3=listaDtt.get(5).getOrario();
+						else u3="";
+						if(listaDtt.size()>6)
+							i4=listaDtt.get(6).getOrario();
+						else i4="";
+						if(listaDtt.size()>7)
+							u4=listaDtt.get(7).getOrario();
+						else u4="";
+																		
+						giorno= new RiepilogoFoglioOreModel(p.getUsername(), p.getCognome()+" "+p.getNome(), data, day, true, confermato,
+								i1,u1,i2,u2,i3,u3,i4,u4);
 						
 						Iterator<RiepilogoFoglioOreModel> itr = listaGiorni.iterator();
 						while(itr.hasNext()) {
@@ -3119,7 +3171,18 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 									int index=listaGiorni.indexOf(g);
 									listaGiorni.set(index, giorno);							
 								}
-					    }								
+					    }	
+						
+						i1="";
+						i2="";
+						i3="";
+						i4="";
+						u1="";
+						u2="";
+						u3="";
+						u4="";
+						
+						listaDtt.clear();
 					}
 					
 					listaGiorniAll.addAll(listaGiorni);
@@ -4497,10 +4560,14 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
 		Date d= new Date();
+		
+		DateFormat formatter = new SimpleDateFormat("MMM-dd-yyyy") ; 
+		String data=formatter.format(d);
+		
 		try {
 			c.setTesto(testo);
 			c.setUsername(username);
-			c.setDataRichiesta(d.toString());
+			c.setDataRichiesta(data);
 			
 			tx=session.beginTransaction();
 			session.save(c);			
@@ -4707,7 +4774,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public boolean confermaGiorniTuttiDipendenti(String sede, Date data) {
+	public boolean confermaGiorniTuttiDipendenti(String sede, Date data)  throws IllegalArgumentException{
 		List<FoglioOreMese> listaF= new ArrayList<FoglioOreMese>();
 		List<DettaglioOreGiornaliere> listaD=new ArrayList<DettaglioOreGiornaliere>();
 		List<Personale> listaP= new ArrayList<Personale>();
@@ -4756,6 +4823,73 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			session.close();
 		}		
 		return true;
+	}
+	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<CommentiModel> getAllCommenti() throws IllegalArgumentException{
+
+		List<Commenti> listaC= new ArrayList<Commenti>();
+		List<CommentiModel> listaCommentiM= new ArrayList<CommentiModel>();
+		CommentiModel cm;
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+			
+		try {
+							
+			tx=session.beginTransaction();
+				
+			listaC=(List<Commenti>)session.createQuery("from Commenti").list();
+				
+			tx.commit();
+			
+			for(Commenti c:listaC){
+				cm=new CommentiModel(c.getIdCommenti(),c.getUsername(), c.getDataRichiesta(), c.getTesto());
+				listaCommentiM.add(cm);
+			}
+			
+			return listaCommentiM;
+				
+		} catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return null;
+		}finally{
+			session.close();
+		}			
+	}
+
+	@Override
+	public boolean deleteCommento(int id) {
+		Commenti c= new Commenti();
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+			
+		try {
+							
+			tx=session.beginTransaction();
+				
+			c=(Commenti)session.createQuery("from Commenti where id=:id").setParameter("id", id).uniqueResult();
+			
+			session.delete(c);
+			
+			tx.commit();
+			
+			return true;
+			
+		} catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return false;
+		}finally{
+			session.close();
+		}		
+		
 	}
 
 }

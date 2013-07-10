@@ -71,7 +71,7 @@ public class PanelCommessa extends LayoutContainer {
 	private GroupingStore<CommessaModel>store = new GroupingStore<CommessaModel>();
 	private GroupingStore<CommessaModel> storeCompleto= new GroupingStore<CommessaModel>();
 	private GroupingStore<CommessaModel> storeResult= new GroupingStore<CommessaModel>();
-	private List<CommessaModel> lista= new ArrayList<CommessaModel>();
+	private List<CommessaModel> listaStore= new ArrayList<CommessaModel>();
 	
 	private FormBinding formBindingsCommessa;
 	private Grid<CommessaModel> gridCommessa;
@@ -176,13 +176,13 @@ public class PanelCommessa extends LayoutContainer {
 		    		 	    		 	    		 
 		    			 String campo= txtfldsearch.getValue().toString();	    			 	    			 
 		    			 storeResult.removeAll();
-		    			 for(CommessaModel r:lista){
+		    			 for(CommessaModel r:listaStore){
 		    				 if(r.getNumeroCommessa().contains(campo)){
 		    					 storeResult.add(r);		    				 
 		    				 }
 		    			 }
-		    			 lista.clear();
-		    			 lista.addAll(store.getModels());
+		    			 listaStore.clear();
+		    			 listaStore.addAll(store.getModels());
 		    			 gridCommessa.reconfigure(storeResult, cmCommessa);			 
 		    		 } 
 		    	 }	    	  	 
@@ -993,7 +993,12 @@ public class PanelCommessa extends LayoutContainer {
 			store.removeAll();
 			store.setStoreSorter(new StoreSorter<CommessaModel>());  
 		    store.setDefaultSort("numeroCommessa", SortDir.ASC);
-			store.add(lista);			
+			store.add(lista);	
+			storeResult.removeAll();
+			storeCompleto.removeAll();
+			storeResult.add(store.getModels());
+			storeCompleto.add(store.getModels());
+			listaStore.addAll(store.getModels());
 			
 			store.groupBy("ragioneSociale");
 			gridCommessa.reconfigure(store, cmCommessa);

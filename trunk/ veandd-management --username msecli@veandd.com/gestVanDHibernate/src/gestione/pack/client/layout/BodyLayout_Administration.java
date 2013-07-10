@@ -97,8 +97,8 @@ public class BodyLayout_Administration extends LayoutContainer {
 		toolBar.setHeight("30px");
 					
 		txtUsername.setHeight("23px");
-		txtUsername.setWidth(190);
-		txtUsername.setStyleAttribute("font-size", "12px");
+		txtUsername.setWidth(150);
+		txtUsername.setStyleAttribute("font-size", "10px");
 		txtUsername.setStyleAttribute("padding-top", "4px");
 		txtUsername.setStyleAttribute("padding-left", "3px");
 		txtUsername.setStyleAttribute("text-color", "#858585");
@@ -118,7 +118,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 		nome=nome.substring(0,1).toUpperCase()+nome.substring(1,nome.length());
 		cognome=cognome.substring(0,1).toUpperCase()+cognome.substring(1,cognome.length());
 		
-		txtUsername.setText("Welcome, "+nome+" "+cognome+".");	
+		txtUsername.setText(" "+nome+" "+cognome);	
 		
 		Button btnSetting=new Button();
 		btnSetting.addListener(Events.OnClick, new Listener<BaseEvent>() {
@@ -154,7 +154,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 					}
 				});
 	        }
-	      });
+	    });
 		
 		ButtonBar buttonBar= new ButtonBar();
 		buttonBar.setAlignment(HorizontalAlignment.RIGHT);
@@ -162,8 +162,15 @@ public class BodyLayout_Administration extends LayoutContainer {
 		buttonBar.add(btnLogout);
 		buttonBar.add(btnSetting);
 		
+		Button btnLoginIcon= new Button();
+		btnLoginIcon.setSize(18, 18);
+		btnLoginIcon.setEnabled(false);
+		btnLoginIcon.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.login()));
+		btnLoginIcon.setToolTip("LogOut");
+		
 		toolBar.add(txtfldUsername);
 		toolBar.add(txtfldRuolo);
+		toolBar.add(btnLoginIcon);
 		toolBar.add(txtUsername);	
 		toolBar.add(buttonBar);
 		north.setTopComponent(toolBar); 
@@ -445,7 +452,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 //----------------------------------------------------------------------------------------------
 	    
 	   
-	   center.add(new CenterLayout_FoglioOreSelectDipendenti());
+	   center.add(new PanelRiepilogoSituazioneMensileOreDipendenti());
 	    
 	   container.add(north, northData);
 	   container.add(west, westData);

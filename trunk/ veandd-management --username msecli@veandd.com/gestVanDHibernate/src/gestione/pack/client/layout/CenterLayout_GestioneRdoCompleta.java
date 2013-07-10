@@ -1,6 +1,5 @@
 package gestione.pack.client.layout;
 
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -78,7 +77,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 	private GroupingStore<RdoCompletaModel>store = new GroupingStore<RdoCompletaModel>();
 	private GroupingStore<RdoCompletaModel> storeCompleto= new GroupingStore<RdoCompletaModel>();
 	private GroupingStore<RdoCompletaModel> storeResult= new GroupingStore<RdoCompletaModel>();
-	private List<RdoCompletaModel> lista= new ArrayList<RdoCompletaModel>();
+	private List<RdoCompletaModel> listaStore= new ArrayList<RdoCompletaModel>();
 	private Grid<RdoCompletaModel> gridRiepilogo;
 	private ColumnModel cm;
 	
@@ -273,8 +272,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		});
 		
 		
-		btnDelete.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			
+		btnDelete.addSelectionListener(new SelectionListener<ButtonEvent>() {			
 			@Override
 			public void componentSelected(ButtonEvent ce) {
 				
@@ -297,8 +295,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 					@Override
 					public void onFailure(Throwable caught) {
 						Window.alert("Errore connessione on deleteRdoCompleta();");
-						caught.printStackTrace();
-				
+						caught.printStackTrace();			
 					}
 				}); //AsyncCallback	 
 			}
@@ -307,15 +304,13 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		btnReset.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			
 			@Override
-			public void componentSelected(ButtonEvent ce) {
-					
+			public void componentSelected(ButtonEvent ce) {				
 				btnSave.setEnabled(true);
             	smplcmbxCliente.setEnabled(true);
             	btnEdit.setEnabled(false);
             	btnDelete.setEnabled(false);
             	resetForm();
 			}
-
 		});
 		
 		cntpnlLayout.addButton(btnSave);
@@ -331,8 +326,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 	    bodyContainer.add(cntpnlLayout);    
 	   				
 		layoutContainer.add(bodyContainer, new FitData(5, 5, 5, 8));
-		add(layoutContainer);
-		
+		add(layoutContainer);		
 	}
 	
 	private class CntpnlFormRdo extends ContentPanel{
@@ -581,8 +575,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 						java.util.Collections.sort(result);
 						smplcmbxCliente.add(result);
 						smplcmbxCliente.recalculate();}
-					else Window.alert("error: Errorre durante l'accesso ai dati Clienti.");
-					
+					else Window.alert("error: Errorre durante l'accesso ai dati Clienti.");					
 				}
 			});		
 		}	
@@ -709,14 +702,14 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    			 String campo= txtfldsearch.getValue().toString();	    			 
 		    			 
 		    			 storeResult.removeAll();
-		    			 for(RdoCompletaModel r:lista){
+		    			 for(RdoCompletaModel r:listaStore){
 		    				 if(r.getNumeroCommessa().contains(campo) || r.getNumeroOfferta().compareTo(campo)==0 || 
 		    						 r.getNumeroOrdine().contains(campo) || r.getNumeroRda().compareTo(campo)==0){
 		    					 storeResult.add(r);		    				 
 		    				 }
 		    			 }
-		    			 lista.clear();
-		    			 lista.addAll(store.getModels());
+		    			 listaStore.clear();
+		    			 listaStore.addAll(store.getModels());
 		    			 gridRiepilogo.reconfigure(storeResult, cm);			 
 		    		 } 
 		    	 }	    	  	 
@@ -826,8 +819,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		}	
 	}
 	
-	private void caricaTabellaDati() {
-		
+	private void caricaTabellaDati() {	
 		AdministrationService.Util.getInstance().getAllRdoCompletaModel(new AsyncCallback<List<RdoCompletaModel>>() {
 			
 			@Override
@@ -855,9 +847,11 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			store.setStoreSorter(new StoreSorter<RdoCompletaModel>());  
 		    store.setDefaultSort("numeroCommessa", SortDir.ASC);
 			store.add(lista);
+			storeResult.removeAll();
+			storeCompleto.removeAll();
 			storeResult.add(store.getModels());
 			storeCompleto.add(store.getModels());
-			lista.addAll(store.getModels());
+			listaStore.addAll(store.getModels());
 						    		    	
 		} catch (NullPointerException e) {
 				e.printStackTrace();
@@ -889,8 +883,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 				Window.alert("Numero Ordine presente!");
 				return true;
 			}
-		}
-		
+		}		
 		return false;
 	}
 	

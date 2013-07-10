@@ -3,6 +3,7 @@ package gestione.pack.client.layout;
 //import gestione.pack.client.utility.RecuperoParametriSessione;
 
 import gestione.pack.client.SessionManagementService;
+import gestione.pack.client.layout.panel.PanelRiepilogoSituazioneMensileOreDipendenti;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
 import gestione.pack.client.utility.MyImages;
@@ -98,8 +99,8 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 		ToolBar toolBar = new ToolBar();
 
 		txtUsername.setHeight("23px");
-		txtUsername.setWidth(190);
-		txtUsername.setStyleAttribute("font-size", "12px");
+		txtUsername.setWidth(150);
+		txtUsername.setStyleAttribute("font-size", "10px");
 		txtUsername.setStyleAttribute("padding-top", "4px");
 		txtUsername.setStyleAttribute("padding-left", "3px");
 		txtUsername.setStyleAttribute("text-color", "#858585");
@@ -118,11 +119,8 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 		nome=nome.substring(0,1).toUpperCase()+nome.substring(1,nome.length());
 		cognome=cognome.substring(0,1).toUpperCase()+cognome.substring(1,cognome.length());
 		
-		txtUsername.setText("Welcome,"+nome+" "+cognome);
-		
-		toolBar.add(txtUsername);
-		toolBar.add(txtfldUsername);
-		
+		txtUsername.setText(" "+nome+" "+cognome);	
+				
 		north.setTopComponent(toolBar);
 	    toolBar.setHeight("30px");
 			
@@ -167,6 +165,18 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 		buttonBar.setWidth(w-205);
 		buttonBar.add(btnLogout);
 		buttonBar.add(btnSetting);
+		
+		Button btnLoginIcon= new Button();
+		btnLoginIcon.setSize(18, 18);
+		btnLoginIcon.setEnabled(false);
+		btnLoginIcon.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.login()));
+		btnLoginIcon.setToolTip("LogOut");
+		
+		toolBar.add(txtfldUsername);
+		toolBar.add(btnLoginIcon);
+		toolBar.add(txtUsername);	
+		toolBar.add(buttonBar);
+		
 		
 		toolBar.add(buttonBar);
 		
@@ -251,6 +261,20 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	      });
 	    btnPresenzeDipendenti.setWidth("100%");
 	    cp.add(btnPresenzeDipendenti);
+	    
+	    Button btnRiepilogoMeseDip = new Button();
+	    btnRiepilogoMeseDip.setToolTip("Riepilogo Situazione Mensile Dipendenti");
+	    btnRiepilogoMeseDip.setHeight(65);
+	    btnRiepilogoMeseDip.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnRiepilogoMeseDip.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoMeseDip.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelRiepilogoSituazioneMensileOreDipendenti());
+	        	center.layout(true);}      
+	      });
+	    btnRiepilogoMeseDip.setWidth("100%");
+	    cp.add(btnRiepilogoMeseDip);	 
 	    
 	    panel.add(cp);
 	    
@@ -350,8 +374,10 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 				
 		nome=result.substring(0,i);
 		cognome=result.substring(i+1,result.length());
+		nome=nome.substring(0,1).toUpperCase()+nome.substring(1,nome.length());
+		cognome=cognome.substring(0,1).toUpperCase()+cognome.substring(1,cognome.length());
 		
-		txtUsername.setText("Welcome, "+nome+" "+cognome+".");
+		txtUsername.setText(" "+nome+" "+cognome);	
 	}
 
 }
