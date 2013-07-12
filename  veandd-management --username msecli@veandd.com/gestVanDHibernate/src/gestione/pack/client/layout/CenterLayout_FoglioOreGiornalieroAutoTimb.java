@@ -68,6 +68,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.Image;
 
 public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 	public CenterLayout_FoglioOreGiornalieroAutoTimb() {
@@ -207,7 +208,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			setButtonAlign(HorizontalAlignment.CENTER);
 			setHeading("Dettaglio Ore.");
 			setHeaderVisible(false);
-			setWidth(1060);
+			setWidth(1080);
 			setHeight(1070);
 			setStyleAttribute("padding-left", "10px");
 			setStyleAttribute("padding-top", "10px");
@@ -454,7 +455,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		}
 
 		protected void reloadFoglioOre() {
-			statoRevisione=0;//TODO
+			statoRevisione=0;
 			dtfldGiorno.setValue(giornoRiferimento.getValue());
 			
 			ButtonBar buttonBarTop = new ButtonBar();
@@ -3939,7 +3940,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			cp.setLayout(new RowLayout(Orientation.HORIZONTAL));
 			cp.setStyleAttribute("padding-top", "5px");
 			cp.setStyleAttribute("padding-left", "25px");
-
+		
 			txtfldOreStraordinarioMese.setFieldLabel("Ore Straordinario");
 			txtfldOreStraordinarioMese.setEnabled(false);
 			txtfldOreStraordinarioMese.setValue(result.getOreStraordinario());
@@ -3992,7 +3993,8 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			setScrollMode(Scroll.AUTOY);
 			setExpanded(true);
 			setCollapsible(false);
-
+		
+			
 			buttonBar.setAlignment(HorizontalAlignment.CENTER);
 			buttonBar.setStyleAttribute("padding-top", "7px");
 			buttonBar.setStyleAttribute("padding-bottom", "5px");
@@ -4052,7 +4054,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 				} else
 					{
 					removeAll();
-			
+							
 					for (int i = 0; i < size; i++) {
 					String num = String.valueOf(i);
 
@@ -4074,6 +4076,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					}
 				}
 				add(buttonBar);
+				
 				layout();
 			}		
 		}	

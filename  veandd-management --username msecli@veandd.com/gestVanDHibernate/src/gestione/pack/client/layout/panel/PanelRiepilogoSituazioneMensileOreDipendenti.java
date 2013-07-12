@@ -69,6 +69,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	private GroupingStore<RiepilogoFoglioOreModel> storeCompleto= new GroupingStore<RiepilogoFoglioOreModel>();
 	private GroupingStore<RiepilogoFoglioOreModel> storeResult= new GroupingStore<RiepilogoFoglioOreModel>();
 	private List<RiepilogoFoglioOreModel> lista= new ArrayList<RiepilogoFoglioOreModel>();
+	private PanelRichiesteDipendenti p;
 	
 	private SimpleComboBox<String> smplcmbxPM;
 	private SimpleComboBox<String> smplcmbxSede;
@@ -256,6 +257,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 		cntpnlGrid.setHeaderVisible(false);
 		cntpnlGrid.setWidth(530);
 		cntpnlGrid.setHeight(840);
+		cntpnlGrid.setBorders(true);
 		cntpnlGrid.setScrollMode(Scroll.AUTO);
 					    
 	    try {	    	
@@ -345,9 +347,13 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 		cntpnlLayout.setScrollMode(Scroll.AUTOX);
 		cntpnlLayout.setLayout(new RowLayout(Orientation.HORIZONTAL));
 		cntpnlLayout.setFrame(true);
+		cntpnlLayout.setBorders(false);
 		
 		cntpnlLayout.add(cntpnlGrid);
-	    cntpnlLayout.add(new PanelRichiesteDipendenti());
+		
+		
+		p = new PanelRichiesteDipendenti();
+		cntpnlLayout.add(p);
 		
 		bodyContainer.add(cntpnlLayout); 
 				
@@ -555,7 +561,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	public  void setRuolo(String result){
 		txtRuolo.setText(result);		
 		
-			if(txtRuolo.getText().compareTo("PM")==0){
+			if(txtRuolo.getText().compareTo("UG")!=0 && txtRuolo.getText().compareTo("AMM")!=0){
 				btnConferma.disable();
 				btnConfermaTutti.disable();
 			}

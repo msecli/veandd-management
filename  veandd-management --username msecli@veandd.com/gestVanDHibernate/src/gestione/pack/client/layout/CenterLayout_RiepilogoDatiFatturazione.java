@@ -655,7 +655,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		
 		
 		private void caricaTabellaDatiFatturazioneCommesse() {
-			AdministrationService.Util.getInstance().getRiepilogoDatiFatturazioneCommessa(new AsyncCallback<List<DatiFatturazioneCommessaModel>>() {
+			AdministrationService.Util.getInstance().getRiepilogoDatiFatturazioneCommessa(".",new AsyncCallback<List<DatiFatturazioneCommessaModel>>() {
 				
 				@Override
 				public void onSuccess(List<DatiFatturazioneCommessaModel> result) {

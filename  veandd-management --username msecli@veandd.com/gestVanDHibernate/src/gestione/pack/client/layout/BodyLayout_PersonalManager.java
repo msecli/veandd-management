@@ -200,26 +200,37 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	        	center.layout(true);               
             }
         });	    
-	    Button btnCommessa = new Button("Gestione Dati");
-	    btnCommessa.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	    Button btnGestioneCommessa = new Button();
+	    btnGestioneCommessa.setToolTip("Gestione Dati Commessa");
+	    btnGestioneCommessa.setHeight(65);
+	    btnGestioneCommessa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnGestioneCommessa.setIconAlign(IconAlign.BOTTOM);
+	    btnGestioneCommessa.setWidth("100%");
+	    btnGestioneCommessa.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	          center.removeAll();
 	        	center.add(new CenterLayout_GestioneCommessa());
 	        	center.layout(true);}
 	        
 	      });
-	    btnCommessa.setWidth("100%");
-	    cp.add(btnCommessa);
+	    btnGestioneCommessa.setWidth("100%");
+	    cp.add(btnGestioneCommessa);
 	    
-	    Button btnAssociaPersonale = new Button("Associazione Dipendenti");
+	    Button btnAssociaPersonale = new Button();
+	    btnAssociaPersonale.setToolTip("Associazione Dipendenti Commessa");
+	    btnAssociaPersonale.setHeight(65);
+	    btnAssociaPersonale.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.associaPtoC()));
+	    btnAssociaPersonale.setIconAlign(IconAlign.BOTTOM);
+	    btnAssociaPersonale.setWidth("100%");
 	    btnAssociaPersonale.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	          center.removeAll();
 	        	center.add(new CenterLayout_AssociaPersonale());
 	        	center.layout(true);}
 	        
-	    });
+	      });
 	    btnAssociaPersonale.setWidth("100%");
+	    cp.add(btnAssociaPersonale);
 	    cp.add(btnAssociaPersonale);
 	    panel.add(cp);
 

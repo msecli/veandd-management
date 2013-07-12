@@ -34,6 +34,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.Image;
 
 public class BodyLayout_Dipendente extends LayoutContainer {
 	
@@ -214,11 +215,14 @@ public class BodyLayout_Dipendente extends LayoutContainer {
 	      });
 	    btnGestionePresenze.setWidth("100%");
 	    
-	    cp.add(btnGestionePresenze);
 	    
+	    cp.add(btnGestionePresenze);    
+	    if(txtfldUsername.getValue().toString().compareTo("enzo.cardano")==0){
+			Image loadingImage = new Image(MyImages.INSTANCE.porter());
+			cp.add(loadingImage);
+		}
 	    panel.add(cp);
-	    
-	    
+	        
 	    panel.setSize(180,Window.getClientHeight()-70);
 	    panel.setBorders(false);
 	    west.add(panel);
@@ -239,59 +243,4 @@ public class BodyLayout_Dipendente extends LayoutContainer {
 	   add(viewport);		
 	}
 
-	/*
-	
-	private void recuperoSessionUsername() {
-		
-		SessionManagementService.Util.getInstance().getUserName(new AsyncCallback<String>() {
-			
-			@Override
-			public void onSuccess(String result) {
-				
-				setUsername(result);
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-						
-			}
-		});
-	}
-	
-	public  void setUsername(String result){
-		String nome=new String();
-		String cognome=new String();
-		int i=result.indexOf(".");
-				
-		nome=result.substring(0,i);
-		cognome=result.substring(i+1,result.length());
-		
-		
-		txtUsername.setText("Welcome, "+nome+" "+cognome+".");
-	}
-	
-
-	private void recuperoSessionRuolo() {
-		
-		SessionManagementService.Util.getInstance().getRuolo(new AsyncCallback<String>() {
-			
-			@Override
-			public void onSuccess(String result) {
-				
-				setRuolo(result);
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				
-				Window.alert("Error on getRuolo();");
-			}
-		});				
-	}
-	
-	
-	public  void setRuolo(String result){
-		
-		txtfldRuolo.setValue(result);
-			}*/
 }

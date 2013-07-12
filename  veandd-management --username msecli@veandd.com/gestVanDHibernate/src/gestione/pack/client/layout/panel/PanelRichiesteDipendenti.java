@@ -144,7 +144,7 @@ public class PanelRichiesteDipendenti extends LayoutContainer{
 		cntpnlLayout.setSize(630, 840);
 		cntpnlLayout.setScrollMode(Scroll.AUTOX);
 		cntpnlLayout.setFrame(false);
-		cntpnlLayout.setBorders(false);
+		cntpnlLayout.setBorders(true);
 		
 		cntpnlLayout.add(cntpnlGrid);
 		

@@ -3,6 +3,7 @@ package gestione.pack.client.layout;
 import gestione.pack.client.model.RdoCompletaModel;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -24,14 +25,14 @@ import com.extjs.gxt.ui.client.widget.grid.GroupingView;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 
-public class CenterLayout_GesioneRdoCommesseAll extends LayoutContainer {
+public class CenterLayout_GestioneRdoCommesseAll extends LayoutContainer {
 
 	
-	public CenterLayout_GesioneRdoCommesseAll(){
+	public CenterLayout_GestioneRdoCommesseAll(){
 	}
 	
 	private GroupingStore<RdoCompletaModel>store = new GroupingStore<RdoCompletaModel>();
@@ -52,9 +53,7 @@ public class CenterLayout_GesioneRdoCommesseAll extends LayoutContainer {
 		LayoutContainer layoutContainer= new LayoutContainer();
 		layoutContainer.setBorders(false);
 		layoutContainer.setLayout(fl);
-		layoutContainer.setWidth(w-225);
-		layoutContainer.setHeight(h-54);
-		
+				
 		LayoutContainer bodyContainer = new LayoutContainer();
 		bodyContainer.setLayout(new FlowLayout());
 		bodyContainer.setBorders(false);	
@@ -63,22 +62,14 @@ public class CenterLayout_GesioneRdoCommesseAll extends LayoutContainer {
 		cpGrid.setHeaderVisible(false);
 		cpGrid.setBorders(false);
 		cpGrid.setFrame(true);
-		cpGrid.setSize(w-250, h-75);
+		cpGrid.setSize(w-180, h-70);
 		cpGrid.setPosition(8, 8);
-		cpGrid.setScrollMode(Scroll.ALWAYS);
-		
-		ContentPanel cntpnlLayout= new ContentPanel();
-		cntpnlLayout.setHeaderVisible(false);
-		cntpnlLayout.setCollapsible(false);
-		cntpnlLayout.setBorders(false);
-		cntpnlLayout.setFrame(true);
-		cntpnlLayout.setButtonAlign(HorizontalAlignment.CENTER);
-				
+		cpGrid.setScrollMode(Scroll.AUTO);
+								
 		Resizable r=new Resizable(cpGrid);
-	    r.setMaxWidth(w-225);
-	    r.setMaxHeight(h-54);
-		  
-		
+	    r.setMinWidth(w-180);
+	    r.setMinHeight(h-70);
+		  		
 		try {
 	    	cm = new ColumnModel(createColumns());	
 		} catch (Exception e) {
@@ -104,7 +95,7 @@ public class CenterLayout_GesioneRdoCommesseAll extends LayoutContainer {
 		gridRiepilogo.setColumnReordering(true);  
 		gridRiepilogo.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);  
 		gridRiepilogo.setView(view);
-	        
+	    
 		gridRiepilogo.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<RdoCompletaModel>>() {  
 		      public void handleEvent(SelectionChangedEvent<RdoCompletaModel> be) {  
 		        	
@@ -113,11 +104,8 @@ public class CenterLayout_GesioneRdoCommesseAll extends LayoutContainer {
 		});
 		
 		cpGrid.add(gridRiepilogo);	
-		cntpnlLayout.add(cpGrid);
-		
-		bodyContainer.add(cntpnlLayout); 
-	
-		layoutContainer.add(bodyContainer, new FitData(5, 5, 5, 8));
+			
+		layoutContainer.add(cpGrid, new FitData(5, 5, 5, 8));
 		add(layoutContainer);
 	}
 
@@ -229,7 +217,6 @@ public class CenterLayout_GesioneRdoCommesseAll extends LayoutContainer {
 	    
 	    return configs;
 	}
-	
 	
 	
 }
