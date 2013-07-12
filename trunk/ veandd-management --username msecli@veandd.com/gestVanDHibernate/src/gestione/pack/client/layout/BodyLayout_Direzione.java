@@ -3,6 +3,7 @@ package gestione.pack.client.layout;
 //import gestione.pack.client.utility.RecuperoParametriSessione;
 
 import gestione.pack.client.SessionManagementService;
+import gestione.pack.client.layout.panel.PanelRiepilogoSituazioneMensileOreDipendenti;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
 import gestione.pack.client.utility.MyImages;
@@ -223,7 +224,23 @@ public class BodyLayout_Direzione extends LayoutContainer {
 	        	center.layout(true);}      
 	      });
 	    btnPresenzeDipendenti.setWidth("100%");
-	    cp.add(btnPresenzeDipendenti);	    
+	    cp.add(btnPresenzeDipendenti);	   
+	    
+	    Button btnRiepilogoMeseDip = new Button();
+	    btnRiepilogoMeseDip.setToolTip("Riepilogo Situazione Mensile Dipendenti");
+	    btnRiepilogoMeseDip.setHeight(65);
+	    btnRiepilogoMeseDip.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnRiepilogoMeseDip.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoMeseDip.setWidth("100%");
+	    btnRiepilogoMeseDip.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelRiepilogoSituazioneMensileOreDipendenti());
+	        	center.layout(true);}      
+	      });
+	   
+	    cp.add(btnRiepilogoMeseDip);
+	    
 	    panel.add(cp);
 	    
 	    
@@ -239,18 +256,28 @@ public class BodyLayout_Direzione extends LayoutContainer {
             }
         });
 	    
-	    Button btnCommessa = new Button("Gestione Dati");
-	    btnCommessa.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	    Button btnGestioneCommessa = new Button();
+	    btnGestioneCommessa.setToolTip("Gestione Dati Commessa");
+	    btnGestioneCommessa.setHeight(65);
+	    btnGestioneCommessa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnGestioneCommessa.setIconAlign(IconAlign.BOTTOM);
+	    btnGestioneCommessa.setWidth("100%");
+	    btnGestioneCommessa.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	          center.removeAll();
 	        	center.add(new CenterLayout_GestioneCommessa());
 	        	center.layout(true);}
 	        
 	      });
-	    btnCommessa.setWidth("100%");
-	    cp.add(btnCommessa);
+	    btnGestioneCommessa.setWidth("100%");
+	    cp.add(btnGestioneCommessa);
 	    
-	    Button btnAssociaPersonale = new Button("Associazione Dipendenti");
+	    Button btnAssociaPersonale = new Button();
+	    btnAssociaPersonale.setToolTip("Associazione Dipendenti Commessa");
+	    btnAssociaPersonale.setHeight(65);
+	    btnAssociaPersonale.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.associaPtoC()));
+	    btnAssociaPersonale.setIconAlign(IconAlign.BOTTOM);
+	    btnAssociaPersonale.setWidth("100%");
 	    btnAssociaPersonale.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	          center.removeAll();

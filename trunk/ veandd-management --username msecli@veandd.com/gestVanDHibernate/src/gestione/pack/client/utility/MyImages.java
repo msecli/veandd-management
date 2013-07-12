@@ -38,9 +38,6 @@ public interface MyImages extends ClientBundle{
 	@Source("Icone/printer24x24.png")
 	ImageResource print24();
 
-	@Source("Icone/winprogress.jpg")
-	ImageResource workinprogress();
-	
 	@Source("Icone/riep_comm.png")
 	ImageResource riep_comm();
 	
@@ -88,5 +85,17 @@ public interface MyImages extends ClientBundle{
 	
 	@Source("Icone/Login16x16.png")
 	ImageResource login();
+	
+	@Source("Icone/associa.png")
+	ImageResource associaPtoC();
+	
+	@Source("Icone/anagrafica.png")
+	ImageResource anagrafica();
+	
+	@Source("Icone/porter.jpg")
+	ImageResource porter();
+	
+	@Source("Icone/save1.png")
+	ImageResource save1();
 }
 

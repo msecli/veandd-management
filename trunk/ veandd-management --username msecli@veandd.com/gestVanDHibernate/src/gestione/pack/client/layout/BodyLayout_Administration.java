@@ -196,7 +196,12 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        	center.layout(true);               
             }
         });
-	    Button btnAnagrP = new Button("Anagrafica");
+	    Button btnAnagrP = new Button();
+	    btnAnagrP.setToolTip("Anagrafica Personale");
+	    btnAnagrP.setHeight(65);
+	    btnAnagrP.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.anagrafica()));
+	    btnAnagrP.setIconAlign(IconAlign.BOTTOM);
+	    btnAnagrP.setWidth("100%");
 	    btnAnagrP.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	        	center.removeAll();
@@ -219,7 +224,12 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        	center.layout(true);               
             }
         });
-	    Button btnAnagrC = new Button("Anagrafica");
+	    Button btnAnagrC = new Button();
+	    btnAnagrC.setToolTip("Anagrafica Clienti");
+	    btnAnagrC.setHeight(65);
+	    btnAnagrC.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.anagrafica()));
+	    btnAnagrC.setIconAlign(IconAlign.BOTTOM);
+	    btnAnagrC.setWidth("100%");
 	    btnAnagrC.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	          center.removeAll();
@@ -238,11 +248,16 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
             	center.removeAll();
-	        	center.add(new CenterLayout_GestioneRdoCompleta());
+	        	center.add(new CenterLayout_GestioneRdoCommesseAll());
 	        	center.layout(true);               
             }
         });
-	    Button btnGestioneRdo = new Button("Gestione Dati");
+	    Button btnGestioneRdo = new Button();
+	    btnGestioneRdo.setToolTip("Gestione Dati RdO");
+	    btnGestioneRdo.setHeight(65);
+	    btnGestioneRdo.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnGestioneRdo.setIconAlign(IconAlign.BOTTOM);
+	    btnGestioneRdo.setWidth("100%");
 	    btnGestioneRdo.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	          center.removeAll();
@@ -252,6 +267,23 @@ public class BodyLayout_Administration extends LayoutContainer {
 	      });
 	    btnGestioneRdo.setWidth("100%");
 	    cp.add(btnGestioneRdo);
+	    
+	    
+	    Button btnGestioneRdoAll = new Button();
+	    btnGestioneRdoAll.setToolTip("All Toghether");
+	    btnGestioneRdoAll.setHeight(65);
+	    btnGestioneRdoAll.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnGestioneRdoAll.setIconAlign(IconAlign.BOTTOM);
+	    btnGestioneRdoAll.setWidth("100%");
+	    btnGestioneRdoAll.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	          center.removeAll();
+	        	center.add(new CenterLayout_GestioneRdoCommesseAll());
+	        	center.layout(true);}
+	        
+	      });
+	    cp.add(btnGestioneRdoAll);
+	    
 	    panel.add(cp);
 	    
 	    cp = new ContentPanel();
@@ -265,18 +297,29 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        	center.layout(true);               
             }
         });
-	    Button btnGestioneCommessa = new Button("Gestione Dati");
+	   
+	    Button btnGestioneCommessa = new Button();
+	    btnGestioneCommessa.setToolTip("Gestione Dati Commessa");
+	    btnGestioneCommessa.setHeight(65);
+	    btnGestioneCommessa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnGestioneCommessa.setIconAlign(IconAlign.BOTTOM);
+	    btnGestioneCommessa.setWidth("100%");
 	    btnGestioneCommessa.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	          center.removeAll();
-	        	center.add(new CenterLayout_GestioneCommessa());
+	        	center.add(new CenterLayout_GestioneRdoCommesseAll());
 	        	center.layout(true);}
 	        
 	      });
 	    btnGestioneCommessa.setWidth("100%");
 	    cp.add(btnGestioneCommessa);
 	    
-	    Button btnAssociaPersonale = new Button("Associazione Dipendenti");
+	    Button btnAssociaPersonale = new Button();
+	    btnAssociaPersonale.setToolTip("Associazione Dipendenti Commessa");
+	    btnAssociaPersonale.setHeight(65);
+	    btnAssociaPersonale.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.associaPtoC()));
+	    btnAssociaPersonale.setIconAlign(IconAlign.BOTTOM);
+	    btnAssociaPersonale.setWidth("100%");
 	    btnAssociaPersonale.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	          center.removeAll();
@@ -349,13 +392,14 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    btnRiepilogoMeseDip.setHeight(65);
 	    btnRiepilogoMeseDip.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
 	    btnRiepilogoMeseDip.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoMeseDip.setWidth("100%");
 	    btnRiepilogoMeseDip.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	        	center.removeAll();
 	        	center.add(new PanelRiepilogoSituazioneMensileOreDipendenti());
 	        	center.layout(true);}      
 	      });
-	    btnRiepilogoMeseDip.setWidth("100%");
+	   
 	    cp.add(btnRiepilogoMeseDip);	    
 	    
 	    Button btnLoadTimbrature = new Button();
@@ -389,7 +433,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    cp.setButtonAlign(HorizontalAlignment.CENTER);
 	    	    
 	    panel.add(cp);
-	      
+      
 	    
 	    cp = new ContentPanel();
 	    cp.setAnimCollapse(false);
@@ -451,9 +495,8 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        
 //----------------------------------------------------------------------------------------------
 	    
-	   
-	   center.add(new PanelRiepilogoSituazioneMensileOreDipendenti());
-	    
+	   center.add(new CenterLayout_FoglioFatturazione()); 
+	   	   
 	   container.add(north, northData);
 	   container.add(west, westData);
 	   container.add(center, centerData);

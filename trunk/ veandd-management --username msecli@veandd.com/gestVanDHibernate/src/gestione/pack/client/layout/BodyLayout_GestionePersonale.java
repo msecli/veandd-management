@@ -199,7 +199,12 @@ public class BodyLayout_GestionePersonale extends LayoutContainer {
 	        	center.layout(true);               
             }
         });
-	    Button btnAnagrP = new Button("Anagrafica");
+	    Button btnAnagrP = new Button();
+	    btnAnagrP.setToolTip("Anagrafica Personale");
+	    btnAnagrP.setHeight(65);
+	    btnAnagrP.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.anagrafica()));
+	    btnAnagrP.setIconAlign(IconAlign.BOTTOM);
+	    btnAnagrP.setWidth("100%");
 	    btnAnagrP.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	        	center.removeAll();

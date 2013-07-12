@@ -662,8 +662,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		            	
 						txtfldNumeroOfferta.setValue(String.valueOf(be.getSelectedItem().getNumeroOfferta()));
 						txtfldImporto.setValue(String.valueOf(be.getSelectedItem().getImporto()));
-						
-						
+										
 						txtfldNumeroOrdine.setValue(String.valueOf(be.getSelectedItem().getNumeroOrdine()));	
 						txtrDescrizione.setValue(String.valueOf(be.getSelectedItem().getDescrizione()));
 									
@@ -687,8 +686,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    btnSearch.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.search()));
 		    btnSearch.setIconAlign(IconAlign.TOP);
 		    btnSearch.setEnabled(false);
-		    
-	    
+		    	    
 		    txtfldsearch.addKeyListener(new KeyListener(){
 		    	 public void componentKeyUp(ComponentEvent event) {
 		    		 
