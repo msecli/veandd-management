@@ -646,6 +646,7 @@ public class ServerUtility {
 				
 				//Elaboro il residuo per le ore a recupero
 				String monteOreRecuperoTotale= p.getOreRecupero();
+				String parzialeOreRecuperoMese="0.00";
 				List<DettaglioOreGiornaliere> listaGiorniM= new ArrayList<DettaglioOreGiornaliere>();			
 				listaMesi.clear();
 				if(!p.getFoglioOreMeses().isEmpty()){
@@ -654,10 +655,15 @@ public class ServerUtility {
 						if(f.getMeseRiferimento().compareTo("Feb2013")!=0 && f.getMeseRiferimento().compareTo(dataRif)!=0){//per omettere le ore inserite nel mese di prova di Feb2013 e quelle relative al mese in corso
 							listaGiorniM.clear();
 							if(!f.getDettaglioOreGiornalieres().isEmpty()){
+								parzialeOreRecuperoMese="0.00";
 								listaGiorniM.addAll(f.getDettaglioOreGiornalieres());
 								for(DettaglioOreGiornaliere d:listaGiorniM){
-									monteOreRecuperoTotale=ServerUtility.aggiornaTotGenerale(d.getOreAssenzeRecupero(), monteOreRecuperoTotale);	
-								}		
+									parzialeOreRecuperoMese=ServerUtility.aggiornaTotGenerale(parzialeOreRecuperoMese, d.getOreAssenzeRecupero());
+										
+								}	
+								//se sono negative le escludo dal conteggio totale
+								if(Float.valueOf(parzialeOreRecuperoMese)>0)
+									monteOreRecuperoTotale=ServerUtility.aggiornaTotGenerale(monteOreRecuperoTotale,parzialeOreRecuperoMese);		
 							}
 						}									
 					}		
@@ -843,6 +849,7 @@ public class ServerUtility {
 				
 				//Elaboro il residuo per le ore a recupero
 				String monteOreRecuperoTotale= p.getOreRecupero();
+				String parzialeOreRecuperoMese="0.00";
 				List<DettaglioOreGiornaliere> listaGiorniM= new ArrayList<DettaglioOreGiornaliere>();			
 				listaMesi.clear();
 				if(!p.getFoglioOreMeses().isEmpty()){
@@ -851,10 +858,15 @@ public class ServerUtility {
 						if(f1.getMeseRiferimento().compareTo("Feb2013")!=0 && f1.getMeseRiferimento().compareTo(dataRif)!=0){//per omettere le ore inserite nel mese di prova di Feb2013 e quelle relative al mese in corso
 							listaGiorniM.clear();
 							if(!f1.getDettaglioOreGiornalieres().isEmpty()){
+								parzialeOreRecuperoMese="0.00";
 								listaGiorniM.addAll(f1.getDettaglioOreGiornalieres());
 								for(DettaglioOreGiornaliere d:listaGiorniM){
-									monteOreRecuperoTotale=ServerUtility.aggiornaTotGenerale(d.getOreAssenzeRecupero(), monteOreRecuperoTotale);	
-								}		
+									parzialeOreRecuperoMese=ServerUtility.aggiornaTotGenerale(parzialeOreRecuperoMese, d.getOreAssenzeRecupero());
+										
+								}	
+								//se sono negative le escludo dal conteggio totale
+								if(Float.valueOf(parzialeOreRecuperoMese)>0)
+									monteOreRecuperoTotale=ServerUtility.aggiornaTotGenerale(monteOreRecuperoTotale,parzialeOreRecuperoMese);	
 							}
 						}									
 					}		
