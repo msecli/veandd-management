@@ -2933,6 +2933,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String oreStraordinario= "0.0";
 		String oreRecupero= "0.0";
 		String monteOreRecuperoTotale=new String();
+		String parzialeOreRecuperoMese="0.0"; //lo uso perchè nel caso in cui fossero negative in un mese non le devo considerare
 		int orePrevisteMese=0;		
 		String  tipoOrario= new String();
 		
@@ -2951,7 +2952,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			tx=session.beginTransaction();		
 			p=(Personale)session.createQuery("from Personale where username=:username").setParameter("username", username).uniqueResult();
 			
-			monteOreRecuperoTotale=p.getOreRecupero();
+			monteOreRecuperoTotale=p.getOreRecupero();//considero quelle inserite in anagrafica eventualmente in esubero
 			if(p.getTipologiaOrario().compareTo("A")==0)
 				tipoOrario="8";
 			else tipoOrario=p.getTipologiaOrario();
@@ -3001,11 +3002,16 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				for(FoglioOreMese f:listaMesi){
 					if(f.getMeseRiferimento().compareTo("Feb2013")!=0){//per omettere le ore inserite nel mese di prova di Feb2013
 						listaGiorni.clear();
+						parzialeOreRecuperoMese="0.00";
 						if(!f.getDettaglioOreGiornalieres().isEmpty()){
 							listaGiorni.addAll(f.getDettaglioOreGiornalieres());
 							for(DettaglioOreGiornaliere d:listaGiorni){
-								monteOreRecuperoTotale=ServerUtility.aggiornaTotGenerale(d.getOreAssenzeRecupero(), monteOreRecuperoTotale);	
-							}		
+								parzialeOreRecuperoMese=ServerUtility.aggiornaTotGenerale(parzialeOreRecuperoMese, d.getOreAssenzeRecupero());
+									
+							}	
+							//se sono negative le escludo dal conteggio totale
+							if(Float.valueOf(parzialeOreRecuperoMese)>0)
+								monteOreRecuperoTotale=ServerUtility.aggiornaTotGenerale(monteOreRecuperoTotale,parzialeOreRecuperoMese);
 						}
 					}
 									
@@ -3326,6 +3332,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				
 				//Calcolo il monte ore Totale a recupero che deve considerare tutti i mesi e non solo il corrente
 				String monteOreRecuperoTotale= "0.00";
+				String parzialeOreRecuperoMese="0.0";
 				List<DettaglioOreGiornaliere> listaGiorniM= new ArrayList<DettaglioOreGiornaliere>();
 				listaMesi.clear();
 				if(!p.getFoglioOreMeses().isEmpty()){
@@ -3334,11 +3341,15 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						if(f.getMeseRiferimento().compareTo("Feb2013")!=0 && f.getMeseRiferimento().compareTo(data)!=0){//per omettere le ore inserite nel mese di prova di Feb2013 e quelle relative al mese in corso
 							listaGiorniM.clear();
 							if(!f.getDettaglioOreGiornalieres().isEmpty()){
+								parzialeOreRecuperoMese="0.00";
 								listaGiorniM.addAll(f.getDettaglioOreGiornalieres());
 								for(DettaglioOreGiornaliere d:listaGiorniM){
-									monteOreRecuperoTotale=ServerUtility.aggiornaTotGenerale(d.getOreAssenzeRecupero(), monteOreRecuperoTotale);	
-								
-								}		
+									parzialeOreRecuperoMese=ServerUtility.aggiornaTotGenerale(parzialeOreRecuperoMese, d.getOreAssenzeRecupero());
+										
+								}	
+								//se sono negative le escludo dal conteggio totale
+								if(Float.valueOf(parzialeOreRecuperoMese)>0)
+									monteOreRecuperoTotale=ServerUtility.aggiornaTotGenerale(monteOreRecuperoTotale,parzialeOreRecuperoMese);		
 							}
 						}								
 					}		
@@ -3367,6 +3378,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			session.close();
 		}			
 	}
+	
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -4158,6 +4170,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				else
 					esistePa=true;
 			
+			//TODO non aggiornare il valore iniziale delle residue dell'ordine?
+			
 			if(c.getOrdines().iterator().hasNext()){//se è presente un ordine
 				o=c.getOrdines().iterator().next();
 				
@@ -4337,8 +4351,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<DatiFatturazioneCommessaModel> getRiepilogoDatiFatturazioneCommessa() throws IllegalArgumentException {
-		
+	public List<DatiFatturazioneCommessaModel> getRiepilogoDatiFatturazioneCommessa(String commessaSelected) throws IllegalArgumentException {
+	
 		List<DatiFatturazioneCommessaModel> listaDati= new ArrayList<DatiFatturazioneCommessaModel>();
 		List<FoglioFatturazione> listaFF=new ArrayList<FoglioFatturazione>();
 		List<Commessa> listaC= new ArrayList<Commessa>();
@@ -4349,14 +4363,21 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		float margine;
 		String commessa= new String();
 		String oreMargine= new String();
-	
+		String nCommessa=commessaSelected.substring(0, commessaSelected.indexOf("."));
+		String nEstensione=commessaSelected.substring(commessaSelected.indexOf(".")+1, commessaSelected.length());		
+		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
 		
 		try {
 			tx = session.beginTransaction();
 			
-			listaC=(List<Commessa>)session.createQuery("from Commessa where statoCommessa='Aperta'").list();
+			if(commessaSelected.compareTo(".")==0)
+				listaC=(List<Commessa>)session.createQuery("from Commessa where statoCommessa='Aperta'").list();
+			else
+				listaC=(List<Commessa>)session.createQuery("from Commessa where statoCommessa='Aperta' and numeroCommessa=:numeroCommessa and estensione=:numeroEstensione")
+				.setParameter("numeroCommessa", nCommessa).setParameter("numeroEstensione", nEstensione).list();
+			
 			for(Commessa c:listaC){
 				commessa=c.getNumeroCommessa()+"."+c.getEstensione();
 				
@@ -4892,4 +4913,5 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 	}
 
+	
 }
