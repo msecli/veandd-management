@@ -254,7 +254,7 @@ public interface AdministrationServiceAsync {
 	void getCommesseRiepilogoDatiFatturazione(
 			AsyncCallback<List<String>> asyncCallback);
 
-	void getRiepilogoDatiFatturazioneCommessa(AsyncCallback<List<DatiFatturazioneCommessaModel>> asyncCallback);
+	void getRiepilogoDatiFatturazioneCommessa(String commessaSelected, AsyncCallback<List<DatiFatturazioneCommessaModel>> asyncCallback);
 
 	void loadIntervalliToolTip(String username, Date giorno,
 			AsyncCallback<List<String>> asyncCallback);

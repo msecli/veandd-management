@@ -272,7 +272,8 @@ public interface AdministrationService extends RemoteService {
 
 	List<String> getCommesseRiepilogoDatiFatturazione()throws IllegalArgumentException;
 
-	List<DatiFatturazioneCommessaModel> getRiepilogoDatiFatturazioneCommessa()throws IllegalArgumentException;
+	List<DatiFatturazioneCommessaModel> getRiepilogoDatiFatturazioneCommessa(
+			String commessaSelected)throws IllegalArgumentException;
 
 	List<RiepilogoOreTotaliCommesse> getElencoCommesseSuFoglioFatturazione(
 			String numCommessa, String numEstensione, String data) throws IllegalArgumentException;
