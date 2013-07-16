@@ -112,13 +112,13 @@ public class CenterLayout_AnagraficaClienti extends LayoutContainer {
 		cntpnlDati.setStyleAttribute("padding-left", "15px");
 		
 		ContentPanel cntpnlGrid = new ContentPanel();  
-	    cntpnlGrid.setBodyBorder(true);  
+	    cntpnlGrid.setBodyBorder(true);
 	    cntpnlGrid.setHeading("Dati Clienti");  
 	    cntpnlGrid.setButtonAlign(HorizontalAlignment.CENTER);  
 	    cntpnlGrid.setLayout(new FitLayout());  
 	    cntpnlGrid.setHeaderVisible(false);
 	    cntpnlGrid.setWidth(665);
-	    cntpnlGrid.setHeight(635);
+	    cntpnlGrid.setHeight(780);
 	    cntpnlGrid.setScrollMode(Scroll.AUTOY);
 	    	    	
 		final ListStore<ClienteModel> store = new ListStore<ClienteModel>();  	
@@ -194,12 +194,12 @@ public class CenterLayout_AnagraficaClienti extends LayoutContainer {
 		ContentPanel cpLayout= new ContentPanel();
 		cpLayout.setCollapsible(false);
 		cpLayout.setFrame(true);
-		cpLayout.setHeaderVisible(true);
+		cpLayout.setHeaderVisible(false);
 		cpLayout.setHeading("Dettaglio Cliente.");
-		cpLayout.setStyleAttribute("padding-left", "7px");
-		cpLayout.setStyleAttribute("margin-top", "5px");
+		//cpLayout.setStyleAttribute("padding-left", "7px");
+		//cpLayout.setStyleAttribute("margin-top", "5px");
 		cpLayout.setWidth(1050);
-		cpLayout.setHeight(735);
+		cpLayout.setHeight(850);
 		
 		cpLayout.setButtonAlign(HorizontalAlignment.CENTER);
 		cpLayout.addButton(btnSend);
@@ -215,7 +215,7 @@ public class CenterLayout_AnagraficaClienti extends LayoutContainer {
 		cntntpnlParent.add(cpLayout);
 		bodyContainer.add(cntntpnlParent);
 		
-		layoutContainer.add(bodyContainer, new FitData(5, 5, 5, 8));
+		layoutContainer.add(cpLayout, new FitData(3, 3, 3, 3));
 		add(layoutContainer);
 		
 		

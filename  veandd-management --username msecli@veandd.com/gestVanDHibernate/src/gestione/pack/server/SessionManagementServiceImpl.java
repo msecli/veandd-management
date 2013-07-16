@@ -82,6 +82,21 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 		        return "";
 		    }
 	}
+	
+	
+	public String getSede() throws IllegalArgumentException{
+		
+		HttpSession session=getThreadLocalRequest().getSession(true);
+		 if (session.getAttribute("sede") != null)
+		    {
+		        return (String) session.getAttribute("sede");
+		    }
+		 else 
+		    {
+		        return "";
+		    }
+	}
+	
 
 	public String login(String username, String password){
 	       
@@ -105,11 +120,12 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 				p=(Personale)session.createQuery("from Personale where username=:username and password=:password").setParameter("username", username).
 						setParameter("password", password).uniqueResult();
 				if(p!=null){
-					descrizione=p.getRuolo()+";"+p.getTipologiaLavoratore();
+					descrizione=p.getRuolo()+";"+p.getTipologiaLavoratore()+":"+p.getSede();// metto anche la sede per differenziare il foglio ore
 					ruolo= p.getRuolo();
 					httpSession.setAttribute("ruolo", ruolo);
 					httpSession.setAttribute("userName", username);
 					httpSession.setAttribute("idUtente", p.getId_PERSONALE());
+					httpSession.setAttribute("sede", p.getSede());
 				}else {ruolo=null;}
 				          
 				tx.commit();
@@ -119,8 +135,7 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 	    	   if (tx!=null)
 					tx.rollback();
 	    	   e.printStackTrace();
-	       }
-	             
+	       }             
 	       return descrizione;
 	    }
 	

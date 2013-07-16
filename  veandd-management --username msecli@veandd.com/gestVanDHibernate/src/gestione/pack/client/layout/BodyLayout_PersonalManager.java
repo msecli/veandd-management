@@ -203,7 +203,7 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	    Button btnGestioneCommessa = new Button();
 	    btnGestioneCommessa.setToolTip("Gestione Dati Commessa");
 	    btnGestioneCommessa.setHeight(65);
-	    btnGestioneCommessa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnGestioneCommessa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.anagrafica()));
 	    btnGestioneCommessa.setIconAlign(IconAlign.BOTTOM);
 	    btnGestioneCommessa.setWidth("100%");
 	    btnGestioneCommessa.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -324,7 +324,12 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
             }
         });
 	    
-	    Button btnFoglioFatturazione = new Button("Foglio Fatturazione");
+	    Button btnFoglioFatturazione = new Button();
+	    btnFoglioFatturazione.setToolTip("Gestione Dati Fatturazione");
+	    btnFoglioFatturazione.setHeight(65);
+	    btnFoglioFatturazione.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.anagrafica()));
+	    btnFoglioFatturazione.setIconAlign(IconAlign.BOTTOM);
+	    btnFoglioFatturazione.setWidth("100%");
 	    btnFoglioFatturazione.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	        	center.removeAll();

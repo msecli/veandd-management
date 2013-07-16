@@ -6,7 +6,6 @@ import gestione.pack.client.utility.MyImages;
 
 import gestione.pack.client.layout.panel.DialogInvioCommenti;
 import gestione.pack.client.layout.panel.FormInserimentoIntervalloCommessa;
-import gestione.pack.client.layout.panel.PanelRiepilogoMeseFoglioOre;
 import gestione.pack.client.model.GiustificativiModel;
 import gestione.pack.client.model.IntervalliCommesseModel;
 import gestione.pack.client.model.IntervalliIUModel;
@@ -34,13 +33,9 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -54,7 +49,6 @@ import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.ColumnLayout;
-import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
@@ -64,7 +58,6 @@ import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -348,15 +341,17 @@ public class DialogRilevazionePresenze extends Dialog {
 					else giustificativo="";
 					if(!txtrNote.getRawValue().isEmpty())
 						noteAggiuntive=txtrNote.getValue().toString();
-					
-					try {
+				
+					/* 	try {
 						controlloDati=checkCoerenzaDatiInput(fldSetGiustificativi, fldSetIntervalliC);
 					} catch (Exception e) {
 						e.printStackTrace();
 						controlloDati="error: Impossibile effettuare i controlli di correttezza sui dati inseriti.";
-					}
+					}*/
+					
+					
 					if(fldSetIntervalliIU.numeroInseriti()%2==0){ 
-						if(controlloDati.compareTo("OK")==0){	
+						//if(controlloDati.compareTo("OK")==0){	
 							AdministrationService.Util.getInstance().insertFoglioOreGiorno(username, giorno, totOreGenerale, delta, oreViaggio, oreAssRecupero, deltaOreViaggio, 
 									giustificativo, oreStraordinario, oreFerie, orePermesso, "0", oreAbbuono, intervalliIU, intervalliC, oreRecuperoTot, noteAggiuntive, new AsyncCallback<Boolean>() {
 
@@ -375,8 +370,8 @@ public class DialogRilevazionePresenze extends Dialog {
 									}					
 								}	
 							});	
-						}else
-							Window.alert(controlloDati);
+						//}else
+							//Window.alert(controlloDati);
 					}else
 							Window.alert("E' stato inserito un numero di intervalli I/U non corretto!");		
 				 }			
@@ -536,7 +531,7 @@ public class DialogRilevazionePresenze extends Dialog {
 					if(result.equals(null))
 						Window.alert("error: Impossibile accedere ai dati sugli orari.");
 					else
-					if(result.isEmpty())
+					if(result.size()==1)
 						load("new",result);
 						else load("old",result);
 				}
@@ -594,7 +589,7 @@ public class DialogRilevazionePresenze extends Dialog {
 			    	 		   			  
 			    	  if(hasValue(txtfld1I)){ //se 1I è corretto
 			    		   txtfld1I.clearInvalid();
-			    		   txtfld1I.setData("sorgente", "DIP");
+			    		   txtfld1I.setData("sorgente", "UG");
 		    			   txtfld1U.setAllowBlank(false); //1U deve essere compilato
 		    			   if(hasValue(txtfld1U)){ //se 1U è corretto ricavo il parziale della differenza tra gli intervalli
 		    				   String sommaIntervalli= new String();  		   
@@ -701,7 +696,7 @@ public class DialogRilevazionePresenze extends Dialog {
 					    	 		   			  
 					    	  if(hasValue(txtfld1I)){ //se 1I è corretto
 					    		   txtfld1I.clearInvalid();
-					    		   txtfld1I.setData("sorgente", "DIP");
+					    		   txtfld1I.setData("sorgente", "UG");
 				    			   txtfld1U.setAllowBlank(false); //1U deve essere compilato
 				    			   if(hasValue(txtfld1U)){ //se 1U è corretto ricavo il parziale della differenza tra gli intervalli
 				    				   String sommaIntervalli= new String();  		   
@@ -791,7 +786,7 @@ public class DialogRilevazionePresenze extends Dialog {
 			    	  
 			    	  if(hasValue(txtfld1U)){
 			    		  txtfld1U.clearInvalid();
-			    		  txtfld1U.setData("sorgente", "DIP");
+			    		  txtfld1U.setData("sorgente", "UG");
 		    			   txtfld1I.setAllowBlank(false);
 		    			   if(hasValue(txtfld1I)){
 		    				   String sommaIntervalli= new String();  		   
@@ -891,7 +886,7 @@ public class DialogRilevazionePresenze extends Dialog {
 				    	  
 				    	  if(hasValue(txtfld1U)){
 				    		  txtfld1U.clearInvalid();
-				    		  txtfld1U.setData("sorgente", "DIP");
+				    		  txtfld1U.setData("sorgente", "UG");
 			    			   txtfld1I.setAllowBlank(false);
 			    			   if(hasValue(txtfld1I)){
 			    				   String sommaIntervalli= new String();  		   
@@ -974,7 +969,7 @@ public class DialogRilevazionePresenze extends Dialog {
 			    	  
 			    	  if(hasValue(txtfld2I)){
 			    		  txtfld2I.clearInvalid();
-			    		  txtfld2I.setData("sorgente", "DIP");
+			    		  txtfld2I.setData("sorgente", "UG");
 			    		  //controllo che il valore di 2I sia maggiore dell'intervallo precedente
 			    		  if(!isMax(txtfld2I, txtfld1I)|| !isMax(txtfld2I, txtfld1U)){
 			    			  txtErrore.setVisible(true);
@@ -1086,7 +1081,7 @@ public class DialogRilevazionePresenze extends Dialog {
 				    	  
 				    	  if(hasValue(txtfld2I)){
 				    		  txtfld2I.clearInvalid();
-				    		  txtfld2I.setData("sorgente", "DIP");
+				    		  txtfld2I.setData("sorgente", "UG");
 				    		  //controllo che il valore di 2I sia maggiore dell'intervallo precedente
 				    		  if(!isMax(txtfld2I, txtfld1I)|| !isMax(txtfld2I, txtfld1U)){
 				    			  txtErrore.setVisible(true);
@@ -1182,7 +1177,7 @@ public class DialogRilevazionePresenze extends Dialog {
 		   			   
 			    	  if(hasValue(txtfld2U)){
 			    		  txtfld2U.clearInvalid();
-			    		  txtfld2U.setData("sorgente", "DIP");
+			    		  txtfld2U.setData("sorgente", "UG");
 		    			   txtfld2I.setAllowBlank(false);
 		    			   if(hasValue(txtfld2I)){
 		    				   String sommaIntervalli= new String();  		   
@@ -1279,7 +1274,7 @@ public class DialogRilevazionePresenze extends Dialog {
 			   			   
 				    	  if(hasValue(txtfld2U)){
 				    		  txtfld2U.clearInvalid();
-				    		  txtfld2U.setData("sorgente", "DIP");
+				    		  txtfld2U.setData("sorgente", "UG");
 			    			   txtfld2I.setAllowBlank(false);
 			    			   if(hasValue(txtfld2I)){
 			    				   String sommaIntervalli= new String();  		   
@@ -1359,7 +1354,7 @@ public class DialogRilevazionePresenze extends Dialog {
 		   			  fldsetGiustificativo=(FldsetGiustificativi) lc.getItemByItemId("fldSetGiustificativi");
 			    	  if(hasValue(txtfld3I)){	
 			    		  txtfld3I.clearInvalid();
-			    		  txtfld3I.setData("sorgente", "DIP");
+			    		  txtfld3I.setData("sorgente", "UG");
 			    		  if(!isMax(txtfld3I, txtfld2I)|| !isMax(txtfld3I, txtfld2U)){
 			    			  txtErrore.setVisible(true);
 			    			  txtErrore.setText("errore: Orario inferiore a quelle dell'intervallo precedente!");
@@ -1466,7 +1461,7 @@ public class DialogRilevazionePresenze extends Dialog {
 			   			  fldsetGiustificativo=(FldsetGiustificativi) lc.getItemByItemId("fldSetGiustificativi");
 				    	  if(hasValue(txtfld3I)){	
 				    		  txtfld3I.clearInvalid();
-				    		  txtfld3I.setData("sorgente", "DIP");
+				    		  txtfld3I.setData("sorgente", "UG");
 				    		  if(!isMax(txtfld3I, txtfld2I)|| !isMax(txtfld3I, txtfld2U)){
 				    			  txtErrore.setVisible(true);
 				    			  txtErrore.setText("errore: Orario inferiore a quelle dell'intervallo precedente!");
@@ -1557,7 +1552,7 @@ public class DialogRilevazionePresenze extends Dialog {
 		   			   
 			    	  if(hasValue(txtfld3U)){
 			    		   txtfld3U.clearInvalid();
-			    		   txtfld3U.setData("sorgente", "DIP");
+			    		   txtfld3U.setData("sorgente", "UG");
 		    			   txtfld3I.setAllowBlank(false);
 		    			   if(hasValue(txtfld3I)){
 		    				   String sommaIntervalli= new String();  		   
@@ -1654,7 +1649,7 @@ public class DialogRilevazionePresenze extends Dialog {
 			   			   
 				    	  if(hasValue(txtfld3U)){
 				    		   txtfld3U.clearInvalid();
-				    		   txtfld3U.setData("sorgente", "DIP");
+				    		   txtfld3U.setData("sorgente", "UG");
 			    			   txtfld3I.setAllowBlank(false);
 			    			   if(hasValue(txtfld3I)){
 			    				   String sommaIntervalli= new String();  		   
@@ -1735,7 +1730,7 @@ public class DialogRilevazionePresenze extends Dialog {
 		   			   
 			    	  if(hasValue(txtfld4I)){
 			    		  txtfld4I.clearInvalid();
-			    		  txtfld4I.setData("sorgente", "DIP");
+			    		  txtfld4I.setData("sorgente", "UG");
 			    		  if(!isMax(txtfld4I, txtfld3I)|| !isMax(txtfld4I, txtfld3U)){
 			    			  txtErrore.setVisible(true);
 			    			  txtErrore.setText("errore: Orario inferiore a quelle dell'intervallo precedente!");
@@ -1841,7 +1836,7 @@ public class DialogRilevazionePresenze extends Dialog {
 			   			   
 				    	  if(hasValue(txtfld4I)){
 				    		  txtfld4I.clearInvalid();
-				    		  txtfld4I.setData("sorgente", "DIP");
+				    		  txtfld4I.setData("sorgente", "UG");
 				    		  if(!isMax(txtfld4I, txtfld3I)|| !isMax(txtfld4I, txtfld3U)){
 				    			  txtErrore.setVisible(true);
 				    			  txtErrore.setText("errore: Orario inferiore a quelle dell'intervallo precedente!");
@@ -1931,7 +1926,7 @@ public class DialogRilevazionePresenze extends Dialog {
 		   			   
 			    	  if(hasValue(txtfld4U)){
 			    		   txtfld4U.clearInvalid();
-			    		   txtfld4U.setData("sorgente", "DIP");
+			    		   txtfld4U.setData("sorgente", "UG");
 		    			   txtfld4I.setAllowBlank(false);
 		    			   if(hasValue(txtfld4I)){
 		    				   String sommaIntervalli= new String();  		   
@@ -2030,7 +2025,7 @@ public class DialogRilevazionePresenze extends Dialog {
 			   			   
 				    	  if(hasValue(txtfld4U)){
 				    		   txtfld4U.clearInvalid();
-				    		   txtfld4U.setData("sorgente", "DIP");
+				    		   txtfld4U.setData("sorgente", "UG");
 			    			   txtfld4I.setAllowBlank(false);
 			    			   if(hasValue(txtfld4I)){
 			    				   String sommaIntervalli= new String();  		   
@@ -2113,7 +2108,7 @@ public class DialogRilevazionePresenze extends Dialog {
 			    	  
 			    	  if(hasValue(txtfld5I)){
 			    		  txtfld5I.clearInvalid();
-			    		  txtfld5I.setData("sorgente", "DIP");
+			    		  txtfld5I.setData("sorgente", "UG");
 			    		  if(!isMax(txtfld5I, txtfld4I)|| !isMax(txtfld5I, txtfld4U)){
 			    			  txtErrore.setVisible(true);
 			    			  txtErrore.setText("errore: Orario inferiore a quelle dell'intervallo precedente!");
@@ -2234,7 +2229,7 @@ public class DialogRilevazionePresenze extends Dialog {
 		   			   
 			    	  if(hasValue(txtfld5U)){
 			    		   txtfld5U.clearInvalid();
-			    		   txtfld5U.setData("sorgente", "DIP");
+			    		   txtfld5U.setData("sorgente", "UG");
 		    			   txtfld5I.setAllowBlank(false);
 		    			   if(hasValue(txtfld5I)){
 		    				   String sommaIntervalli= new String();  		   
@@ -2393,16 +2388,16 @@ public class DialogRilevazionePresenze extends Dialog {
 				txtfld5I.setEmptyText("#");
 				txtfld5U.setEmptyText("#");
 				
-				txtfld1I.setData("sorgente", "");
-				txtfld1U.setData("sorgente", "");
-				txtfld2I.setData("sorgente", "");
-				txtfld2U.setData("sorgente", "");
-				txtfld3I.setData("sorgente", "");
-				txtfld3U.setData("sorgente", "");
-				txtfld4I.setData("sorgente", "");
-				txtfld4U.setData("sorgente", "");
-				txtfld5I.setData("sorgente", "");
-				txtfld5U.setData("sorgente", "");
+				txtfld1I.setData("sorgente", "UG");
+				txtfld1U.setData(" ", "UG");
+				txtfld2I.setData("sorgente", "UG");
+				txtfld2U.setData("sorgente", "UG");
+				txtfld3I.setData("sorgente", "UG");
+				txtfld3U.setData("sorgente", "UG");
+				txtfld4I.setData("sorgente", "UG");
+				txtfld4U.setData("sorgente", "UG");
+				txtfld5I.setData("sorgente", "UG");
+				txtfld5U.setData("sorgente", "UG");
 				
 				caricaIntervalliTooTip();
 			}
@@ -2774,16 +2769,16 @@ public class DialogRilevazionePresenze extends Dialog {
 			
 			String movimento= new String();
 			
-			txtfld1I.setData("sorgente", "");
-			txtfld1U.setData("sorgente", "");
-			txtfld2I.setData("sorgente", "");
-			txtfld2U.setData("sorgente", "");
-			txtfld3I.setData("sorgente", "");
-			txtfld3U.setData("sorgente", "");
-			txtfld4I.setData("sorgente", "");
-			txtfld4U.setData("sorgente", "");
-			txtfld5I.setData("sorgente", "");
-			txtfld5U.setData("sorgente", "");
+			txtfld1I.setData("sorgente", "UG");
+			txtfld1U.setData("sorgente", "UG");
+			txtfld2I.setData("sorgente", "UG");
+			txtfld2U.setData("sorgente", "UG");
+			txtfld3I.setData("sorgente", "UG");
+			txtfld3U.setData("sorgente", "UG");
+			txtfld4I.setData("sorgente", "UG");
+			txtfld4U.setData("sorgente", "UG");
+			txtfld5I.setData("sorgente", "UG");
+			txtfld5U.setData("sorgente", "UG");
 			
 			txtfld1I.setValue("");
 			txtfld1U.setValue("");

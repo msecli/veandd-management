@@ -46,6 +46,7 @@ import gestione.pack.client.model.CommessaModel;
 import gestione.pack.client.model.DatiFatturazioneCommessaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.FoglioFatturazioneModel;
+import gestione.pack.client.model.GestioneRdoCommesse;
 import gestione.pack.client.model.GiustificativiModel;
 import gestione.pack.client.model.IntervalliCommesseModel;
 import gestione.pack.client.model.IntervalliIUModel;
@@ -1774,6 +1775,154 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<GestioneRdoCommesse> getAllRdoCommesse() {
+		List<GestioneRdoCommesse> listaM= new ArrayList<GestioneRdoCommesse>();
+		List<FoglioFatturazione> listaFF= new ArrayList<FoglioFatturazione>();
+		List<Commessa> listaC= new ArrayList<Commessa>();
+		GestioneRdoCommesse rdoM= new GestioneRdoCommesse();
+		Ordine or= new Ordine();
+		Offerta of=new Offerta();
+		Rda r= new Rda();
+		
+		FoglioFatturazione f;
+		
+		int idRdo=0;
+		int idCommessa=0;
+		
+		String cliente="";
+		String pm="";
+		String numCommessa= "#";
+		String salAttuale="0.0";
+		String pclAttuale="0.0";
+		String tariffaSalPcl="0.0";
+		String statoCommessa="";
+		String statoOrdine="";
+		String numRdo="#";
+		String numOfferta="#";
+		String numOrdine="#";		
+	
+		String tariffa="0.0";
+		
+		String oreDisp="0.0";
+		String oreRes="0.0";
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+			
+		try {
+			  tx=session.beginTransaction();
+			  listaC=(List<Commessa>)session.createQuery("from Commessa").list();
+			  
+			  for(Commessa c:listaC) {
+				  idCommessa=c.getCodCommessa();
+				  numCommessa=c.getNumeroCommessa()+"."+c.getEstensione();			  				  
+				  statoCommessa=c.getStatoCommessa();
+				  pm=c.getMatricolaPM();
+				  
+				  if(c.getOrdines().iterator().hasNext()){
+					  r=c.getOrdines().iterator().next().getRda();
+					  or=c.getOrdines().iterator().next();
+					  
+					  numRdo=r.getCodiceRDA();
+					  idRdo=r.getNumeroRda();
+					  cliente=r.getCliente().getRagioneSociale();					  
+					  
+					  numOrdine=or.getCodiceOrdine(); 
+					  tariffa=or.getTariffaOraria();
+					  oreDisp=or.getOreBudget();
+					  oreRes=or.getOreResidueBudget();
+					  statoOrdine=or.getStatoOrdine();
+					  					 
+					  listaFF.addAll(c.getFoglioFatturaziones());
+						  
+					  if(listaFF.size()>1)
+						  Collections.sort(listaFF, new Comparator<FoglioFatturazione>(){
+							  public int compare(FoglioFatturazione s1, FoglioFatturazione s2) {
+								  String p1= String.valueOf(s1.getIdFoglioFatturazione());
+								  String p2= String.valueOf(s2.getIdFoglioFatturazione());
+								  
+								 return p1.compareTo(p2);
+							  }
+					  });
+						  
+					  f=new FoglioFatturazione();
+						  
+					  if(listaFF.size()>0){
+							f=listaFF.get(listaFF.size()-1);
+							salAttuale=ServerUtility.aggiornaTotGenerale(f.getSALattuale(), f.getVariazioneSAL());
+						  	pclAttuale=ServerUtility.aggiornaTotGenerale(f.getPCLattuale(), f.getVariazionePCL());
+						  	tariffaSalPcl=c.getTariffaSal();
+					  }
+					  
+				  }else{
+					  
+					  listaFF.addAll(c.getFoglioFatturaziones());
+					  
+					  if(listaFF.size()>1)
+						  Collections.sort(listaFF, new Comparator<FoglioFatturazione>(){
+							  public int compare(FoglioFatturazione s1, FoglioFatturazione s2) {
+								  String p1= String.valueOf(s1.getIdFoglioFatturazione());
+								  String p2= String.valueOf(s2.getIdFoglioFatturazione());
+								  
+								 return p1.compareTo(p2);
+							  }
+					  });
+						  
+					  f=new FoglioFatturazione();
+						  
+					  if(listaFF.size()>0){
+							f=listaFF.get(listaFF.size()-1);
+							salAttuale=ServerUtility.aggiornaTotGenerale(f.getSALattuale(), f.getVariazioneSAL());
+						  	pclAttuale=ServerUtility.aggiornaTotGenerale(f.getPCLattuale(), f.getVariazionePCL());
+						  	tariffaSalPcl=c.getTariffaSal();
+					  }			  
+				  }
+					 
+				  if(r.getOffertas().iterator().hasNext()){
+					  of=r.getOffertas().iterator().next();
+					  numOfferta=of.getCodiceOfferta();			 
+				  }
+					  			  
+				  rdoM=new GestioneRdoCommesse(idRdo, idCommessa, cliente, pm, numCommessa, salAttuale , pclAttuale, tariffaSalPcl,
+						   numRdo, numOfferta, numOrdine, tariffa, oreDisp, oreRes, statoCommessa,statoOrdine);
+				  
+				  listaFF.clear();
+				  idRdo=0;
+				  idCommessa=0;
+				  cliente="";
+				  pm="";
+				  numCommessa= "#";
+				  salAttuale="0.0";
+				  pclAttuale="0.0";
+				  tariffaSalPcl="0.0";
+					
+				  numRdo="#";
+				  numOfferta="#";
+				  numOrdine="#";		
+				  tariffa="0.0";
+				  oreDisp="0.0";
+				  oreRes="0.0";
+				  
+				  listaM.add(rdoM);
+			  }  
+			  
+			  tx.commit();
+			  return listaM;
+			  
+		    } catch (Exception e) {
+		    	if (tx!=null)
+		    		tx.rollback();		    	
+		    	e.printStackTrace();
+		    	return null;
+		    }finally{
+		    	session.close();
+		    }		
+		
+	}
+	
+	
 //----------------------------- ASSOCIAZIONI COMMESSE ATTIVITA PERSONALE---------------------------------------------------------
 
 	
@@ -2859,7 +3008,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String data=new String();
 		String mese=new String();
 		String anno= new String();
-				
+		String statoRevisione="0";		
+		
 		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
 		anno=formatter.format(giornoRiferimento);
 		formatter = new SimpleDateFormat("MMM",Locale.ITALIAN);
@@ -2878,18 +3028,22 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			p=(Personale)session.createQuery("from Personale where username=:username").setParameter("username", username).uniqueResult();
 			orePreviste=p.getTipologiaOrario();
 			if(orePreviste.compareTo("A")==0)
-				orePreviste="8";
-			
-			giust=new GiustificativiModel(orePreviste, "0.00", ("-"+orePreviste+".00"), "0.00", "0.00", "0.00", "", "0", "0.00", "0.00", "0.00","0.00", "");
+				orePreviste="8";	
 			
 			foglioOre=(FoglioOreMese)session.createQuery("from FoglioOreMese where id_personale=:id and meseRiferimento=:mese")
 						.setParameter("id", p.getId_PERSONALE()).setParameter("mese", data).uniqueResult();
+
+			
 			
 			if(foglioOre!=null)
-				if(!foglioOre.getDettaglioOreGiornalieres().isEmpty())
-					listaGiorni.addAll(foglioOre.getDettaglioOreGiornalieres());			
-				else return giust;
-			else return giust;
+				if(!foglioOre.getDettaglioOreGiornalieres().isEmpty()){
+					listaGiorni.addAll(foglioOre.getDettaglioOreGiornalieres());
+					statoRevisione=foglioOre.getStatoRevisioneMese();
+				}
+				else return giust= new GiustificativiModel(orePreviste, "0.00", ("-"+orePreviste+".00"), "0.00", "0.00", "0.00", "","0", "0.00", "0.00", "0.00","0.00", "");
+			else return giust= new GiustificativiModel(orePreviste, "0.00", ("-"+orePreviste+".00"), "0.00", "0.00", "0.00", "","0", "0.00", "0.00", "0.00","0.00", "");
+			
+			giust=new GiustificativiModel(orePreviste, "0.00", ("-"+orePreviste+".00"), "0.00", "0.00", "0.00", "",statoRevisione, "0.00", "0.00", "0.00","0.00", "");
 			
 			for(DettaglioOreGiornaliere d:listaGiorni){
 				formatter = new SimpleDateFormat("yyyy-MM-dd",Locale.ITALIAN);
@@ -2898,7 +3052,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				if(formattedDate.equals(d.getGiornoRiferimento().toString()))
 				{
 					giust=new GiustificativiModel(orePreviste, d.getTotaleOreGiorno(), d.getDeltaOreGiorno(), d.getOreViaggio(), d.getDeltaOreViaggio()
-							, d.getOreAssenzeRecupero(), d.getGiustificativo(), d.getStatoRevisione(), d.getOreStraordinario(), d.getOreFerie(), d.getOrePermesso(),d.getOreAbbuono(), d.getNoteAggiuntive());	
+							, d.getOreAssenzeRecupero(), d.getGiustificativo(), statoRevisione, d.getOreStraordinario(), d.getOreFerie(), d.getOrePermesso(),d.getOreAbbuono(), d.getNoteAggiuntive());	
 				}
 			}
 				
@@ -3080,6 +3234,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 			listaP=(List<Personale>)session.createQuery("from Personale where sedeOperativa=:sede").setParameter("sede", sede).list();
 				
+			String confermato="0";
+			
 			for(Personale p:listaP){
 				
 				if(!p.getFoglioOreMeses().isEmpty()){
@@ -3121,8 +3277,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					//considero la lista di giorni eventualmente compilati
 					for(DettaglioOreGiornaliere d:listaDettGiorno){
 						String day=new String();
-						String confermato="0";
-						
+												
 						formatter = new SimpleDateFormat("dd-MMM-yyyy",Locale.ITALIAN);
 						day=formatter.format(d.getGiornoRiferimento());
 						
@@ -3134,9 +3289,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							  public int compare(DettaglioIntervalliIU s1, DettaglioIntervalliIU s2) {
 								  String p1=s1.getMovimento();
 								  String p2=s2.getMovimento();
-								  p1=new StringBuffer(p1).reverse().toString();
-								  p2=new StringBuffer(p2).reverse().toString();
-								  
+								  //p1=new StringBuffer(p1).reverse().toString();
+								  //p2=new StringBuffer(p2).reverse().toString();
+								  p1=p1.substring(1, 2)+p1.substring(0, 1);
+								  p2=p2.substring(1, 2)+p2.substring(0, 1);								  
 								 return p1.compareTo(p2);
 							  }
 						});
@@ -3308,13 +3464,14 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						oreTotali=(d.getTotaleOreGiorno());
 					}
 					
-					Date gRiferimento=d.getGiornoRiferimento();
+					//Date gRiferimento=d.getGiornoRiferimento();
 					formatter = new SimpleDateFormat("dd/MM/yy",Locale.ITALIAN);
-					String giornoR=formatter.format(gRiferimento);
-					@SuppressWarnings("unchecked")
-					List<DettaglioTimbrature> listaT=(List<DettaglioTimbrature>)session.createQuery("from DettaglioTimbrature where numeroBadge=:nBadge and giorno=:giorno")
+					//String giornoR=formatter.format(gRiferimento);
+					
+					//@SuppressWarnings("unchecked")
+					/*List<DettaglioTimbrature> listaT=(List<DettaglioTimbrature>)session.createQuery("from DettaglioTimbrature where numeroBadge=:nBadge and giorno=:giorno")
 							.setParameter("nBadge", p.getNumeroBadge()).setParameter("giorno", giornoR).list();
-								
+						*/		
 					giorno= new RiepilogoFoglioOreModel(d.getIdDettaglioOreGiornaliere(), "", data, day, p.getTipologiaOrario(), Float.valueOf(d.getTotaleOreGiorno()),  Float.valueOf(d.getOreViaggio()), 
 							 Float.valueOf(d.getDeltaOreViaggio()),  Float.valueOf(oreTotali),  Float.valueOf(d.getOreFerie()),  Float.valueOf(d.getOrePermesso()) ,  Float.valueOf(d.getOreAssenzeRecupero()),
 							 Float.valueOf(d.getOreStraordinario()), Float.valueOf(d.getOreAbbuono()), d.getGiustificativo(), d.getNoteAggiuntive(), true);
@@ -3881,7 +4038,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "unused" })
 	@Override
 	public FoglioFatturazioneModel getDatiFatturazionePerOrdine(String numeroCommessa, String mese)throws IllegalArgumentException {
 		
@@ -3890,6 +4047,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String tariffaUtilizzata= new String();
 		String sommaVariazioniSal= "0.00";
 		String sommaVariazioniPcl= "0.00";
+		
+		String oreResidueBudget="0.00";
 		
 		Boolean esistePa= false; //controllo l'esistenza di una eventuale commessa madre .pa
 				
@@ -3918,7 +4077,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					.setParameter("estensione", estensione).uniqueResult();
 			codCommessa=c.getCodCommessa(); //id commessa
 			o=(Ordine)session.createQuery("from Ordine where cod_commessa=:id").setParameter("id", codCommessa).uniqueResult();
-			
+									
 			//controllo la presenza di una commessa .pa 
 			c_pa=(Commessa)session.createQuery("from Commessa where numeroCommessa=:commessa and estensione=:estensione").setParameter("commessa", commessa)
 					.setParameter("estensione", "pa").uniqueResult();
@@ -3960,17 +4119,26 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 								sommaVariazioniSal, sommaVariazioniPcl, f.getOreFatturare(), f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione());
 					}		
 							
-				}else{	
+				}else{					
+					//TODO modifica per ore ordine residue
+					//--
+					oreResidueBudget=o.getOreResidueBudget();
+									
+					for(FoglioFatturazione ff:listaFF){
+						if(ff.getMeseCorrente().compareTo("Mag2013")!=0)//elimino il mese di maggio in quanto compilato ancora con una modalità non corretta per l'aggiornamento delle ore residue
+							oreResidueBudget=ServerUtility.getDifference(oreResidueBudget, ff.getOreFatturare());
+					}
+					//---
+					
 					tariffaUtilizzata=o.getTariffaOraria();
-					if(f==null){					
-						
-						foglioModel= new FoglioFatturazioneModel(o.getCodiceOrdine(), o.getOreBudget(), o.getOreResidueBudget(), Float.valueOf(tariffaUtilizzata), "0.0",
+					if(f==null){																			//--
+						foglioModel= new FoglioFatturazioneModel(o.getCodiceOrdine(), o.getOreBudget(), oreResidueBudget, Float.valueOf(tariffaUtilizzata), "0.0",
 								sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.0", "0.0", "0.0", "", "0");
 					}
 					else{		
 						sommaVariazioniSal=ServerUtility.getDifference(sommaVariazioniSal, f.getVariazioneSAL());
 						sommaVariazioniPcl=ServerUtility.getDifference(sommaVariazioniPcl, f.getVariazionePCL());
-						foglioModel= new FoglioFatturazioneModel(o.getCodiceOrdine(), o.getOreBudget(), o.getOreResidueBudget(),Float.valueOf(tariffaUtilizzata), f.getOreEseguite(),
+						foglioModel= new FoglioFatturazioneModel(o.getCodiceOrdine(), o.getOreBudget(), oreResidueBudget ,Float.valueOf(tariffaUtilizzata), f.getOreEseguite(),
 								sommaVariazioniSal, sommaVariazioniPcl, f.getOreFatturare(), f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione());
 					}		
 				}	
@@ -3981,13 +4149,19 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						.setParameter("mese", mese).uniqueResult();
 			
 				listaFF.addAll(c.getFoglioFatturaziones());			
+				oreResidueBudget=o.getOreResidueBudget();
 				
 				//Considero tutti i FF compilati in mesi differenti da quello in esame
 				for(FoglioFatturazione f1:listaFF){
+					
 					if(f1.getMeseCorrente().compareTo(mese)!=0){
 						sommaVariazioniPcl=ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, f1.getVariazionePCL());
 						sommaVariazioniSal=ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f1.getVariazioneSAL());
 					}
+					//---
+					if(f1.getMeseCorrente().compareTo("Mag2013")!=0)//elimino il mese di maggio in quanto compilato ancora con una modalità non corretta per l'aggiornamento delle ore residue
+						oreResidueBudget=ServerUtility.getDifference(oreResidueBudget, f1.getOreFatturare());
+					//--
 				}
 			
 				//Aggiungo anche un eventuale SAL/PCL iniziale sulla commessa
@@ -4009,19 +4183,19 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					}		
 							
 				}else{	
+					
 					tariffaUtilizzata=o.getTariffaOraria();
-					if(f==null){					
-						
-						foglioModel= new FoglioFatturazioneModel(o.getCodiceOrdine(), o.getOreBudget(), o.getOreResidueBudget(), Float.valueOf(tariffaUtilizzata), "0.0",
+					if(f==null){										
+																										//--
+						foglioModel= new FoglioFatturazioneModel(o.getCodiceOrdine(), o.getOreBudget(),oreResidueBudget, Float.valueOf(tariffaUtilizzata), "0.0",
 								sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.0", "0.0", "0.0", "", "0");
 					}
 					else{			
 						//tariffa utilizza prendo quella registrata al momento della registrazione del foglio fatturazione
-						foglioModel= new FoglioFatturazioneModel(o.getCodiceOrdine(), o.getOreBudget(), o.getOreResidueBudget(),Float.valueOf(f.getTariffaUtilizzata()), f.getOreEseguite(),
+						foglioModel= new FoglioFatturazioneModel(o.getCodiceOrdine(), o.getOreBudget(), oreResidueBudget,Float.valueOf(f.getTariffaUtilizzata()), f.getOreEseguite(),
 								sommaVariazioniSal, sommaVariazioniPcl, f.getOreFatturare(), f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione());
 					}		
-				}	
-							
+				}						
 			}
 			/*
 			
@@ -4151,7 +4325,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		numeroC=commessa.substring(0,commessa.indexOf("."));
 		estensione=commessa.substring(commessa.indexOf(".")+1, commessa.length());
-		oreResidueBudget="0.0";
+		oreResidueBudget="0.00";
 
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
@@ -4169,13 +4343,13 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				esistePa=false;
 				else
 					esistePa=true;
-			
-			//TODO non aggiornare il valore iniziale delle residue dell'ordine?
+						
+			//TODO Eliminare?
 			
 			if(c.getOrdines().iterator().hasNext()){//se è presente un ordine
 				o=c.getOrdines().iterator().next();
 				
-				if(Float.valueOf(o.getOreBudget())!=0)//se le ore ordine sono "0" allora lo considero come ordine aperto e non calcolo le ore residue
+	/*			if(Float.valueOf(o.getOreBudget())!=0)//se le ore ordine sono "0" allora lo considero come ordine aperto e non calcolo le ore residue
 				 if(c.getFoglioFatturaziones().size()>0){ //calcolo le ore residue
 					listaf.addAll(c.getFoglioFatturaziones());
 					oreResidueBudget=o.getOreBudget();
@@ -4199,7 +4373,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					oreResidueBudget="0.00";
 					o.setOreResidueBudget(oreResidueBudget);
 				}
-					
+					*/
 			}
 			else o=null;
 							
@@ -4343,8 +4517,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			return null;
 		}finally{
 			session.close();
-		}
-		
+		}		
 		return null;
 	}
 
@@ -4912,6 +5085,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}		
 		
 	}
+
+	
 
 	
 }

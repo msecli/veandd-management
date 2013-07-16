@@ -47,6 +47,8 @@ public interface SessionManagementService extends RemoteService {
 	boolean setDataInSession(String mese, String sede, String username, String operazione);
 
 	boolean setDataInSession(String dataRif, String username, String operazione);
+
+	String getSede();
 	
 	
 }

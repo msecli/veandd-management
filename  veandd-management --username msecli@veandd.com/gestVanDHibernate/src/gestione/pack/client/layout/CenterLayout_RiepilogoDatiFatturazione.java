@@ -69,7 +69,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 				  	
 	    bodyContainer.add(vpLayout);    
 	   				
-		layoutContainer.add(bodyContainer, new FitData(5, 5, 5, 8));
+		layoutContainer.add(bodyContainer, new FitData(3, 3, 3, 5));
 		add(layoutContainer);
 	}
 			

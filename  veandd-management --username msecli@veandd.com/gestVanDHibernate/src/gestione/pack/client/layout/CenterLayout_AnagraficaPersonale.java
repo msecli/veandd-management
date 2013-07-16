@@ -135,7 +135,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    cntpnlGrid.setHeaderVisible(false);
 	    cntpnlGrid.setBorders(false);
 	    cntpnlGrid.setWidth(655);
-	    cntpnlGrid.setHeight(510);
+	    cntpnlGrid.setHeight(780);
 	    cntpnlGrid.setScrollMode(Scroll.AUTOY);   
 	    cntpnlGrid.setBottomComponent(toolBar);
 
@@ -219,14 +219,14 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    buttonBar.add(btnReset);
 	    btnReset.setWidth("35px");
 	    
-		cntntpnlParent = new ContentPanel();
+		/*cntntpnlParent = new ContentPanel();
 		cntntpnlParent.setCollapsible(false);
 		cntntpnlParent.setHeaderVisible(true);
 		cntntpnlParent.setBorders(false);	
 		cntntpnlParent.setWidth(w-215);
 		cntntpnlParent.setHeight(h-55);
 		cntntpnlParent.setHeading("Anagrafica Dipendenti.");
-		cntntpnlParent.setScrollMode(Scroll.AUTOY);
+		cntntpnlParent.setScrollMode(Scroll.AUTOY);*/
 			
 		horizontalPanel = new HorizontalPanel();
 		horizontalPanel.setSpacing(10);
@@ -239,22 +239,23 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 		ContentPanel cpLayout= new ContentPanel();
 		cpLayout.setCollapsible(false);
 		cpLayout.setFrame(true);
-		cpLayout.setHeaderVisible(true);
+		cpLayout.setHeaderVisible(false);
 		cpLayout.setButtonAlign(HorizontalAlignment.CENTER);
 		cpLayout.setHeading("Dettaglio Dipendente.");
-		cpLayout.setStyleAttribute("padding-left", "7px");
-		cpLayout.setStyleAttribute("margin-top", "5px");
+		//cpLayout.setStyleAttribute("padding-left", "7px");
+		//cpLayout.setStyleAttribute("margin-top", "5px");
 		cpLayout.setWidth(1030);
-		cpLayout.setHeight(615);
+		cpLayout.setHeight(850);
 		cpLayout.addButton(btnSend);
 		cpLayout.addButton(btnEdit);
 		cpLayout.addButton(btnDelete);
 		cpLayout.addButton(btnReset);
 		
 		cpLayout.add(horizontalPanel);
-		cntntpnlParent.add(cpLayout);
-		bodyContainer.add(cntntpnlParent);
-		layoutContainer.add(bodyContainer, new FitData(5, 5, 5, 8));
+		//cntntpnlParent.add(cpLayout);
+		//bodyContainer.add(cntntpnlParent);
+		
+		layoutContainer.add(cpLayout, new FitData(3, 3, 3, 3));
 		
 		add(layoutContainer);
 		    
@@ -441,8 +442,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    	}else {Window.alert("Controllare i campi inseriti!");}
 	      }
 	    
-	    });    
-	    
+	    });        
 	    
 //istruzioni per permettere l'eliminazione di un record	    
 	    
@@ -1027,7 +1027,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    
 	    ListStore<PersonaleModel> store1= new ListStore<PersonaleModel>(loader);
 	    store1.setDefaultSort("cognome", SortDir.ASC);
-	    loader.load(0, 20); 
+	    loader.load(0, 30); 
 	    loader.setSortDir(SortDir.ASC);
 	    loader.setSortField("cognome");
 	    toolBar.bind(loader); 

@@ -7,6 +7,7 @@ import gestione.pack.shared.DatiOreMese;
 import gestione.pack.shared.DatiRiepilogoMensileCommesse;
 import gestione.pack.shared.DettaglioIntervalliCommesse;
 import gestione.pack.shared.DettaglioOreGiornaliere;
+import gestione.pack.shared.FoglioFatturazione;
 
 import gestione.pack.shared.FoglioOreMese;
 import gestione.pack.shared.Personale;
@@ -1191,6 +1192,10 @@ public class ServerUtility {
 		else
 			return true;
 				
+	}
+	public static void orderLista(List<FoglioFatturazione> listaFF) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

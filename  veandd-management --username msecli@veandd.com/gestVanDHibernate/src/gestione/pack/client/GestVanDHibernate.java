@@ -39,8 +39,7 @@ public class GestVanDHibernate implements EntryPoint {
 	
 	public void onModuleLoad() {		
 		LoginDialog d = new LoginDialog();
-		d.show();
-		
+		d.show();		
 		}
 	}
 	
@@ -199,7 +198,8 @@ public class GestVanDHibernate implements EntryPoint {
 	  private void callLayout(String result) {//Stringa nel formato ruolo;tipoLavoratore
 		  
 		  String ruolo= result.substring(0,result.indexOf(";"));
-		  String tipoL= result.substring(result.indexOf(";")+1, result.length());
+		  String tipoL= result.substring(result.indexOf(";")+1, result.indexOf(":"));
+		  String sede= result.substring(result.indexOf(":")+1, result.length());
 		  	
 		  if(ruolo.equals("UA")){
 			  BodyLayout_UffAmministrazione bl= new BodyLayout_UffAmministrazione();
@@ -246,6 +246,7 @@ public class GestVanDHibernate implements EntryPoint {
 			  bl.txtfldUsername.setValue(userName.getValue().toString());
 			  bl.txtfldRuolo.setValue(ruolo);
 			  bl.txtfldTipologiaLavoratore.setValue(tipoL);
+			  bl.txtSede.setText(sede);
 			  RootPanel.get().add(bl);
 			  LoginDialog.this.hide();  
 			  

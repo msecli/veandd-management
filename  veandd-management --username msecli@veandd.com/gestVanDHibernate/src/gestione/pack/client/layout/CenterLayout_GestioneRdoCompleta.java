@@ -129,8 +129,8 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		cntpnlLayout.setHeight(850);
 		cntpnlLayout.setFrame(true);
 		cntpnlLayout.setButtonAlign(HorizontalAlignment.CENTER);
-		cntpnlLayout.setStyleAttribute("padding-left", "7px");
-		cntpnlLayout.setStyleAttribute("margin-top", "15px");
+		//cntpnlLayout.setStyleAttribute("padding-left", "7px");
+		//cntpnlLayout.setStyleAttribute("margin-top", "15px");
 		
 		btnSave= new Button("Save");
 		btnEdit=new Button("Edit");
@@ -317,6 +317,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		cntpnlLayout.addButton(btnEdit);
 		cntpnlLayout.addButton(btnDelete);
 		cntpnlLayout.addButton(btnReset);
+		
 		txtfldIdRda.setFieldLabel("id");
 		hpLayout.add(new CntpnlFormRdo());
 		hpLayout.add(new CntpnlGridRdo());
@@ -325,7 +326,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		
 	    bodyContainer.add(cntpnlLayout);    
 	   				
-		layoutContainer.add(bodyContainer, new FitData(5, 5, 5, 8));
+		layoutContainer.add(bodyContainer, new FitData(3, 3, 3, 3));
 		add(layoutContainer);		
 	}
 	
@@ -472,11 +473,17 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			txtfldNumeroRisorse.getMessages().setRegexText("Deve essere un numero");
 			
 			txtfldNumeroOre=new TextField<String>();
+			txtfldNumeroOre.setToolTip("Usare il TAB per assegnare automaticamente le ore residue.");
 			txtfldNumeroOre.setFieldLabel("Num. Ore");
 			txtfldNumeroOre.setName("numeroOre");
 			txtfldNumeroOre.setRegex("[0-9]+[.]{1}[0-9]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
 			txtfldNumeroOre.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
 			txtfldNumeroOre.addKeyListener(new KeyListener(){
+				
+			/*	public void componentKeyUp(ComponentEvent event) {				
+					txtfldNumeroOreResidue.setValue(txtfldNumeroOre.getValue());		
+				}
+				*/
 				 public void componentKeyDown(ComponentEvent event) { 	  
 				    	int keyCode=event.getKeyCode();
 						if(keyCode==9){			
@@ -501,6 +508,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 											valore=valore+"00";
 									}
 								txtfldNumeroOre.setValue(valore);
+								txtfldNumeroOreResidue.setValue(valore);
 							}						
 						}
 				 }

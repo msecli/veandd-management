@@ -46,7 +46,7 @@ public class CenterLayout_GestioneCommessa extends LayoutContainer{
 		
 		bodyContainer.add(new PanelCommessa());
 		
-		layoutContainer.add(bodyContainer, new FitData(5, 5, 5, 8));
+		layoutContainer.add(bodyContainer, new FitData(3, 3, 3, 3));
 		add(layoutContainer);
 	}
 	
