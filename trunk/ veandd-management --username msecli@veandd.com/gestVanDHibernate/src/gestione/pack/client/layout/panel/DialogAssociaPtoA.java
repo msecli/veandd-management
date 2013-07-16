@@ -47,7 +47,7 @@ public class DialogAssociaPtoA  extends Dialog{
 		setBodyBorder(true);
 		setBodyStyle("padding: 8px; background: none");
 		setWidth(580);
-		setHeight(430);
+		setHeight(800);
 		setResizable(false);
 		setClosable(true);
 		setButtons("");
@@ -62,8 +62,8 @@ public class DialogAssociaPtoA  extends Dialog{
 		cntpnlVista.setHeading("Commessa: "+commessa);
 		cntpnlVista.setFrame(false);
 		cntpnlVista.setLayout(new RowLayout(Orientation.HORIZONTAL));
-		cntpnlVista.setWidth(550);
-		cntpnlVista.setHeight(380);
+		cntpnlVista.setWidth(560);
+		cntpnlVista.setHeight(760);
 		cntpnlVista.setStyleAttribute("padding", "10px");
 		
 		ContentPanel cntpnlSelezioni= new ContentPanel(); //Pannello contenente liste dati (Form)
@@ -74,12 +74,12 @@ public class DialogAssociaPtoA  extends Dialog{
 		cntpnlSelezioni.setBodyBorder(false);
 		cntpnlSelezioni.setStyleAttribute("padding-top", "10px");
 		cntpnlSelezioni.setStyleAttribute("padding-left", "10px");
-		cntpnlSelezioni.setWidth(520);
-		cntpnlSelezioni.setHeight(345);
+		cntpnlSelezioni.setWidth(540);
+		cntpnlSelezioni.setHeight(660);
 		
 		ContentPanel cp = new ContentPanel(); //pannello contenente le due liste
 		cp.setHeaderVisible(false);
-		cp.setSize(500, 260);
+		cp.setSize(520, 600);
 		cp.setFrame(false);
 		cp.setBorders(false);
 		cp.setBodyBorder(false);
@@ -92,7 +92,7 @@ public class DialogAssociaPtoA  extends Dialog{
 		buttonBar.setStyleAttribute("padding-top", "7px");
 		buttonBar.setStyleAttribute("padding-bottom", "5px");
 		buttonBar.setBorders(true);
-		buttonBar.setWidth(500);
+		buttonBar.setWidth(520);
 		
 		list1.setDisplayProperty("nomeCompleto");
 		try {

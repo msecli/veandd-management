@@ -9,6 +9,7 @@ import gestione.pack.client.model.CommessaModel;
 import gestione.pack.client.model.DatiFatturazioneCommessaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.FoglioFatturazioneModel;
+import gestione.pack.client.model.GestioneRdoCommesse;
 import gestione.pack.client.model.GiustificativiModel;
 import gestione.pack.client.model.IntervalliCommesseModel;
 import gestione.pack.client.model.IntervalliIUModel;
@@ -176,6 +177,7 @@ public interface AdministrationServiceAsync {
 
 	void getCommesseByPM(String nome, String cognome, /*String pm*/AsyncCallback<List<String>> asyncCallback) ;
 
+	void getAllRdoCommesse(AsyncCallback<List<GestioneRdoCommesse>> asyncCallback);
 	
 	//--------------------------------------Associazioni Commesse Attivita Dipend
 	void createAssociazioneCommessaDipendenti(String pm, String commessa,
@@ -290,6 +292,8 @@ public interface AdministrationServiceAsync {
 	void getAllCommenti(AsyncCallback<List<CommentiModel>> asyncCallback);
 
 	void deleteCommento(int id, AsyncCallback<Boolean> asyncCallback);
+
+	
 
 			
 }

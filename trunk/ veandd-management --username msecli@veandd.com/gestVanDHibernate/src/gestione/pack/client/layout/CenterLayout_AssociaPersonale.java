@@ -123,7 +123,7 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 		cntpnlVista.setLayout(new RowLayout(Orientation.HORIZONTAL));
 		cntpnlVista.setWidth(1050);
 		cntpnlVista.setHeight(870);
-		cntpnlVista.setStyleAttribute("padding", "10px");
+		//cntpnlVista.setStyleAttribute("padding", "10px");
 		
 		ContentPanel cntpnlSelezioni= new ContentPanel(); //Pannello contenente liste dati (Form)
 		cntpnlSelezioni.setHeaderVisible(false);
@@ -147,7 +147,7 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 		cntpnlGrid.setLayout(new FitLayout()); 
 		cntpnlGrid.setBodyBorder(false);
 		cntpnlGrid.setFrame(false);
-		cntpnlGrid.setSize(490, 780);
+		cntpnlGrid.setSize(490, 800);
 		cntpnlGrid.setStyleAttribute("padding-left", "10px");
 		cntpnlGrid.setStyleAttribute("margin-top", "15px");
 		cntpnlGrid.setScrollMode(Scroll.AUTOY);
@@ -452,7 +452,7 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 
 		bodyContainer.add(cntpnlVista);
 
-		layoutContainer.add(bodyContainer, new FitData(5, 5, 5, 8));
+		layoutContainer.add(bodyContainer, new FitData(3, 3, 3, 3));
 		add(layoutContainer);
 				
 	}

@@ -307,11 +307,11 @@ public class PanelCommessa extends LayoutContainer {
 		cntpnlLayout.addButton(btnDelete);
 		cntpnlLayout.addButton(btnReset);
 		//cntpnlLayout.setStyleAttribute("padding-left", "7px");
-		cntpnlLayout.setStyleAttribute("margin-top", "15px");
+		//cntpnlLayout.setStyleAttribute("margin-top", "15px");
 		
 		bodyContainer.add(cntpnlLayout);    
 			
-		layoutContainer.add(bodyContainer, new FitData(5, 5, 5, 8));
+		layoutContainer.add(bodyContainer, new FitData(3, 3, 3, 3));
 		add(layoutContainer);
 		
 		//add(cp);

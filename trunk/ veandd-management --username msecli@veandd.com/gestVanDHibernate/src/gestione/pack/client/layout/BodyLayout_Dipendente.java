@@ -43,6 +43,7 @@ public class BodyLayout_Dipendente extends LayoutContainer {
 	public TextField<String> txtfldUsername= new TextField<String>();
 	public TextField<String> txtfldRuolo= new TextField<String>();
 	public TextField<String> txtfldTipologiaLavoratore= new TextField<String>();
+	public Text txtSede= new Text();
 	
 	private int w=Window.getClientWidth();
 		

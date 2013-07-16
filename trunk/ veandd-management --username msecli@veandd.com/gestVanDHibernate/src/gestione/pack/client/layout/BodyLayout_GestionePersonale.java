@@ -191,47 +191,6 @@ public class BodyLayout_GestionePersonale extends LayoutContainer {
 	    ContentPanel cp = new ContentPanel();
 	    cp.setAnimCollapse(false);
 	    cp.setBodyStyleName("pad-text");
-	    cp.setHeading("Personale");
-	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent be) {
-            	center.removeAll();
-	        	center.add(new CenterLayout_AnagraficaPersonale());
-	        	center.layout(true);               
-            }
-        });
-	    Button btnAnagrP = new Button();
-	    btnAnagrP.setToolTip("Anagrafica Personale");
-	    btnAnagrP.setHeight(65);
-	    btnAnagrP.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.anagrafica()));
-	    btnAnagrP.setIconAlign(IconAlign.BOTTOM);
-	    btnAnagrP.setWidth("100%");
-	    btnAnagrP.addSelectionListener(new SelectionListener<ButtonEvent>() {
-	        public void componentSelected(ButtonEvent ce) {
-	        	center.removeAll();
-	        	center.add(new CenterLayout_AnagraficaPersonale());
-	        	center.layout(true);}
-	        
-	    });
-	    btnAnagrP.setWidth("100%");
-	    cp.add(btnAnagrP);
-	    cp.setExpanded(false);
-	    panel.add(cp);
-	    
-	 /*   cp = new ContentPanel();
-	    cp.setAnimCollapse(false);
-	    cp.setBodyStyleName("pad-text");
-	    cp.setHeading("Gestione Presenze");
-	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent be) {
-            	center.removeAll();
-	        	center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb());
-	        	center.layout(true);               
-            }
-        });*/
-	    
-	    cp = new ContentPanel();
-	    cp.setAnimCollapse(false);
-	    cp.setBodyStyleName("pad-text");
 	    cp.setHeading("Gestione Presenze");
 	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
@@ -324,8 +283,52 @@ public class BodyLayout_GestionePersonale extends LayoutContainer {
 	      });
 	    btnPrintRiepilogo.setWidth("100%");
 	    cp.add(btnPrintRiepilogo);    
-	    cp.setExpanded(true);
-	    panel.add(cp);   
+	    cp.setExpanded(true);	    
+	    panel.add(cp);
+	    
+	    
+	    cp = new ContentPanel();
+	    cp.setAnimCollapse(false);
+	    cp.setBodyStyleName("pad-text");
+	    cp.setHeading("Personale");
+	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent be) {
+            	center.removeAll();
+	        	center.add(new CenterLayout_AnagraficaPersonale());
+	        	center.layout(true);               
+            }
+        });
+	    Button btnAnagrP = new Button();
+	    btnAnagrP.setToolTip("Anagrafica Personale");
+	    btnAnagrP.setHeight(65);
+	    btnAnagrP.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.anagrafica()));
+	    btnAnagrP.setIconAlign(IconAlign.BOTTOM);
+	    btnAnagrP.setWidth("100%");
+	    btnAnagrP.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new CenterLayout_AnagraficaPersonale());
+	        	center.layout(true);}
+	        
+	    });
+	    btnAnagrP.setWidth("100%");
+	    cp.add(btnAnagrP);
+	    cp.setExpanded(false);
+	    panel.add(cp);
+	    
+	 /*   cp = new ContentPanel();
+	    cp.setAnimCollapse(false);
+	    cp.setBodyStyleName("pad-text");
+	    cp.setHeading("Gestione Presenze");
+	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent be) {
+            	center.removeAll();
+	        	center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb());
+	        	center.layout(true);               
+            }
+        });*/
+	    
+	      
 	    
 	    panel.setSize(180,Window.getClientHeight()-70);
 	    west.add(panel);

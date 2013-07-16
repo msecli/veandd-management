@@ -126,11 +126,11 @@ public CenterLayout_FoglioFatturazione(){}
 		cntpnlFoglioFatturazione.setCollapsible(false);
 		cntpnlFoglioFatturazione.setBorders(false);
 		cntpnlFoglioFatturazione.setWidth(1090);
-		cntpnlFoglioFatturazione.setHeight(840);
+		cntpnlFoglioFatturazione.setHeight(860);
 		cntpnlFoglioFatturazione.setFrame(true);
 		cntpnlFoglioFatturazione.setButtonAlign(HorizontalAlignment.CENTER);
-		cntpnlFoglioFatturazione.setStyleAttribute("padding-left", "7px");
-		cntpnlFoglioFatturazione.setStyleAttribute("margin-top", "15px");
+		//cntpnlFoglioFatturazione.setStyleAttribute("padding-left", "7px");
+		//cntpnlFoglioFatturazione.setStyleAttribute("margin-top", "15px");
 		
 		//cntpnlFoglioFatturazione.addButton(btnSalva);
 					
@@ -207,7 +207,7 @@ public CenterLayout_FoglioFatturazione(){}
 	    
 		bodyContainer.add(cntpnlFoglioFatturazione);
 	   				
-		layoutContainer.add(bodyContainer, new FitData(5, 5, 5, 8));
+		layoutContainer.add(bodyContainer, new FitData(3, 3, 3, 3));
 		add(layoutContainer);
 	}	
 	
@@ -611,7 +611,7 @@ public CenterLayout_FoglioFatturazione(){}
 						anno=smplcmbxAnno.getRawValue().toString();
 						meseCorrente=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
 						data=meseCorrente+anno;
-						AdministrationService.Util.getInstance().insertDatiFoglioFatturazione(oreEseguite,salIniziale,pclIniziale,oreFatturare,variazioneSAL,
+						AdministrationService.Util.getInstance().insertDatiFoglioFatturazione(oreEseguite,salIniziale,pclIniziale, oreFatturare,variazioneSAL,
 								variazionePCL, data, note, statoElaborazione, commessaSelezionata, tariffaUtilizzata, new AsyncCallback<Boolean>() {
 
 									@Override

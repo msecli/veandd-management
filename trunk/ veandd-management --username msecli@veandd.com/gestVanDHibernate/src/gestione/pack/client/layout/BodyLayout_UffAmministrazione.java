@@ -224,7 +224,7 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 	    Button btnGestioneRdo = new Button();
 	    btnGestioneRdo.setToolTip("Gestione Dati Rdo");
 	    btnGestioneRdo.setHeight(65);
-	    btnGestioneRdo.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnGestioneRdo.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.anagrafica()));
 	    btnGestioneRdo.setIconAlign(IconAlign.BOTTOM);
 	    btnGestioneRdo.setWidth("100%");
 	    btnGestioneRdo.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -253,7 +253,7 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 	    Button btnGestioneCommessa = new Button();
 	    btnGestioneCommessa.setToolTip("Gestione Dati Commessa");
 	    btnGestioneCommessa.setHeight(65);
-	    btnGestioneCommessa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnGestioneCommessa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.anagrafica()));
 	    btnGestioneCommessa.setIconAlign(IconAlign.BOTTOM);
 	    btnGestioneCommessa.setWidth("100%");
 	    btnGestioneCommessa.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -323,6 +323,11 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
             }
         });
 	    Button btnFoglioFatturazione = new Button("Foglio Fatturazione");
+	    btnFoglioFatturazione.setToolTip("Gestione Dati Fatturazione");
+	    btnFoglioFatturazione.setHeight(65);
+	    btnFoglioFatturazione.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.anagrafica()));
+	    btnFoglioFatturazione.setIconAlign(IconAlign.BOTTOM);
+	    btnFoglioFatturazione.setWidth("100%");
 	    btnFoglioFatturazione.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	        	center.removeAll();

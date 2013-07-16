@@ -178,8 +178,7 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 	      });      
 	    configs.add(columnOreFatturate); 	
 	      
-	    
-	    	    
+	    	    	    
 	    SummaryColumnConfig<Double> variazioneSal=new SummaryColumnConfig<Double>();		
 	    variazioneSal.setId("variazioneSal");  
 	    variazioneSal.setHeader("Variazione SAL");  

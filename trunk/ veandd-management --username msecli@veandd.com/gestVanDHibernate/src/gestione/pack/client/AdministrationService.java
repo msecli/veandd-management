@@ -23,6 +23,7 @@ import gestione.pack.client.model.CommessaModel;
 import gestione.pack.client.model.DatiFatturazioneCommessaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.FoglioFatturazioneModel;
+import gestione.pack.client.model.GestioneRdoCommesse;
 import gestione.pack.client.model.GiustificativiModel;
 import gestione.pack.client.model.IntervalliCommesseModel;
 import gestione.pack.client.model.IntervalliIUModel;
@@ -299,7 +300,9 @@ public interface AdministrationService extends RemoteService {
 
 	List<CommentiModel> getAllCommenti()throws IllegalArgumentException;
 
-	boolean deleteCommento(int d);
+	boolean deleteCommento(int d)throws IllegalArgumentException;
+
+	List<GestioneRdoCommesse> getAllRdoCommesse()throws IllegalArgumentException;
 
 	
 	

@@ -597,4 +597,6 @@ public class ClientUtility {
 		return arrotondato;
 	}
 	
+	
+	
 }
