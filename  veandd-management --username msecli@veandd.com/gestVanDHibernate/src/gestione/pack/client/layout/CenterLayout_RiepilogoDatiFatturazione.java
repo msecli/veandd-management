@@ -85,7 +85,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			setBorders(false);
 			setFrame(true);
 			setScrollMode(Scroll.AUTO);
-			setSize(w-180, h-50);
+			setSize(w-140, h-50);
 		//	setPosition(3, 3);
 			setLayout(new FitLayout());
 			
@@ -165,13 +165,15 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			store.groupBy("pm");
 			    
 		    GroupSummaryView summary = new GroupSummaryView();  
-		    summary.setForceFit(true);  
+		    summary.setForceFit(false);  
 		    summary.setShowGroupedColumn(false);  
-			    
+			   
+		    		    
 		    gridRiepilogo= new EditorGrid<DatiFatturazioneMeseModel>(store, cm);  
 		    gridRiepilogo.setBorders(false);  
 		    gridRiepilogo.setView(summary);  
-		    gridRiepilogo.getView().setShowDirtyCells(false);	 	    
+		    gridRiepilogo.getView().setShowDirtyCells(false);
+		    
 			   		   	    	   
 		  	add(gridRiepilogo);			
 		}
@@ -212,7 +214,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			column=new SummaryColumnConfig<Double>();		
 		    column.setId("numeroCommessa");  
 		    column.setHeader("Commessa");  
-		    column.setWidth(110);  
+		    column.setWidth(70);  
 		    column.setRowHeader(true);  
 		    column.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
 				@Override
@@ -366,7 +368,15 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					return number.format(n);
 				}  	
 			});
-		   configs.add(margine);		
+		   configs.add(margine);	
+		   
+		   SummaryColumnConfig<Double> note=new SummaryColumnConfig<Double>();		
+		   note.setId("note");  
+		   note.setHeader("Note");  
+		   note.setWidth(200);    
+		   note.setRowHeader(true);  
+		   note.setAlignment(HorizontalAlignment.RIGHT);  	
+		   configs.add(note);
 		return configs;
 		}
 
