@@ -694,7 +694,7 @@ public class PanelCommessa extends LayoutContainer {
 		smplcmbxTipoCommessa=new SimpleComboBox<String>();
 		smplcmbxTipoCommessa.setFieldLabel("Tipo. Commessa");
 		smplcmbxTipoCommessa.setName("tipoCommessa");
-		smplcmbxTipoCommessa.setAllowBlank(true);
+		smplcmbxTipoCommessa.setAllowBlank(false);
 		 for(String l : DatiComboBox.getTipoCommessa()){
 		    	smplcmbxTipoCommessa.add(l);}
 		smplcmbxTipoCommessa.setTriggerAction(TriggerAction.ALL);
@@ -1034,7 +1034,7 @@ public class PanelCommessa extends LayoutContainer {
 				if(result!=null){
 					smplcmbxPM.add(result);
 					smplcmbxPM.recalculate();
-					smplcmbxPM.add("Tutti");
+					//smplcmbxPM.add("Tutti");
 				}else Window.alert("error: Errore durante l'accesso ai dati PM.");			
 			}
 		});	

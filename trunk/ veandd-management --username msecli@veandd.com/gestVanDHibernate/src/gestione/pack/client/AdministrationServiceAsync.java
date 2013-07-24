@@ -278,11 +278,11 @@ public interface AdministrationServiceAsync {
 	void setRiepilogoOreOnSession(List<RiepilogoFoglioOreModel> lista,
 			AsyncCallback<Boolean> asyncCallback);
 
-	void getRiepilogoGiornalieroCommesse(String username, Date data,
+	void getRiepilogoGiornalieroCommesse(int idDip, String username, Date data,
 			AsyncCallback<List<RiepilogoOreDipCommesseGiornaliero>> asyncCallback);
 
 	void getRiepilogoMeseFoglioOre(Date value, String pm, String sede,
-			AsyncCallback<List<RiepilogoFoglioOreModel>> asyncCallback);
+			String cognome, AsyncCallback<List<RiepilogoFoglioOreModel>> asyncCallback);
 
 	void confermaGiorniDipendente(String username, Date data, AsyncCallback<Boolean> asyncCallback);
 

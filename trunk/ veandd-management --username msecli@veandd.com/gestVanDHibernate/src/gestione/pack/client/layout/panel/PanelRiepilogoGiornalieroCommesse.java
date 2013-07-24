@@ -6,7 +6,9 @@ import gestione.pack.client.model.RiepilogoOreDipCommesseGiornaliero;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
 import gestione.pack.client.utility.MyImages;
+import gestione.pack.server.ServerUtility;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,6 +37,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 
 import com.google.gwt.user.client.Element;
@@ -50,9 +53,11 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	private GroupingStore<RiepilogoOreDipCommesseGiornaliero>store = new GroupingStore<RiepilogoOreDipCommesseGiornaliero>();
 	private Grid<RiepilogoOreDipCommesseGiornaliero> gridRiepilogo;
 	private ColumnModel cmCommessa;
-	private String username= new String();
+	private String username= "";
 	private Date data;
 	private Button btnPrint= new Button();
+	private int idDip;
+	private String tipoL="0"; 
 	
 	com.google.gwt.user.client.ui.Button btnPrint1 = new com.google.gwt.user.client.ui.Button("Stampa");
 	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
@@ -64,6 +69,26 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 		
 	}
 			
+	public PanelRiepilogoGiornalieroCommesse(int id, String anno, String mese, String tipo) {//tipo 1
+		idDip=id;
+		
+		mese=mese.substring(0,1).toLowerCase()+mese.substring(1,mese.length());
+		mese=ClientUtility.traduciMeseToNumber(mese);
+		
+		Date retVal = null;
+	        try
+	        {
+	            retVal = DateTimeFormat.getFormat( "MM-yyyy" ).parse(mese+"-"+anno);
+	        }
+	        catch ( Exception e )
+	        {
+	            retVal = null;
+	        }
+		
+	    data=retVal;
+		tipoL=tipo;
+	}
+
 	protected void onRender(Element target, int index) {  
 	    super.onRender(target, index);
 	
@@ -113,7 +138,8 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 			}	
 		});		
 		
-		fp.add(btnPrint);
+		if(tipoL.compareTo("0")==0)
+			fp.add(btnPrint);
 		fp.setMethod(FormPanel.METHOD_POST);
 	    fp.setAction(url);
 	    fp.addSubmitCompleteHandler(new FormSubmitCompleteHandler());  
@@ -123,7 +149,7 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 		cntpnlGrid.setLayout(new FitLayout());  
 		cntpnlGrid.setHeaderVisible(false);
 		cntpnlGrid.setWidth(500);
-		cntpnlGrid.setHeight(500);
+		cntpnlGrid.setHeight(630);
 		cntpnlGrid.setScrollMode(Scroll.AUTOY);
 				
 		caricaTabellaDati();
@@ -156,7 +182,7 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 		cntpnlLayout.setCollapsible(false);
 		cntpnlLayout.setExpanded(true);
 		cntpnlLayout.setHeading("Riepilogo Giornaliero.");
-		cntpnlLayout.setSize(515, 545);
+		cntpnlLayout.setSize(515, 650);
 		cntpnlLayout.setFrame(true);
 		cntpnlLayout.add(fp);
 		cntpnlLayout.add(cntpnlGrid);
@@ -169,7 +195,8 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 
 
 	private void caricaTabellaDati() {
-		AdministrationService.Util.getInstance().getRiepilogoGiornalieroCommesse(username, data,  new AsyncCallback<List<RiepilogoOreDipCommesseGiornaliero>>() {	
+		
+		AdministrationService.Util.getInstance().getRiepilogoGiornalieroCommesse(idDip, username, data,  new AsyncCallback<List<RiepilogoOreDipCommesseGiornaliero>>() {	
 			@Override
 			public void onSuccess(List<RiepilogoOreDipCommesseGiornaliero> result) {
 				if(result==null)

@@ -324,7 +324,13 @@ public class BodyLayout_Direzione extends LayoutContainer {
 	        	center.layout(true);               
             }
         });
-	    Button btnFoglioFatturazione = new Button("Foglio Fatturazione");
+	    
+	    Button btnFoglioFatturazione = new Button();
+	    btnFoglioFatturazione.setToolTip("Gestione Dati Fatturazione");
+	    btnFoglioFatturazione.setHeight(65);
+	    btnFoglioFatturazione.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.anagrafica()));
+	    btnFoglioFatturazione.setIconAlign(IconAlign.BOTTOM);
+	    btnFoglioFatturazione.setWidth("100%");
 	    btnFoglioFatturazione.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	        	center.removeAll();

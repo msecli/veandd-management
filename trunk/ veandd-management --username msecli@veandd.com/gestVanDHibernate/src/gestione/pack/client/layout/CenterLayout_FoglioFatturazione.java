@@ -8,8 +8,7 @@ import java.util.List;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.layout.panel.DialogRiepilogoDatiFoglioFatturazione;
-import gestione.pack.client.layout.panel.DialogRiepilogoDettOreDip;
-import gestione.pack.client.model.RiepilogoOreDipCommesse;
+import gestione.pack.client.layout.panel.PanelRiepilogoGiornalieroCommesse;
 import gestione.pack.client.model.RiepilogoOreDipFatturazione;
 import gestione.pack.client.model.RiepilogoOreTotaliCommesse;
 import gestione.pack.client.utility.ClientUtility;
@@ -18,7 +17,6 @@ import gestione.pack.client.utility.MyImages;
 import gestione.pack.client.model.FoglioFatturazioneModel;
 
 import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -35,6 +33,7 @@ import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
@@ -83,8 +82,7 @@ public CenterLayout_FoglioFatturazione(){}
 	private boolean trovato=true;
 	private String numCommessa= "";
 	private String numEstensione= "";
-	
-	
+		
 	protected void onRender(Element target, int index) {  
 	    super.onRender(target, index);
 
@@ -275,6 +273,7 @@ public CenterLayout_FoglioFatturazione(){}
 		private Grid<RiepilogoOreDipFatturazione> gridRiepilogo;
 		private ColumnModel cm;
 		private boolean nuovo=true;	
+		private int idDip;
 		
 		private Button btnShowDettaglioOre;
 		
@@ -303,7 +302,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    summary.setForceFit(true);  
 		    summary.setShowGroupedColumn(false);
 		    summary.setStartCollapsed(true);
-		   		
+		    		   		
 		    gridRiepilogo= new Grid<RiepilogoOreDipFatturazione>(store, cm);  
 		    gridRiepilogo.setItemId("grid");
 		    gridRiepilogo.setBorders(false);  
@@ -314,13 +313,15 @@ public CenterLayout_FoglioFatturazione(){}
 		    gridRiepilogo.setView(summary);
 		    
 		    gridRiepilogo.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+		   
 		    gridRiepilogo.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<RiepilogoOreDipFatturazione>>() {  
 		          public void handleEvent(SelectionChangedEvent<RiepilogoOreDipFatturazione> be) {  
 		        	
 		            if (be.getSelection().size() > 0) {      
 		            	String commessa= new String();
 		            	commessa=be.getSelectedItem().getNumeroCommessa();
-		            			            	
+		            		
+		            	idDip=be.getSelectedItem().get("idDip");
 		            	numCommessa=commessa.substring(0,commessa.indexOf("."));
 		            	numEstensione=commessa.substring(commessa.indexOf(".")+1, commessa.indexOf("(")-1);		
 		            		            	
@@ -337,8 +338,9 @@ public CenterLayout_FoglioFatturazione(){}
 		                
 		           }
 		         }
-		    }); 		   
+		    });
 		    
+		   		    
 		    ToolBar tlbrRiepilogoOre= new ToolBar();
 		    
 		    btnShowDettaglioOre= new Button();
@@ -352,18 +354,19 @@ public CenterLayout_FoglioFatturazione(){}
 				public void componentSelected(ButtonEvent ce) {
 					
 					String meseRif= new String(); 
-					String anno=smplcmbxAnno.getRawValue().toString();
-					String data= new String();
+					String anno=smplcmbxAnno.getRawValue().toString();		
 					meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
-					data=meseRif+anno;
-					
-					DialogRiepilogoDettOreDip d= new DialogRiepilogoDettOreDip(data, smplcmbxPM.getRawValue().toString());
+									
+					Dialog d= new Dialog();
+					d.setSize(550, 700);
+					d.setButtons("");
+					d.add(new PanelRiepilogoGiornalieroCommesse(idDip, anno, meseRif, "1")); //tipo indica da quale layout creo la classe
 					d.show();
 				}
 
 			});
 		    
-		   // tlbrRiepilogoOre.add(btnShowDettaglioOre);
+		    tlbrRiepilogoOre.add(btnShowDettaglioOre);
 		    
 		    ContentPanel cntpnlGrid= new ContentPanel();
 		    cntpnlGrid.setBodyBorder(false);  
@@ -577,7 +580,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    
 		    btnSalva= new Button();
 		    btnSalva.setEnabled(false);
-		    btnSalva.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.save1()));
+		    btnSalva.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.save()));
 		    btnSalva.setToolTip("Salva");
 		    btnSalva.setIconAlign(IconAlign.TOP);
 		    btnSalva.setSize(26, 26);
@@ -585,8 +588,8 @@ public CenterLayout_FoglioFatturazione(){}
 				@Override
 				public void componentSelected(ButtonEvent ce) {
 					//CntpnlDatiFatturazioneOrdine cp= new CntpnlDatiFatturazioneOrdine();
-					HorizontalPanel hp= new HorizontalPanel();
-					hp=hpLayout;
+					//HorizontalPanel hp= new HorizontalPanel();
+					//hp=hpLayout;
 					
 					//cp=(CntpnlDatiFatturazioneOrdine) hp.getItemByItemId("panelDatiFatturazione");
 					if(txtfldOreDaFatturare.isValid()&&txtfldVariazioneSAL.isValid()&&txtfldVariazionePCL.isValid()){
@@ -1053,7 +1056,7 @@ public CenterLayout_FoglioFatturazione(){}
 			    	  		String delta= new String();
 			    	  		String variazionePCL= new String();
 			    	  		String totaleEuro=new String();
-			    	  		String decimali= new String();
+			    	  		//String decimali= new String();
 			    	  		
 			    	  		txtPclTotale.setValue("0.00");
 			    	  		NumberFormat number = NumberFormat.getFormat("0.00");
@@ -1113,7 +1116,7 @@ public CenterLayout_FoglioFatturazione(){}
 				    	  		String delta= new String();
 				    	  		String variazionePCL= new String();
 				    	  		String totaleEuro=new String();
-				    	  		String decimali= new String();
+				    	  		//String decimali= new String();
 				    	  		
 				    	  		txtPclTotale.setValue("0.00");
 				    	  		NumberFormat number = NumberFormat.getFormat("0.00");

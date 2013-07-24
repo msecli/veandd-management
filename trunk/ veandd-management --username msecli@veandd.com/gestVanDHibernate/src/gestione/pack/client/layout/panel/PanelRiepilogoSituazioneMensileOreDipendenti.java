@@ -65,10 +65,11 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	private ColumnModel cmCommessa;
 	private Date data;
 	private String username;
+	private String cognome="";
 	
-	private GroupingStore<RiepilogoFoglioOreModel> storeCompleto= new GroupingStore<RiepilogoFoglioOreModel>();
+	//private GroupingStore<RiepilogoFoglioOreModel> storeCompleto= new GroupingStore<RiepilogoFoglioOreModel>();
 	private GroupingStore<RiepilogoFoglioOreModel> storeResult= new GroupingStore<RiepilogoFoglioOreModel>();
-	private List<RiepilogoFoglioOreModel> lista= new ArrayList<RiepilogoFoglioOreModel>();
+	//private List<RiepilogoFoglioOreModel> lista= new ArrayList<RiepilogoFoglioOreModel>();
 	private PanelRichiesteDipendenti p;
 	
 	private SimpleComboBox<String> smplcmbxPM;
@@ -134,8 +135,8 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	  	
 	  	txtfldSearch= new TextField<String>();
 	  	txtfldSearch.setStyleAttribute("padding-left", "2px");
-	  	txtfldSearch.setEmptyText("Cerca Dipendente..");
-	  	txtfldSearch.addKeyListener(new KeyListener(){
+	  	txtfldSearch.setEmptyText("Ricerca per Cognome..");
+	  	/*txtfldSearch.addKeyListener(new KeyListener(){
 	    	 public void componentKeyUp(ComponentEvent event) {
 	    		 
 	    		 if(txtfldSearch.getRawValue().isEmpty()){
@@ -158,13 +159,24 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	    		 } 
 	    	 }	    	  	 
 	  	});	
-	  	
+	  	*/
 	  	btnSearch= new Button();
 	  	btnSearch.setStyleAttribute("padding-left", "4px");
 	  	btnSearch.setStyleAttribute("padding-bottom", "2px");
 	  	btnSearch.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.search()));
 		btnSearch.setIconAlign(IconAlign.TOP);
-		btnSearch.setEnabled(false);
+		btnSearch.setToolTip("Inserire il cognome.");
+		btnSearch.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				cognome= txtfldSearch.getValue().toString();
+				cognome= cognome.substring(0, 1).toUpperCase()+cognome.substring(1, cognome.length());
+				
+				caricaTabellaDati();
+				
+			}
+		});
 	  	
 	  	btnConferma= new Button();
 	  	btnConferma.setStyleAttribute("padding-left", "2px");
@@ -388,7 +400,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 		String sede= smplcmbxSede.getRawValue().toString();
 		
 		AdministrationService.Util.getInstance().getRiepilogoMeseFoglioOre(dtfldDataRiferimento.getValue(),
-				pm, sede,  new AsyncCallback<List<RiepilogoFoglioOreModel>>() {	
+				pm, sede, cognome,  new AsyncCallback<List<RiepilogoFoglioOreModel>>() {	
 			
 			@Override
 			public void onSuccess(List<RiepilogoFoglioOreModel> result) {
@@ -417,9 +429,9 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 			gridRiepilogo.reconfigure(store, cmCommessa);	
 			
 			storeResult.removeAll();
-			storeCompleto.removeAll();
+			//storeCompleto.removeAll();
 			storeResult.add(store.getModels());
-			storeCompleto.add(store.getModels());
+			//storeCompleto.add(store.getModels());
 		} catch (NullPointerException e) {
 			Window.alert("error: Impossibile effettuare il caricamento dati in tabella.");
 				e.printStackTrace();

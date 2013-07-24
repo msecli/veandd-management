@@ -13,7 +13,8 @@ public class DatiFatturazioneMeseModel extends BaseModel implements IsSerializab
 	public DatiFatturazioneMeseModel(){}
 	
 	public  DatiFatturazioneMeseModel(String pm, String commessa, String cliente, String oggettoAttivita, Float oreEseguite, 
-			Float oreFatturate, Float tariffaOraria, Float importo, Float variazioneSal, Float variazionePcl, Float oreScaricate, Float margine){
+			Float oreFatturate, Float tariffaOraria, Float importo, Float variazioneSal, Float variazionePcl, 
+			Float oreScaricate, Float margine, String note){
 		set("pm", pm);
 		set("numeroCommessa", commessa);
 		set("cliente", cliente);
@@ -26,6 +27,7 @@ public class DatiFatturazioneMeseModel extends BaseModel implements IsSerializab
 		set("importo",importo);
 		set("oreScaricate", oreScaricate);
 		set("margine", margine);
+		set("note", note);
 	}
 	
 	public String getPM(){
