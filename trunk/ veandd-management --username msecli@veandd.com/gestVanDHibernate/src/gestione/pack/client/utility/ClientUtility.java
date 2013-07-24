@@ -596,6 +596,30 @@ public class ClientUtility {
 		arrotondato=(ore+":"+minuti);
 		return arrotondato;
 	}
+
+
+	public static float calcolaImporto(String tariffa, String totOre) {
+		String ore= new String();
+		String minuti= new String();
+		
+		ore=totOre.substring(0,totOre.indexOf("."));
+		minuti=totOre.substring(totOre.indexOf(".")+1, totOre.length());
+		
+		
+		if(minuti.compareTo("15")==0)
+			minuti="25";
+		else
+		if(minuti.compareTo("30")==0)
+			minuti="50";
+		else
+		if(minuti.compareTo("45")==0)
+			minuti="75";
+		else minuti="0";
+		
+		totOre=ore+"."+minuti;
+		
+		return Float.valueOf(totOre)*Float.valueOf(tariffa);
+	}
 	
 	
 	
