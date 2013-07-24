@@ -1190,13 +1190,62 @@ public class ServerUtility {
 		if(trovata)
 			return false;
 		else
-			return true;
-				
+			return true;				
 	}
-	public static void orderLista(List<FoglioFatturazione> listaFF) {
-		// TODO Auto-generated method stub
 		
+	
+	public static boolean isPrecedente(String periodoFF, String periodoRif) {
+		
+		String annoFF=periodoFF.substring(3,7);
+		String meseFF=periodoFF.substring(0, 3);
+			
+		String annoRif=periodoRif.substring(3,7);
+		String meseRif=periodoRif.substring(0, 3);
+		
+		Date data= new Date();
+		Date data1= new Date();
+		
+	    meseFF=(meseFF.substring(0,1).toLowerCase()+meseFF.substring(1,3));
+	    meseRif=(meseRif.substring(0,1).toLowerCase()+meseRif.substring(1,3));
+	    
+	    DateFormat  formatter = new SimpleDateFormat("MMMyyyy", Locale.ITALIAN);
+	    	    
+		try {			
+			data= formatter.parse(meseFF+annoFF);
+			data1= formatter.parse(meseRif+annoRif);
+			
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		if(data.before(data1)||data.equals(data1))
+			return true;
+		else
+			return false;
 	}
 	
+	
+	public static float calcolaImporto(String tariffa, String totOre) {
+		String ore= new String();
+		String minuti= new String();
+		
+		ore=totOre.substring(0,totOre.indexOf("."));
+		minuti=totOre.substring(totOre.indexOf(".")+1, totOre.length());
+		
+		
+		if(minuti.compareTo("15")==0)
+			minuti="25";
+		else
+		if(minuti.compareTo("30")==0)
+			minuti="50";
+		else
+		if(minuti.compareTo("45")==0)
+			minuti="75";
+		else minuti="0";
+		
+		totOre=ore+"."+minuti;
+		
+		return Float.valueOf(totOre)*Float.valueOf(tariffa);
+	}	
 }
 
