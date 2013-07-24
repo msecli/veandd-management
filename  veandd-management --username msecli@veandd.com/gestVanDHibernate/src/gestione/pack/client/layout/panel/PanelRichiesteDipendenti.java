@@ -88,7 +88,7 @@ public class PanelRichiesteDipendenti extends LayoutContainer{
 	  	toolBar.add(btnDeleteRichiesta);
 	  	
 		ContentPanel cntpnlGrid= new ContentPanel();
-		cntpnlGrid.setBodyBorder(false);         
+		cntpnlGrid.setBorders(false);         
 		cntpnlGrid.setLayout(new FitLayout());  
 		cntpnlGrid.setHeaderVisible(false);
 		cntpnlGrid.setWidth(630);
@@ -148,7 +148,7 @@ public class PanelRichiesteDipendenti extends LayoutContainer{
 		
 		cntpnlLayout.add(cntpnlGrid);
 		
-		add(cntpnlLayout, new FitData(0, 0, 0, 10));
+		add(cntpnlGrid, new FitData(0, 0, 0, 10));
 		    
 	}
 

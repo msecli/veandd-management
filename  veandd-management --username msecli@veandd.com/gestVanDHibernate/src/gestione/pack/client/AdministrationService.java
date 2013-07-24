@@ -289,10 +289,10 @@ public interface AdministrationService extends RemoteService {
 	boolean setRiepilogoOreOnSession(List<RiepilogoFoglioOreModel> lista)throws IllegalArgumentException;
 
 	List<RiepilogoOreDipCommesseGiornaliero> getRiepilogoGiornalieroCommesse(
-			String username, Date data)throws IllegalArgumentException;
+			int idDip, String username, Date data);
 
 	List<RiepilogoFoglioOreModel> getRiepilogoMeseFoglioOre(Date value,
-			String pm, String sede)throws IllegalArgumentException;
+			String pm, String sede, String cognome);
 
 	boolean confermaGiorniDipendente(String username, Date data) throws IllegalArgumentException;
 
