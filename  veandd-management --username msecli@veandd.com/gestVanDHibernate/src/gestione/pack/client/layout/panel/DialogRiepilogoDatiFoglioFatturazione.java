@@ -62,6 +62,8 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 		}
 		
 		store.groupBy("numeroCommessa");
+		store.setSortField("mese");
+		//store.setSortDir(SortDir.ASC);
 			    
 		GroupSummaryView summary = new GroupSummaryView();  
 		summary.setForceFit(false);  
@@ -102,6 +104,13 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 	    column.setWidth(140);  
 	    column.setRowHeader(true);  
 	    configs.add(column); 
+	    
+	    column=new SummaryColumnConfig<Double>();		
+	    column.setId("estensione");  
+		column.setHeader("Estens.");  
+		column.setWidth(60);  
+		column.setRowHeader(true);
+		configs.add(column);
 	    
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("mese");  
@@ -149,7 +158,7 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 	    
 	    SummaryColumnConfig<Double> columnOreFatturate=new SummaryColumnConfig<Double>();		
 	    columnOreFatturate.setId("oreFatturate");  
-	    columnOreFatturate.setHeader("Ore Fatturate");  
+	    columnOreFatturate.setHeader("Ore da Fatturare");  
 	    columnOreFatturate.setWidth(100);    
 	    columnOreFatturate.setRowHeader(true); 
 	    columnOreFatturate.setSummaryType(SummaryType.SUM);  
@@ -301,7 +310,7 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 		try {
 			store.removeAll();
 			store.add(result);
-			store.groupBy("numeroCommessa");
+			//store.groupBy("numeroCommessa");
 			gridRiepilogo.reconfigure(store, cm);
 	    		    	
 		} catch (NullPointerException e) {
