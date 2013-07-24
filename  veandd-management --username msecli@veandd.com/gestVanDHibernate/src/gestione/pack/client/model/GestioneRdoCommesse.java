@@ -1,5 +1,7 @@
 package gestione.pack.client.model;
 
+import java.util.Date;
+
 import com.extjs.gxt.ui.client.data.BaseModel;
 
 public class GestioneRdoCommesse extends BaseModel {
@@ -9,32 +11,38 @@ private static final long serialVersionUID = 1L;
 
     public GestioneRdoCommesse() {
     }
-    
-    public GestioneRdoCommesse(int idRdo, int idCommessa,String cliente, String pm, String commessa, String salAttuale, 
-    		String pclAttuale, String tariffaSalPcl, String numeroRdo,  String numOfferta, 
-    		String numOrdine,   String tariffaOraria,  String numeroOre, String numeroOreResidue, String statoCommessa, String statoOrdine)
-    {
-    	set("idRdo", idRdo);
+
+	public GestioneRdoCommesse(int idRdo, int idCommessa, String cliente,
+			String pm, String numCommessa, String estensioneCommessa,
+			String statoCommessa, String tipologiaCommessa,
+			String tariffaSalPcl, String oreLavoroCommessa, String descrizione,
+			String numRdo, String numOfferta, String numOrdine,
+			String statoOrdine, String tariffaOrdine, String oreOrdine,
+			Date dataOrdine) {
+		
+		set("idRdo", idRdo);
     	set("idCommessa", idCommessa);
     	set("cliente", cliente);
     	set("pm", pm);
-    	set("numeroCommessa", commessa);
+    	set("numeroCommessa", numCommessa);
+    	set("estensioneCommessa", estensioneCommessa);
     	set("tariffaSalPcl", tariffaSalPcl);
-    	set("salAttuale", salAttuale);
-    	set("pclAttuale", pclAttuale);
+    	set("statoCommessa", statoCommessa);
+    	set("oreLavoroCommessa", oreLavoroCommessa);
+    	set("tipologiaCommessa", tipologiaCommessa);
+    	set("descrizione", descrizione);
     	
-    	set("numeroRdo",numeroRdo); 
+    	set("numeroRdo",numRdo); 
     	set("numeroOfferta", numOfferta);
     	set("numeroOrdine", numOrdine);
-    	set("tariffaOraria", tariffaOraria);
-    	set("numeroOre", numeroOre);
-    	set("numeroOreResidue", numeroOreResidue);
-    	
-    	set("statoCommessa", statoCommessa);
+    	set("tariffaOraria", tariffaOrdine);
+    	set("numeroOre", oreOrdine);    	
     	set("statoOrdine", statoOrdine);
-    }
-    
-    public String getNumeroRdo(){
+    	set("dataOrdine", dataOrdine);
+	}
+
+
+	public String getNumeroRdo(){
 		return get("numeroRdo");
 	}
     
