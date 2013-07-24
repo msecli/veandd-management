@@ -191,7 +191,7 @@ public class PanelRichiesteDipendenti extends LayoutContainer{
 
 			@Override
 			public void onSuccess(List<CommentiModel> result) {
-				if(result.size()>0)
+				if(result.size()>=0)
 					load(result);			
 			}		
 		});		

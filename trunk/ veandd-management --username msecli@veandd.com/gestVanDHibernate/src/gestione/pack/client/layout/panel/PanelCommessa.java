@@ -829,6 +829,7 @@ public class PanelCommessa extends LayoutContainer {
 		txtfldSalAttuale=new TextField<String>();
 		txtfldSalAttuale.setFieldLabel("SAL Iniziale");
 		txtfldSalAttuale.setName("salAttuale");
+		txtfldSalAttuale.setAllowBlank(false);
 		txtfldSalAttuale.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
 		txtfldSalAttuale.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
 		txtfldSalAttuale.addKeyListener(new KeyListener(){
@@ -865,6 +866,7 @@ public class PanelCommessa extends LayoutContainer {
 		txtfldPclAttuale=new TextField<String>();
 		txtfldPclAttuale.setFieldLabel("PCL Iniziale");
 		txtfldPclAttuale.setName("pclAttuale");
+		txtfldPclAttuale.setAllowBlank(false);
 		txtfldPclAttuale.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
 		txtfldPclAttuale.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
 		txtfldPclAttuale.addKeyListener(new KeyListener(){
