@@ -14,11 +14,13 @@ import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.fx.Resizable;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.StoreSorter;
@@ -26,17 +28,18 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridGroupRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GroupColumnData;
 import com.extjs.gxt.ui.client.widget.grid.GroupingView;
+import com.extjs.gxt.ui.client.widget.grid.RowEditor;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -53,7 +56,13 @@ public class CenterLayout_GestioneRdoCommesseAll extends LayoutContainer {
 	private GroupingStore<GestioneRdoCommesse> storeResult= new GroupingStore<GestioneRdoCommesse>();
 	private List<GestioneRdoCommesse> listaStore= new ArrayList<GestioneRdoCommesse>();
 	private Grid<GestioneRdoCommesse> gridRiepilogo;
+	private RowEditor<GestioneRdoCommesse> re ; 
 	private ColumnModel cm;
+	
+	private Button btnRiepilogoSalPcl;
+	private Button btnRiepilogoOreOrdine;
+	
+	private String commessa;
 	
 	private int h=Window.getClientHeight();
 	private int w=Window.getClientWidth();
@@ -75,9 +84,10 @@ public class CenterLayout_GestioneRdoCommesseAll extends LayoutContainer {
 		layoutContainer.setBorders(false);
 		layoutContainer.setLayout(fl);
 			
-		LayoutContainer bodyContainer = new LayoutContainer();
+		/*LayoutContainer bodyContainer = new LayoutContainer();
 		bodyContainer.setLayout(new FlowLayout());
 		bodyContainer.setBorders(false);	
+		*/
 		
 		ContentPanel cpGrid= new ContentPanel();
 		cpGrid.setHeaderVisible(false);
@@ -131,7 +141,7 @@ public class CenterLayout_GestioneRdoCommesseAll extends LayoutContainer {
 	    		
 		GroupingView view = new GroupingView();  
 	    view.setShowGroupedColumn(false);  
-	    view.setForceFit(true);  
+	    view.setForceFit(false);  
 	    view.setGroupRenderer(new GridGroupRenderer() {  
 	      public String render(GroupColumnData data) {  
 	        String f = cm.getColumnById(data.field).getHeader();  
@@ -139,6 +149,8 @@ public class CenterLayout_GestioneRdoCommesseAll extends LayoutContainer {
 	        return f + ": " + data.group ;//+ " (" + data.models.size() + " " + l + ")";  
 	      }  
 	    }); 
+	    
+	    re= new RowEditor<GestioneRdoCommesse>();
 		
 		gridRiepilogo= new Grid<GestioneRdoCommesse>(store, cm);  
 		gridRiepilogo.setBorders(false);  
@@ -147,13 +159,31 @@ public class CenterLayout_GestioneRdoCommesseAll extends LayoutContainer {
 		gridRiepilogo.setColumnReordering(true);  
 		gridRiepilogo.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);  
 		gridRiepilogo.setView(view);
-	    
+	    gridRiepilogo.addPlugin(re);
 		gridRiepilogo.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<RdoCompletaModel>>() {  
 		      public void handleEvent(SelectionChangedEvent<RdoCompletaModel> be) {  
 		        	
 		           
 		      }     
 		});
+		
+		btnRiepilogoOreOrdine=new Button();
+		btnRiepilogoOreOrdine.setSize(26, 26);
+		btnRiepilogoOreOrdine.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.search()));
+		btnRiepilogoOreOrdine.setIconAlign(IconAlign.TOP);
+		btnRiepilogoOreOrdine.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				
+			}
+		});
+		
+		btnRiepilogoSalPcl=new Button();
+		btnRiepilogoSalPcl.setSize(26, 26);
+		btnRiepilogoSalPcl.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.search()));
+		btnRiepilogoSalPcl.setIconAlign(IconAlign.TOP);
+		
 		
 		tlbGrid.add(txtfldsearch);
 		tlbGrid.add(btnSearch);
@@ -163,10 +193,10 @@ public class CenterLayout_GestioneRdoCommesseAll extends LayoutContainer {
 		
 		layoutContainer.add(cpGrid, new FitData(3, 3, 3, 3));
 		add(layoutContainer);
-		
-		
+			
 	}
 
+	
 	private void caricaTabella() {
 		AdministrationService.Util.getInstance().getAllRdoCommesse( new AsyncCallback<List<GestioneRdoCommesse>>() {
 
@@ -190,7 +220,7 @@ public class CenterLayout_GestioneRdoCommesseAll extends LayoutContainer {
 		try {
 			store.removeAll();
 			store.setStoreSorter(new StoreSorter<GestioneRdoCommesse>());  
-		   // store.setDefaultSort("numeroCommessa", SortDir.ASC);
+		    store.setDefaultSort("pm", SortDir.ASC);
 			store.add(lista);
 			storeResult.removeAll();
 			storeCompleto.removeAll();
@@ -201,24 +231,49 @@ public class CenterLayout_GestioneRdoCommesseAll extends LayoutContainer {
 		} catch (NullPointerException e) {
 				e.printStackTrace();
 		}
-	}
-	
+	}	
 	
 	
 	private List<ColumnConfig> createColumns() {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 		
 		ColumnConfig column=new ColumnConfig();		
+	    column.setId("pm");  
+	    column.setHeader("PM");  
+	    column.setWidth(90);  
+	    column.setRowHeader(true);  
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    configs.add(column);
+		
+		column=new ColumnConfig();		
 	    column.setId("cliente");  
 	    column.setHeader("Cliente");  
 	    column.setWidth(140);  
 	    column.setRowHeader(true); 
 	    configs.add(column); 
-		
+			    	    
 	    column=new ColumnConfig();		
-	    column.setId("pm");  
-	    column.setHeader("PM");  
-	    column.setWidth(90);  
+	    column.setId("numeroOrdine");  
+	    column.setHeader("N. Ordine");  
+	    column.setWidth(80);  
+	    column.setRowHeader(true);  
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    TextField<String> txtfldNumeroOrdine= new TextField<String>();	    
+	    column.setEditor(new CellEditor(txtfldNumeroOrdine));  
+	    configs.add(column);
+	    
+	    column=new ColumnConfig();		
+	    column.setId("dataOrdine");  
+	    column.setHeader("Data Ordine");  
+	    column.setWidth(80);  
+	    column.setRowHeader(true);  
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    configs.add(column);
+	    
+	    column=new ColumnConfig();		
+	    column.setId("statoOrdine");  
+	    column.setHeader("Stato Ordine");  
+	    column.setWidth(50);  
 	    column.setRowHeader(true);  
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
@@ -226,23 +281,35 @@ public class CenterLayout_GestioneRdoCommesseAll extends LayoutContainer {
 	    column=new ColumnConfig();		
 	    column.setId("numeroCommessa");  
 	    column.setHeader("Commessa");  
-	    column.setWidth(90);  
+	    column.setWidth(70);  
 	    column.setRowHeader(true);  
 	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    TextField<String> txtfldNumeroCommessa= new TextField<String>();
+	    column.setEditor(new CellEditor(txtfldNumeroCommessa));  
 	    configs.add(column);
-	         
+	          
 	    column=new ColumnConfig();		
-	    column.setId("salAttuale");  
-	    column.setHeader("SAL Attuale");  
-	    column.setWidth(70);  
+	    column.setId("estensioneCommessa");  
+	    column.setHeader("Est.");  
+	    column.setWidth(40);  
+	    column.setRowHeader(true);  
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    TextField<String> txtfldNumeroEst= new TextField<String>();
+	    column.setEditor(new CellEditor(txtfldNumeroEst));
+	    configs.add(column);
+	    
+	    column=new ColumnConfig();		
+	    column.setId("statocommesa");  
+	    column.setHeader("Stato C.");  
+	    column.setWidth(50);  
 	    column.setRowHeader(true);  
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
 	    
 	    column=new ColumnConfig();		
-	    column.setId("pclAttuale");  
-	    column.setHeader("PCL Attuale");  
-	    column.setWidth(70);  
+	    column.setId("tipologiaCommessa");  
+	    column.setHeader("Tipo C.");  
+	    column.setWidth(50);  
 	    column.setRowHeader(true);  
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
@@ -253,38 +320,58 @@ public class CenterLayout_GestioneRdoCommesseAll extends LayoutContainer {
 	    column.setWidth(70);  
 	    column.setRowHeader(true);  
 	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    TextField<String> txtfldTariffaSalPcl= new TextField<String>();
+	    column.setEditor(new CellEditor(txtfldTariffaSalPcl));
 	    configs.add(column);
 	    
 	    column=new ColumnConfig();		
+	    column.setId("oreLavoroCommessa");  
+	    column.setHeader("Ore Lav.");  
+	    column.setWidth(60);  
+	    column.setRowHeader(true);  
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    TextField<String> txtfldOreLAvoroComm= new TextField<String>();
+	    column.setEditor(new CellEditor(txtfldOreLAvoroComm));
+	    configs.add(column);
+	          	    
+	    column=new ColumnConfig();		
 		column.setId("numeroRdo");  
-		column.setHeader("N. Rdo");  
+		column.setHeader("N. Rda");  
 		column.setWidth(80);  
 		column.setRowHeader(true); 
 		column.setAlignment(HorizontalAlignment.RIGHT); 
+		TextField<String> txtfldnumeroRdo= new TextField<String>();
+	    column.setEditor(new CellEditor(txtfldnumeroRdo));
 		configs.add(column);
 	    
+		column=new ColumnConfig();		
+		column.setId("descrizione");  
+		column.setHeader("Descrizione");  
+		column.setWidth(180);  
+		column.setRowHeader(true); 
+		column.setAlignment(HorizontalAlignment.RIGHT); 
+		TextField<String> txtfldDescrizione= new TextField<String>();
+	    column.setEditor(new CellEditor(txtfldDescrizione));
+		configs.add(column);
+		
 		column=new ColumnConfig();		
 		column.setId("numeroOfferta");  
 		column.setHeader("N. Offerta");  
 		column.setWidth(80);  
 		column.setRowHeader(true);  
 		column.setAlignment(HorizontalAlignment.RIGHT);
+		TextField<String> txtfldNumeroOfferta= new TextField<String>();
+	    column.setEditor(new CellEditor(txtfldNumeroOfferta));
 		configs.add(column);
-		    
-	    column=new ColumnConfig();		
-	    column.setId("numeroOrdine");  
-	    column.setHeader("N. Ordine");  
-	    column.setWidth(80);  
-	    column.setRowHeader(true);  
-	    column.setAlignment(HorizontalAlignment.RIGHT);
-	    configs.add(column); 
-	    
+	      	    
 	    column=new ColumnConfig();		
 	    column.setId("tariffaOraria");  
-	    column.setHeader("Tariffa");  
-	    column.setWidth(60);  
+	    column.setHeader("Tariffa Ord.");  
+	    column.setWidth(50);  
 	    column.setRowHeader(true);  
 	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    TextField<String> txtfldTariffaOraria= new TextField<String>();
+	    column.setEditor(new CellEditor(txtfldTariffaOraria));
 	    configs.add(column);
 	 	     
 	    column=new ColumnConfig();		
@@ -293,18 +380,11 @@ public class CenterLayout_GestioneRdoCommesseAll extends LayoutContainer {
 	    column.setWidth(80);  
 	    column.setRowHeader(true);  
 	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    TextField<String> txtfldNumeroOreOrdine= new TextField<String>();
+	    column.setEditor(new CellEditor(txtfldNumeroOreOrdine));
 	    configs.add(column);
-	    
-	    column=new ColumnConfig();		
-	    column.setId("numeroOreResidue");  
-	    column.setHeader("Ore Res.");  
-	    column.setWidth(80);  
-	    column.setRowHeader(true);  
-	    column.setAlignment(HorizontalAlignment.RIGHT);
-	    configs.add(column);
-	    
+	    	  	    
 	    return configs;
 	}
-	
 	
 }

@@ -322,7 +322,7 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 	        	center.layout(true);               
             }
         });
-	    Button btnFoglioFatturazione = new Button("Foglio Fatturazione");
+	    Button btnFoglioFatturazione = new Button();
 	    btnFoglioFatturazione.setToolTip("Gestione Dati Fatturazione");
 	    btnFoglioFatturazione.setHeight(65);
 	    btnFoglioFatturazione.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.anagrafica()));
@@ -336,14 +336,19 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 	      });
 	    btnFoglioFatturazione.setWidth("100%");
 	    cp.add(btnFoglioFatturazione);
-	    Button btnReportDatiFatt = new Button("Riepilogo Fatturazione");
+	    
+	    Button btnReportDatiFatt = new Button();
+	    btnReportDatiFatt.setToolTip("Riepilogo Dati Fatturazione");
+	    btnReportDatiFatt.setHeight(65);
+	    btnReportDatiFatt.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnReportDatiFatt.setIconAlign(IconAlign.BOTTOM);
+	    btnReportDatiFatt.setWidth("100%");
 	    btnReportDatiFatt.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	        	center.removeAll();
 	        	center.add(new CenterLayout_RiepilogoDatiFatturazione());
 	        	center.layout(true);}      
-	      });
-	    btnReportDatiFatt.setWidth("100%");
+	    });
 	    cp.add(btnReportDatiFatt);
 	    panel.add(cp);
 	    

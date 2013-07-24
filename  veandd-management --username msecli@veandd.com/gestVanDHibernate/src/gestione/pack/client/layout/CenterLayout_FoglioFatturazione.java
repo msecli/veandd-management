@@ -363,7 +363,7 @@ public CenterLayout_FoglioFatturazione(){}
 
 			});
 		    
-		    tlbrRiepilogoOre.add(btnShowDettaglioOre);
+		   // tlbrRiepilogoOre.add(btnShowDettaglioOre);
 		    
 		    ContentPanel cntpnlGrid= new ContentPanel();
 		    cntpnlGrid.setBodyBorder(false);  
@@ -677,8 +677,7 @@ public CenterLayout_FoglioFatturazione(){}
 				public void componentSelected(ButtonEvent ce) {
 					
 					DialogRiepilogoDatiFoglioFatturazione d= new DialogRiepilogoDatiFoglioFatturazione(commessaSelezionata);
-					d.show();
-					
+					d.show();			
 				}
 			});
 		    	    
@@ -875,15 +874,15 @@ public CenterLayout_FoglioFatturazione(){}
 			    	  		scaricate=ClientUtility.aggiornaTotGenerale(txtfldOreDaFatturare.getValue().toString(), txtfldVariazioneSAL.getValue().toString());
 			    	  		scaricate=ClientUtility.aggiornaTotGenerale(scaricate, variazionePCL);
 			    	  		txtfldOreScaricate.setValue(scaricate);
-			    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldOreScaricate.getValue().toString()));
+			    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldOreScaricate.getValue().toString()));
 			    	  		txtOreScaricate.setText("("+totaleEuro+")");
 			    	  		
 			    	  		delta=ClientUtility.calcoloDelta(scaricate, txtfldOreEseguiteRegistrate.getValue().toString());
 			    	  		txtfldDiffScaricateEseguite.setValue(delta);
-			    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldDiffScaricateEseguite.getValue().toString()));
+			    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldDiffScaricateEseguite.getValue().toString()));
 			    	  		txtMargine.setText("("+totaleEuro+")");
 							
-			    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldOreDaFatturare.getValue().toString()));				
+			    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldOreDaFatturare.getValue().toString()));				
 							txtfldTotFatturato.setValue(totaleEuro);
 							txtOreDaFatturare.setText("("+totaleEuro+")");
 			    	  	}
@@ -927,15 +926,15 @@ public CenterLayout_FoglioFatturazione(){}
 				    	  		scaricate=ClientUtility.aggiornaTotGenerale(txtfldOreDaFatturare.getValue().toString(), txtfldVariazioneSAL.getValue().toString());
 				    	  		scaricate=ClientUtility.aggiornaTotGenerale(scaricate, variazionePCL);
 				    	  		txtfldOreScaricate.setValue(scaricate);
-				    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldOreScaricate.getValue().toString()));
+				    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldOreScaricate.getValue().toString()));
 				    	  		txtOreScaricate.setText("("+totaleEuro+")");
 				    	  		
 				    	  		delta=ClientUtility.calcoloDelta(scaricate, txtfldOreEseguiteRegistrate.getValue().toString());
 				    	  		txtfldDiffScaricateEseguite.setValue(delta);
-				    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldDiffScaricateEseguite.getValue().toString()));
+				    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldDiffScaricateEseguite.getValue().toString()));
 				    	  		txtMargine.setText("("+totaleEuro+")");
 								
-				    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldOreDaFatturare.getValue().toString()));				
+				    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldOreDaFatturare.getValue().toString()));				
 								txtfldTotFatturato.setValue(totaleEuro);
 								txtOreDaFatturare.setText("("+totaleEuro+")");
 				    	  	}
@@ -966,15 +965,15 @@ public CenterLayout_FoglioFatturazione(){}
 			    	  		scaricate=ClientUtility.aggiornaTotGenerale(txtfldOreDaFatturare.getValue().toString(), txtfldVariazioneSAL.getValue().toString());
 			    	  		scaricate=ClientUtility.aggiornaTotGenerale(scaricate, variazionePCL);
 			    	  		txtfldOreScaricate.setValue(scaricate);
-			    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldOreScaricate.getValue().toString()));
+			    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldOreScaricate.getValue().toString()));
 			    	  		txtOreScaricate.setText("("+totaleEuro+")");
 			    	  		
 			    	  		delta=ClientUtility.calcoloDelta(scaricate, txtfldOreEseguiteRegistrate.getValue().toString());
 			    	  		txtfldDiffScaricateEseguite.setValue(delta);
-			    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldDiffScaricateEseguite.getValue().toString()));
+			    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldDiffScaricateEseguite.getValue().toString()));
 			    	  		txtMargine.setText("("+totaleEuro+")");
 			    	  		
-			    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldVariazioneSAL.getValue().toString()));
+			    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldVariazioneSAL.getValue().toString()));
 			    	  		txtVariazioneSal.setText("("+totaleEuro+")");
 			    	  		
 			    	  		txtSalTotale.setValue(ClientUtility.aggiornaTotGenerale(txtfldSALIniziale.getValue().toString(), txtfldVariazioneSAL.getValue().toString()));
@@ -1022,15 +1021,15 @@ public CenterLayout_FoglioFatturazione(){}
 				    	  		scaricate=ClientUtility.aggiornaTotGenerale(txtfldOreDaFatturare.getValue().toString(), txtfldVariazioneSAL.getValue().toString());
 				    	  		scaricate=ClientUtility.aggiornaTotGenerale(scaricate, variazionePCL);
 				    	  		txtfldOreScaricate.setValue(scaricate);
-				    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldOreScaricate.getValue().toString()));
+				    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldOreScaricate.getValue().toString()));
 				    	  		txtOreScaricate.setText("("+totaleEuro+")");
 				    	  		
 				    	  		delta=ClientUtility.calcoloDelta(scaricate, txtfldOreEseguiteRegistrate.getValue().toString());
 				    	  		txtfldDiffScaricateEseguite.setValue(delta);
-				    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldDiffScaricateEseguite.getValue().toString()));
+				    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldDiffScaricateEseguite.getValue().toString()));
 				    	  		txtMargine.setText("("+totaleEuro+")");
 				    	  		
-				    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldVariazioneSAL.getValue().toString()));
+				    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldVariazioneSAL.getValue().toString()));
 				    	  		txtVariazioneSal.setText("("+totaleEuro+")");
 				    	  		
 				    	  		txtSalTotale.setValue(ClientUtility.aggiornaTotGenerale(txtfldSALIniziale.getValue().toString(), txtfldVariazioneSAL.getValue().toString()));
@@ -1066,15 +1065,16 @@ public CenterLayout_FoglioFatturazione(){}
 			    	  		scaricate=ClientUtility.aggiornaTotGenerale(txtfldOreDaFatturare.getValue().toString(), txtfldVariazioneSAL.getValue().toString());
 			    	  		scaricate=ClientUtility.aggiornaTotGenerale(scaricate, variazionePCL);
 			    	  		txtfldOreScaricate.setValue(scaricate);
-			    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldOreScaricate.getValue().toString()));
+			    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldOreScaricate.getValue().toString()));
 			    	  		txtOreScaricate.setText("("+totaleEuro+")");
 			    	  		
 			    	  		delta=ClientUtility.calcoloDelta(scaricate, txtfldOreEseguiteRegistrate.getValue().toString());
 			    	  		txtfldDiffScaricateEseguite.setValue(delta);
-			    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldDiffScaricateEseguite.getValue().toString()));
+			    	  		number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldDiffScaricateEseguite.getValue().toString()));
 			    	  		txtMargine.setText("("+totaleEuro+")");
 			    	  		
-			    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldVariazionePCL.getValue().toString()));
+			    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldVariazionePCL.getValue().toString()));
+			    	  		//totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldVariazionePCL.getValue().toString()));
 			    	  		txtVariazionePcl.setText("("+totaleEuro+")");
 			    	  		
 			    	  		txtPclTotale.setValue(ClientUtility.aggiornaTotGenerale(txtfldPCLIniziale.getValue().toString(), txtfldVariazionePCL.getValue().toString()));
@@ -1125,15 +1125,15 @@ public CenterLayout_FoglioFatturazione(){}
 				    	  		scaricate=ClientUtility.aggiornaTotGenerale(txtfldOreDaFatturare.getValue().toString(), txtfldVariazioneSAL.getValue().toString());
 				    	  		scaricate=ClientUtility.aggiornaTotGenerale(scaricate, variazionePCL);
 				    	  		txtfldOreScaricate.setValue(scaricate);
-				    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldOreScaricate.getValue().toString()));
+				    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldOreScaricate.getValue().toString()));
 				    	  		txtOreScaricate.setText("("+totaleEuro+")");
 				    	  		
 				    	  		delta=ClientUtility.calcoloDelta(scaricate, txtfldOreEseguiteRegistrate.getValue().toString());
 				    	  		txtfldDiffScaricateEseguite.setValue(delta);
-				    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldDiffScaricateEseguite.getValue().toString()));
+				    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldDiffScaricateEseguite.getValue().toString()));
 				    	  		txtMargine.setText("("+totaleEuro+")");
 				    	  		
-				    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldVariazionePCL.getValue().toString()));
+				    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldVariazionePCL.getValue().toString()));
 				    	  		txtVariazionePcl.setText("("+totaleEuro+")");
 				    	  		
 				    	  		txtPclTotale.setValue(ClientUtility.aggiornaTotGenerale(txtfldPCLIniziale.getValue().toString(), txtfldVariazionePCL.getValue().toString()));
