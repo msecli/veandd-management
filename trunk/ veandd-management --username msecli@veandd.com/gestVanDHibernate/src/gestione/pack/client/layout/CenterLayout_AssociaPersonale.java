@@ -518,8 +518,7 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 				if(result==null)
 					Window.alert("error: Impossibile efettuare il caricamento dati in tabella.");
 				else	
-					loadTable(result);
-				
+					loadTable(result);			
 			}			
 
 			@Override

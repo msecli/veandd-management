@@ -47,8 +47,6 @@ public class BodyLayout_Administration extends LayoutContainer {
 	public TextField<String> txtfldRuolo= new TextField<String>();
 	
 	private int w=Window.getClientWidth();
-	private int h=Window.getClientHeight();
-	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
   	
 	public BodyLayout_Administration() {
 		setBorders(false);	
@@ -129,8 +127,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 				d.setPosition(w-500, 0);
 				d.setButtons("");
 				d.setStyleAttribute("margin", "10");
-				d.setUrl(ConstantiMSG.URLAggiornamenti);
-				
+				d.setUrl(ConstantiMSG.URLAggiornamenti);				
 				d.show();
 			}
 		});
@@ -387,6 +384,21 @@ public class BodyLayout_Administration extends LayoutContainer {
 	      });
 	    cp.add(btnGestioneRdoAll);
 	    
+	    Button btnRiepiloghiSalPcl = new Button();
+	    btnRiepiloghiSalPcl.setToolTip("All Toghether");
+	    btnRiepiloghiSalPcl.setHeight(65);
+	    btnRiepiloghiSalPcl.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.anagrafica()));
+	    btnRiepiloghiSalPcl.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepiloghiSalPcl.setWidth("100%");
+	    btnRiepiloghiSalPcl.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new CenterLayout_RiepiloghiSalPcl());
+	        	center.layout(true);}        
+	      });
+	    cp.add(btnRiepiloghiSalPcl);
+	    
+	    
 	    panel.add(cp);
 	    
 	    cp = new ContentPanel();
@@ -483,14 +495,19 @@ public class BodyLayout_Administration extends LayoutContainer {
 	      });
 	    btnFoglioFatturazione.setWidth("100%");
 	    cp.add(btnFoglioFatturazione);
-	    Button btnReportDatiFatt = new Button("Riepilogo Fatturazione");
+	    
+	    Button btnReportDatiFatt = new Button();
+	    btnReportDatiFatt.setToolTip("Gestione Dati Fatturazione");
+	    btnReportDatiFatt.setHeight(65);
+	    btnReportDatiFatt.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnReportDatiFatt.setIconAlign(IconAlign.BOTTOM);
+	    btnReportDatiFatt.setWidth("100%");
 	    btnReportDatiFatt.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	        	center.removeAll();
 	        	center.add(new CenterLayout_RiepilogoDatiFatturazione());
 	        	center.layout(true);}      
-	      });
-	    btnReportDatiFatt.setWidth("100%");
+	    });
 	    cp.add(btnReportDatiFatt);
 	    panel.add(cp);
 	    
@@ -501,7 +518,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        
 //----------------------------------------------------------------------------------------------
 	    
-	   center.add(new CenterLayout_FoglioOreSelectDipendenti()); 
+	   center.add(new CenterLayout_RiepiloghiSalPcl()); 
 	   	   
 	   container.add(north, northData);
 	   container.add(west, westData);

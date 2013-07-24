@@ -679,12 +679,12 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			txtErrore.setVisible(false);					
 		
 			//TODO modificato
-			/*if((txtSede.getText().compareTo("F")==0)&&(statoRevisione==0)){
+			if((txtSede.getText().compareTo("F")==0)&&(statoRevisione==0)){
 				enableField();					
 			}else			
 			if(txtSede.getText().compareTo("S")==0)
 				disableFldTxt();
-			*/
+			
 			txtfld1I.setItemId("1I");
 			txtfld1I.setFieldLabel("I");
 			txtfld1I.setMaxLength(5);
@@ -3133,7 +3133,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		}
 		
 		private void enableField() {						
-			/*	
+				
 			txtfld1I.setEnabled(true);
 				txtfld1U.setEnabled(true);
 				txtfld2I.setEnabled(true);
@@ -3144,12 +3144,12 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 				txtfld4U.setEnabled(true);
 				txtfld5I.setEnabled(true);
 				txtfld5U.setEnabled(true);			
-			*/
-				//TODO modficato (i vari if commentati)
-				//TODO
 			
+			
+			//TODO modficato (i vari if commentati)
+					
 			 //abilitarli solo se hanno tooltip==DIP o ==""
-			
+			/*
 			if(txtfldRuolo.getValue().compareTo("PM")==0 || txtfldRuolo.getValue().compareTo("GP")==0 
 					|| txtfldRuolo.getValue().compareTo("AMM")==0 || txtfldRuolo.getValue().compareTo("DIR")==0){
 				txtfld1I.setEnabled(true);
@@ -3190,7 +3190,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 				if(txtfld5U.getData("sorgente").toString().compareTo("DIP")==0 || txtfld5U.getData("sorgente").toString().compareTo("")==0)
 					txtfld5U.setEnabled(true);			
 			}
-			  
+			  */
 		}	
 	}
 	

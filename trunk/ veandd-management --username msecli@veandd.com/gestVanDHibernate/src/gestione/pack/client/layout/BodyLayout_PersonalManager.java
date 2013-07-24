@@ -287,6 +287,20 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	    btnRiepilogoMeseDip.setWidth("100%");
 	    cp.add(btnRiepilogoMeseDip);	 
 	    
+	    Button btnRilevColocation = new Button();
+	    btnRilevColocation.setToolTip("Rilevazione Presenze Colocation/Collaboratori");
+	    btnRilevColocation.setHeight(65);
+	    btnRilevColocation.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.rilevColocation()));
+	    btnRilevColocation.setIconAlign(IconAlign.BOTTOM);
+	    btnRilevColocation.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	          center.removeAll();
+	        	center.add(new CenterLayout_RilevazioneOreColocation());
+	        	center.layout(true);}      
+	      });
+	    btnRilevColocation.setWidth("100%");
+	    cp.add(btnRilevColocation);	 
+	    
 	    panel.add(cp);
 	    
 	    cp = new ContentPanel();
@@ -338,14 +352,19 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	      });
 	    btnFoglioFatturazione.setWidth("100%");
 	    cp.add(btnFoglioFatturazione);
-	    Button btnReportDatiFatt = new Button("Riepilogo Fatturazione");
+	    
+	    Button btnReportDatiFatt = new Button();
+	    btnReportDatiFatt.setToolTip("Riepilogo Dati Fatturazione");
+	    btnReportDatiFatt.setHeight(65);
+	    btnReportDatiFatt.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnReportDatiFatt.setIconAlign(IconAlign.BOTTOM);
+	    btnReportDatiFatt.setWidth("100%");
 	    btnReportDatiFatt.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	        	center.removeAll();
 	        	center.add(new CenterLayout_RiepilogoDatiFatturazione());
 	        	center.layout(true);}      
-	      });
-	    btnReportDatiFatt.setWidth("100%");
+	    });
 	    cp.add(btnReportDatiFatt);
 	    panel.add(cp);
 

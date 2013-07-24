@@ -475,7 +475,7 @@ private List<ColumnConfig> createColumns() {
 		txtfldCodCliente.setFieldLabel("Codice Cliente");
 		txtfldCodCliente.setName("idCliente");
 		txtfldCodCliente.setEnabled(true);
-		txtfldCodCliente.setRegex("[1-9]+");
+		txtfldCodCliente.setRegex("[0-9]+");
 		txtfldCodCliente.getMessages().setRegexText("Deve essere un numero");
 		FormData fd_txtfldCodCliente = new FormData("50%");
 		fd_txtfldCodCliente.setMargins(new Margins(0, 0, 0, 0));
