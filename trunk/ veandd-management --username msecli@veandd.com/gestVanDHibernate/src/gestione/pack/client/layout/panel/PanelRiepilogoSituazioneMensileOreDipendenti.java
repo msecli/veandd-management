@@ -355,7 +355,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 		cntpnlLayout.setCollapsible(false);
 		cntpnlLayout.setExpanded(true);
 		cntpnlLayout.setHeading("Riepilogo Giornaliero.");
-		cntpnlLayout.setSize(1190, 865);
+		cntpnlLayout.setSize(1140, 865);
 		cntpnlLayout.setScrollMode(Scroll.AUTOX);
 		cntpnlLayout.setLayout(new RowLayout(Orientation.HORIZONTAL));
 		cntpnlLayout.setFrame(true);

@@ -1228,9 +1228,16 @@ public class ServerUtility {
 	public static float calcolaImporto(String tariffa, String totOre) {
 		String ore= new String();
 		String minuti= new String();
+		Float res;
 		
-		ore=totOre.substring(0,totOre.indexOf("."));
-		minuti=totOre.substring(totOre.indexOf(".")+1, totOre.length());
+		if(totOre.indexOf(".")!=-1){
+			ore=totOre.substring(0,totOre.indexOf("."));
+			minuti=totOre.substring(totOre.indexOf(".")+1, totOre.length());
+		}
+		else{
+			ore=totOre;
+			minuti="0";
+		}
 		
 		
 		if(minuti.compareTo("15")==0)
@@ -1245,7 +1252,20 @@ public class ServerUtility {
 		
 		totOre=ore+"."+minuti;
 		
-		return Float.valueOf(totOre)*Float.valueOf(tariffa);
+		res= Float.valueOf(totOre)*Float.valueOf(tariffa);
+		return res;
+	}
+	
+	
+	public static boolean esisteCommessa(String numeroCommessa,
+			List<String> listaNomiCommesse) {
+		
+		for(String nome:listaNomiCommesse){
+			if(nome.compareTo(numeroCommessa)==0)
+				return true;				
+		}
+		
+		return false;
 	}	
 }
 

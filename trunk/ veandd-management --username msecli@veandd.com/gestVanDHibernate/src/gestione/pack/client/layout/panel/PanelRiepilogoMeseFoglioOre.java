@@ -145,7 +145,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 				Dialog d= new Dialog();
 				d.setHeaderVisible(true);
 				d.setHeading("Riepilogo dettagliato (Commesse).");
-				d.setSize(550, 700);
+				d.setSize(545, 695);
 				d.add(new PanelRiepilogoGiornalieroCommesse(username, data));
 				d.setButtons("");
 				d.show();			
@@ -212,7 +212,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 		cntpnlLayout.setExpanded(true);
 		cntpnlLayout.setHeading("Riepilogo Giornaliero.");
 		cntpnlLayout.setSize(990, 410);
-		cntpnlLayout.setScrollMode(Scroll.AUTOX);
+		cntpnlLayout.setScrollMode(Scroll.AUTO);
 		cntpnlLayout.setFrame(true);
 		cntpnlLayout.add(cntpnlGrid);
 	    
