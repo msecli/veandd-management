@@ -742,8 +742,39 @@ public CenterLayout_FoglioFatturazione(){}
 			txtfldOreResiduoOrdine.setEnabled(false);
 			
 			txtfldCostoOrario.setFieldLabel("Tariffa Oraria");
-			txtfldCostoOrario.setEnabled(false);
+			txtfldCostoOrario.setEnabled(true);
+			txtfldCostoOrario.setAllowBlank(false);
+			txtfldCostoOrario.setRegex("[1-9]{1}[0-9]+[.]{1}[0-9]+|[1-9]{1}[.]{1}[0-9]+");
 			txtfldCostoOrario.setValue("0.00");
+			txtfldCostoOrario.addKeyListener(new KeyListener(){
+				public void componentKeyDown(ComponentEvent event) { 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfldCostoOrario.getValue()==null)
+							txtfldCostoOrario.setValue("0.00");
+						else{
+							String valore= txtfldCostoOrario.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(".")==-1)
+									valore=valore+".00";
+								else{
+									int index=valore.indexOf(".");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfldCostoOrario.setValue(valore);
+						}						
+					}
+			 }
+			});
 			
 			txtfldOreEseguiteRegistrate.setFieldLabel("Ore Eseguite");
 			txtfldOreEseguiteRegistrate.setEnabled(true);
@@ -1073,7 +1104,7 @@ public CenterLayout_FoglioFatturazione(){}
 			    	  		
 			    	  		delta=ClientUtility.calcoloDelta(scaricate, txtfldOreEseguiteRegistrate.getValue().toString());
 			    	  		txtfldDiffScaricateEseguite.setValue(delta);
-			    	  		number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldDiffScaricateEseguite.getValue().toString()));
+			    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldDiffScaricateEseguite.getValue().toString()));
 			    	  		txtMargine.setText("("+totaleEuro+")");
 			    	  		
 			    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldVariazionePCL.getValue().toString()));

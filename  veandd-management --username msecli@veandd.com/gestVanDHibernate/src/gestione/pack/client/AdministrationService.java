@@ -38,6 +38,7 @@ import gestione.pack.client.model.RiepilogoOreDipCommesseGiornaliero;
 import gestione.pack.client.model.RiepilogoOreDipFatturazione;
 import gestione.pack.client.model.RiepilogoOreModel;
 import gestione.pack.client.model.RiepilogoOreTotaliCommesse;
+import gestione.pack.client.model.RiepilogoSALPCLModel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -303,6 +304,14 @@ public interface AdministrationService extends RemoteService {
 	boolean deleteCommento(int d)throws IllegalArgumentException;
 
 	List<GestioneRdoCommesse> getAllRdoCommesse()throws IllegalArgumentException;
+
+	List<RiepilogoSALPCLModel> getRiepilogoSalPcl(String data,
+			String tabSelected) throws IllegalArgumentException;
+
+	List<RiepilogoSALPCLModel> getRiepilogoSalPclRiassunto(String data,
+			String tabSelected)throws IllegalArgumentException;
+
+	boolean confermaEditCommenti(int i)throws IllegalArgumentException;
 
 	
 	

@@ -182,7 +182,35 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 
 	    panel.setLayout(new AccordionLayout());
 
+	    
 	    ContentPanel cp = new ContentPanel();
+	    cp.setAnimCollapse(false);
+	    cp.setBodyStyleName("pad-text");
+	    cp.setHeading("Gestione Presenze");
+	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent be) {
+            	center.removeAll();
+	        	center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb());
+	        	center.layout(true);               
+            }
+        });
+	    Button btnGestionePresenze = new Button();
+	    btnGestionePresenze.setToolTip("Rilevazione Presenze");
+	    btnGestionePresenze.setHeight(65);
+	    btnGestionePresenze.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.presenze()));
+	    btnGestionePresenze.setIconAlign(IconAlign.BOTTOM);
+	    btnGestionePresenze.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	          center.removeAll();
+	        	center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb());
+	        	center.layout(true);}      
+	      });
+	    btnGestionePresenze.setWidth("100%");
+	    cp.add(btnGestionePresenze);
+	    cp.setExpanded(true);
+	    panel.add(cp);
+	    
+	    cp = new ContentPanel();
 	    cp.setAnimCollapse(false);
 	    cp.setBodyStyleName("pad-text");
 	    cp.setHeading("Clienti");
@@ -250,6 +278,7 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 	        	center.layout(true);               
             }
         });
+	  	      
 	    Button btnGestioneCommessa = new Button();
 	    btnGestioneCommessa.setToolTip("Gestione Dati Commessa");
 	    btnGestioneCommessa.setHeight(65);
@@ -281,36 +310,23 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 	      });
 	    btnAssociaPersonale.setWidth("100%");
 	    cp.add(btnAssociaPersonale);
-	    panel.add(cp);
 	    
-	    
-	    cp = new ContentPanel();
-	    cp.setAnimCollapse(false);
-	    cp.setBodyStyleName("pad-text");
-	    cp.setHeading("Gestione Presenze");
-	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent be) {
-            	center.removeAll();
-	        	center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb());
-	        	center.layout(true);               
-            }
-        });
-	    Button btnGestionePresenze = new Button();
-	    btnGestionePresenze.setToolTip("Rilevazione Presenze");
-	    btnGestionePresenze.setHeight(65);
-	    btnGestionePresenze.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.presenze()));
-	    btnGestionePresenze.setIconAlign(IconAlign.BOTTOM);
-	    btnGestionePresenze.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	    Button btnRiepiloghiSalPcl = new Button();
+	    btnRiepiloghiSalPcl.setToolTip("Riepilogo SAL/PCL");
+	    btnRiepiloghiSalPcl.setHeight(65);
+	    btnRiepiloghiSalPcl.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnRiepiloghiSalPcl.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepiloghiSalPcl.setWidth("100%");
+	    btnRiepiloghiSalPcl.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
-	          center.removeAll();
-	        	center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb());
-	        	center.layout(true);}      
+	        	center.removeAll();
+	        	center.add(new CenterLayout_RiepiloghiSalPcl());
+	        	center.layout(true);}        
 	      });
-	    btnGestionePresenze.setWidth("100%");
-	    cp.add(btnGestionePresenze);
+	    cp.add(btnRiepiloghiSalPcl);
 	    
 	    panel.add(cp);
-	    
+	         
 	    cp = new ContentPanel();
 	    cp.setAnimCollapse(false);
 	    cp.setBodyStyleName("pad-text");
@@ -357,7 +373,7 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 	        
 //----------------------------------------------------------------------------------------------
 	    
-	   center.add(new CenterLayout_GestioneCommessa());
+	   center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb());
 	    
 	   container.add(north, northData);
 	   container.add(west, westData);

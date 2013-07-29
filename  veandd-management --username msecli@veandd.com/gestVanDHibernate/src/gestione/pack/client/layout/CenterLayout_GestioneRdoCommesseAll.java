@@ -62,7 +62,7 @@ public class CenterLayout_GestioneRdoCommesseAll extends LayoutContainer {
 	private Button btnRiepilogoSalPcl;
 	private Button btnRiepilogoOreOrdine;
 	
-	private String commessa;
+	//private String commessa;
 	
 	private int h=Window.getClientHeight();
 	private int w=Window.getClientWidth();
@@ -93,8 +93,8 @@ public class CenterLayout_GestioneRdoCommesseAll extends LayoutContainer {
 		cpGrid.setHeaderVisible(false);
 		cpGrid.setBorders(false);
 		cpGrid.setFrame(true);
-		cpGrid.setSize(w-180, h-75);
-		cpGrid.setPosition(3, 3);
+		cpGrid.setSize(w-180, h-55);
+		//cpGrid.setPosition(3, 3);
 		cpGrid.setScrollMode(Scroll.AUTO);
 		cpGrid.setLayout(new FitLayout());
 								

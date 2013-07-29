@@ -111,7 +111,6 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		bodyContainer.setLayout(new FlowLayout());
 		bodyContainer.setBorders(false);		
 						
-
 		ContentPanel cntpnlGuida= new ContentPanel();
 		cntpnlGuida.setHeading("?");
 		cntpnlGuida.setHeaderVisible(true);

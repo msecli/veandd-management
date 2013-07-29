@@ -149,7 +149,7 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 		cntpnlGrid.setLayout(new FitLayout());  
 		cntpnlGrid.setHeaderVisible(false);
 		cntpnlGrid.setWidth(500);
-		cntpnlGrid.setHeight(630);
+		cntpnlGrid.setHeight(605);
 		cntpnlGrid.setScrollMode(Scroll.AUTOY);
 				
 		caricaTabellaDati();
@@ -175,8 +175,8 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	    gridRiepilogo.setView(summary);  
 	    gridRiepilogo.getView().setShowDirtyCells(false);
 	    
-	    cntpnlGrid.add(gridRiepilogo);
-	    	    
+	    cntpnlGrid.add(gridRiepilogo);	   
+	    
 	    ContentPanel cntpnlLayout= new ContentPanel();
 		cntpnlLayout.setHeaderVisible(false);
 		cntpnlLayout.setCollapsible(false);
@@ -189,7 +189,7 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	    
 		bodyContainer.add(cntpnlLayout);    
 		
-		layoutContainer.add(bodyContainer, new FitData(5, 5, 5, 8));
+		layoutContainer.add(bodyContainer, new FitData(3, 3, 3, 3));
 		add(layoutContainer);    
 	}
 

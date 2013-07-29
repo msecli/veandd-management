@@ -24,6 +24,7 @@ import gestione.pack.client.model.RiepilogoOreDipCommesseGiornaliero;
 import gestione.pack.client.model.RiepilogoOreDipFatturazione;
 import gestione.pack.client.model.RiepilogoOreModel;
 import gestione.pack.client.model.RiepilogoOreTotaliCommesse;
+import gestione.pack.client.model.RiepilogoSALPCLModel;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -292,6 +293,14 @@ public interface AdministrationServiceAsync {
 	void getAllCommenti(AsyncCallback<List<CommentiModel>> asyncCallback);
 
 	void deleteCommento(int id, AsyncCallback<Boolean> asyncCallback);
+
+	void getRiepilogoSalPcl(String data, String tabSelected,
+			AsyncCallback<List<RiepilogoSALPCLModel>> asyncCallback);
+
+	void getRiepilogoSalPclRiassunto(String data, String tabSelected,
+			AsyncCallback<List<RiepilogoSALPCLModel>> asyncCallback);
+
+	void confermaEditCommenti(int i, AsyncCallback<Boolean> asyncCallback);
 
 	
 
