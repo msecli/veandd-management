@@ -166,6 +166,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	  	btnSearch.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.search()));
 		btnSearch.setIconAlign(IconAlign.TOP);
 		btnSearch.setToolTip("Inserire il cognome.");
+		btnSearch.setSize(26, 26);
 		btnSearch.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
 			@Override
@@ -183,6 +184,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	  	btnConferma.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.confirm()));
 	  	btnConferma.setIconAlign(IconAlign.TOP);
 	  	btnConferma.setToolTip("Conferma mese per singolo dipendente.");
+	  	btnConferma.setSize(26, 26);
 	  	btnConferma.addSelectionListener(new SelectionListener<ButtonEvent>() {		
 			@Override
 			public void componentSelected(ButtonEvent ce) {
@@ -210,6 +212,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	  	btnConfermaTutti.setStyleAttribute("padding-left", "2px");
 	  	btnConfermaTutti.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.confirm()));
 	  	btnConfermaTutti.setIconAlign(IconAlign.TOP);
+	  	btnConfermaTutti.setSize(26, 26);
 	  	btnConfermaTutti.setToolTip("Conferma mese per tutti i dipendenti.");
 	  	btnConfermaTutti.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
@@ -238,6 +241,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	  	btnViewFoglioOre.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.datiTimb()));
 	  	btnViewFoglioOre.setIconAlign(IconAlign.TOP);
 	  	btnViewFoglioOre.setToolTip("Modifica dati.");
+	  	btnViewFoglioOre.setSize(26, 26);
 	  	btnViewFoglioOre.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {

@@ -2,6 +2,7 @@ package gestione.pack.client.layout.panel;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.model.CommentiModel;
+import gestione.pack.client.model.RiepilogoOreTotaliCommesse;
 import gestione.pack.client.utility.MyImages;
 
 import java.util.ArrayList;
@@ -12,22 +13,21 @@ import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.core.XTemplate;
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
+import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
@@ -35,12 +35,9 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
-import com.extjs.gxt.ui.client.widget.grid.GridView;
 import com.extjs.gxt.ui.client.widget.grid.RowExpander;
-import com.extjs.gxt.ui.client.widget.grid.SummaryColumnConfig;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
@@ -50,11 +47,13 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 public class PanelRichiesteDipendenti extends LayoutContainer{
 
 	private ListStore<CommentiModel>store = new ListStore<CommentiModel>();
-	private EditorGrid<CommentiModel> gridRiepilogo;
+	private Grid<CommentiModel> gridRiepilogo;
 	private ColumnModel cmCommenti;
 	private RowExpander expander;
 	private Button btnDeleteRichiesta;
 	private Button btnSetEdit;
+	
+	private  CheckBoxSelectionModel<CommentiModel> sm = new CheckBoxSelectionModel<CommentiModel>();  
 	
 	public PanelRichiesteDipendenti(){
 		
@@ -66,47 +65,51 @@ public class PanelRichiesteDipendenti extends LayoutContainer{
 	    setItemId("pnlRiepilogo");	    
 	    setLayout(new FitLayout());	
 	    setBorders(false);
-			
+				    	    
 		btnDeleteRichiesta=new Button();
 		btnDeleteRichiesta.disable();
 		btnDeleteRichiesta.setStyleAttribute("padding-left", "4px");
 		btnDeleteRichiesta.setStyleAttribute("padding-bottom", "2px");
 		btnDeleteRichiesta.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.elimina()));
 		btnDeleteRichiesta.setIconAlign(IconAlign.TOP);
+		btnDeleteRichiesta.setSize(26, 26);
 		btnDeleteRichiesta.addSelectionListener(new SelectionListener<ButtonEvent>() {		
 			@Override
 			public void componentSelected(ButtonEvent ce) {
-				CommentiModel c=gridRiepilogo.getSelectionModel().getSelectedItem();
-				int i= c.get("id");
-				AdministrationService.Util.getInstance().deleteCommento(i, new AsyncCallback<Boolean>() {
+				List<CommentiModel> listaC= new ArrayList<CommentiModel>();
+				listaC.addAll(gridRiepilogo.getSelectionModel().getSelectedItems());
+				for(CommentiModel c:listaC){
+					int i= c.get("id");
+					AdministrationService.Util.getInstance().deleteCommento(i, new AsyncCallback<Boolean>() {
 
-					@Override
-					public void onFailure(Throwable caught) {
-						Window.alert("Errore di connessione on deleteCommento();");
+						@Override
+						public void onFailure(Throwable caught) {
+							Window.alert("Errore di connessione on deleteCommento();");
 						
-					}
+						}
 
-					@Override
-					public void onSuccess(Boolean result) {
-						caricaTabella();						
-					}
-				});			
+						@Override
+						public void onSuccess(Boolean result) {
+							caricaTabella();						
+						}
+					});			
+				}
 			}
 		});
 		
 		btnSetEdit= new Button();
 		btnSetEdit.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.confirm()));
 		btnSetEdit.setIconAlign(IconAlign.TOP);
+		btnSetEdit.setSize(26, 26);
 		btnSetEdit.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			
 			@Override
 			public void componentSelected(ButtonEvent ce) {
 				
-				List<CommentiModel> list= new ArrayList<CommentiModel>();
-				List<Record> listR=new ArrayList<Record>();
- 				listR.addAll(store.getModifiedRecords());
- 				for(Record r:listR){
- 					CommentiModel c=(CommentiModel) r.getModel();
+				List<CommentiModel> listaC= new ArrayList<CommentiModel>();
+				listaC.addAll(gridRiepilogo.getSelectionModel().getSelectedItems());
+				 				
+ 				for(CommentiModel c:listaC){
  					int i=c.get("id");
  					AdministrationService.Util.getInstance().confermaEditCommenti(i, new AsyncCallback<Boolean>() {
 
@@ -126,8 +129,7 @@ public class PanelRichiesteDipendenti extends LayoutContainer{
 						}
 					});
  					
- 				}
- 								
+ 				}			
 			}
 		});
 	  	  	
@@ -155,16 +157,17 @@ public class PanelRichiesteDipendenti extends LayoutContainer{
 		}	
 	    
 	    	        	  	    
-	    gridRiepilogo= new EditorGrid<CommentiModel>(store, cmCommenti);  
+	    gridRiepilogo= new Grid<CommentiModel>(store, cmCommenti);  
 	    gridRiepilogo.setItemId("grid");
 	    gridRiepilogo.setBorders(false);  
 	    gridRiepilogo.setStripeRows(true);  
 	    gridRiepilogo.setColumnLines(true);  
 	    gridRiepilogo.setColumnReordering(true);
-	    gridRiepilogo.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+	    //gridRiepilogo.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 	    gridRiepilogo.getView().setShowDirtyCells(false); 
 	    gridRiepilogo.addPlugin(expander);  
-	   // gridRiepilogo.getView().setAutoFill(true);
+	    gridRiepilogo.addPlugin(sm);
+	    gridRiepilogo.setSelectionModel(sm);
 	   
 	    gridRiepilogo.addListener(Events.CellClick, new Listener<ComponentEvent>() {
 			@Override
@@ -191,10 +194,12 @@ public class PanelRichiesteDipendenti extends LayoutContainer{
 				
 		configs.add(expander);
 		
-		CheckColumnConfig checkColumn = new CheckColumnConfig("editated", "Modificato", 65);  
+		/*CheckColumnConfig checkColumn = new CheckColumnConfig("editated", "Modificato", 65);  
 		final CellEditor checkBoxEditor = new CellEditor(new CheckBox());  
 		checkColumn.setEditor(checkBoxEditor);  
-		configs.add(checkColumn); 
+		configs.add(checkColumn);*/
+		sm.setSelectionMode(SelectionMode.SIMPLE);
+		configs.add(sm.getColumn());
 		
 		ColumnConfig column=new ColumnConfig();
 		column.setId("username");  
@@ -216,6 +221,31 @@ public class PanelRichiesteDipendenti extends LayoutContainer{
 	    column.setHeader("Richiesta");  
 	    column.setWidth(250);  
 	    column.setRowHeader(true);  	   
+	    configs.add(column);
+	    
+	    column=new ColumnConfig();
+	    column.setId("editated");
+	    column.setHeader("");
+	    column.setWidth(30);
+	    column.setRowHeader(true);
+	    column.setRenderer(new GridCellRenderer<CommentiModel>() {
+
+			@Override
+			public Object render(CommentiModel model, String property,
+					ColumnData config, int rowIndex, int colIndex,
+					ListStore<CommentiModel> store, Grid<CommentiModel> grid) {
+				
+				Boolean mod=model.get("editated");
+				if(mod==true){
+					String color = "#90EE90";                    
+					config.style = config.style + ";background-color:" + color + ";";
+				}else
+					config.style = config.style + ";background-color:" + "#FFFFFF" + ";";
+					
+				return "";
+			}
+		});
+	    
 	    configs.add(column);
 	    	    	    	    	    
 		return configs;
