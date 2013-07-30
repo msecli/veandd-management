@@ -79,7 +79,7 @@ public class PanelRiepilogoSalPclRiassunto  extends LayoutContainer{
 		cpGrid.setHeaderVisible(false);
 		cpGrid.setBorders(false);
 		cpGrid.setFrame(false);
-		cpGrid.setSize(w-225, h-140);
+		cpGrid.setSize(w-300, h-140);
 		cpGrid.setScrollMode(Scroll.AUTO);
 		cpGrid.setLayout(new FitLayout());
 								
