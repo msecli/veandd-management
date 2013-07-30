@@ -1,14 +1,11 @@
 package gestione.pack.server;
 
-import gestione.pack.shared.DatiOreMese;
 import gestione.pack.shared.Personale;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
