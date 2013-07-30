@@ -112,8 +112,8 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 
 		layoutContainer.setBorders(false);
 		layoutContainer.setLayout(fl);
-		layoutContainer.setWidth(w-225);
-		layoutContainer.setHeight(h-54);
+		//layoutContainer.setWidth(w-225);
+		//layoutContainer.setHeight(h-54);
 			
 		LayoutContainer bodyContainer = new LayoutContainer();
 		bodyContainer.setLayout(new FlowLayout());
@@ -135,7 +135,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    cntpnlGrid.setHeaderVisible(false);
 	    cntpnlGrid.setBorders(false);
 	    cntpnlGrid.setWidth(655);
-	    cntpnlGrid.setHeight(780);
+	    cntpnlGrid.setHeight(760);
 	    cntpnlGrid.setScrollMode(Scroll.AUTOY);   
 	    cntpnlGrid.setBottomComponent(toolBar);
 
@@ -253,9 +253,9 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 		
 		cpLayout.add(horizontalPanel);
 		//cntntpnlParent.add(cpLayout);
-		//bodyContainer.add(cntntpnlParent);
+		bodyContainer.add(cpLayout);
 		
-		layoutContainer.add(cpLayout, new FitData(3, 3, 3, 3));
+		layoutContainer.add(bodyContainer, new FitData(3, 3, 3, 3));
 		
 		add(layoutContainer);
 		    
