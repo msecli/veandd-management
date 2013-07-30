@@ -2,7 +2,6 @@ package gestione.pack.client.layout.panel;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.model.CommentiModel;
-import gestione.pack.client.model.RiepilogoOreTotaliCommesse;
 import gestione.pack.client.utility.MyImages;
 
 import java.util.ArrayList;
@@ -17,22 +16,15 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
-import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.RowExpander;
@@ -262,7 +254,7 @@ public class PanelRichiesteDipendenti extends LayoutContainer{
 			@Override
 			public void onSuccess(List<CommentiModel> result) {
 				if(result.size()>=0)
-					load(result);			
+					load(result);					
 			}		
 		});		
 	}
