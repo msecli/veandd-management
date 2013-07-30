@@ -409,6 +409,11 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 						e.printStackTrace();
 						controlloDati="error: Impossibile effettuare i controlli di correttezza sui dati inseriti.";
 					}
+					
+					//TODO si potrebbe pensare di introdurre uno stato di completamento del giorno: 0 compilato OK, 1 solo commesse, 2 solo I/U ed 
+					//aggiungere eventuale errore riscontrato. Nel riepilogo dei giorni potrei aggiungere il campo flag che indichi se ci sono errori
+					//salvandolo lato server 
+					
 					if(fldSetIntervalliIU.numeroInseriti()%2==0){ //controllo su intervalli compilati che siano in numero pari
 						if(controlloDati.compareTo("OK")==0){
 							AdministrationService.Util.getInstance().insertFoglioOreGiorno(username, giorno, totOreGenerale, delta, oreViaggio, oreAssRecupero, deltaOreViaggio, 
