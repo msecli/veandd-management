@@ -94,8 +94,8 @@ public class CenterLayout_AnagraficaClienti extends LayoutContainer {
 
 		layoutContainer.setBorders(false);
 		layoutContainer.setLayout(fl);
-		layoutContainer.setWidth(w-225);
-		layoutContainer.setHeight(h-54);
+		//layoutContainer.setWidth(w-225);
+		//layoutContainer.setHeight(h-54);
 			
 		LayoutContainer bodyContainer = new LayoutContainer();
 		bodyContainer.setLayout(new FlowLayout());
@@ -118,7 +118,7 @@ public class CenterLayout_AnagraficaClienti extends LayoutContainer {
 	    cntpnlGrid.setLayout(new FitLayout());  
 	    cntpnlGrid.setHeaderVisible(false);
 	    cntpnlGrid.setWidth(665);
-	    cntpnlGrid.setHeight(780);
+	    cntpnlGrid.setHeight(760);
 	    cntpnlGrid.setScrollMode(Scroll.AUTOY);
 	    	    	
 		final ListStore<ClienteModel> store = new ListStore<ClienteModel>();  	
@@ -212,10 +212,10 @@ public class CenterLayout_AnagraficaClienti extends LayoutContainer {
 		horizontalPanel.add(formPanel);
 		horizontalPanel.add(cntpnlDati);
 		cpLayout.add(horizontalPanel);
-		cntntpnlParent.add(cpLayout);
-		bodyContainer.add(cntntpnlParent);
 		
-		layoutContainer.add(cpLayout, new FitData(3, 3, 3, 3));
+		bodyContainer.add(cpLayout);
+		
+		layoutContainer.add(bodyContainer, new FitData(3, 3, 3, 3));
 		add(layoutContainer);
 		
 		

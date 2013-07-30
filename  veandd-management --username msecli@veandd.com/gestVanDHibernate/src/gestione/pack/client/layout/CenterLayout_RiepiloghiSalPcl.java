@@ -1,16 +1,13 @@
 package gestione.pack.client.layout;
 
 import java.util.Date;
-import java.util.List;
 
-import gestione.pack.client.AdministrationService;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.DatiComboBox;
 import gestione.pack.client.utility.MyImages;
 
 import gestione.pack.client.layout.panel.PanelRiepilogoSalPclMese;
 import gestione.pack.client.layout.panel.PanelRiepilogoSalPclRiassunto;
-import gestione.pack.client.model.RiepilogoSALPCLModel;
 
 import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Scroll;
@@ -33,7 +30,6 @@ import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
@@ -92,8 +88,7 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 		});
 		*/
 		Resizable r=new Resizable(cpnlContainTab);
-	    r.setMinWidth(w-200);
-	    	
+	    	    	
 	    ToolBar tlbScelte=new ToolBar();
 	    tlbScelte.setBorders(false);
 	    tlbScelte.setSpacing(5); 
@@ -176,7 +171,7 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 	   
 	    tabpnlRiepSalPcl= new TabPanel();
 	    tabpnlRiepSalPcl.setPlain(false);
-	    tabpnlRiepSalPcl.setSize(w-220, h-95);
+	    tabpnlRiepSalPcl.setSize(w-215, h-95);
 	   	    	  
 	    tbSal.setTitle("SAL");
 	    tbSal.setScrollMode(Scroll.AUTO);
