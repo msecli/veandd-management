@@ -3186,8 +3186,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 								if(Float.valueOf(parzialeOreRecuperoMese)>0 )
 									monteOreRecuperoTotale=ServerUtility.aggiornaTotGenerale(monteOreRecuperoTotale,parzialeOreRecuperoMese);
 						}
-					}
-									
+					}	
 				}		
 			}
 			
