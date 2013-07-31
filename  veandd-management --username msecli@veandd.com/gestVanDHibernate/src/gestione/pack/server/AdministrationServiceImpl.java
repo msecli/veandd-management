@@ -3175,12 +3175,16 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						if(!f.getDettaglioOreGiornalieres().isEmpty()){
 							listaGiorni.addAll(f.getDettaglioOreGiornalieres());
 							for(DettaglioOreGiornaliere d:listaGiorni){
-								parzialeOreRecuperoMese=ServerUtility.aggiornaTotGenerale(parzialeOreRecuperoMese, d.getOreAssenzeRecupero());
-									
+								parzialeOreRecuperoMese=ServerUtility.aggiornaTotGenerale(parzialeOreRecuperoMese, d.getOreAssenzeRecupero());					
 							}	
 							//se sono negative le escludo dal conteggio totale
-							if(Float.valueOf(parzialeOreRecuperoMese)>0)
+							//ma se le negative sono nel mese corrente le devo considerare
+														
+							if(Float.valueOf(parzialeOreRecuperoMese)<0 && f.getMeseRiferimento().compareTo(data)==0)
 								monteOreRecuperoTotale=ServerUtility.aggiornaTotGenerale(monteOreRecuperoTotale,parzialeOreRecuperoMese);
+							else
+								if(Float.valueOf(parzialeOreRecuperoMese)>0 )
+									monteOreRecuperoTotale=ServerUtility.aggiornaTotGenerale(monteOreRecuperoTotale,parzialeOreRecuperoMese);
 						}
 					}
 									
