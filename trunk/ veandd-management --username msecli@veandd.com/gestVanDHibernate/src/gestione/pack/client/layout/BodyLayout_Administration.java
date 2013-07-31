@@ -4,6 +4,7 @@ package gestione.pack.client.layout;
 
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.layout.panel.PanelPrintAll;
+import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
 import gestione.pack.client.layout.panel.PanelRiepilogoSituazioneMensileOreDipendenti;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
@@ -277,6 +278,21 @@ public class BodyLayout_Administration extends LayoutContainer {
 	      });
 	    btnPrintRiepilogo.setWidth("100%");
 	    cp.add(btnPrintRiepilogo);	   	    
+
+	    Button btnRiepilogoMeseHorizontal = new Button();
+	    btnRiepilogoMeseHorizontal.setToolTip("Riepilogo Situazione Mensile Dipendenti");
+	    btnRiepilogoMeseHorizontal.setHeight(65);
+	    btnRiepilogoMeseHorizontal.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnRiepilogoMeseHorizontal.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoMeseHorizontal.setWidth("100%");
+	    btnRiepilogoMeseHorizontal.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelRiepilogoMeseGiornalieroHorizontal());
+	        	center.layout(true);}      
+	      });
+	   
+	    cp.add(btnRiepilogoMeseHorizontal);
 	    
 	    cp.setButtonAlign(HorizontalAlignment.CENTER);
 	    cp.setExpanded(true);	    	    
@@ -384,21 +400,6 @@ public class BodyLayout_Administration extends LayoutContainer {
 	      });
 	    cp.add(btnGestioneRdoAll);
 	    
-	    Button btnRiepiloghiSalPcl = new Button();
-	    btnRiepiloghiSalPcl.setToolTip("All Toghether");
-	    btnRiepiloghiSalPcl.setHeight(65);
-	    btnRiepiloghiSalPcl.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.anagrafica()));
-	    btnRiepiloghiSalPcl.setIconAlign(IconAlign.BOTTOM);
-	    btnRiepiloghiSalPcl.setWidth("100%");
-	    btnRiepiloghiSalPcl.addSelectionListener(new SelectionListener<ButtonEvent>() {
-	        public void componentSelected(ButtonEvent ce) {
-	        	center.removeAll();
-	        	center.add(new CenterLayout_RiepiloghiSalPcl());
-	        	center.layout(true);}        
-	      });
-	    cp.add(btnRiepiloghiSalPcl);
-	    
-	    
 	    panel.add(cp);
 	    
 	    cp = new ContentPanel();
@@ -444,6 +445,20 @@ public class BodyLayout_Administration extends LayoutContainer {
 	      });
 	    btnAssociaPersonale.setWidth("100%");
 	    cp.add(btnAssociaPersonale);
+	    
+	    Button btnRiepiloghiSalPcl = new Button();
+	    btnRiepiloghiSalPcl.setToolTip("Riepilogo Sal/Pcl");
+	    btnRiepiloghiSalPcl.setHeight(65);
+	    btnRiepiloghiSalPcl.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.anagrafica()));
+	    btnRiepiloghiSalPcl.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepiloghiSalPcl.setWidth("100%");
+	    btnRiepiloghiSalPcl.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new CenterLayout_RiepiloghiSalPcl());
+	        	center.layout(true);}        
+	      });
+	    cp.add(btnRiepiloghiSalPcl);
     
 	    panel.add(cp);
 	         
