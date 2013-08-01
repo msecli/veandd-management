@@ -681,5 +681,4 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 	    
 	    return configs;
 	}
-	
 }
