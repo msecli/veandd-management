@@ -3,6 +3,7 @@ package gestione.pack.client.layout;
 //import gestione.pack.client.utility.RecuperoParametriSessione;
 
 import gestione.pack.client.SessionManagementService;
+import gestione.pack.client.layout.panel.PanelRiepilogoAnnualeOreDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoSituazioneMensileOreDipendenti;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
@@ -226,7 +227,21 @@ public class BodyLayout_Direzione extends LayoutContainer {
 	    btnPresenzeDipendenti.setWidth("100%");
 	    cp.add(btnPresenzeDipendenti);	   
 	    
-	    Button btnRiepilogoMeseDip = new Button();
+	    Button btnRilevColocation = new Button();
+	    btnRilevColocation.setToolTip("Rilevazione Presenze Colocation/Collaboratori");
+	    btnRilevColocation.setHeight(65);
+	    btnRilevColocation.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.rilevColocation()));
+	    btnRilevColocation.setIconAlign(IconAlign.BOTTOM);
+	    btnRilevColocation.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	          center.removeAll();
+	        	center.add(new CenterLayout_RilevazioneOreColocation());
+	        	center.layout(true);}      
+	      });
+	    btnRilevColocation.setWidth("100%");
+	    cp.add(btnRilevColocation);	  
+	    
+	   /* Button btnRiepilogoMeseDip = new Button();
 	    btnRiepilogoMeseDip.setToolTip("Riepilogo Situazione Mensile Dipendenti");
 	    btnRiepilogoMeseDip.setHeight(65);
 	    btnRiepilogoMeseDip.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
@@ -239,7 +254,7 @@ public class BodyLayout_Direzione extends LayoutContainer {
 	        	center.layout(true);}      
 	      });
 	   
-	    cp.add(btnRiepilogoMeseDip);
+	    cp.add(btnRiepilogoMeseDip);*/
 	    
 	    panel.add(cp);
 	    
@@ -269,7 +284,6 @@ public class BodyLayout_Direzione extends LayoutContainer {
 	        	center.layout(true);}
 	        
 	      });
-	    btnGestioneCommessa.setWidth("100%");
 	    cp.add(btnGestioneCommessa);
 	    
 	    Button btnAssociaPersonale = new Button();
@@ -297,20 +311,26 @@ public class BodyLayout_Direzione extends LayoutContainer {
 	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
             	center.removeAll();
-	        	center.add(new CenterLayout_RiepilogoOreDipendentiCommesse());
+	        	center.add(new PanelRiepilogoAnnualeOreDipendenti());
 	        	center.layout(true);               
             }
         });
 	    
-	    Button btnRiepilogoMese = new Button("Report Dett. Ore");
-	    btnRiepilogoMese.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	    Button btnRiepilogoAnnuale = new Button();
+	    btnRiepilogoAnnuale.setToolTip("Report Annuale");
+	    btnRiepilogoAnnuale.setHeight(65);
+	    btnRiepilogoAnnuale.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnRiepilogoAnnuale.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoAnnuale.setWidth("100%");
+	    btnRiepilogoAnnuale.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
-	          center.removeAll();
-	        	center.add(new CenterLayout_RiepilogoOreDipendentiCommesse());
+	        	center.removeAll();
+	        	center.add(new PanelRiepilogoAnnualeOreDipendenti());
 	        	center.layout(true);}      
 	      });
-	    btnRiepilogoMese.setWidth("100%");
-	    cp.add(btnRiepilogoMese);
+	    btnRiepilogoAnnuale.setWidth("100%");
+	    cp.add(btnRiepilogoAnnuale);
+	    
 	    panel.add(cp);
 	    
 	    cp = new ContentPanel();

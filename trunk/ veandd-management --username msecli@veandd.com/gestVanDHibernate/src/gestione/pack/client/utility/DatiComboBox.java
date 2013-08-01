@@ -142,6 +142,7 @@ public class DatiComboBox {
 		listaR.add("07.Infortunio");
 		listaR.add("08.Maternita' Obblig.");
 		listaR.add("09.Maternita' Facolt.");
+		listaR.add("09.1.Maternita' Antic.");
 		listaR.add("10.Aspettativa");
 		listaR.add("11.Permesso Elettor.");
 		listaR.add("12.Permesso Sindac.");

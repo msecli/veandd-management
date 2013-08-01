@@ -2,6 +2,8 @@ package gestione.pack.client.layout;
 
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.layout.panel.PanelPrintAll;
+import gestione.pack.client.layout.panel.PanelRiepilogoAnnualeOreDipendenti;
+import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
 import gestione.pack.client.layout.panel.PanelRiepilogoSituazioneMensileOreDipendenti;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
@@ -282,7 +284,23 @@ public class BodyLayout_GestionePersonale extends LayoutContainer {
 	        	center.layout(true);}      
 	      });
 	    btnPrintRiepilogo.setWidth("100%");
-	    cp.add(btnPrintRiepilogo);    
+	    cp.add(btnPrintRiepilogo);   
+	    
+	    Button btnRiepilogoMeseHorizontal = new Button();
+	    btnRiepilogoMeseHorizontal.setToolTip("Riepilogo Dettagliato Compilazione");
+	    btnRiepilogoMeseHorizontal.setHeight(65);
+	    btnRiepilogoMeseHorizontal.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnRiepilogoMeseHorizontal.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoMeseHorizontal.setWidth("100%");
+	    btnRiepilogoMeseHorizontal.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelRiepilogoMeseGiornalieroHorizontal());
+	        	center.layout(true);}      
+	      });
+	   
+	    cp.add(btnRiepilogoMeseHorizontal);
+	    
 	    cp.setExpanded(true);	    
 	    panel.add(cp);
 	    
@@ -313,6 +331,22 @@ public class BodyLayout_GestionePersonale extends LayoutContainer {
 	    });
 	    btnAnagrP.setWidth("100%");
 	    cp.add(btnAnagrP);
+	    
+	    Button btnRiepilogoAnnuale = new Button();
+	    btnRiepilogoAnnuale.setToolTip("Report Annuale Ore");
+	    btnRiepilogoAnnuale.setHeight(65);
+	    btnRiepilogoAnnuale.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnRiepilogoAnnuale.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoAnnuale.setWidth("100%");
+	    btnRiepilogoAnnuale.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelRiepilogoAnnualeOreDipendenti());
+	        	center.layout(true);}      
+	      });
+	    btnRiepilogoAnnuale.setWidth("100%");
+	    cp.add(btnRiepilogoAnnuale);
+	    
 	    cp.setExpanded(false);
 	    panel.add(cp);
 	    

@@ -1266,6 +1266,47 @@ public class ServerUtility {
 		}
 		
 		return false;
+	}
+	public static boolean exsistGiorno(List<DettaglioOreGiornaliere> listaG,
+			String giornoR) {
+		String giorno=new String();
+		for(DettaglioOreGiornaliere d:listaG){
+			DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd") ; 
+			giorno=formatter.format(d.getGiornoRiferimento());
+			if(giorno.compareTo(giornoR)==0)
+				return true;	
+		}		
+		return false;
 	}	
+	
+	public static String traduciMeseToNumber(String month){
+		
+		if(month.compareTo("gen") ==0)
+			month="01";
+		if(month.compareTo("feb") ==0)
+			month="02";
+		if(month.compareTo("mar") ==0)
+			month="03";
+		if(month.compareTo("apr") ==0)
+			month="04";
+		if(month.compareTo("mag") ==0)
+			month="05";
+		if(month.compareTo("giu") ==0)
+			month="06";
+		if(month.compareTo("lug") ==0)
+			month="07";
+		if(month.compareTo("ago") ==0)
+			month="08";
+		if(month.compareTo("set") ==0)
+			month="09";
+		if(month.compareTo("ott") ==0)
+			month="10";
+		if(month.compareTo("nov") ==0)
+			month="11";
+		if(month.compareTo("dic") ==0)
+			month="12";
+		
+		return month;
+	}
 }
 

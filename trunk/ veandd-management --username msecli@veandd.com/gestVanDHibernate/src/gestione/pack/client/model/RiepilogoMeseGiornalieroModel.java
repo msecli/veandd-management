@@ -10,16 +10,16 @@ public class RiepilogoMeseGiornalieroModel extends BaseModel implements IsSerial
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private RiepilogoMeseGiornalieroModel(){
+	public RiepilogoMeseGiornalieroModel(){
 		
 	}
 	
-	private RiepilogoMeseGiornalieroModel(String dipendente, 
+	public RiepilogoMeseGiornalieroModel(String username,  String dipendente,
 			String giorno1, String giorno2, String giorno3,String giorno4,String giorno5,String giorno6,String giorno7,String giorno8,
 			String giorno9,String giorno10,String giorno11,String giorno12,String giorno13,String giorno14,String giorno15,String giorno16,String giorno17,String giorno18,String giorno19,String giorno20,
 			String giorno21,String giorno22,String giorno23,String giorno24,String giorno25,String giorno26,String giorno27,String giorno28,String giorno29,String giorno30,String giorno31){
 	
-		
+		set("username",username);
 		set("dipendente", dipendente);
 		set("giorno1", giorno1); //in ogni giorno indico un flag colorato che indichi lo stato compilazione
 		set("giorno2", giorno2);

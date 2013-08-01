@@ -40,6 +40,7 @@ import com.extjs.gxt.ui.client.widget.grid.SummaryRenderer;
 import com.extjs.gxt.ui.client.widget.grid.SummaryType;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -148,12 +149,11 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 				}
 			});	
 			
-			HorizontalPanel horizontalPanel = new HorizontalPanel();
-			horizontalPanel.setSpacing(5);
-			horizontalPanel.add(smplcmbxAnno);
-			horizontalPanel.add(smplcmbxMese);
-			horizontalPanel.add(btnSelect);
-			setTopComponent(horizontalPanel);
+			ToolBar tlbOperazioni= new ToolBar();
+			tlbOperazioni.add(smplcmbxAnno);
+			tlbOperazioni.add(smplcmbxMese);
+			tlbOperazioni.add(btnSelect);
+			setTopComponent(tlbOperazioni);
 			
 		    try {
 		    	cm = new ColumnModel(createColumns());	
@@ -576,15 +576,17 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 				@Override
 				public Object render(DatiFatturazioneCommessaModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneCommessaModel> store,
 						Grid<DatiFatturazioneCommessaModel> grid) {				
+					final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
 					Float n=model.get(property);
-					return number.format(n);
+					return num.format(n);
 				}  	
 			});
 		    columnImporto.setSummaryRenderer(new SummaryRenderer() {  
 		   			@Override
 				public String render(Number value, Map<String, Number> data) {
+		   				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
 		   				Float n=value.floatValue();
-						return number.format(n);
+						return num.format(n);
 				}  
 		      });      
 		    configs.add(columnImporto); 	

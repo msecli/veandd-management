@@ -552,8 +552,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 			}
 		});
 	      
-	    configs.add(column);
-	    	    	    	    	    
+	    configs.add(column);	    	    	    	    	    
 		return configs;
 	}
 
