@@ -18,6 +18,8 @@ import gestione.pack.client.model.PersonaleModel;
 import gestione.pack.client.model.RdaModel;
 import gestione.pack.client.model.RdoCompletaModel;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
+import gestione.pack.client.model.RiepilogoOreAnnualiDipendente;
+import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
 import gestione.pack.client.model.RiepilogoOreDipCommesse;
 import gestione.pack.client.model.RiepilogoOreDipCommesseGiornaliero;
@@ -301,6 +303,13 @@ public interface AdministrationServiceAsync {
 			AsyncCallback<List<RiepilogoSALPCLModel>> asyncCallback);
 
 	void confermaEditCommenti(int i, AsyncCallback<Boolean> asyncCallback);
+
+	void getRiepilogoMensileDettagliatoHorizontalLayout(String sede,
+			String data,
+			AsyncCallback<List<RiepilogoMeseGiornalieroModel>> asyncCallback);
+
+	void getRiepilogoAnnualeOreDipendenti(String anno, String sede,
+			AsyncCallback<List<RiepilogoOreAnnualiDipendente>> asyncCallback);
 
 	
 

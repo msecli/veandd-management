@@ -32,6 +32,8 @@ import gestione.pack.client.model.PersonaleModel;
 import gestione.pack.client.model.RdaModel;
 import gestione.pack.client.model.RdoCompletaModel;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
+import gestione.pack.client.model.RiepilogoOreAnnualiDipendente;
+import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
 import gestione.pack.client.model.RiepilogoOreDipCommesse;
 import gestione.pack.client.model.RiepilogoOreDipCommesseGiornaliero;
@@ -312,6 +314,12 @@ public interface AdministrationService extends RemoteService {
 			String tabSelected)throws IllegalArgumentException;
 
 	boolean confermaEditCommenti(int i)throws IllegalArgumentException;
+
+	List<RiepilogoMeseGiornalieroModel> getRiepilogoMensileDettagliatoHorizontalLayout(
+			String sede, String data)throws IllegalArgumentException;
+
+	List<RiepilogoOreAnnualiDipendente> getRiepilogoAnnualeOreDipendenti(
+			String anno, String sede)throws IllegalArgumentException;
 
 	
 	

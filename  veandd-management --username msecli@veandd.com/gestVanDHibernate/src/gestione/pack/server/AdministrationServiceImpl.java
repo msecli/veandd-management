@@ -54,6 +54,8 @@ import gestione.pack.client.model.PersonaleModel;
 import gestione.pack.client.model.RdaModel;
 import gestione.pack.client.model.RdoCompletaModel;
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
+import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
+import gestione.pack.client.model.RiepilogoOreAnnualiDipendente;
 import gestione.pack.client.model.RiepilogoOreDipCommesse;
 import gestione.pack.client.model.RiepilogoOreDipCommesseGiornaliero;
 import gestione.pack.client.model.RiepilogoOreDipFatturazione;
@@ -3636,6 +3638,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						.addEntity("DettaglioTimbrature",DettaglioTimbrature.class)
 						.setParameter("badge", numeroBadge).setParameter("giorno", data).list();*/
 				
+				//TODO
+				
 				listaD=session.createSQLQuery("select distinct movimento, orario  " +
 						"from dettaglio_timbrature d where d.numeroBadge=:badge and d.giorno=:giorno order by orario")
 						.setParameter("badge", numeroBadge).setParameter("giorno", data).list();
@@ -5630,6 +5634,205 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}finally{
 			session.close();
 		}	
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<RiepilogoMeseGiornalieroModel> getRiepilogoMensileDettagliatoHorizontalLayout(
+			String sede, String data) throws IllegalArgumentException{
+		
+		List<RiepilogoMeseGiornalieroModel> listaR= new ArrayList<RiepilogoMeseGiornalieroModel>();
+		List<Personale> listaP= new ArrayList<Personale>();
+		List<FoglioOreMese> listaF= new ArrayList<FoglioOreMese>();
+		List<DettaglioOreGiornaliere> listaG= new ArrayList<DettaglioOreGiornaliere>();
+		List<String> listaCodiciPerOgniGiorno;
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		String mese=data.substring(0,3);
+		String anno=data.substring(3,7);
+		String meseN;
+		int ngiorni;
+		String giornoR;
+		
+		
+		try {
+			tx=session.beginTransaction();
+			
+			listaP=(List<Personale>)session.createQuery("from Personale where sedeOperativa=:sede").setParameter("sede", sede).list();
+			
+			ngiorni=ServerUtility.getGiorniMese(mese, anno);
+			meseN=ServerUtility.traduciMeseToNumber(mese.toLowerCase());
+			
+			for(Personale p:listaP){
+				
+				listaCodiciPerOgniGiorno= new ArrayList<String>();
+				
+				listaF.addAll(p.getFoglioOreMeses());
+				for(FoglioOreMese f: listaF)
+					if(f.getMeseRiferimento().compareTo(data)==0){
+						listaG.addAll(f.getDettaglioOreGiornalieres());
+						break;
+				}
+												
+				for(int i=1; i<=ngiorni; i++){
+					
+					String ngiorno=String.valueOf(i);
+					if (ngiorno.length()==1)
+						ngiorno="0"+ngiorno;
+							
+					giornoR=anno+"-"+meseN+"-"+ngiorno;
+										
+					if(ServerUtility.exsistGiorno(listaG, giornoR ))
+						listaCodiciPerOgniGiorno.add("0");
+					else
+						listaCodiciPerOgniGiorno.add("1");										
+				}
+				
+				RiepilogoMeseGiornalieroModel riep= new RiepilogoMeseGiornalieroModel(p.getUsername(), p.getCognome()+" "+p.getNome(),
+						listaCodiciPerOgniGiorno.get(0), listaCodiciPerOgniGiorno.get(1), listaCodiciPerOgniGiorno.get(2), 
+						listaCodiciPerOgniGiorno.get(3), listaCodiciPerOgniGiorno.get(4), listaCodiciPerOgniGiorno.get(5), 
+						listaCodiciPerOgniGiorno.get(6), listaCodiciPerOgniGiorno.get(7), listaCodiciPerOgniGiorno.get(8), 
+						listaCodiciPerOgniGiorno.get(9), listaCodiciPerOgniGiorno.get(10), listaCodiciPerOgniGiorno.get(11), 
+						listaCodiciPerOgniGiorno.get(12), listaCodiciPerOgniGiorno.get(13), listaCodiciPerOgniGiorno.get(14), 
+						listaCodiciPerOgniGiorno.get(15), listaCodiciPerOgniGiorno.get(16), listaCodiciPerOgniGiorno.get(17), 
+						listaCodiciPerOgniGiorno.get(18), listaCodiciPerOgniGiorno.get(19), listaCodiciPerOgniGiorno.get(20), 
+						listaCodiciPerOgniGiorno.get(21), listaCodiciPerOgniGiorno.get(22), listaCodiciPerOgniGiorno.get(23), 
+						listaCodiciPerOgniGiorno.get(24), listaCodiciPerOgniGiorno.get(25), listaCodiciPerOgniGiorno.get(26), 
+						listaCodiciPerOgniGiorno.get(27), listaCodiciPerOgniGiorno.get(28), listaCodiciPerOgniGiorno.get(29), 
+						listaCodiciPerOgniGiorno.get(30));
+				
+				listaG.clear();
+				listaF.clear();
+				listaCodiciPerOgniGiorno.clear();
+				listaR.add(riep);
+			}			
+			tx.commit();
+			return listaR;
+		} catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return null;
+		}finally{
+			session.close();
+		}	
+			
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<RiepilogoOreAnnualiDipendente> getRiepilogoAnnualeOreDipendenti(
+			String anno, String sede) throws IllegalArgumentException {
+		
+		List<RiepilogoOreAnnualiDipendente> listaR= new ArrayList<RiepilogoOreAnnualiDipendente>();
+		List<Personale> listaP= new ArrayList<Personale>();
+		List<FoglioOreMese> listaF= new ArrayList<FoglioOreMese>();
+		List<DettaglioOreGiornaliere> listaG= new ArrayList<DettaglioOreGiornaliere>();
+		RiepilogoOreAnnualiDipendente riep= new RiepilogoOreAnnualiDipendente();
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		String oreOrdinarie="0.00";
+		String oreStraOrdinarie="0.00";
+		String orePermessoROL="0.00";
+		String oreRecupero="0.00";
+		String oreViaggio="0.00";
+		String oreTotali="0.00";
+		String oreFerie="0.00";
+		String oreMutua="0.00";
+		String oreCassa="0.00";
+		String oreLegge104="0.00";
+		String oreMaternita="0.00";
+		String oreTotaliGiustificativi="0.00";
+		
+		try {
+			tx=session.beginTransaction();
+			
+			listaP=(List<Personale>)session.createQuery("from Personale where sedeOperativa=:sede").setParameter("sede", sede).list();
+			
+			for(Personale p:listaP){
+				
+				listaF.addAll(p.getFoglioOreMeses());
+				
+				for(FoglioOreMese f: listaF){
+					if(f.getMeseRiferimento().compareTo("Feb2013")!=0 && f.getMeseRiferimento().compareTo("Mar2013")!=0 &&
+						f.getMeseRiferimento().compareTo("Apr2013")!=0 && f.getMeseRiferimento().compareTo("Mag2013")!=0 )
+						listaG.addAll(f.getDettaglioOreGiornalieres());
+				}				
+				
+				for(DettaglioOreGiornaliere d:listaG){
+					if(d.getGiustificativo().compareTo("")!=0)
+						if(d.getGiustificativo().compareTo("06.Malattia")==0 || d.getGiustificativo().compareTo("07.Infortunio")==0)
+							oreMutua=ServerUtility.aggiornaTotGenerale(oreMutua, d.getDeltaOreGiorno());
+						else if(d.getGiustificativo().compareTo("24.Cassa Integrazione")==0)
+							oreCassa=ServerUtility.aggiornaTotGenerale(oreCassa, d.getDeltaOreGiorno());
+						else if(d.getGiustificativo().compareTo("25.Permesso Legge 104")==0)
+							oreLegge104=ServerUtility.aggiornaTotGenerale(oreLegge104, d.getDeltaOreGiorno());
+						else if(d.getGiustificativo().compareTo("08.Maternita' Obblig.")==0 || d.getGiustificativo().compareTo("09.Maternita' Facolt.")==0
+								|| d.getGiustificativo().compareTo("09.1.Maternita' Antic.")==0)
+							oreMaternita=ServerUtility.aggiornaTotGenerale(oreMaternita, d.getDeltaOreGiorno());
+					
+								
+					oreViaggio=ServerUtility.aggiornaTotGenerale(oreViaggio, d.getDeltaOreViaggio());
+					oreFerie=ServerUtility.aggiornaTotGenerale(oreFerie, d.getOreFerie());
+					orePermessoROL=ServerUtility.aggiornaTotGenerale(orePermessoROL, d.getOrePermesso());
+					oreStraOrdinarie=ServerUtility.aggiornaTotGenerale(oreStraOrdinarie, d.getOreStraordinario());
+					oreRecupero=ServerUtility.aggiornaTotGenerale(oreRecupero, d.getOreAssenzeRecupero());
+					oreOrdinarie=ServerUtility.aggiornaTotGenerale(oreOrdinarie, d.getTotaleOreGiorno());
+												
+				}
+				
+				if(Float.valueOf(oreRecupero)>0)
+					oreOrdinarie=ServerUtility.getDifference(oreOrdinarie, oreRecupero);
+				oreOrdinarie=ServerUtility.getDifference(oreOrdinarie, oreStraOrdinarie);
+				
+				oreTotali=ServerUtility.aggiornaTotGenerale(oreTotali, oreOrdinarie);
+				oreTotali=ServerUtility.aggiornaTotGenerale(oreTotali, oreViaggio);
+				oreTotali=ServerUtility.aggiornaTotGenerale(oreTotali, oreStraOrdinarie);
+				oreTotaliGiustificativi=ServerUtility.aggiornaTotGenerale(oreTotaliGiustificativi, oreMaternita);
+				oreTotaliGiustificativi=ServerUtility.aggiornaTotGenerale(oreTotaliGiustificativi, oreMutua);
+				oreTotaliGiustificativi=ServerUtility.aggiornaTotGenerale(oreTotaliGiustificativi, oreFerie);
+				oreTotaliGiustificativi=ServerUtility.aggiornaTotGenerale(oreTotaliGiustificativi, orePermessoROL);
+				oreTotaliGiustificativi=ServerUtility.aggiornaTotGenerale(oreTotaliGiustificativi, oreLegge104);
+				oreTotaliGiustificativi=ServerUtility.aggiornaTotGenerale(oreTotaliGiustificativi, oreCassa);
+				
+				riep=new RiepilogoOreAnnualiDipendente(anno, p.getCognome(), p.getNome(), Float.valueOf(oreOrdinarie), Float.valueOf(oreStraOrdinarie), Float.valueOf(oreRecupero),
+						Float.valueOf(oreViaggio), Float.valueOf(oreTotali), Float.valueOf(oreFerie), Float.valueOf(orePermessoROL), Float.valueOf(oreMutua), Float.valueOf(oreCassa)
+						, Float.valueOf(oreLegge104), Float.valueOf(oreMaternita), Float.valueOf(oreTotaliGiustificativi));
+						
+				listaR.add(riep);
+				
+				oreOrdinarie="0.00";
+				oreStraOrdinarie="0.00";
+				oreRecupero="0.00";
+				oreViaggio="0.00";
+				oreTotali="0.00";
+				oreFerie="0.00";
+				oreMutua="0.00";
+				oreCassa="0.00";
+				oreLegge104="0.00";
+				oreMaternita="0.00";
+				oreTotaliGiustificativi="0.00";
+				orePermessoROL="0.00";
+				
+				listaF.clear();
+				listaG.clear();			
+			}			
+			
+			tx.commit();
+			return listaR;
+		} catch (Exception e) {
+		if (tx != null)
+			tx.rollback();
+		e.printStackTrace();
+		return null;
+	}finally{
+		session.close();
+	}	
+				
 	}
 	
 }

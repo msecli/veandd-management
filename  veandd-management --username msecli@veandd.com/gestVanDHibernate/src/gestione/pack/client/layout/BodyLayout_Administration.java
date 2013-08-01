@@ -4,6 +4,7 @@ package gestione.pack.client.layout;
 
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.layout.panel.PanelPrintAll;
+import gestione.pack.client.layout.panel.PanelRiepilogoAnnualeOreDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
 import gestione.pack.client.layout.panel.PanelRiepilogoSituazioneMensileOreDipendenti;
 import gestione.pack.client.utility.ClientUtility;
@@ -280,7 +281,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    cp.add(btnPrintRiepilogo);	   	    
 
 	    Button btnRiepilogoMeseHorizontal = new Button();
-	    btnRiepilogoMeseHorizontal.setToolTip("Riepilogo Situazione Mensile Dipendenti");
+	    btnRiepilogoMeseHorizontal.setToolTip("Riepilogo Dettagliato Compilazione");
 	    btnRiepilogoMeseHorizontal.setHeight(65);
 	    btnRiepilogoMeseHorizontal.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
 	    btnRiepilogoMeseHorizontal.setIconAlign(IconAlign.BOTTOM);
@@ -483,6 +484,22 @@ public class BodyLayout_Administration extends LayoutContainer {
 	      });
 	    btnRiepilogoMese.setWidth("100%");
 	    cp.add(btnRiepilogoMese);
+	    
+	    Button btnRiepilogoAnnuale = new Button();
+	    btnRiepilogoAnnuale.setToolTip("Report Annuale");
+	    btnRiepilogoAnnuale.setHeight(65);
+	    btnRiepilogoAnnuale.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnRiepilogoAnnuale.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoAnnuale.setWidth("100%");
+	    btnRiepilogoAnnuale.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelRiepilogoAnnualeOreDipendenti());
+	        	center.layout(true);}      
+	      });
+	    btnRiepilogoAnnuale.setWidth("100%");
+	    cp.add(btnRiepilogoAnnuale);
+	    
 	    panel.add(cp);
 	    
 	    cp = new ContentPanel();
@@ -533,7 +550,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        
 //----------------------------------------------------------------------------------------------
 	    
-	   center.add(new CenterLayout_RiepiloghiSalPcl()); 
+	   center.add(new PanelRiepilogoAnnualeOreDipendenti()); 
 	   	   
 	   container.add(north, northData);
 	   container.add(west, westData);
