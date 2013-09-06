@@ -1,6 +1,7 @@
 package gestione.pack.client.layout.panel;
 
 import gestione.pack.client.AdministrationService;
+import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.model.RiepilogoOreAnnualiDipendente;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.DatiComboBox;
@@ -40,11 +41,16 @@ import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 
 public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 
@@ -52,9 +58,13 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 	private Grid<RiepilogoOreAnnualiDipendente> gridRiepilogo;
 	private ColumnModel cmRiepilogo;
 	
+	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
+	private static String url= "/gestvandhibernate/PrintDataServlet";
+	
 	private SimpleComboBox<String> smplcmbxAnno;
 	private SimpleComboBox<String> smplcmbxSede;
 	private Button btnSelect;
+	private Button btnPrint;
 	
 	public PanelRiepilogoAnnualeOreDipendenti(){
 		
@@ -133,6 +143,50 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 		});
 		tlbrOperazioni.add(btnSelect);
 		
+		btnPrint = new Button();
+		btnPrint.setSize("55px","25px");	   
+		btnPrint.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.print24()));
+		btnPrint.setToolTip("Stampa");
+		btnPrint.setIconAlign(IconAlign.TOP);
+		btnPrint.setSize(26, 26);
+		btnPrint.setEnabled(true);
+		btnPrint.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				String sede=smplcmbxSede.getRawValue().toString();
+				String anno=smplcmbxAnno.getRawValue().toString();
+
+				SessionManagementService.Util.getInstance().setDataReportAnnualeInSession(anno, sede, "RIEP.ANNUALE",
+						new AsyncCallback<Boolean>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Window.alert("Error on setDataInSession()");					
+					}
+
+					@Override
+					public void onSuccess(Boolean result) {
+						if(result)
+							fp.submit();
+						else
+							Window.alert("Problemi durante il settaggio dei parametri in Sessione (http)");
+					}
+				});
+				
+			}
+		});
+		    
+	    fp.setMethod(FormPanel.METHOD_POST);
+		fp.setAction(url);
+		fp.addSubmitCompleteHandler(new FormSubmitCompleteHandler());  
+		fp.add(btnPrint);
+		ContentPanel cp= new ContentPanel();
+		cp.setHeaderVisible(false);
+		cp.add(fp);
+		tlbrOperazioni.add(cp);
+		
+		
 		try {	    	
 			cmRiepilogo = new ColumnModel(createColumns()); 
 		} catch (Exception e) {
@@ -161,7 +215,19 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 		add(layoutContainer);
 	
 	}
+	
 
+	private class FormSubmitCompleteHandler implements SubmitCompleteHandler {
+
+		@Override
+		public void onSubmitComplete(final SubmitCompleteEvent event) {
+			
+			//Window.open("/FileStorage/RiepilogoAnnuale.pdf", "_blank", "1");
+			
+		}
+	}
+	
+	
 	private void caricaTabella(String anno, String sede) {
 		
 				
@@ -170,8 +236,7 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 			@Override
 			public void onFailure(Throwable caught) {
 				Window.alert("Errore di connessione on getRiepilogoAnnualeOreDipendenti()");
-				
-				
+							
 			}
 
 			@Override
@@ -368,7 +433,6 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 	   			}  
 	      });  
 	    configs.add(columnOreViaggio);
-	    
 	    
 	     
 	    SummaryColumnConfig<Double> columnOreTotali=new SummaryColumnConfig<Double>();		

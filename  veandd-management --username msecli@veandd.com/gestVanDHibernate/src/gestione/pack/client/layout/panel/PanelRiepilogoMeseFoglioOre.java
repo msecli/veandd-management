@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -54,7 +55,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	private Date data;
 	//private Button btnPrint= new Button();
 	private Button btnRiepilogoCommesse= new Button();
-	private Button btnStampaRiepilogo= new Button();
+	private Button btnLegenda= new Button();
 	
 	public PanelRiepilogoMeseFoglioOre(String user, Date dataRiferimento, String tipoLavoratore){
 		username=user;
@@ -78,64 +79,18 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	    
 	  	ButtonBar btnBar= new ButtonBar();
 	  	btnBar.setStyleAttribute("margin-bottom", "5px");
-	  	
-	  	/* 	
-	  	btnPrint.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.print()));
-		btnPrint.setToolTip("Stampa");
-		btnPrint.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-							
-				final String url="/gestvandhibernate/PrintDataServlet";
-				RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
-
-			    try {
-			    	
-			    	List<RiepilogoFoglioOreModel> list= new ArrayList<RiepilogoFoglioOreModel>();
-			    	list.addAll(store.getModels());
-			    	Map<String, Object> map = new HashMap<String, Object>();
-			    	
-			    	for (Object i : list){
-			    		
-			    		map.put(String.valueOf(list.indexOf(i)), (RiepilogoFoglioOreModel) i);
-			    	}
-			    	
-			        String obj= JsonConverter.encode(map).toString();
-			    	
-			        Request request = builder.sendRequest(obj, new RequestCallback() {
-			        public void onError(Request request, Throwable exception) {
-			         // displayError("Couldn't retrieve JSON");
-			        	
-			        }
-
-			        public void onResponseReceived(Request request, Response response) {
-			          if (200 == response.getStatusCode()) {
-			           // updateTable(asArrayOfStockData(response.getText()));
-			          } else {
-			            //displayError("Couldn't retrieve JSON (" + response.getStatusText()  + ")");
-			          }
-			        }
-			      });
-			    } catch (RequestException e) {
-			    	 Window.alert("Failed to send the request: " + e.getMessage());
-			    }
-			}
-		});*/
-		
-	  	btnStampaRiepilogo.setSize(26, 26);
-	  	btnStampaRiepilogo.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.print()));
-	  	btnStampaRiepilogo.setToolTip("Stampa Riepilogo.");
-	  	btnStampaRiepilogo.addSelectionListener(new SelectionListener<ButtonEvent>() {
-
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-	  	
+	  		  			
+	  	btnLegenda.setSize(26, 26);
+	  	btnLegenda.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.legenda()));
+	  	btnLegenda.setIconAlign(IconAlign.TOP);
+	  	btnLegenda.setToolTip("Legenda colori:\n" +
+	  			"VERDE: compilazione corretta;\n" +
+	  			"ROSSO: Non compilato/Festivo;\n" +
+	  			"GRIGIO: Puo' indicare la mancata compilazione degli intervalli commesse o un giorno completamente coperto da giustificativi.");
+	  		  	
 		btnRiepilogoCommesse.setEnabled(false);
 		btnRiepilogoCommesse.setSize(26, 26);
+		btnRiepilogoCommesse.setIconAlign(IconAlign.TOP);
 		btnRiepilogoCommesse.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riep_comm()));
 		btnRiepilogoCommesse.setToolTip("Riepilogo Commesse");
 		btnRiepilogoCommesse.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -145,7 +100,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 				Dialog d= new Dialog();
 				d.setHeaderVisible(true);
 				d.setHeading("Riepilogo dettagliato (Commesse).");
-				d.setSize(545, 695);
+				d.setSize(545, 795);
 				d.add(new PanelRiepilogoGiornalieroCommesse(username, data));
 				d.setButtons("");
 				d.show();			
@@ -153,15 +108,16 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 		});
 			
 		btnBar.add(btnRiepilogoCommesse);
+		btnBar.add(btnLegenda);
 		
 		ContentPanel cntpnlGrid= new ContentPanel();
 		cntpnlGrid.setBodyBorder(false);         
 		cntpnlGrid.setLayout(new FitLayout());  
 		cntpnlGrid.setHeaderVisible(false);
 		cntpnlGrid.setWidth(1100);
-		cntpnlGrid.setHeight(370);
+		cntpnlGrid.setHeight(385);
 		cntpnlGrid.setScrollMode(Scroll.AUTO);
-				
+						
 		caricaTabellaDati();
 	    
 	    try {
@@ -189,19 +145,24 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	    gridRiepilogo.setBorders(false);  
 	    gridRiepilogo.setView(summary);  
 	    gridRiepilogo.getView().setShowDirtyCells(false);
-	   
+	 	    
 	    gridRiepilogo.getView().setViewConfig(new GridViewConfig(){
 	    	@Override
 	        public String getRowStyle(ModelData model, int rowIndex, ListStore<ModelData> ds) {
-	            if (model != null) {	                                    
-	                if (!(Boolean)model.get("compilato")) 
+	            if (model != null) {	    
+	            	String stato= new String();
+	            	stato= model.get("compilato");
+	                if (stato.compareTo("1")==0) 
 	                    return "red-row";               
+	                else if (model.get("compilato").toString().compareTo("2")==0) 
+	                    return "grey-row";
+	                else
+	                	return "green-row";
 	            }
 				return "";            
-	    	}
-	    	
-	    	
+	    	}    	
 	    });
+	    
 	    
 	    cntpnlGrid.add(gridRiepilogo);
 	    cntpnlGrid.setTopComponent(btnBar);
@@ -211,8 +172,8 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 		cntpnlLayout.setCollapsible(false);
 		cntpnlLayout.setExpanded(true);
 		cntpnlLayout.setHeading("Riepilogo Giornaliero.");
-		cntpnlLayout.setSize(990, 410);
-		cntpnlLayout.setScrollMode(Scroll.AUTO);
+		cntpnlLayout.setSize(1120, 415);
+		cntpnlLayout.setScrollMode(Scroll.NONE);
 		cntpnlLayout.setFrame(true);
 		cntpnlLayout.add(cntpnlGrid);
 	    

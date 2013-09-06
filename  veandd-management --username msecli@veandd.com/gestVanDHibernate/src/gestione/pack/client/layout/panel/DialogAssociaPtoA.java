@@ -196,10 +196,10 @@ public class DialogAssociaPtoA  extends Dialog{
 			app=p.getTipologiaLavoratore();
 			app1=p.getRuolo();
 			
-			boolean ruolo=(app1.compareTo("DIP")==0)||(app1.compareTo("PM")==0)||(app1.compareTo("DIR")==0);
+			boolean ruolo=(app1.compareTo("AU")==0);//||(app1.compareTo("PM")==0)||(app1.compareTo("DIR")==0);
 			//se l'utente ha ruolo DIP PM o DIR comparirà nella lista associazioni
-			if(ruolo) 
-				listaApp.add(p);					
+			if(!ruolo) 
+				listaApp.add(p);						
 		}
 	    
 	    store.setStoreSorter(new StoreSorter<PersonaleModel>());  

@@ -250,8 +250,13 @@ public class PanelRiepilogoMeseGiornalieroHorizontal extends LayoutContainer{
 						ListStore<RiepilogoMeseGiornalieroModel> store, Grid<RiepilogoMeseGiornalieroModel> grid) {
 					
 					String color = "#90EE90";
+					String grey="#DDDDDD";
 					String stato=model.get(property);
 					
+					//TODO				
+					if(stato.compareTo("2")==0)
+						config.style = config.style + ";background-color:" + grey + ";";
+					else
 					if(stato.compareTo("0")==0)
 					{
 						config.style = config.style + ";background-color:" + color + ";";									
