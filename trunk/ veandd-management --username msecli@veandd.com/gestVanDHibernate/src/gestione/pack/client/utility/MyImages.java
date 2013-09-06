@@ -97,5 +97,11 @@ public interface MyImages extends ClientBundle{
 	
 	@Source("Icone/save1.png")
 	ImageResource save1();
+	
+	@Source("Icone/riepMensDipPers.png")
+	ImageResource riepMensPers();
+	
+	@Source("Icone/legend24x24.png")
+	ImageResource legenda();
 }
 

@@ -141,7 +141,7 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 	
 	
 	@Override
-	public void logOut() {
+	public void logOut() throws IllegalArgumentException{
 		HttpServletRequest request = this.getThreadLocalRequest();
     	HttpSession session = request.getSession();
 		session.invalidate();
@@ -149,7 +149,7 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 
 
 	@Override
-	public boolean setDataInSession(String mese, String sede, String username, String operazione) {
+	public boolean setDataInSession(String mese, String sede, String username, String operazione) throws IllegalArgumentException{
 		try {
 			 HttpServletRequest request = this.getThreadLocalRequest();
 		   	 HttpSession httpSession = request.getSession();
@@ -168,7 +168,8 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 
 
 	@Override
-	public boolean setDataInSession(String dataRif, String username, String operazione) {
+	public boolean setDataInSession(String dataRif, String username, String operazione, 
+			String totOreCommesse, String totOreIU) throws IllegalArgumentException{
 		try {
 			 HttpServletRequest request = this.getThreadLocalRequest();
 		   	 HttpSession httpSession = request.getSession();
@@ -176,8 +177,48 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 		   	 httpSession.setAttribute("mese", dataRif);
 		   	 httpSession.setAttribute("username", username);
 		     httpSession.setAttribute("operazione", operazione);
+		     httpSession.setAttribute("totOreCommesse", totOreCommesse);
+		     httpSession.setAttribute("totOreIU", totOreIU);
 		   	 
 			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		} 
+	}
+
+
+	@Override
+	public boolean setDataReportAnnualeInSession(String anno, String sede,
+			String operazione) throws IllegalArgumentException{
+		try {
+			 HttpServletRequest request = this.getThreadLocalRequest();
+		   	 HttpSession httpSession = request.getSession();
+		   	   
+		   	 httpSession.setAttribute("anno", anno);
+		   	 httpSession.setAttribute("sede", sede);
+		     httpSession.setAttribute("operazione", operazione);
+		     
+			 return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		} 
+	}
+
+
+	@Override
+	public boolean setDataReportDatiFatturazioneInSession(String anno,
+			String mese, String operazione) throws IllegalArgumentException {
+		try {
+			 HttpServletRequest request = this.getThreadLocalRequest();
+		   	 HttpSession httpSession = request.getSession();
+		   	   
+		   	 httpSession.setAttribute("anno", anno);
+		   	 httpSession.setAttribute("mese", mese);
+		     httpSession.setAttribute("operazione", operazione);
+		     
+			 return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;

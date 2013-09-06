@@ -13,7 +13,8 @@ import java.util.Date;
 import java.util.Set;
 
 
-/**
+/*
+ *
  * The persistent class for the attivita database table.
  * 
  */
@@ -37,7 +38,7 @@ public class Attivita extends LightEntity implements IsSerializable {
 	private String descrizioneAttivita;
 
 	//bi-directional many-to-one association to AssociazionePtoa
-	@OneToMany(mappedBy="attivita",fetch=FetchType.LAZY)
+	@OneToMany(mappedBy="attivita", fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	private Set<AssociazionePtoA> associazionePtoas;
 
