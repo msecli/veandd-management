@@ -1,6 +1,11 @@
 package gestione.pack.server;
 
+import gestione.pack.client.model.DatiFatturazioneMeseJavaBean;
+import gestione.pack.client.model.DatiFatturazioneMeseModel;
+import gestione.pack.client.model.RiepilogoAnnualeJavaBean;
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
+import gestione.pack.client.model.RiepilogoOreAnnualiDipendente;
+import gestione.pack.client.model.RiepilogoOreDipFatturazione;
 import gestione.pack.shared.AssociazionePtoA;
 import gestione.pack.shared.Commessa;
 import gestione.pack.shared.DatiOreMese;
@@ -8,12 +13,15 @@ import gestione.pack.shared.DatiRiepilogoMensileCommesse;
 import gestione.pack.shared.DettaglioIntervalliCommesse;
 import gestione.pack.shared.DettaglioOreGiornaliere;
 import gestione.pack.shared.FoglioFatturazione;
+import gestione.pack.shared.Ordine;
 
 import gestione.pack.shared.FoglioOreMese;
 import gestione.pack.shared.Personale;
 
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,6 +30,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 
 import org.hibernate.Session;
@@ -66,8 +75,7 @@ public class ServerUtility {
                  break;
         case "Dic":  giorni = 31;
                  break;
-		}
-			
+		}			
 		return giorni;
 	}
 	/*
@@ -163,10 +171,12 @@ public class ServerUtility {
 		//TODO crearne una versione dinamica
 		
 		if(dataCompleta.compareTo("2013-Apr-01")==0)
-			return true;
+			return true;	
 		if(dataCompleta.compareTo("2013-Apr-25")==0)
 			return true;
 		if(dataCompleta.compareTo("2013-Mag-01")==0)
+			return true;
+		if(dataCompleta.compareTo("2013-Ago-15")==0)
 			return true;
 		if(dataCompleta.compareTo("2013-Nov-01")==0)
 			return true;	
@@ -663,7 +673,7 @@ public class ServerUtility {
 										
 								}	
 								//se sono negative le escludo dal conteggio totale
-								if(Float.valueOf(parzialeOreRecuperoMese)>0)
+								//if(Float.valueOf(parzialeOreRecuperoMese)>0)
 									monteOreRecuperoTotale=ServerUtility.aggiornaTotGenerale(monteOreRecuperoTotale,parzialeOreRecuperoMese);		
 							}
 						}									
@@ -866,7 +876,7 @@ public class ServerUtility {
 										
 								}	
 								//se sono negative le escludo dal conteggio totale
-								if(Float.valueOf(parzialeOreRecuperoMese)>0)
+								//if(Float.valueOf(parzialeOreRecuperoMese)>0)
 									monteOreRecuperoTotale=ServerUtility.aggiornaTotGenerale(monteOreRecuperoTotale,parzialeOreRecuperoMese);	
 							}
 						}									
@@ -1267,17 +1277,49 @@ public class ServerUtility {
 		
 		return false;
 	}
-	public static boolean exsistGiorno(List<DettaglioOreGiornaliere> listaG,
+	
+	
+	public static String exsistGiorno(List<DettaglioOreGiornaliere> listaG,
 			String giornoR) {
+		
+		DettaglioOreGiornaliere dettSelected= new DettaglioOreGiornaliere();
 		String giorno=new String();
+		boolean existDay=false;
+		
 		for(DettaglioOreGiornaliere d:listaG){
+			
 			DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd") ; 
 			giorno=formatter.format(d.getGiornoRiferimento());
-			if(giorno.compareTo(giornoR)==0)
-				return true;	
-		}		
-		return false;
+			if(giorno.compareTo(giornoR)==0){
+				existDay=true;
+				dettSelected=d;
+				break;
+			}
+						
+		}
+		
+		if(!existDay)
+			return "1";
+		else 
+			//TODO
+			if(dettSelected.getDettaglioIntervalliIUs().size()>0 && hasValue(dettSelected.getDettaglioIntervalliCommesses()))
+				return "0";								
+			else
+				if(!hasValue(dettSelected.getDettaglioIntervalliCommesses()))
+					return "2";
+		
+		return "1";
 	}	
+	
+	
+	public static boolean isGiustificato(DettaglioOreGiornaliere d) {
+		
+		if(d.getGiustificativo().compareTo("")!=0 || d.getOreFerie().compareTo("0.00")!=0
+				|| d.getOrePermesso().compareTo("0.00")!=0 )
+			return true;		
+		return false;
+	}
+	
 	
 	public static String traduciMeseToNumber(String month){
 		
@@ -1307,6 +1349,270 @@ public class ServerUtility {
 			month="12";
 		
 		return month;
+	}
+	
+	
+	public static boolean hasValue(
+			Set<DettaglioIntervalliCommesse> dettaglioIntervalliCommesses) {
+		
+		for(DettaglioIntervalliCommesse d: dettaglioIntervalliCommesses){
+			
+			if(d.getOreLavorate().compareTo("0.00")!=0)
+				return true;			
+		}
+		return false;
+	}
+	
+	
+	public static List<RiepilogoAnnualeJavaBean> PrintRiepilogoOreAnnuale(String anno,
+			String sede) {
+		
+		List<RiepilogoAnnualeJavaBean> listaR= new ArrayList<RiepilogoAnnualeJavaBean>();
+		List<Personale> listaP= new ArrayList<Personale>();
+		List<FoglioOreMese> listaF= new ArrayList<FoglioOreMese>();
+		List<DettaglioOreGiornaliere> listaG= new ArrayList<DettaglioOreGiornaliere>();
+		RiepilogoAnnualeJavaBean riep= new RiepilogoAnnualeJavaBean();
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		String oreOrdinarie="0.00";
+		String oreStraOrdinarie="0.00";
+		String orePermessoROL="0.00";
+		String oreRecupero="0.00";
+		String oreViaggio="0.00";
+		String oreTotali="0.00";
+		String oreFerie="0.00";
+		String oreMutua="0.00";
+		String oreCassa="0.00";
+		String oreLegge104="0.00";
+		String oreMaternita="0.00";
+		String oreTotaliGiustificativi="0.00";
+		
+		try {
+			tx=session.beginTransaction();
+			
+			listaP=(List<Personale>)session.createQuery("from Personale where sedeOperativa=:sede order by cognome ASC").setParameter("sede", sede).list();
+			
+			for(Personale p:listaP){
+				
+				listaF.addAll(p.getFoglioOreMeses());
+				
+				for(FoglioOreMese f: listaF){
+					if(f.getMeseRiferimento().compareTo("Feb2013")!=0 && f.getMeseRiferimento().compareTo("Mar2013")!=0 &&
+						f.getMeseRiferimento().compareTo("Apr2013")!=0 && f.getMeseRiferimento().compareTo("Mag2013")!=0 )
+						listaG.addAll(f.getDettaglioOreGiornalieres());
+				}				
+				
+				for(DettaglioOreGiornaliere d:listaG){
+					if(d.getGiustificativo().compareTo("")!=0)
+						if(d.getGiustificativo().compareTo("06.Malattia")==0 || d.getGiustificativo().compareTo("07.Infortunio")==0)
+							oreMutua=ServerUtility.aggiornaTotGenerale(oreMutua, d.getDeltaOreGiorno());
+						else if(d.getGiustificativo().compareTo("24.Cassa Integrazione")==0)
+							oreCassa=ServerUtility.aggiornaTotGenerale(oreCassa, d.getDeltaOreGiorno());
+						else if(d.getGiustificativo().compareTo("25.Permesso Legge 104")==0)
+							oreLegge104=ServerUtility.aggiornaTotGenerale(oreLegge104, d.getDeltaOreGiorno());
+						else if(d.getGiustificativo().compareTo("08.Maternita' Obblig.")==0 || d.getGiustificativo().compareTo("09.Maternita' Facolt.")==0
+								|| d.getGiustificativo().compareTo("09.1.Maternita' Antic.")==0)
+							oreMaternita=ServerUtility.aggiornaTotGenerale(oreMaternita, d.getDeltaOreGiorno());
+					
+								
+					oreViaggio=ServerUtility.aggiornaTotGenerale(oreViaggio, d.getDeltaOreViaggio());
+					oreFerie=ServerUtility.aggiornaTotGenerale(oreFerie, d.getOreFerie());
+					orePermessoROL=ServerUtility.aggiornaTotGenerale(orePermessoROL, d.getOrePermesso());
+					oreStraOrdinarie=ServerUtility.aggiornaTotGenerale(oreStraOrdinarie, d.getOreStraordinario());
+					oreRecupero=ServerUtility.aggiornaTotGenerale(oreRecupero, d.getOreAssenzeRecupero());
+					oreOrdinarie=ServerUtility.aggiornaTotGenerale(oreOrdinarie, d.getTotaleOreGiorno());
+												
+				}
+				
+				if(Float.valueOf(oreRecupero)>0)
+					oreOrdinarie=ServerUtility.getDifference(oreOrdinarie, oreRecupero);
+				oreOrdinarie=ServerUtility.getDifference(oreOrdinarie, oreStraOrdinarie);
+				
+				oreTotali=ServerUtility.aggiornaTotGenerale(oreTotali, oreOrdinarie);
+				oreTotali=ServerUtility.aggiornaTotGenerale(oreTotali, oreViaggio);
+				oreTotali=ServerUtility.aggiornaTotGenerale(oreTotali, oreStraOrdinarie);
+				oreTotaliGiustificativi=ServerUtility.aggiornaTotGenerale(oreTotaliGiustificativi, oreMaternita);
+				oreTotaliGiustificativi=ServerUtility.aggiornaTotGenerale(oreTotaliGiustificativi, oreMutua);
+				oreTotaliGiustificativi=ServerUtility.aggiornaTotGenerale(oreTotaliGiustificativi, oreFerie);
+				oreTotaliGiustificativi=ServerUtility.aggiornaTotGenerale(oreTotaliGiustificativi, orePermessoROL);
+				oreTotaliGiustificativi=ServerUtility.aggiornaTotGenerale(oreTotaliGiustificativi, oreLegge104);
+				oreTotaliGiustificativi=ServerUtility.aggiornaTotGenerale(oreTotaliGiustificativi, oreCassa);
+				
+				
+				riep=new RiepilogoAnnualeJavaBean(anno, p.getCognome(), p.getNome(), Float.valueOf(oreOrdinarie), Float.valueOf(oreStraOrdinarie), Float.valueOf(oreRecupero),
+						Float.valueOf(oreViaggio), Float.valueOf(oreTotali), Float.valueOf(oreFerie), Float.valueOf(orePermessoROL), Float.valueOf(oreMutua), Float.valueOf(oreCassa)
+						, Float.valueOf(oreLegge104), Float.valueOf(oreMaternita), Float.valueOf(oreTotaliGiustificativi));
+						
+				listaR.add(riep);
+				
+				oreOrdinarie="0.00";
+				oreStraOrdinarie="0.00";
+				oreRecupero="0.00";
+				oreViaggio="0.00";
+				oreTotali="0.00";
+				oreFerie="0.00";
+				oreMutua="0.00";
+				oreCassa="0.00";
+				oreLegge104="0.00";
+				oreMaternita="0.00";
+				oreTotaliGiustificativi="0.00";
+				orePermessoROL="0.00";
+				
+				listaF.clear();
+				listaG.clear();			
+			}			
+			
+			tx.commit();
+			return listaR;
+			
+		} catch (Exception e) {
+		if (tx != null)
+			tx.rollback();
+		e.printStackTrace();
+		return null;
+	}finally{
+		session.close();
+	}	
+	
+	}
+	
+	
+	public static List<DatiFatturazioneMeseJavaBean> PrintRiepilogoDatiFatturazione(
+			String anno, String mese) {
+		List<DatiFatturazioneMeseJavaBean> listaDati= new ArrayList<DatiFatturazioneMeseJavaBean>();
+		List<FoglioFatturazione> listaFF=new ArrayList<FoglioFatturazione>();
+		List<String> matricolePM= new ArrayList<String>();
+		DatiFatturazioneMeseJavaBean datiModel;
+		Ordine o;
+		float importo;
+		float margine;
+		String oreMargine= new String();
+		String oreScaricate= new String();
+		String totOreEseguite="0.00";
+		String totOreFatturate="0.00";
+		String totVarSal="0.00";
+		String totVarPcl="0.00";
+		Float totImport= (float) 0;
+		Float importoSal= (float) 0;
+		Float importoPcl= (float) 0;
+		Float totImportoSal= (float) 0;
+		Float totImportoPcl= (float) 0;
+		String totOreScaricate="0.00";
+		String totOreMargine="0.00";
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		mese=mese+anno;
+		
+		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+	    formatSymbols.setDecimalSeparator('.');
+	    String pattern="0.00";
+	    DecimalFormat d= new DecimalFormat(pattern,formatSymbols);
+		
+		try {
+			tx = session.beginTransaction();
+		
+			listaFF=(List<FoglioFatturazione>)session.createQuery("from FoglioFatturazione where meseCorrente=:mese").setParameter("mese", mese).list();
+			for(FoglioFatturazione f: listaFF){	
+				if(f.getCommessa().getMatricolaPM()!=null && !exsistMatricolaPM(f.getCommessa().getMatricolaPM(), matricolePM))
+					matricolePM.add(f.getCommessa().getMatricolaPM());
+				if(!f.getCommessa().getOrdines().isEmpty()){
+					o=f.getCommessa().getOrdines().iterator().next();
+					oreMargine=ServerUtility.aggiornaTotGenerale(String.valueOf(f.getOreFatturare()), String.valueOf(f.getVariazioneSAL()));
+					oreMargine=ServerUtility.getDifference(oreMargine, String.valueOf(f.getVariazionePCL()));
+					oreScaricate=oreMargine;					
+					oreMargine=ServerUtility.getDifference(oreMargine, String.valueOf(f.getOreEseguite()));
+					margine=Float.valueOf(oreMargine);
+					importo=ServerUtility.calcolaImporto(o.getTariffaOraria(),f.getOreFatturare());
+					importoSal=ServerUtility.calcolaImporto(o.getTariffaOraria(),f.getVariazioneSAL());
+					importoPcl=ServerUtility.calcolaImporto(o.getTariffaOraria(),f.getVariazionePCL());
+					
+					datiModel=new DatiFatturazioneMeseJavaBean(f.getCommessa().getMatricolaPM(), f.getCommessa().getNumeroCommessa()+"."+f.getCommessa().getEstensione(), o.getRda().getCliente().getRagioneSociale(),
+							o.getCommessa().getDenominazioneAttivita(), Float.valueOf(f.getOreEseguite()), Float.valueOf(f.getOreFatturare()), Float.valueOf(f.getTariffaUtilizzata()),
+							importo, Float.valueOf(f.getVariazioneSAL()), importoSal, Float.valueOf(f.getVariazionePCL()), importoPcl, Float.valueOf(oreScaricate), margine, f.getNote());
+				}
+				else{
+					oreMargine=ServerUtility.aggiornaTotGenerale(String.valueOf(f.getOreFatturare()), String.valueOf(f.getVariazioneSAL()));
+					oreMargine=ServerUtility.getDifference(oreMargine, String.valueOf(f.getVariazionePCL()));
+					oreScaricate=oreMargine;
+					oreMargine=ServerUtility.getDifference(oreMargine, String.valueOf(f.getOreEseguite()));
+					margine=Float.valueOf(oreMargine);
+					importoSal=ServerUtility.calcolaImporto(f.getTariffaUtilizzata(),f.getVariazioneSAL());
+					importoPcl=ServerUtility.calcolaImporto(f.getTariffaUtilizzata(),f.getVariazionePCL());
+					
+					datiModel=new DatiFatturazioneMeseJavaBean(f.getCommessa().getMatricolaPM(), f.getCommessa().getNumeroCommessa()+"."+f.getCommessa().getEstensione(), "#",
+							f.getCommessa().getDenominazioneAttivita(), Float.valueOf(f.getOreEseguite()), Float.valueOf(f.getOreFatturare()),
+							Float.valueOf(f.getTariffaUtilizzata()), (float) 0.0, Float.valueOf(f.getVariazioneSAL()), importoSal, Float.valueOf(f.getVariazionePCL()), importoPcl, Float.valueOf(oreScaricate),margine, f.getNote());	
+				}
+				listaDati.add(datiModel);
+			}			
+			
+			tx.commit();
+			
+			List<DatiFatturazioneMeseJavaBean> listaApp= new ArrayList<DatiFatturazioneMeseJavaBean>();
+			listaApp.addAll(listaDati);
+			
+			for(String pm:matricolePM){
+				for(DatiFatturazioneMeseJavaBean df:listaApp){
+					if(df.getPm().compareTo(pm)==0){
+						totOreEseguite=ServerUtility.aggiornaTotGenerale(totOreEseguite, d.format(df.getOreEseguite()));
+						totOreFatturate=ServerUtility.aggiornaTotGenerale(totOreFatturate, d.format(df.getOreFatturate()));
+						totVarSal=ServerUtility.aggiornaTotGenerale(totVarSal, d.format(df.getVariazioneSal()));
+						totVarPcl=ServerUtility.aggiornaTotGenerale(totVarPcl, d.format(df.getVariazionePcl()));
+						totImport=totImport+Float.valueOf(df.getOreFatturate())*df.getTariffaOraria();
+						totOreScaricate=ServerUtility.aggiornaTotGenerale(totOreScaricate, d.format(df.getOreScaricate()));
+						totOreMargine=ServerUtility.aggiornaTotGenerale(totOreMargine, d.format(df.getMargine()));
+						totImportoSal=totImportoSal+Float.valueOf(df.getVariazioneSal())*df.getTariffaOraria();
+						totImportoPcl=totImportoPcl+Float.valueOf(df.getVariazionePcl())*df.getTariffaOraria();
+												
+					}				
+				}	
+				datiModel=new DatiFatturazioneMeseJavaBean(pm, "TOTALE", "", "", Float.valueOf(totOreEseguite), Float.valueOf(totOreFatturate), 
+						Float.valueOf("0"),totImport, Float.valueOf(totVarSal), totImportoSal, Float.valueOf(totVarPcl), totImportoPcl, 
+						Float.valueOf(totOreScaricate), Float.valueOf(totOreMargine), "");
+				
+				listaDati.add(datiModel);
+				totOreEseguite="0.00";
+				totOreFatturate="0.00";
+				totVarSal="0.00";
+				totVarPcl="0.00";
+				totImport=(float) 0;
+				totOreScaricate="0.00";
+				totOreMargine="0.00";
+			}
+			
+			return listaDati;
+		}catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return null;
+		}finally{
+			session.close();
+		}
+	}
+	
+	
+	private static boolean exsistMatricolaPM(String matricolaPM,
+			List<String> matricolePM) {
+		
+		for(String pm: matricolePM)
+			if (pm.compareTo(matricolaPM)==0)
+				return true;
+		return false;		
+	}
+	
+	
+	public static boolean ExistDip(List<RiepilogoOreDipFatturazione> listaAppCalcoloOreIU, int idDip) {
+		
+		for(RiepilogoOreDipFatturazione r:listaAppCalcoloOreIU){
+			if(r.getIdPersonale()==idDip && r.getNumeroCommessa().compareTo(".TOTALE")==0)
+				return true;
+		}
+		return false;
 	}
 }
 
