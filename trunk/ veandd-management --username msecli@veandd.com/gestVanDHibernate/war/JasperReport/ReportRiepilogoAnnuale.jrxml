@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version last-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report1" pageWidth="1100" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1597851d-9e1a-43eb-819d-fc330357558e">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="335"/>
+	<property name="ireport.y" value="0"/>
+	<import value="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<field name="cognome" class="java.lang.String"/>
+	<field name="nome" class="java.lang.String"/>
+	<field name="oreOrdinarie" class="java.lang.Float"/>
+	<field name="oreStraordinarie" class="java.lang.Float"/>
+	<field name="oreRecupero" class="java.lang.Float"/>
+	<field name="oreViaggio" class="java.lang.Float"/>
+	<field name="totaleOreLavoro" class="java.lang.Float"/>
+	<field name="oreFerie" class="java.lang.Float"/>
+	<field name="orePermessoRol" class="java.lang.Float"/>
+	<field name="oreMutua" class="java.lang.Float"/>
+	<field name="oreCig" class="java.lang.Float"/>
+	<field name="oreLegge104" class="java.lang.Float"/>
+	<field name="oreMaternita" class="java.lang.Float"/>
+	<field name="oreTotaliGiustificativi" class="java.lang.Float"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="25">
+			<staticText>
+				<reportElement uuid="4e24a085-a83a-43c7-8cae-d3c8bacb3f14" x="0" y="0" width="109" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cognome]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1942f11d-d085-4d3e-94f1-c22ceab56330" x="109" y="0" width="105" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nome]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="28deab6e-5269-4dd9-80db-31fb9719141f" x="214" y="0" width="68" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ore.Ordin.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e588c820-20ef-4431-a172-09ca0801b5fa" x="282" y="0" width="68" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ore.Strao.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2b565106-f57b-4c63-b0e1-d24e4620302b" x="350" y="0" width="68" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ore.Rec.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9f040798-4eb3-4035-9649-ec129afbefa5" x="418" y="0" width="68" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ore.Viagg.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="df0f14cf-2bc5-487d-aeb8-ba7e48917ca6" x="486" y="0" width="81" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tot.Ore.Lav.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="066347db-ce54-4e1a-8768-24ee8254136f" x="567" y="0" width="64" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OreFerie]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e5e602dd-fca6-4036-8b0f-bf9e5ef8599c" x="631" y="0" width="64" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OreROL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="83e03bc6-b60e-4faf-bc62-49d7d5e6b620" x="696" y="0" width="64" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OreMutua]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f2596747-5ea4-4ee5-b3d9-87ef25afc502" x="761" y="0" width="64" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OreL.104]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="157155f8-d482-458c-9c56-cee5ad7e8d4f" x="826" y="0" width="64" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OreCIG]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="83b1cdd7-94b2-4c02-8e67-52c1d2da8b98" x="891" y="0" width="64" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OreMat]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1a6248c7-e9ef-469a-b1be-37f8c89cfd95" x="956" y="0" width="99" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tot.Ore.Giust.]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement uuid="39100004-9753-42cd-b035-1cda53b0292a" x="0" y="0" width="109" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cognome}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f9361ed7-27e9-4482-8c64-554f9f99a274" x="109" y="0" width="105" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="f9b7e96b-0dd4-4ae2-aacd-2c0e7ecf235a" x="214" y="0" width="68" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{oreOrdinarie}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="018ebce2-6730-41df-bb04-82335af792a0" x="282" y="0" width="68" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{oreStraordinarie}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="e6f49ba7-a12c-4ab0-b640-98b72d3b3cd8" x="350" y="0" width="68" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{oreRecupero}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="cd4047c2-07e7-4b40-ad69-7d675e66e61b" x="418" y="0" width="68" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{oreViaggio}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="8e608e5d-f165-492b-8d0c-ac3bd3243f81" x="486" y="0" width="81" height="20" forecolor="#FF3300"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{totaleOreLavoro}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="de10760c-4839-4ecc-95c9-a6cca0e00f47" x="567" y="0" width="64" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{oreFerie}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="a7eef85f-4c23-4f7a-9f78-b16f0a90975a" x="631" y="0" width="64" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{orePermessoRol}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="a98e9781-c4f9-4b69-b62b-cac63e9dff54" x="696" y="0" width="64" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{oreMutua}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="0e9803d1-d073-4e8e-af8a-0510486c11d1" x="761" y="0" width="64" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{oreLegge104}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="3604e586-df36-4689-95c9-f56c5feb919e" x="826" y="0" width="64" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{oreCig}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="5ecd8261-e953-4f2a-aef2-1eb6b9c48249" x="891" y="0" width="64" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{oreMaternita}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="bc437e2b-d299-441a-96b3-f696a49b490b" x="956" y="0" width="99" height="20" forecolor="#FF3300"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{oreTotaliGiustificativi}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

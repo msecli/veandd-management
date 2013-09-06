@@ -4,6 +4,7 @@
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<import value="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
 	<parameter name="Nominativo" class="java.lang.String" nestedType="" isForPrompting="false">
 		<parameterDescription><![CDATA[Username]]></parameterDescription>
@@ -16,6 +17,12 @@
 	</parameter>
 	<parameter name="Cognome" class="java.lang.String" isForPrompting="false">
 		<parameterDescription><![CDATA[Cognome]]></parameterDescription>
+	</parameter>
+	<parameter name="TotOreCommesse" class="java.lang.String" isForPrompting="false">
+		<parameterDescription><![CDATA[TotOreCommesse]]></parameterDescription>
+	</parameter>
+	<parameter name="TotOreIU" class="java.lang.String" isForPrompting="false">
+		<parameterDescription><![CDATA[TotOreIU]]></parameterDescription>
 	</parameter>
 	<queryString language="hql">
 		<![CDATA[from DatiRiepilogoMensileCommesse where username=$P{Nominativo} and dataRiferimento=$P{Data}]]>
@@ -36,7 +43,7 @@
 		<fieldDescription><![CDATA[oreTotali]]></fieldDescription>
 	</field>
 	<title>
-		<band height="49" splitType="Stretch">
+		<band height="82" splitType="Stretch">
 			<rectangle>
 				<reportElement uuid="ef7898b3-8376-48bb-b7a6-ab237ec0ef33" x="0" y="40" width="550" height="2" forecolor="#6DB7E2" backcolor="#6DB7E2"/>
 			</rectangle>
@@ -68,10 +75,34 @@
 				</textElement>
 				<text><![CDATA[____________________________]]></text>
 			</staticText>
+			<staticText>
+				<reportElement uuid="d049b228-a915-4dcf-9263-1d718d6a9524" x="16" y="52" width="143" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tot. Ore Commesse:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0b66723f-6f7d-42ad-8f1e-cb0e898bde72" x="262" y="52" width="138" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tot.Ore Intervalli IU:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="3ab607fb-4d99-41b2-9c15-41c6475e29a9" x="400" y="52" width="120" height="18"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{TotOreIU}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="431a05c0-6441-4087-9ffe-4cd4beb55878" x="159" y="52" width="103" height="18"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{TotOreCommesse}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<columnHeader>
-		<band height="27" splitType="Stretch">
+		<band height="23" splitType="Stretch">
 			<staticText>
 				<reportElement uuid="307ace26-c654-4f41-972b-773a0bf9e2f5" x="16" y="2" width="100" height="20"/>
 				<textElement>
