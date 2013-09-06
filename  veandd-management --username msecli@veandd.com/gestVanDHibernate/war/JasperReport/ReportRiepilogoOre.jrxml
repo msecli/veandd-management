@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version last-->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="1190" pageHeight="900" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="91906a4e-31ec-43a1-9ea2-81cfe01d289d">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
 	<queryString language="hql">
 		<![CDATA[from DatiOreMese]]>
@@ -57,7 +59,7 @@
 				<text><![CDATA[Giorno]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="cf2f7f31-fe05-447c-ab24-dc0f99e6e456" x="190" y="4" width="55" height="20"/>
+				<reportElement uuid="cf2f7f31-fe05-447c-ab24-dc0f99e6e456" x="190" y="4" width="60" height="20"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
