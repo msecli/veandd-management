@@ -6,6 +6,7 @@ import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.layout.panel.PanelPrintAll;
 import gestione.pack.client.layout.panel.PanelRiepilogoAnnualeOreDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
+import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoSituazioneMensileOreDipendenti;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
@@ -450,7 +451,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    Button btnRiepiloghiSalPcl = new Button();
 	    btnRiepiloghiSalPcl.setToolTip("Riepilogo Sal/Pcl");
 	    btnRiepiloghiSalPcl.setHeight(65);
-	    btnRiepiloghiSalPcl.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.anagrafica()));
+	    btnRiepiloghiSalPcl.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
 	    btnRiepiloghiSalPcl.setIconAlign(IconAlign.BOTTOM);
 	    btnRiepiloghiSalPcl.setWidth("100%");
 	    btnRiepiloghiSalPcl.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -471,15 +472,21 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
             	center.removeAll();
-	        	center.add(new CenterLayout_RiepilogoOreDipendentiCommesse());
+	        	center.add(new PanelRiepilogoOreDipendentiPerCommesse());
 	        	center.layout(true);               
             }
         });
-	    Button btnRiepilogoMese = new Button("Report Dett. Ore");
+	    
+	    Button btnRiepilogoMese = new Button();
+	    btnRiepilogoMese.setToolTip("Riepilogo dei dati ore mensili dei dipendenti (con dettaglio commesse)");
+	    btnRiepilogoMese.setHeight(65);
+	    btnRiepilogoMese.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensPers()));
+	    btnRiepilogoMese.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoMese.setWidth("100%");
 	    btnRiepilogoMese.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	        	center.removeAll();
-	        	center.add(new CenterLayout_RiepilogoOreDipendentiCommesse());
+	        	center.add(new PanelRiepilogoOreDipendentiPerCommesse());
 	        	center.layout(true);}      
 	      });
 	    btnRiepilogoMese.setWidth("100%");

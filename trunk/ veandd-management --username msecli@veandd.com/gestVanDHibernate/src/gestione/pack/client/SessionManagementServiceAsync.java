@@ -18,8 +18,14 @@ public interface SessionManagementServiceAsync {
 			String operazione, AsyncCallback<Boolean> asyncCallback);
 
 	void setDataInSession(String dataRif, String username,
-			String operazione, AsyncCallback<Boolean> asyncCallback);
+			String operazione, String totOreCommesse, String totOreIU, AsyncCallback<Boolean> asyncCallback);
 
 	void getSede(AsyncCallback<String> asyncCallback);
+
+	void setDataReportAnnualeInSession(String anno, String sede,
+			String operazione, AsyncCallback<Boolean> asyncCallback);
+
+	void setDataReportDatiFatturazioneInSession(String anno, String mese,
+			String string, AsyncCallback<Boolean> asyncCallback);
 
 }

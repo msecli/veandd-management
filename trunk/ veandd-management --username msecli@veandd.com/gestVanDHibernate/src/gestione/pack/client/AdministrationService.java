@@ -33,6 +33,7 @@ import gestione.pack.client.model.RdaModel;
 import gestione.pack.client.model.RdoCompletaModel;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoOreAnnualiDipendente;
+import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
 import gestione.pack.client.model.RiepilogoOreDipCommesse;
@@ -320,6 +321,12 @@ public interface AdministrationService extends RemoteService {
 
 	List<RiepilogoOreAnnualiDipendente> getRiepilogoAnnualeOreDipendenti(
 			String anno, String sede)throws IllegalArgumentException;
+
+	List<RiepilogoOreNonFatturabiliModel> getRiepilogoOreNonFatturate(
+			String data, String groupBy)throws IllegalArgumentException;
+
+	List<RiepilogoOreDipFatturazione> getRiepilogoTotCommessePerDipendenti(
+			String mese, String sede)throws IllegalArgumentException;
 
 	
 	

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import gestione.pack.client.AdministrationService;
+import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.model.DatiFatturazioneCommessaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.utility.ClientUtility;
@@ -44,7 +45,10 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
+
 
 public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 
@@ -52,6 +56,9 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 	
 	private int h=Window.getClientHeight();
 	private int w=Window.getClientWidth();
+	
+	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
+	private static String url= "/gestvandhibernate/PrintDataServlet";
 
 	protected void onRender(Element target, int index) {  
 	    super.onRender(target, index);
@@ -77,6 +84,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		private ColumnModel cm;
 		
 		private Button btnSelect;
+		private Button btnPrint;
 		
 		CntpnlRiepilogoMese(){
 			
@@ -149,10 +157,52 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 				}
 			});	
 			
+			btnPrint = new Button();
+			btnPrint.setSize("55px","25px");	   
+			btnPrint.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.print24()));
+			btnPrint.setToolTip("Stampa");
+			btnPrint.setIconAlign(IconAlign.TOP);
+			btnPrint.setSize(26, 26);
+			btnPrint.setEnabled(true);
+			btnPrint.addSelectionListener(new SelectionListener<ButtonEvent>() {		
+				@Override
+				public void componentSelected(ButtonEvent ce) {
+					String mese=smplcmbxMese.getRawValue().toString();
+					String anno=smplcmbxAnno.getRawValue().toString();
+					mese=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
+					
+					SessionManagementService.Util.getInstance().setDataReportDatiFatturazioneInSession(anno, mese, "RIEP.FATT",
+							new AsyncCallback<Boolean>() {
+
+						@Override
+						public void onFailure(Throwable caught) {
+							Window.alert("Error on setDataInSession()");					
+						}
+
+						@Override
+						public void onSuccess(Boolean result) {
+							if(result)
+								fp.submit();
+							else
+								Window.alert("Problemi durante il settaggio dei parametri in Sessione (http)");
+						}
+					});				
+				}
+			});
+			
+			fp.setMethod(FormPanel.METHOD_POST);
+			fp.setAction(url);
+			fp.addSubmitCompleteHandler(new FormSubmitCompleteHandler());  
+			fp.add(btnPrint);
+			ContentPanel cp= new ContentPanel();
+			cp.setHeaderVisible(false);
+			cp.add(fp);
+						
 			ToolBar tlbOperazioni= new ToolBar();
 			tlbOperazioni.add(smplcmbxAnno);
 			tlbOperazioni.add(smplcmbxMese);
 			tlbOperazioni.add(btnSelect);
+			tlbOperazioni.add(cp);
 			setTopComponent(tlbOperazioni);
 			
 		    try {
@@ -173,12 +223,21 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		    gridRiepilogo.setBorders(false);  
 		    gridRiepilogo.setView(summary);  
 		    gridRiepilogo.getView().setShowDirtyCells(false);
-		    
-			   		   	    	   
+		    			   		   	    	   
 		  	add(gridRiepilogo);			
 		}
 		
-	
+		
+		private class FormSubmitCompleteHandler implements SubmitCompleteHandler {
+
+			@Override
+			public void onSubmitComplete(final SubmitCompleteEvent event) {
+				
+				//Window.open("/FileStorage/RiepilogoAnnuale.pdf", "_blank", "1");
+				
+			}
+		}
+	/*
 		private void getNomePM() {
 			AdministrationService.Util.getInstance().getNomePM(new AsyncCallback<List<String>>() {
 
@@ -197,7 +256,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					}else Window.alert("error: Errore durante l'accesso ai dati PM.");			
 				}
 			});		
-		}
+		}*/
 
 
 		private List<ColumnConfig> createColumns() {
@@ -298,8 +357,9 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 				@Override
 				public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
 						Grid<DatiFatturazioneMeseModel> grid) {				
+					final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
 					Float n=model.get(property);
-					return number.format(n);
+					return num.format(n);
 				}  	
 			});  
 		    configs.add(columnImporto); 	
@@ -318,7 +378,25 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					return number.format(n);
 				}  	
 			});
-		    configs.add(variazioneSal); 	    
+		    configs.add(variazioneSal); 	
+		    
+		    SummaryColumnConfig<Double> columnImportoSal=new SummaryColumnConfig<Double>();		
+		    columnImportoSal.setId("importoSal");  
+		    columnImportoSal.setHeader("Importo Sal");  
+		    columnImportoSal.setWidth(100);    
+		    columnImportoSal.setRowHeader(true); 
+		    columnImportoSal.setAlignment(HorizontalAlignment.RIGHT);
+		    columnImportoSal.setStyle("color:#e71d2b;");
+		    columnImportoSal.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
+				@Override
+				public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
+						Grid<DatiFatturazioneMeseModel> grid) {				
+					final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
+					Float n=model.get(property);
+					return num.format(n);
+				}  	
+			});  
+		    configs.add(columnImportoSal);
 		    
 		    SummaryColumnConfig<Double> variazionePcl=new SummaryColumnConfig<Double>();		
 		    variazionePcl.setId("variazionePcl");  
@@ -336,6 +414,23 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			});
 		    configs.add(variazionePcl);     
 		    
+		    SummaryColumnConfig<Double> columnImportoPcl=new SummaryColumnConfig<Double>();		
+		    columnImportoPcl.setId("importoPcl");  
+		    columnImportoPcl.setHeader("Importo Pcl");  
+		    columnImportoPcl.setWidth(100);    
+		    columnImportoPcl.setRowHeader(true); 
+		    columnImportoPcl.setAlignment(HorizontalAlignment.RIGHT);
+		    columnImportoPcl.setStyle("color:#e71d2b;");
+		    columnImportoPcl.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
+				@Override
+				public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
+						Grid<DatiFatturazioneMeseModel> grid) {				
+					final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
+					Float n=model.get(property);
+					return num.format(n);
+				}  	
+			});  
+		    configs.add(columnImportoPcl);
 		    
 		    SummaryColumnConfig<Double> oreScaricate=new SummaryColumnConfig<Double>();		
 		    oreScaricate.setId("oreScaricate");  
@@ -571,7 +666,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		    columnImporto.setAlignment(HorizontalAlignment.RIGHT);
 		    columnImporto.setStyle("color:#e71d2b;");
 		    //columnImporto.setNumberFormat(NumberFormat.getCurrencyFormat("EUR"));
-		    columnImporto.setSummaryFormat(NumberFormat.getCurrencyFormat("EUR"));
+		    
 		    columnImporto.setRenderer(new GridCellRenderer<DatiFatturazioneCommessaModel>() {
 				@Override
 				public Object render(DatiFatturazioneCommessaModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneCommessaModel> store,

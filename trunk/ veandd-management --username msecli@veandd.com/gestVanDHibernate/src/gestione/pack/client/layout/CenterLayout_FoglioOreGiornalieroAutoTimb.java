@@ -200,7 +200,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			setButtonAlign(HorizontalAlignment.CENTER);
 			setHeading("Dettaglio Ore.");
 			setHeaderVisible(false);
-			setWidth(1060);
+			setWidth(1180);
 			setHeight(1070);
 			
 			setBorders(false);
@@ -255,8 +255,8 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			frm.setHeaderVisible(false);
 			frm.setBorders(false);
 			frm.setItemId("formPanel");
-			frm.setWidth(1060);
-			frm.setHeight(1030);
+			frm.setWidth(1160);
+			frm.setHeight(1050);
 			frm.setStyleAttribute("padding-left", "0px");
 			frm.setStyleAttribute("padding-top", "0px");
 			frm.setScrollMode(Scroll.AUTO);
@@ -517,6 +517,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		String orePermessi= fldSetGiustificativi.txtfldPermesso.getValue();
 		String oreFerie= fldSetGiustificativi.txtfldFerie.getValue();
 		String oreViaggio= fldSetGiustificativi.txtfldOreViaggio.getValue();
+		String oreScarto= fldSetGiustificativi.txtfldAbbuono.getValue();
 				
 		String campoU1=fldSetIntervalliIU.txtfld1U.getValue();
 		
@@ -535,9 +536,19 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					boolean maggiore=((Integer.valueOf(ore)>14) || (Integer.valueOf(minuti)>0)&&(Integer.valueOf(ore)==14));
 
 					if(maggiore){
-						if(totOreLavoro.compareTo(ClientUtility.aggiornaTotGenerale(totOreGenerale, "-1.00"))!=0  && giustificativo.compareTo("23.Abbuono")!=0)
+						if(totOreLavoro.compareTo(ClientUtility.aggiornaTotGenerale(totOreGenerale, "-1.00"))!=0  && giustificativo.compareTo("23.Abbuono")!=0 )
 							return controllo="Per poter confermare i dati inseriti, le ore di lavoro delle commesse devono corrispondere" +
 									" alle ore totali rilevate al netto della pausa pranzo. Se necessario indicare un'ora di Abbuono (Giustificativo 23.Abbuono) .";
+						
+						if(totOreLavoro.compareTo(totOreGenerale)==0  && giustificativo.compareTo("23.Abbuono")==0 && oreScarto.compareTo("1.00")!=0)
+							return controllo="Per poter confermare i dati inseriti è necessario indicare un'ora di Abbuono/Scarto (Giustificativo 23.Abbuono) .";
+						/*else{
+							String sommaStrRec= ClientUtility.sommaOreStrOreRec(oreStraordinario, oreRecupero);
+							
+							if(sommaStrRec.compareTo(delta)!=0 && giustificativo.compareTo("23.Abbuono")==0 && delta.compareTo("0.00")!=0)
+								return controllo="Deve essere indicato un valore di Abbuono che azzeri il Delta giornaliero.";
+						}*/
+												
 					}				
 				}
 
@@ -547,6 +558,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		
 						
 		if(oreViaggio.compareTo("0.00")==0){//Controlli di coerenza se non sono state inserite ore viaggio
+					
 			
 			if(Float.valueOf(delta)>0){			
 				String sommaStrRec= ClientUtility.sommaOreStrOreRec(oreStraordinario, oreRecupero);
@@ -555,9 +567,12 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					return controllo="E' stato indicato un numero di ore di straordinario o recupero diverso dal valore del delta giornaliero \n" +
 							"ma non e' stato indicato un giustificativo.";
 				else
-				if(sommaStrRec.compareTo(delta)==0 && giustificativo.compareTo("")!=0 && giustificativo.compareTo("23.Abbuono")!=0)
-					return controllo="E' stato indicato un numero di ore uguale al valore del delta giornaliero \n" +
-							"ed e' anche stato indicato un giustificativo.";			
+					if(sommaStrRec.compareTo(delta)!=0 && giustificativo.compareTo("23.Abbuono")==0 && delta.compareTo("0.00")!=0)
+						return controllo="Deve essere indicato un valore di Abbuono che azzeri il Delta giornaliero.";
+				else
+					if(sommaStrRec.compareTo(delta)==0 && giustificativo.compareTo("")!=0 && giustificativo.compareTo("23.Abbuono")!=0)
+						return controllo="E' stato indicato un numero di ore uguale al valore del delta giornaliero \n" +
+								"ed e' anche stato indicato un giustificativo.";			
 			}
 			
 			if(Float.valueOf(delta)<0){
@@ -682,7 +697,6 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			
 			txtErrore.setVisible(false);					
 		
-			//TODO modificato
 			if((txtSede.getText().compareTo("F")==0)&&(statoRevisione==0)){
 				enableField();					
 			}else			
@@ -741,7 +755,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					    		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
 					    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
 					    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
-					    		   if(d.compareTo("Sat")==0)
+					    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 					    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 					    		   else
 					    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -772,7 +786,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			    		   			    		   
 			    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
 			    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
-			    		   if(d.compareTo("Sat")==0)
+			    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 			    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 			    		   else
 			    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);	   
@@ -848,7 +862,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 							    		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
 							    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
 							    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
-							    		   if(d.compareTo("Sat")==0)
+							    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 							    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 							    		   else
 							    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -879,7 +893,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					    		   			    		   
 					    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
 					    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
-					    		   if(d.compareTo("Sat")==0)
+					    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 					    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 					    		   else
 					    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);	   
@@ -934,7 +948,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					    		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
 					    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	   
 					    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
-					    		   if(d.compareTo("Sat")==0)
+					    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 					    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 					    		   else
 					    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -962,7 +976,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			    		   }else enableFieldGiustificativo(fldsetGiustificativo);
 			    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
 			    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
-			    		   if(d.compareTo("Sat")==0)
+			    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 			    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 			    		   else
 			    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -1034,7 +1048,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 						    		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
 						    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	   
 						    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
-						    		   if(d.compareTo("Sat")==0)
+						    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 						    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 						    		   else
 						    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -1062,7 +1076,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 				    		   }else enableFieldGiustificativo(fldsetGiustificativo);
 				    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
 				    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
-				    		   if(d.compareTo("Sat")==0)
+				    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 				    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 				    		   else
 				    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -1129,7 +1143,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					    		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
 					    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
 					    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);	 
-					    		   if(d.compareTo("Sat")==0)
+					    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 					    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 					    		   else
 					    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -1158,7 +1172,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			    		   }else enableFieldGiustificativo(fldsetGiustificativo);
 			    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
 			    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
-			    		   if(d.compareTo("Sat")==0)
+			    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 			    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 			    		   else
 			    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -1241,7 +1255,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 						    		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
 						    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
 						    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);	 
-						    		   if(d.compareTo("Sat")==0)
+						    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 						    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 						    		   else
 						    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -1270,7 +1284,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 				    		   }else enableFieldGiustificativo(fldsetGiustificativo);
 				    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
 				    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
-				    		   if(d.compareTo("Sat")==0)
+				    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 				    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 				    		   else
 				    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -1325,7 +1339,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					    		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
 					    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
 					    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);	  
-					    		   if(d.compareTo("Sat")==0)
+					    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 					    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 					    		   else
 					    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -1352,7 +1366,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			    		   }else enableFieldGiustificativo(fldsetGiustificativo);
 			    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
 			    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
-			    		   if(d.compareTo("Sat")==0)
+			    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 			    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 			    		   else
 			    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -1422,7 +1436,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 						    		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
 						    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
 						    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);	  
-						    		   if(d.compareTo("Sat")==0)
+						    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 						    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 						    		   else
 						    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -1449,7 +1463,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 				    		   }else enableFieldGiustificativo(fldsetGiustificativo);
 				    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
 				    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
-				    		   if(d.compareTo("Sat")==0)
+				    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 				    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 				    		   else
 				    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -1510,7 +1524,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					    		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
 					    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
 					    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);	   
-					    		   if(d.compareTo("Sat")==0)
+					    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 					    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 					    		   else
 					    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -1536,13 +1550,12 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			    			   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
 			    			   setFieldGiustificativo(fldsetGiustificativo, delta);
 			    		   }else enableFieldGiustificativo(fldsetGiustificativo);
-			    		   if(d.compareTo("Sat")==0)
+			    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 			    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 			    		   else
 			    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
 			    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
-			    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
-			    		  
+			    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);			    		  
 		    		   }
 		    	   }
 			      
@@ -1617,7 +1630,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 						    		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
 						    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
 						    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);	   
-						    		   if(d.compareTo("Sat")==0)
+						    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 						    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 						    		   else
 						    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -1643,7 +1656,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 				    			   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
 				    			   setFieldGiustificativo(fldsetGiustificativo, delta);
 				    		   }else enableFieldGiustificativo(fldsetGiustificativo);
-				    		   if(d.compareTo("Sat")==0)
+				    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 				    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 				    		   else
 				    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -1700,7 +1713,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					    		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
 					    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
 					    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta); 
-					    		   if(d.compareTo("Sat")==0)
+					    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 					    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 					    		   else
 					    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -1727,7 +1740,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			    		   }else enableFieldGiustificativo(fldsetGiustificativo);
 			    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
 			    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
-			    		   if(d.compareTo("Sat")==0)
+			    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 			    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 			    		   else
 			    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);		    		   
@@ -1797,7 +1810,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 						    		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
 						    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
 						    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta); 
-						    		   if(d.compareTo("Sat")==0)
+						    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 						    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 						    		   else
 						    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -1824,7 +1837,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 				    		   }else enableFieldGiustificativo(fldsetGiustificativo);
 				    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
 				    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
-				    		   if(d.compareTo("Sat")==0)
+				    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 				    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 				    		   else
 				    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);		    		   
@@ -1886,7 +1899,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					    		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
 					    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
 					    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);   
-					    		   if(d.compareTo("Sat")==0)
+					    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 					    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 					    		   else
 					    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -1912,7 +1925,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			    			   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
 			    			   setFieldGiustificativo(fldsetGiustificativo, delta);
 			    		   }else enableFieldGiustificativo(fldsetGiustificativo);
-			    		   if(d.compareTo("Sat")==0)
+			    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 			    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 			    		   else
 			    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -1992,7 +2005,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 						    		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
 						    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
 						    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);   
-						    		   if(d.compareTo("Sat")==0)
+						    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 						    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 						    		   else
 						    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -2018,7 +2031,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 				    			   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
 				    			   setFieldGiustificativo(fldsetGiustificativo, delta);
 				    		   }else enableFieldGiustificativo(fldsetGiustificativo);
-				    		   if(d.compareTo("Sat")==0)
+				    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 				    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 				    		   else
 				    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -2074,7 +2087,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					    		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
 					    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
 					    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);   
-					    		   if(d.compareTo("Sat")==0)
+					    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 					    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 					    		   else
 					    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -2100,7 +2113,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			    			   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
 			    			   setFieldGiustificativo(fldsetGiustificativo, delta);
 			    		   }else enableFieldGiustificativo(fldsetGiustificativo);
-			    		   if(d.compareTo("Sat")==0)
+			    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 			    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 			    		   else
 			    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -2173,7 +2186,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 						    		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
 						    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
 						    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);   
-						    		   if(d.compareTo("Sat")==0)
+						    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 						    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 						    		   else
 						    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -2199,7 +2212,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 				    			   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
 				    			   setFieldGiustificativo(fldsetGiustificativo, delta);
 				    		   }else enableFieldGiustificativo(fldsetGiustificativo);
-				    		   if(d.compareTo("Sat")==0)
+				    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 				    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 				    		   else
 				    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -2264,7 +2277,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					    		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
 					    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
 					    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);  
-					    		   if(d.compareTo("Sat")==0)
+					    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 					    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 					    		   else
 					    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -2292,7 +2305,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			    			   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
 			    			   setFieldGiustificativo(fldsetGiustificativo, delta);
 			    		   }else enableFieldGiustificativo(fldsetGiustificativo);
-			    		   if(d.compareTo("Sat")==0)
+			    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 			    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 			    		   else
 			    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -2377,7 +2390,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					    		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
 					    		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
 					    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);	
-					    		   if(d.compareTo("Sat")==0)
+					    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 					    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 					    		   else
 					    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -2404,7 +2417,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			    			   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
 			    			   setFieldGiustificativo(fldsetGiustificativo, delta);
 			    		   }else enableFieldGiustificativo(fldsetGiustificativo);
-			    		   if(d.compareTo("Sat")==0)
+			    		   if(d.compareTo("Sat")==0 || d.compareTo("Sun")==0)
 			    			   fldsetGiustificativo.txtfldStraordinario.setValue(delta);
 			    		   else
 			    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
@@ -2616,6 +2629,8 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			
 		private void setFieldGiustificativo(FldsetGiustificativi fldsetGiustificativo, String delta) {
 			
+			String giustificativo= fldsetGiustificativo.smplcmbxAltroGiustificativo.getRawValue().toString();
+			
 			if(Float.valueOf(delta)>0){
 				fldsetGiustificativo.txtfldFerie.setEnabled(false);
 				fldsetGiustificativo.txtfldPermesso.setEnabled(false);	
@@ -2645,6 +2660,15 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 				fldsetGiustificativo.txtfldPermesso.setEnabled(false);	
 				fldsetGiustificativo.txtfldStraordinario.setEnabled(false);
 			}	
+			
+			if(giustificativo.compareTo("23.Abbuono")==0){
+				
+				fldsetGiustificativo.txtfldStraordinario.setEnabled(false);
+				fldsetGiustificativo.txtfldRecupero.setEnabled(false);
+				fldsetGiustificativo.btnAssegnaOrePermesso.setEnabled(false);
+				fldsetGiustificativo.btnAssegnaRecupero.setEnabled(false);
+				
+			}
 		}		
 				
 		private void enableFieldGiustificativo(FldsetGiustificativi fldsetGiustificativo){	
@@ -3330,7 +3354,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			txtfldOrePreviste.setName("orePreviste");
 			txtfldOrePreviste.setEnabled(false);
 			txtfldOrePreviste.setFieldLabel("Ore Previste");	
-			if(d.substring(0, 3).compareTo("Sat")==0)
+			if(d.substring(0, 3).compareTo("Sat")==0 || d.substring(0, 3).compareTo("Sun")==0)
 				txtfldOrePreviste.setValue("0.00");
 			else	
 				txtfldOrePreviste.setValue(result.getOrePreviste());
@@ -3577,11 +3601,25 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			smplcmbxAltroGiustificativo.addListener(Events.Select, new Listener<BaseEvent>(){
 				@Override
 				public void handleEvent(BaseEvent be) {	
-					if(smplcmbxAltroGiustificativo.getRawValue().compareTo("23.Abbuono")==0)
+					if(smplcmbxAltroGiustificativo.getRawValue().compareTo("23.Abbuono")==0){
 						txtfldAbbuono.setEnabled(true);
-					else
+						
+						txtfldRecupero.setEnabled(false);
+						txtfldRecupero.setValue("0.00");
+						txtfldStraordinario.setEnabled(false);
+						btnAssegnaOreStraordinario.setEnabled(false);
+						btnAssegnaRecupero.setEnabled(false);
+					}
+					else{//TODO
 						txtfldAbbuono.setEnabled(false);
 						txtfldAbbuono.setValue("0.00");
+						
+						txtfldRecupero.setEnabled(true);
+						txtfldRecupero.setValue("0.00");
+						txtfldStraordinario.setEnabled(true);
+						btnAssegnaOreStraordinario.setEnabled(true);
+						btnAssegnaRecupero.setEnabled(true);
+					}
 				}		
 			});
 			

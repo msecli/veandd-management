@@ -3,6 +3,8 @@ package gestione.pack.client.layout;
 //import gestione.pack.client.utility.RecuperoParametriSessione;
 
 import gestione.pack.client.SessionManagementService;
+import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
+import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoSituazioneMensileOreDipendenti;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
@@ -273,7 +275,7 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	    btnPresenzeDipendenti.setWidth("100%");
 	    cp.add(btnPresenzeDipendenti);
 	    
-	    Button btnRiepilogoMeseDip = new Button();
+	   /* Button btnRiepilogoMeseDip = new Button();
 	    btnRiepilogoMeseDip.setToolTip("Riepilogo Situazione Mensile Dipendenti");
 	    btnRiepilogoMeseDip.setHeight(65);
 	    btnRiepilogoMeseDip.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
@@ -285,7 +287,7 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	        	center.layout(true);}      
 	      });
 	    btnRiepilogoMeseDip.setWidth("100%");
-	    cp.add(btnRiepilogoMeseDip);	 
+	    cp.add(btnRiepilogoMeseDip);	*/ 
 	    
 	    Button btnRilevColocation = new Button();
 	    btnRilevColocation.setToolTip("Rilevazione Presenze Colocation/Collaboratori");
@@ -301,9 +303,39 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	    btnRilevColocation.setWidth("100%");
 	    cp.add(btnRilevColocation);	 
 	    
+	    Button btnRiepilogoMeseHorizontal = new Button();
+	    btnRiepilogoMeseHorizontal.setToolTip("Riepilogo Dettagliato Compilazione");
+	    btnRiepilogoMeseHorizontal.setHeight(65);
+	    btnRiepilogoMeseHorizontal.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnRiepilogoMeseHorizontal.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoMeseHorizontal.setWidth("100%");
+	    btnRiepilogoMeseHorizontal.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelRiepilogoMeseGiornalieroHorizontal());
+	        	center.layout(true);}      
+	      });
+	   
+	    cp.add(btnRiepilogoMeseHorizontal);
+	    
+	    Button btnRiepilogoMese = new Button();
+	    btnRiepilogoMese.setToolTip("Riepilogo dei dati ore mensili dei dipendenti (con dettaglio commesse)");
+	    btnRiepilogoMese.setHeight(65);
+	    btnRiepilogoMese.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensPers()));
+	    btnRiepilogoMese.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoMese.setWidth("100%");
+	    btnRiepilogoMese.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelRiepilogoOreDipendentiPerCommesse());
+	        	center.layout(true);}      
+	      });
+	    btnRiepilogoMese.setWidth("100%");
+	    cp.add(btnRiepilogoMese);
+	    
 	    panel.add(cp);
 	    
-	    cp = new ContentPanel();
+	   /* cp = new ContentPanel();
 	    cp.setAnimCollapse(false);
 	    cp.setBodyStyleName("pad-text");
 	    cp.setHeading("Riepilogo Ore");
@@ -324,7 +356,7 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	      });
 	    btnRiepilogoMese.setWidth("100%");
 	    cp.add(btnRiepilogoMese);
-	    panel.add(cp);
+	    panel.add(cp);*/
 	    
 	    cp = new ContentPanel();
 	    cp.setAnimCollapse(false);
