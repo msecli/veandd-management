@@ -35,4 +35,6 @@ public class RiepilogoOreAnnualiDipendente extends BaseModel implements IsSerial
 	
 	}
 	
+	
+	
 }
