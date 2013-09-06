@@ -4,11 +4,8 @@ import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.model.RiepilogoOreDipCommesseGiornaliero;
 import gestione.pack.client.utility.ClientUtility;
-import gestione.pack.client.utility.ConstantiMSG;
 import gestione.pack.client.utility.MyImages;
-import gestione.pack.server.ServerUtility;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,10 +17,11 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 
+import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
@@ -35,8 +33,8 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 
@@ -58,6 +56,9 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	private Button btnPrint= new Button();
 	private int idDip;
 	private String tipoL="0"; 
+	private TextField<String> txtOreTotaliIntCommesse;
+	private TextField<String> txtOreTotaliIntIU;
+	private Text txtCheck;
 	
 	com.google.gwt.user.client.ui.Button btnPrint1 = new com.google.gwt.user.client.ui.Button("Stampa");
 	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
@@ -65,8 +66,7 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	
 	public PanelRiepilogoGiornalieroCommesse(String user, Date dataRiferimento){
 		username=user;
-		data=dataRiferimento;
-		
+		data=dataRiferimento;	
 	}
 			
 	public PanelRiepilogoGiornalieroCommesse(int id, String anno, String mese, String tipo) {//tipo 1
@@ -103,6 +103,26 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	    bodyContainer.setLayout(new FlowLayout());
 	  	bodyContainer.setBorders(false);
 	  	  	  	
+	  	ContentPanel cntpnlGrid= new ContentPanel();
+		cntpnlGrid.setBodyBorder(false);         
+		cntpnlGrid.setLayout(new FitLayout());  
+		cntpnlGrid.setHeaderVisible(false);
+		cntpnlGrid.setWidth(500);
+		cntpnlGrid.setHeight(605);
+		cntpnlGrid.setScrollMode(Scroll.AUTOY);
+		
+		FormLayout frmLyout= new FormLayout();
+		frmLyout.setLabelWidth(200);
+		
+		ContentPanel cntpnlTxtField= new ContentPanel();
+		cntpnlTxtField.setBodyBorder(false);         
+		cntpnlTxtField.setHeaderVisible(false);
+		cntpnlTxtField.setLayoutData(new RowData());
+		cntpnlTxtField.setLayout(frmLyout);
+		cntpnlTxtField.setWidth(500);
+		cntpnlTxtField.setHeight(100);
+		cntpnlTxtField.setStyleAttribute("padding-top", "20px");
+	  	
 	   	btnPrint.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.print()));
 		btnPrint.setToolTip("Stampa");
 		btnPrint.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -110,17 +130,19 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 			@Override
 			public void componentSelected(ButtonEvent ce) {
 				
-				
 				String dataRif=data.toString();
 				String mese=dataRif.substring(4, 7);
 				
 				String anno=dataRif.substring(dataRif.length()-4,dataRif.length());
-			    
+			    String totOreCommesse= txtOreTotaliIntCommesse.getValue().toString();
+			    String totOreIU= txtOreTotaliIntIU.getValue().toString();
+				
 				mese=ClientUtility.traduciMeseToIt(mese);
 				
 			    dataRif=mese+anno;
 			    
-				SessionManagementService.Util.getInstance().setDataInSession(dataRif, username, "COMM", new AsyncCallback<Boolean>() {
+				SessionManagementService.Util.getInstance().setDataInSession(dataRif, username, "COMM", totOreCommesse,
+						totOreIU, new AsyncCallback<Boolean>() {
 
 					@Override
 					public void onFailure(Throwable caught) {
@@ -138,19 +160,34 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 			}	
 		});		
 		
+		txtOreTotaliIntCommesse= new TextField<String>();
+		txtOreTotaliIntCommesse.setFieldLabel("Totale Ore da Riepilogo Commesse");
+		txtOreTotaliIntCommesse.setValue("0.00");
+		txtOreTotaliIntCommesse.setEnabled(false);
+		txtOreTotaliIntCommesse.setWidth(30);
+		
+		txtOreTotaliIntIU= new TextField<String>();
+		txtOreTotaliIntIU.setFieldLabel("Totale Ore da Intervalli I/U");
+		txtOreTotaliIntIU.setValue("0.00");
+		txtOreTotaliIntIU.setEnabled(false);
+		txtOreTotaliIntIU.setWidth(30);
+		
+		txtCheck= new Text("!!!E' Presente un'incongruenza tra i dati inseriti nel mese!!!");
+		txtCheck.setStyleAttribute("padding-top", "10px");
+		txtCheck.setStyleAttribute("font-size", "15px");
+		txtCheck.setStyleAttribute("color", "red");
+		txtCheck.setVisible(false);
+		
+		cntpnlTxtField.add(txtOreTotaliIntIU);
+		cntpnlTxtField.add(txtOreTotaliIntCommesse);
+		cntpnlTxtField.add(txtCheck);
+		
 		if(tipoL.compareTo("0")==0)
 			fp.add(btnPrint);
 		fp.setMethod(FormPanel.METHOD_POST);
 	    fp.setAction(url);
 	    fp.addSubmitCompleteHandler(new FormSubmitCompleteHandler());  
-	   
-		ContentPanel cntpnlGrid= new ContentPanel();
-		cntpnlGrid.setBodyBorder(false);         
-		cntpnlGrid.setLayout(new FitLayout());  
-		cntpnlGrid.setHeaderVisible(false);
-		cntpnlGrid.setWidth(500);
-		cntpnlGrid.setHeight(605);
-		cntpnlGrid.setScrollMode(Scroll.AUTOY);
+	   						
 				
 		caricaTabellaDati();
 	    
@@ -182,10 +219,11 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 		cntpnlLayout.setCollapsible(false);
 		cntpnlLayout.setExpanded(true);
 		cntpnlLayout.setHeading("Riepilogo Giornaliero.");
-		cntpnlLayout.setSize(515, 650);
+		cntpnlLayout.setSize(515, 755);
 		cntpnlLayout.setFrame(true);
 		cntpnlLayout.add(fp);
 		cntpnlLayout.add(cntpnlGrid);
+		cntpnlLayout.add(cntpnlTxtField);
 	    
 		bodyContainer.add(cntpnlLayout);    
 		
@@ -218,6 +256,18 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	
 	private void loadTable(List<RiepilogoOreDipCommesseGiornaliero> result) {
 		try {
+			final NumberFormat number = NumberFormat.getFormat("0.00");
+			RiepilogoOreDipCommesseGiornaliero recordTotali= new RiepilogoOreDipCommesseGiornaliero();
+			recordTotali=result.remove(result.size()-1);
+			
+			txtOreTotaliIntCommesse.setValue(number.format(recordTotali.getTotOre()));
+			txtOreTotaliIntIU.setValue(number.format(recordTotali.getOreViaggio()));
+			
+			if(number.format(recordTotali.getTotOre()).compareTo(number.format(recordTotali.getOreViaggio()))!=0)
+				txtCheck.setVisible(true);
+			else
+				txtCheck.setVisible(false);
+			
 			store.removeAll();
 			store.add(result);
 			gridRiepilogo.reconfigure(store, cmCommessa);				
@@ -245,8 +295,7 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	    column.setWidth(85);  
 	    column.setRowHeader(true);  
 	    configs.add(column); 
-	    
-	   	    	    
+	       	    	    
 	    SummaryColumnConfig<Double> columnOreLavoro=new SummaryColumnConfig<Double>();		
 	    columnOreLavoro.setId("oreLavoro");  
 	    columnOreLavoro.setHeader("Ore Lavoro");  
