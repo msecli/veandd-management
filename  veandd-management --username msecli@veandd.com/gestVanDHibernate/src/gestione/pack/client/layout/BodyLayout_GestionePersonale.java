@@ -4,6 +4,7 @@ import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.layout.panel.PanelPrintAll;
 import gestione.pack.client.layout.panel.PanelRiepilogoAnnualeOreDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
+import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoSituazioneMensileOreDipendenti;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
@@ -346,6 +347,21 @@ public class BodyLayout_GestionePersonale extends LayoutContainer {
 	      });
 	    btnRiepilogoAnnuale.setWidth("100%");
 	    cp.add(btnRiepilogoAnnuale);
+	    
+	    Button btnRiepilogoMese = new Button();
+	    btnRiepilogoMese.setToolTip("Riepilogo dei dati ore mensili dei dipendenti (con dettaglio commesse)");
+	    btnRiepilogoMese.setHeight(65);
+	    btnRiepilogoMese.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensPers()));
+	    btnRiepilogoMese.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoMese.setWidth("100%");
+	    btnRiepilogoMese.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelRiepilogoOreDipendentiPerCommesse());
+	        	center.layout(true);}      
+	      });
+	    btnRiepilogoMese.setWidth("100%");
+	    cp.add(btnRiepilogoMese);
 	    
 	    cp.setExpanded(false);
 	    panel.add(cp);

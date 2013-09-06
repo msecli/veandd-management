@@ -200,7 +200,7 @@ public CenterLayout_FoglioFatturazione(){}
 		
 		cntpnlFoglioFatturazione.setTopComponent(horizontalPanel);
 		cntpnlFoglioFatturazione.add(hpLayout);
-		
+		 
 		//cntpnlLayout.add(cntpnlFoglioFatturazione);
 	    
 		bodyContainer.add(cntpnlFoglioFatturazione);
@@ -244,6 +244,7 @@ public CenterLayout_FoglioFatturazione(){}
 					smplcmbxPM.recalculate();
 					
 					if(txtfldUsername.getValue().toString().compareTo("a.b")!=0){
+						smplcmbxPM.setEnabled(false);
 						String cognome=txtfldUsername.getValue().toString();
 						String nome=cognome.substring(0,cognome.indexOf("."));
 						cognome=cognome.substring(cognome.indexOf(".")+1, cognome.length());
@@ -312,7 +313,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    gridRiepilogo.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 		    gridRiepilogo.setView(summary);
 		    
-		    gridRiepilogo.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+		   // gridRiepilogo.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 		   
 		    gridRiepilogo.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<RiepilogoOreDipFatturazione>>() {  
 		          public void handleEvent(SelectionChangedEvent<RiepilogoOreDipFatturazione> be) {  

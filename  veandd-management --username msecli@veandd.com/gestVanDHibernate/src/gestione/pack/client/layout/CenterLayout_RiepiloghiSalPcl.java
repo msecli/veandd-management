@@ -6,6 +6,7 @@ import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.DatiComboBox;
 import gestione.pack.client.utility.MyImages;
 
+import gestione.pack.client.layout.panel.PanelRiepilogoOreNonFatturabili;
 import gestione.pack.client.layout.panel.PanelRiepilogoSalPclMese;
 import gestione.pack.client.layout.panel.PanelRiepilogoSalPclRiassunto;
 
@@ -44,6 +45,7 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 	private TabItem tbSal = new TabItem("SAL");
 	private TabItem tbPcl = new TabItem("PCL");
 	private TabItem tbRiassunto= new TabItem("Riassunto");
+	private TabItem tbNonFatturabili= new TabItem("Non Fatturabili");
 	private TabPanel tabpnlRiepSalPcl; 
 	private ContentPanel cpnlContainTab;
 	private Button btnSelect;	
@@ -229,6 +231,26 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 	        }  
 	    });  
 	    tabpnlRiepSalPcl.add(tbRiassunto);
+	    
+	    tbNonFatturabili.setTitle("Non Fatturabili");
+	    tbNonFatturabili.setScrollMode(Scroll.AUTO);
+	    tbNonFatturabili.addListener(Events.Select, new Listener<ComponentEvent>() {
+
+			@Override
+			public void handleEvent(ComponentEvent be) {
+				String meseRif= new String(); 
+		    	String anno= new String();
+		    				    				    	
+		    	anno= smplcmbxAnno.getRawValue().toString();
+				meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
+				data=meseRif+anno;
+				
+	        	tbNonFatturabili.removeAll();
+	        	tbNonFatturabili.add(new PanelRiepilogoOreNonFatturabili(data));
+	        	tbNonFatturabili.layout(true);
+			}
+	    	
+		});
 	    
 	    cpnlContainTab.setTopComponent(tlbScelte);
 	    cpnlContainTab.setBottomComponent(tabpnlRiepSalPcl);

@@ -44,11 +44,18 @@ public interface SessionManagementService extends RemoteService {
 
 	void logOut()throws IllegalArgumentException;
 
-	boolean setDataInSession(String mese, String sede, String username, String operazione);
+	boolean setDataInSession(String mese, String sede, String username, String operazione)throws IllegalArgumentException;
 
-	boolean setDataInSession(String dataRif, String username, String operazione);
+	boolean setDataInSession(String dataRif, String username,
+			String operazione, String totOreCommesse, String totOreIU)throws IllegalArgumentException;
 
 	String getSede();
+
+	boolean setDataReportAnnualeInSession(String anno, String sede,
+			String operazione)throws IllegalArgumentException;
+
+	boolean setDataReportDatiFatturazioneInSession(String anno, String mese,
+			String string)throws IllegalArgumentException;
 	
 	
 }
