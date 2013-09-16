@@ -253,7 +253,6 @@ public class PanelRiepilogoMeseGiornalieroHorizontal extends LayoutContainer{
 					String grey="#DDDDDD";
 					String stato=model.get(property);
 					
-					//TODO				
 					if(stato.compareTo("2")==0)
 						config.style = config.style + ";background-color:" + grey + ";";
 					else

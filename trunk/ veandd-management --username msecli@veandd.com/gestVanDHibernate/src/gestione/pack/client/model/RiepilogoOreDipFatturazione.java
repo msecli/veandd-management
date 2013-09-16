@@ -12,7 +12,7 @@ public class RiepilogoOreDipFatturazione extends BaseModel implements IsSerializ
 	public RiepilogoOreDipFatturazione(){}
 	
 	public RiepilogoOreDipFatturazione(String numeroCommessa, int idDip, String dipendente, Float oreLavoro, 
-			Float oreViaggio, Float oreTotali, Float oreTotaliIU, boolean checkOre){		
+			Float oreViaggio, Float oreTotali, Float oreTotaliIU, Boolean checkOre){		
 		set("numeroCommessa", numeroCommessa);
 		set("dipendente", dipendente);
 		set("oreLavoro",oreLavoro);

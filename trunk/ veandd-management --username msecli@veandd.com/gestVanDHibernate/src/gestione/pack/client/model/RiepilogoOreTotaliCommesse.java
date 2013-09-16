@@ -21,10 +21,11 @@ public class RiepilogoOreTotaliCommesse extends BaseModel implements IsSerializa
 		set("compilato", compilato);
 	}
 	
-	public RiepilogoOreTotaliCommesse(String numeroCommessa, String estensione, Float sal, Float pcl, String numeroOrdine, String oreOrdine , Float  oreLavoro, String compilato){	
+	public RiepilogoOreTotaliCommesse(String numeroCommessa, String estensione, Float sal, String salDaButtare, Float pcl, String numeroOrdine, String oreOrdine , Float  oreLavoro, String compilato){	
 		set("numeroCommessa", numeroCommessa);
 		set("estensione", estensione);
 		set("sal",sal);
+		set("salDaButtare", salDaButtare);
 		set("pcl",pcl);
 		set("numeroOrdine", numeroOrdine);
 		set("oreLavoro",oreLavoro);

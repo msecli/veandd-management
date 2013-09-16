@@ -192,8 +192,7 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 	    });
 						
 		ToolBar tlbrRiepilogoOre= new ToolBar();
-		ToolBar tlbrOrderBy= new ToolBar();
-	    
+			    
 	    btnShowDettaglioOre= new Button();
 	    btnShowDettaglioOre.setEnabled(false);
 	    btnShowDettaglioOre.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.datiTimb()));
@@ -350,7 +349,7 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 					
 					String t= model.getNumeroCommessa();
 					if(t.compareTo(".TOTALE")==0){						
-						boolean check=model.get("checkOre");
+						Boolean check=model.get("checkOre");
 						if(check)
 							config.style = config.style + ";background-color:" + "#90EE90" + ";";									
 						else

@@ -62,7 +62,7 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 		}
 		
 		store.groupBy("numeroCommessa");
-		store.setSortField("mese");
+		store.setSortField("numeroMese");
 		//store.setSortDir(SortDir.ASC);
 			    
 		GroupSummaryView summary = new GroupSummaryView();  
