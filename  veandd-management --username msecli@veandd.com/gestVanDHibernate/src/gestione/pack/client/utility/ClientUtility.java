@@ -70,7 +70,6 @@ public class ClientUtility {
 		String giornoB=new String();
 		int a, b, totMinuti;
 
-		
 			if(scaricate.indexOf(".")!=-1){
 				totA=scaricate.substring(0,scaricate.indexOf("."));
 				totB=scaricate.substring(scaricate.indexOf(".")+1, scaricate.length());	

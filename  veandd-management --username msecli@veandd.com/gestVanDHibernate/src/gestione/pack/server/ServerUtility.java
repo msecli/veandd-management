@@ -6,6 +6,8 @@ import gestione.pack.client.model.RiepilogoAnnualeJavaBean;
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
 import gestione.pack.client.model.RiepilogoOreAnnualiDipendente;
 import gestione.pack.client.model.RiepilogoOreDipFatturazione;
+import gestione.pack.client.model.RiepilogoOreNonFatturabiliJavaBean;
+import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 import gestione.pack.shared.AssociazionePtoA;
 import gestione.pack.shared.Commessa;
 import gestione.pack.shared.DatiOreMese;
@@ -25,6 +27,7 @@ import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -704,7 +707,7 @@ public class ServerUtility {
 				datoG.setDeltaOreViaggio(sumDeltaOreViaggio);
 				datoG.setOreTotali(sumOreTotali);
 				datoG.setOreFerie(sumOreFerie);
-				datoG.setOrePermesso(sumOreFerie);
+				datoG.setOrePermesso(sumOrePermesso);
 				datoG.setOreRecupero(ServerUtility.aggiornaTotGenerale(sumOreRecupero, monteOreRecuperoTotale));
 				datoG.setOreStraordinario(sumOreStraordinario);
 				datoG.setGiustificativo("");
@@ -907,7 +910,7 @@ public class ServerUtility {
 				datoG.setDeltaOreViaggio(sumDeltaOreViaggio);
 				datoG.setOreTotali(sumOreTotali);
 				datoG.setOreFerie(sumOreFerie);
-				datoG.setOrePermesso(sumOreFerie);
+				datoG.setOrePermesso(sumOrePermesso);
 				datoG.setOreRecupero(ServerUtility.aggiornaTotGenerale(sumOreRecupero, monteOreRecuperoTotale));
 				datoG.setOreStraordinario(sumOreStraordinario);
 				datoG.setGiustificativo("");
@@ -1100,7 +1103,7 @@ public class ServerUtility {
 				
 				DatiRiepilogoMensileCommesse riep= new DatiRiepilogoMensileCommesse();
 						
-				if(totaleOreC.compareTo("0.00")!=0){
+				//if(totaleOreC.compareTo("0.00")!=0){
 					riep.setDataRiferimento(data);
 					riep.setUsername(username);
 					riep.setGiorno("TOTALE");
@@ -1110,7 +1113,7 @@ public class ServerUtility {
 					riep.setOreTotali(totaleOreC);
 				
 					listaG.add(riep);
-				}
+				//}
 				
 				Collections.sort(listaG, new Comparator<DatiRiepilogoMensileCommesse>(){
 					  public int compare(DatiRiepilogoMensileCommesse s1, DatiRiepilogoMensileCommesse s2) {
@@ -1605,7 +1608,6 @@ public class ServerUtility {
 		return false;		
 	}
 	
-	
 	public static boolean ExistDip(List<RiepilogoOreDipFatturazione> listaAppCalcoloOreIU, int idDip) {
 		
 		for(RiepilogoOreDipFatturazione r:listaAppCalcoloOreIU){
@@ -1613,6 +1615,65 @@ public class ServerUtility {
 				return true;
 		}
 		return false;
+	}
+	
+	public static List<String> getListaMesiPerAnno(String data) {
+		List<String> listaMesi=new ArrayList<String>();
+		
+		listaMesi.add("Gen"+data);
+		listaMesi.add("Feb"+data);
+		listaMesi.add("Mar"+data);
+		listaMesi.add("Apr"+data);
+		listaMesi.add("Mag"+data);
+		listaMesi.add("Giu"+data);
+		listaMesi.add("Lug"+data);
+		listaMesi.add("Ago"+data);
+		listaMesi.add("Set"+data);
+		listaMesi.add("Ott"+data);
+		listaMesi.add("Nov"+data);
+		listaMesi.add("Dic"+data);
+		
+		return listaMesi;
+	}
+	
+	
+	public static String getOreCentesimi(String totOreCommMese) {	
+		String ore=totOreCommMese.substring(0, totOreCommMese.indexOf("."));
+		String decimali=totOreCommMese.substring(totOreCommMese.indexOf(".")+1,totOreCommMese.length());
+		
+		if(decimali.compareTo("00")==0)
+			return totOreCommMese;		
+		if(decimali.compareTo("15")==0){
+			decimali="25";
+			return ore+"."+decimali;
+		}		
+		if(decimali.compareTo("30")==0){
+			decimali="50";
+			return ore+"."+decimali;
+		}
+		if(decimali.compareTo("45")==0){
+			decimali="75";
+			return ore+"."+decimali;
+		}	
+		return totOreCommMese;
+	}
+	
+	
+	public static List<RiepilogoOreNonFatturabiliJavaBean> traduciNonFatturabiliModelToBean(
+			List<RiepilogoOreNonFatturabiliModel> lista) {
+		
+		List<RiepilogoOreNonFatturabiliJavaBean> listaR = new ArrayList<RiepilogoOreNonFatturabiliJavaBean>();
+		RiepilogoOreNonFatturabiliJavaBean rB;
+		
+		for(RiepilogoOreNonFatturabiliModel r:lista){
+			
+			rB=new RiepilogoOreNonFatturabiliJavaBean(r.getSede(), r.getGruppoLavoro(), r.getAttivita(), r.getRisorsa(), 
+					r.getM1(),r.getM2() , r.getM3(), r.getM4(), r.getM5(), r.getM6(), r.getM7(), r.getM8(), r.getM9(), 
+					r.getM10(), r.getM11(), r.getM12(), r.getCostoOrario(), r.getTotaleOre(), r.getCostoEffettivo());
+			listaR.add(rB);
+		}		
+		
+		return listaR;
 	}
 }
 

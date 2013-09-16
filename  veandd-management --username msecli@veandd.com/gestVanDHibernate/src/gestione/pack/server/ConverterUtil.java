@@ -434,7 +434,7 @@ public class ConverterUtil {
 
 
 	@SuppressWarnings("unchecked")
-	public static Set<Commessa> getCommesse() {
+	public static Set<Commessa> getCommesse(String statoSelected) {
 		
 		Set<Commessa> setCommesse=new HashSet<>();
 		List<Commessa> lista=new ArrayList<>();				
@@ -444,11 +444,17 @@ public class ConverterUtil {
 		try {
 			tx=	session.beginTransaction();		
 			
-			lista=(List<Commessa>)session.createQuery("from Commessa").list();
-			setCommesse.addAll(lista);
-		
-			tx.commit();
+			if(statoSelected.compareTo("Aperta")==0)
+				lista=(List<Commessa>)session.createQuery("from Commessa where statoCommessa=:stato").
+				setParameter("stato", statoSelected).list();
+			if(statoSelected.compareTo("Conclusa")==0)
+				lista=(List<Commessa>)session.createQuery("from Commessa where statoCommessa=:stato").
+				setParameter("stato", statoSelected).list();
+			if(statoSelected.compareTo("Tutte")==0)
+				lista=(List<Commessa>)session.createQuery("from Commessa").list();
 			
+			setCommesse.addAll(lista);
+			tx.commit();		
 			return setCommesse;
 			
 		    } catch (Exception e) {

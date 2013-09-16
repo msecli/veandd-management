@@ -103,5 +103,14 @@ public interface MyImages extends ClientBundle{
 	
 	@Source("Icone/legend24x24.png")
 	ImageResource legenda();
+	
+	@Source("Icone/delete.png")
+	ImageResource delete();
+	
+	@Source("Icone/deleteAll.png")
+	ImageResource deleteAll();
+	
+	@Source("Icone/addUser.png")
+	ImageResource addUser();
 }
 

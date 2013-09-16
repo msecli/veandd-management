@@ -42,6 +42,8 @@ public class FoglioFatturazione  extends LightEntity implements IsSerializable{
 	private String variazioneSAL;
 	
 	private String tariffaUtilizzata;
+	
+	private String flagSalDaButtare;
 
 	//bi-directional many-to-one association to Commessa
     @ManyToOne
@@ -153,5 +155,13 @@ public class FoglioFatturazione  extends LightEntity implements IsSerializable{
 
 	public void setTariffaUtilizzata(String tariffaUtilizzata) {
 		this.tariffaUtilizzata = tariffaUtilizzata;
+	}
+
+	public String getFlagSalDaButtare() {
+		return flagSalDaButtare;
+	}
+
+	public void setFlagSalDaButtare(String flagSalDaButtare) {
+		this.flagSalDaButtare = flagSalDaButtare;
 	}
 }
