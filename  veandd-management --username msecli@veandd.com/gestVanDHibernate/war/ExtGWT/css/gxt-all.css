@@ -7488,5 +7488,21 @@ body.x-body-masked .x-window-plain .x-window-mc {
 
 .red-row
 {
+color:#f10000;
+}
+
+.grey-row
+{
+color:grey;
+}
+
+.green-row
+{
+color:#139213;
+}
+
+.red-text
+{
 color:red;
+font-size: 22px;
 }
