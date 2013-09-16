@@ -2,6 +2,8 @@ package gestione.pack.server;
 
 import gestione.pack.client.model.DatiFatturazioneMeseJavaBean;
 import gestione.pack.client.model.RiepilogoAnnualeJavaBean;
+import gestione.pack.client.model.RiepilogoOreNonFatturabiliJavaBean;
+import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 import gestione.pack.shared.Personale;
 
 import java.io.BufferedInputStream;
@@ -298,6 +300,66 @@ public class PrintDataServlet extends HttpServlet  {
 				}
 		
 			else
+				if(operazione.compareTo("RIEP.NON.FATT")==0){
+					List<RiepilogoOreNonFatturabiliModel> lista= new ArrayList<RiepilogoOreNonFatturabiliModel>();
+					List<RiepilogoOreNonFatturabiliJavaBean> listaR= new ArrayList<RiepilogoOreNonFatturabiliJavaBean>();
+					
+					lista= (List<RiepilogoOreNonFatturabiliModel>) httpSession.getAttribute("lista");
+					
+					listaR.addAll(ServerUtility.traduciNonFatturabiliModelToBean(lista));
+					
+					Map parameters = new HashMap();
+											
+					JasperPrint jasperPrint;
+					FileInputStream fis;
+					BufferedInputStream bufferedInputStream;
+
+					try {
+
+						fis = new FileInputStream(Constanti.PATHAmazon+"JasperReport/ReportRiepilogoOreNonFatturabili.jasper");
+												
+						bufferedInputStream = new BufferedInputStream(fis);
+
+						JasperReport jasperReport = (JasperReport) JRLoader
+									.loadObject(bufferedInputStream);
+
+						jasperPrint = JasperFillManager.fillReport(jasperReport,
+									parameters, getDataSourceNonFatt(listaR));
+						
+						JRXlsExporter exporterXLS = new JRXlsExporter();
+						exporterXLS.setParameter(JRXlsExporterParameter.JASPER_PRINT, jasperPrint);
+						exporterXLS.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
+						exporterXLS.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
+						exporterXLS.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+						exporterXLS.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
+						exporterXLS.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, Constanti.PATHAmazon+"FileStorage/ReportRiepilogoOreNonFatturabili.xls");
+						exporterXLS.exportReport();
+							
+						File f=new File(Constanti.PATHAmazon+"FileStorage/ReportRiepilogoOreNonFatturabili.xls");
+						FileInputStream fin = new FileInputStream(f);
+						ServletOutputStream outStream = response.getOutputStream();
+						// SET THE MIME TYPE.
+						response.setContentType("application/vnd.ms-excel");
+						// set content dispostion to attachment in with file name.
+						// case the open/save dialog needs to appear.
+						response.setHeader("Content-Disposition", "attachment;filename=ReportRiepilogoOreNonFatturabili.xls");
+
+						byte[] buffer = new byte[1024];
+						int n = 0;
+						while ((n = fin.read(buffer)) != -1) {
+						outStream.write(buffer, 0, n);
+						System.out.println(buffer);
+						}
+						
+						outStream.flush();
+						fin.close();
+						outStream.close();
+						
+					} catch (JRException e) {
+							e.printStackTrace();
+					}								
+				}
+			else
 			{
 			//operazione ONE
 			stampato = ServerUtility.PrintRiepilogoOreMese(dataRif, sedeOperativa, username);
@@ -346,6 +408,15 @@ public class PrintDataServlet extends HttpServlet  {
 		}
 	}
 
+	
+	private static JRDataSource getDataSourceNonFatt(List<RiepilogoOreNonFatturabiliJavaBean> listaR) {
+		Collection<RiepilogoOreNonFatturabiliJavaBean> riep= new ArrayList<RiepilogoOreNonFatturabiliJavaBean>();		
+		for(RiepilogoOreNonFatturabiliJavaBean r: listaR){
+			riep.add(r);
+		}	
+		return new JRBeanCollectionDataSource(riep);
+	}
+	
 	private static JRDataSource getDataSourceFattMese(List<DatiFatturazioneMeseJavaBean> listaR) {
 		Collection<DatiFatturazioneMeseJavaBean> riep= new ArrayList<DatiFatturazioneMeseJavaBean>();		
 		for(DatiFatturazioneMeseJavaBean r: listaR){
