@@ -14,6 +14,10 @@
  *******************************************************************************/
 package gestione.pack.client;
 
+import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
+
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -56,6 +60,9 @@ public interface SessionManagementService extends RemoteService {
 
 	boolean setDataReportDatiFatturazioneInSession(String anno, String mese,
 			String string)throws IllegalArgumentException;
+
+	boolean setNomeReport(String string,
+			List<RiepilogoOreNonFatturabiliModel> list);
 	
 	
 }

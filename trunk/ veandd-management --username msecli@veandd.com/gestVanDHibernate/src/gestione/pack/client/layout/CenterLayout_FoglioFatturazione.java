@@ -1,7 +1,5 @@
 package gestione.pack.client.layout;
 
-//modifiche dalla versione 3
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +14,7 @@ import gestione.pack.client.utility.DatiComboBox;
 import gestione.pack.client.utility.MyImages;
 import gestione.pack.client.model.FoglioFatturazioneModel;
 
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.KeyListener;
@@ -39,6 +38,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
@@ -77,6 +77,7 @@ public CenterLayout_FoglioFatturazione(){}
 	private SimpleComboBox<String> smplcmbxPM=new SimpleComboBox<String>();
 	private Button btnSelect;
 	private TextField<String> txtfldUsername= new TextField<String>();
+	private Text txtRuolo= new Text("AMM");
 	private HorizontalPanel hpLayout;
 	private Button btnSalva;
 	private boolean trovato=true;
@@ -138,6 +139,8 @@ public CenterLayout_FoglioFatturazione(){}
 		String anno= data.substring(data.length()-4, data.length());
 			
 		txtfldUsername.setVisible(false);
+		
+		txtRuolo.setVisible(false);
 		
 		smplcmbxMese.setWidth(110);
 		smplcmbxMese.setFieldLabel("Mese");
@@ -223,8 +226,10 @@ public CenterLayout_FoglioFatturazione(){}
 		if (getParent().getParent().getParent().getParent().getClass().equals(lcPM.getClass())) {
 			lcPM = (BodyLayout_PersonalManager) getParent().getParent()	.getParent().getParent();
 			txtfldUsername.setValue(lcPM.txtfldUsername.getValue().toString());
+			txtRuolo.setText("PM");
 		}		
 		else txtfldUsername.setValue("a.b");
+		
 	}
 	
 	
@@ -259,8 +264,7 @@ public CenterLayout_FoglioFatturazione(){}
 							hpLayout.add(new CntpnlDatiFatturazioneOrdine());
 							hpLayout.layout();
 						}						
-					}
-					
+					}				
 				}else Window.alert("error: Errore durante l'accesso ai dati PM.");			
 			}
 		});				
@@ -285,7 +289,7 @@ public CenterLayout_FoglioFatturazione(){}
 			setBorders(false);
 			setBodyBorder(false);
 			setScrollMode(Scroll.NONE);	
-			setWidth(435);
+			setWidth(460);
 			setFrame(false);
 			setScrollMode(Scroll.AUTOY);
 			setItemId("panelRiepilogoOre");
@@ -347,7 +351,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    btnShowDettaglioOre= new Button();
 		    btnShowDettaglioOre.setEnabled(false);
 		    btnShowDettaglioOre.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.datiTimb()));
-		    btnShowDettaglioOre.setToolTip("Riepilogo Mesi Precedenti");
+		    btnShowDettaglioOre.setToolTip("Riepilogo Giornaliero Dettagliato");
 		    btnShowDettaglioOre.setIconAlign(IconAlign.TOP);
 		    btnShowDettaglioOre.setSize(26, 26);
 		    btnShowDettaglioOre.addSelectionListener(new SelectionListener<ButtonEvent>() {			
@@ -359,7 +363,7 @@ public CenterLayout_FoglioFatturazione(){}
 					meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
 									
 					Dialog d= new Dialog();
-					d.setSize(550, 700);
+					d.setSize(550, 800);
 					d.setButtons("");
 					d.add(new PanelRiepilogoGiornalieroCommesse(idDip, anno, meseRif, "1")); //tipo indica da quale layout creo la classe
 					d.show();
@@ -375,7 +379,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    cntpnlGrid.setFrame(true);
 		    cntpnlGrid.setLayout(new FitLayout());  
 		    cntpnlGrid.setHeaderVisible(false);
-		    cntpnlGrid.setWidth(420);
+		    cntpnlGrid.setWidth(445);
 		    cntpnlGrid.setHeight(785);
 		    cntpnlGrid.setScrollMode(Scroll.AUTOY);
 		    cntpnlGrid.add(gridRiepilogo);
@@ -454,7 +458,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    
 		    SummaryColumnConfig<Double> columnOreTotali=new SummaryColumnConfig<Double>();		
 		    columnOreTotali.setId("oreTotali");  
-		    columnOreTotali.setHeader("Totale");  
+		    columnOreTotali.setHeader("Totale C.");  
 		    columnOreTotali.setWidth(63);    
 		    columnOreTotali.setRowHeader(true); 
 		    columnOreTotali.setAlignment(HorizontalAlignment.LEFT);    
@@ -469,7 +473,59 @@ public CenterLayout_FoglioFatturazione(){}
 					return number.format(n);
 				}			
 			});    
-		    configs.add(columnOreTotali); 		
+		    configs.add(columnOreTotali); 	
+		    
+		   /* SummaryColumnConfig<Double> columnOreTotaliIU=new SummaryColumnConfig<Double>();		
+		    columnOreTotaliIU.setId("oreTotaliIU");  
+		    columnOreTotaliIU.setHeader("Totale I/U");  
+		    columnOreTotaliIU.setWidth(63);    
+		    columnOreTotaliIU.setRowHeader(true); 
+		    columnOreTotaliIU.setAlignment(HorizontalAlignment.LEFT);    
+		    columnOreTotaliIU.setRenderer(new GridCellRenderer<RiepilogoOreDipFatturazione>() {
+				@Override
+				public Object render(RiepilogoOreDipFatturazione model,
+						String property, ColumnData config, int rowIndex,
+						int colIndex,
+						ListStore<RiepilogoOreDipFatturazione> store,
+						Grid<RiepilogoOreDipFatturazione> grid) {
+					Float n=model.get(property);
+					return number.format(n);
+				}			
+			});    
+		    configs.add(columnOreTotaliIU);
+		    
+		    column=new SummaryColumnConfig<Double>();		
+		    column.setId("checkOre");  
+			column.setHeader("Check");  
+			column.setWidth(20);  
+			column.setRowHeader(true); 
+			column.setRenderer(new GridCellRenderer<RiepilogoOreDipFatturazione>() {
+
+					@Override
+					public Object render(RiepilogoOreDipFatturazione model, String property,
+							ColumnData config, int rowIndex, int colIndex,
+							ListStore<RiepilogoOreDipFatturazione> store, Grid<RiepilogoOreDipFatturazione> grid) {
+						
+						String t= model.getDipendente();
+						
+						if(t.compareTo(".TOTALE")==0){						
+							config.style = config.style + ";background-color:" + "#FFFFFF" + ";";
+						}
+						else
+						if(t.compareTo(".TOTALE")!=0){						
+							Boolean check=model.get("checkOre");
+							if(check!=null)
+							if(check)
+								config.style = config.style + ";background-color:" + "#90EE90" + ";";									
+							else
+								config.style = config.style + ";background-color:" + "#F08080" + ";";
+						}//else 
+							//config.style = config.style + ";background-color:" + "#FFFFFF" + ";";
+						return "";
+					}
+				});
+		    configs.add(column);  
+		    */
 			return configs;
 		}	
 	
@@ -530,6 +586,7 @@ public CenterLayout_FoglioFatturazione(){}
 		private TextField<String> txtfldOreEseguiteRegistrate= new TextField<String>();
 		private TextField<String> txtSalTotale= new TextField<String>();
 		private TextField<String> txtPclTotale= new TextField<String>();
+		private CheckBox chbxSalButtare;
 		
 		private Text txtOreDaFatturare= new Text();
 		private Text txtVariazioneSal= new Text();
@@ -601,7 +658,9 @@ public CenterLayout_FoglioFatturazione(){}
 						String variazioneSAL= txtfldVariazioneSAL.getValue().toString();
 						String variazionePCL= txtfldVariazionePCL.getValue().toString();
 						String tariffaUtilizzata=txtfldCostoOrario.getValue().toString();
-						
+						String salDaButtare= new String();
+						boolean salButtato= chbxSalButtare.getValue();
+												
 						String meseCorrente=new String();
 						String anno=new String();
 						String data= new String();
@@ -612,11 +671,16 @@ public CenterLayout_FoglioFatturazione(){}
 							note="";
 						else note=txtaNote.getValue().toString();
 						
+						if(salButtato)
+							salDaButtare="S";
+						else
+							salDaButtare="N";
+						
 						anno=smplcmbxAnno.getRawValue().toString();
 						meseCorrente=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
 						data=meseCorrente+anno;
 						AdministrationService.Util.getInstance().insertDatiFoglioFatturazione(oreEseguite,salIniziale,pclIniziale, oreFatturare,variazioneSAL,
-								variazionePCL, data, note, statoElaborazione, commessaSelezionata, tariffaUtilizzata, new AsyncCallback<Boolean>() {
+								variazionePCL, data, note, statoElaborazione, commessaSelezionata, tariffaUtilizzata, salDaButtare, new AsyncCallback<Boolean>() {
 
 									@Override
 									public void onFailure(Throwable caught) {
@@ -874,7 +938,7 @@ public CenterLayout_FoglioFatturazione(){}
 			
 			ContentPanel cp1=new ContentPanel();
 			cp1.setHeaderVisible(false);
-			cp1.setSize(575, 80);
+			cp1.setSize(575, 90);
 			cp1.setBorders(false);
 			cp1.setBodyBorder(false);
 			cp1.setFrame(false);
@@ -1188,8 +1252,37 @@ public CenterLayout_FoglioFatturazione(){}
 			txtfldTotFatturato.setEnabled(false);
 			
 			txtaNote.setFieldLabel("Note per la fatturazione");
-			txtaNote.setHeight(85);
+			txtaNote.setHeight(105);
 			txtaNote.setMaxLength(500);
+			
+			chbxSalButtare= new CheckBox();
+			chbxSalButtare.setValue(false);
+			//chbxSalButtare.setStyleAttribute("padding-top", "15px");
+			chbxSalButtare.setFieldLabel("Sal da scartare:");
+			
+			String r= new String();
+			r=txtRuolo.getText();
+			if(r.compareTo("PM")==0)
+				chbxSalButtare.setVisible(false);
+			chbxSalButtare.addListener(Events.OnClick, new Listener<ComponentEvent>() {
+
+				@Override
+				public void handleEvent(ComponentEvent be) {
+					String salTotale= new String();
+					String varSal= new String();
+					
+					boolean check= chbxSalButtare.getValue();
+					if(check){
+						salTotale=txtSalTotale.getValue();
+						txtfldVariazioneSAL.setValue("-"+salTotale);
+						txtfldVariazioneSAL.fireEvent(Events.KeyUp);
+						
+					}else{
+						txtfldVariazioneSAL.setValue("0.00");
+						txtfldVariazioneSAL.fireEvent(Events.KeyUp);
+					}				
+				}
+			});
 			
 			RowData data1 = new RowData(.20, 1);
 			data.setMargins(new Margins(5));
@@ -1210,8 +1303,9 @@ public CenterLayout_FoglioFatturazione(){}
 			layoutColumn1.setLayout(layout);
 			layoutColumn1.add(txtfldVariazioneSAL, new FormData("46%"));
 			layoutColumn1.add(txtVariazioneSal);
+						
 			cp1.add(layoutColumn1, data1);
-			
+						
 			LayoutContainer layoutColumn2=new LayoutContainer();
 			layout= new FormLayout();
 			layout.setLabelWidth(80);
@@ -1243,7 +1337,7 @@ public CenterLayout_FoglioFatturazione(){}
 			
 			ContentPanel cp2=new ContentPanel();
 			cp2.setHeaderVisible(false);
-			cp2.setSize(575, 120);
+			cp2.setSize(575, 160);
 			cp2.setBorders(false);
 			cp2.setBodyBorder(false);
 			cp2.setFrame(false);
@@ -1260,13 +1354,15 @@ public CenterLayout_FoglioFatturazione(){}
 			layoutColumnTxtArea.add(txtaNote, new FormData("90%"));
 			cp2.add(layoutColumnTxtArea, data2);
 			
+						
 			LayoutContainer layoutColumn5=new LayoutContainer();
 			layout= new FormLayout();
-			layout.setLabelWidth(80);
+			layout.setLabelWidth(110);
 			layout.setLabelAlign(LabelAlign.TOP);
 			layoutColumn5.setLayout(layout);
+			layoutColumn5.add(chbxSalButtare, new FormData("20%"));
 			layoutColumn5.add(txtfldTotFatturato, new FormData("65%"));
-			cp2.add(layoutColumn5, data1);	
+			cp2.add(layoutColumn5, data1);						
 			
 			fldsetFattura.add(cp2);
 			
@@ -1318,7 +1414,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    column.setId("numeroCommessa");  
 		    column.setHeader("Commessa");  
 		    column.setWidth(75);  
-		    column.setRowHeader(true);  
+		    column.setRowHeader(true); 
 		    configs.add(column); 
 		    
 		    column=new ColumnConfig();		
@@ -1334,7 +1430,6 @@ public CenterLayout_FoglioFatturazione(){}
 		    column.setWidth(60);  
 		    column.setRowHeader(true); 
 		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
-
 				@Override
 				public Object render(RiepilogoOreTotaliCommesse model, String property,
 						ColumnData config, int rowIndex, int colIndex,
@@ -1345,6 +1440,35 @@ public CenterLayout_FoglioFatturazione(){}
 				}
 			});
 		    configs.add(column); 
+		    
+		    column= new ColumnConfig();
+		    column.setId("salDaButtare");
+		    column.setHeader("B.");  
+		    column.setToolTip("Se verde indica Sal buttato/scartato");
+		    column.setWidth(20);  
+		    column.setRowHeader(true);  
+		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
+				@Override
+				public Object render(RiepilogoOreTotaliCommesse model, String property,
+						ColumnData config, int rowIndex, int colIndex,
+						ListStore<RiepilogoOreTotaliCommesse> store, Grid<RiepilogoOreTotaliCommesse> grid) {
+					
+					String numeroCommessa=model.get("numeroCommessa");
+					if(numeroCommessa.compareTo("TOTALE")!=0)
+					{
+						String color = "#FFFFFF";
+						String flag=model.get("salDaButtare");
+						if(flag.compareTo("S")==0)
+							color = "#90EE90";                    
+						config.style = config.style + ";background-color:" + color + ";";									
+					}
+					else{
+						config.style = config.style + ";background-color:" + "#FFFFFF" + ";";
+					}
+					return "";
+				}
+			});
+		    configs.add(column);	
 		    
 		    column=new ColumnConfig();		
 		    column.setId("pcl");  
@@ -1380,9 +1504,10 @@ public CenterLayout_FoglioFatturazione(){}
 		    
 		    column=new ColumnConfig();		
 		    column.setId("compilato");//flag per indicare se è già presente il foglio ore del mese  
-		    column.setHeader("");  
+		    column.setHeader("C.");  
 		    column.setWidth(20);  
-		    column.setRowHeader(true);  
+		    column.setRowHeader(true);
+		    column.setToolTip("Se verde indica che il foglio del mese e' stato compilato.");
 		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
 
 				@Override

@@ -109,6 +109,8 @@ public interface AdministrationServiceAsync {
 			String oreRes, AsyncCallback<Boolean> asyncCallback);
 
 	void deleteRdoCompleta(int idRdo, AsyncCallback<Boolean> asyncCallback);
+	
+	void closeOrdine(String numeroOrdine, AsyncCallback<Boolean> asyncCallback);
 
 /*	
 //--------------------------Offerta
@@ -147,7 +149,7 @@ public interface AdministrationServiceAsync {
 	
 //-----------------------------Commesse
 
-	void getAllCommesseModel(AsyncCallback<List<CommessaModel>> asyncCallback);
+	void getAllCommesseModel(String pm, String statoSelezionato, AsyncCallback<List<CommessaModel>> asyncCallback);
 
 	void insertDataCommessa(String numCommessa, String estensione,
 			String tipoCommessa, String pM, String statoCommessa,
@@ -252,7 +254,8 @@ public interface AdministrationServiceAsync {
 	void insertDatiFoglioFatturazione(String oreEseguite, String salAttuale,
 			String pclAttuale, String oreFatturere, String variazioneSAL,
 			String variazionePCL, String meseCorrente,
-			String note, String statoElaborazione, String commessaSelezionata,  String tariffaUtilizzata, AsyncCallback<Boolean> asyncCallback);
+			String note, String statoElaborazione, String commessaSelezionata,  
+			String tariffaUtilizzata, String flagSal, AsyncCallback<Boolean> asyncCallback);
 
 	void getReportDatiFatturazioneMese(String mese,
 			AsyncCallback<List<DatiFatturazioneMeseModel>> asyncCallback);
@@ -317,6 +320,8 @@ public interface AdministrationServiceAsync {
 
 	void getRiepilogoTotCommessePerDipendenti(String mese, String sede,
 			AsyncCallback<List<RiepilogoOreDipFatturazione>> callback);
+
+	
 
 	
 

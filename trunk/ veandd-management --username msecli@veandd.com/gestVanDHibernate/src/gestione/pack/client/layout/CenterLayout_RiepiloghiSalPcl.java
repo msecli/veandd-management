@@ -242,15 +242,15 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 		    	String anno= new String();
 		    				    				    	
 		    	anno= smplcmbxAnno.getRawValue().toString();
-				meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
-				data=meseRif+anno;
+				/*meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
+				data=meseRif+anno;*/
 				
 	        	tbNonFatturabili.removeAll();
-	        	tbNonFatturabili.add(new PanelRiepilogoOreNonFatturabili(data));
+	        	tbNonFatturabili.add(new PanelRiepilogoOreNonFatturabili(anno));
 	        	tbNonFatturabili.layout(true);
 			}
-	    	
 		});
+	    tabpnlRiepSalPcl.add(tbNonFatturabili);
 	    
 	    cpnlContainTab.setTopComponent(tlbScelte);
 	    cpnlContainTab.setBottomComponent(tabpnlRiepSalPcl);

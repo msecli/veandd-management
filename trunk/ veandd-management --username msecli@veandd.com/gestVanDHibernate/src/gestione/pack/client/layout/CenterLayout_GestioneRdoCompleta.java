@@ -592,6 +592,8 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 	
 	private class CntpnlGridRdo extends ContentPanel{
 		
+		private Button btnChiudiOrdine;
+		
 		public CntpnlGridRdo(){
 		
 			setHeaderVisible(false);
@@ -639,6 +641,8 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		        	
 		            if (be.getSelection().size() > 0) {      
 		            	Date dataOff = null, dataInizio=null, dataFine=null;
+		            	String statoOrdine=be.getSelectedItem().get("statoOrdine");
+		            	btnChiudiOrdine.setEnabled(true);
 		            	
 		            	String data=be.getSelectedItem().getData();
 		            	String dataI=be.getSelectedItem().getDataInizio();
@@ -678,13 +682,46 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 						txtfldNumeroRisorse.setValue(String.valueOf(be.getSelectedItem().getNumeroRisorse()));
 						txtfldNumeroOre.setValue(String.valueOf(be.getSelectedItem().getNumeroOre()));
 						txtfldNumeroOreResidue.setValue(String.valueOf(be.getSelectedItem().getNumeroOreResidue()));
-		                   
+		               
+						if(statoOrdine.compareTo("C")==0){
+							disableField();
+						}else{
+							enableField();
+						}
+							
+						
 		            } else {  
 		              
 		            }
-		          }     
+		          }   
 		    }); 
 				    	
+		    btnChiudiOrdine= new Button();
+		    btnChiudiOrdine.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.chiudiCommessa()));
+		    btnChiudiOrdine.setIconAlign(IconAlign.TOP);
+		    btnChiudiOrdine.setToolTip("Chiudi Ordine");
+		    btnChiudiOrdine.setEnabled(false);
+		    btnChiudiOrdine.addSelectionListener(new SelectionListener<ButtonEvent>() {			
+				@Override
+				public void componentSelected(ButtonEvent ce) {
+					String numeroOrdine= txtfldNumeroOrdine.getValue().toString();
+					AdministrationService.Util.getInstance().closeOrdine(numeroOrdine, new AsyncCallback<Boolean>(){
+
+						@Override
+						public void onFailure(Throwable caught) {
+							
+							System.out.println("Errore di connessione oncloseOrdine()");
+						}
+
+						@Override
+						public void onSuccess(Boolean result) {
+							if(!result)
+								System.out.println("Impossibile effettuare la chiusura dell'ordine!");							
+						}
+					});
+				}
+			});
+		    
 		    //barra per casella ricerca
 		    ToolBar tlbarSearchField= new ToolBar();
 		    final TextField<String> txtfldsearch= new TextField<String>();
@@ -723,6 +760,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    
 		    tlbarSearchField.add(txtfldsearch);
 		    tlbarSearchField.add(btnSearch);
+		    tlbarSearchField.add(btnChiudiOrdine);
 		    
 		    ContentPanel cntpnlGrid= new ContentPanel();
 		    cntpnlGrid.setBodyBorder(false);  
@@ -739,6 +777,51 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    add(cntpnlGrid);		  	
 		}
 
+		private void enableField() {
+			        	
+        	txtfldIdRda.setEnabled(true);
+        	txtfldNumeroRda.setEnabled(true);
+			smplcmbxCliente.setEnabled(true);
+        	
+			txtfldNumeroOfferta.setEnabled(true);
+			txtfldImporto.setEnabled(true);
+							
+			txtfldNumeroOrdine.setEnabled(true);	
+			txtrDescrizione.setEnabled(true);
+						
+			txtfldTariffaOraria.setEnabled(true);
+			txtfldNumeroRisorse.setEnabled(true);
+			txtfldNumeroOre.setEnabled(true);
+			txtfldNumeroOreResidue.setEnabled(true);
+			
+			dtfldDataFineOrdine.setEnabled(true);
+			dtfldDataInizioOrdine.setEnabled(true);
+			dtfldDataOfferta.setEnabled(true);
+		}
+		
+
+		private void disableField() {
+			txtfldIdRda.setEnabled(false);
+        	txtfldNumeroRda.setEnabled(false);
+			smplcmbxCliente.setEnabled(false);
+        	
+			txtfldNumeroOfferta.setEnabled(false);
+			txtfldImporto.setEnabled(false);
+							
+			txtfldNumeroOrdine.setEnabled(false);	
+			txtrDescrizione.setEnabled(false);
+						
+			txtfldTariffaOraria.setEnabled(false);
+			txtfldNumeroRisorse.setEnabled(false);
+			txtfldNumeroOre.setEnabled(false);
+			txtfldNumeroOreResidue.setEnabled(false);	
+			
+			dtfldDataFineOrdine.setEnabled(true);
+			dtfldDataInizioOrdine.setEnabled(true);
+			dtfldDataOfferta.setEnabled(true);
+		}  
+		
+		
 		private List<ColumnConfig> createColumns() {
 			List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 			
@@ -941,6 +1024,20 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		txtfldNumeroOre.clear();
 		txtfldNumeroOreResidue.clear();
 		gridRiepilogo.getSelectionModel().deselectAll();
+		txtfldIdRda.setEnabled(true);
+    	txtfldNumeroRda.setEnabled(true);
+		smplcmbxCliente.setEnabled(true);
+    	
+		txtfldNumeroOfferta.setEnabled(true);
+		txtfldImporto.setEnabled(true);
+						
+		txtfldNumeroOrdine.setEnabled(true);	
+		txtrDescrizione.setEnabled(true);
+					
+		txtfldTariffaOraria.setEnabled(true);
+		txtfldNumeroRisorse.setEnabled(true);
+		txtfldNumeroOre.setEnabled(true);
+		txtfldNumeroOreResidue.setEnabled(true);
 	}
 	
 }

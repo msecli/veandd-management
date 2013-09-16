@@ -135,7 +135,9 @@ public interface AdministrationService extends RemoteService {
 	
 	boolean deleteRdoCompleta(int idRdo) throws IllegalArgumentException;
 
+	boolean closeOrdine(String numeroOrdine) throws IllegalArgumentException;
 
+	
 	//----------------------OFFERTA
 /*
 	void insertDataOfferta(String numOfferta, String numRda, Date dataOfferta,
@@ -170,8 +172,7 @@ public interface AdministrationService extends RemoteService {
 	List<String> getAllListaOrdini() throws IllegalArgumentException;
 	
 	
-	//-----------------------COMMESSE
-	List<CommessaModel> getAllCommesseModel() throws IllegalArgumentException;
+	List<CommessaModel> getAllCommesseModel(String pm, String statoSelezionato);
 
 	boolean insertDataCommessa(String numCommessa, String estensione,
 			String tipoCommessa, String pM, String statoCommessa,
@@ -271,7 +272,7 @@ public interface AdministrationService extends RemoteService {
 			String pclAttuale, String oreFatturere, String variazioneSAL,
 			String variazionePCL, String meseCorrente, String note,
 			String statoElaborazione, String commessaSelezionata,
-			String tariffaUtilizzata);
+			String tariffaUtilizzata, String flagSal);
 
 	List<DatiFatturazioneMeseModel> getReportDatiFatturazioneMese(String mese)throws IllegalArgumentException;
 
@@ -328,7 +329,5 @@ public interface AdministrationService extends RemoteService {
 	List<RiepilogoOreDipFatturazione> getRiepilogoTotCommessePerDipendenti(
 			String mese, String sede)throws IllegalArgumentException;
 
-	
-	
 	
 }
