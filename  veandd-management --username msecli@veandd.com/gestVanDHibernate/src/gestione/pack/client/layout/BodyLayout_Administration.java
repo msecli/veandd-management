@@ -7,6 +7,7 @@ import gestione.pack.client.layout.panel.PanelPrintAll;
 import gestione.pack.client.layout.panel.PanelRiepilogoAnnualeOreDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
 import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
+import gestione.pack.client.layout.panel.PanelRiepilogoOreNonFatturabili;
 import gestione.pack.client.layout.panel.PanelRiepilogoSituazioneMensileOreDipendenti;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
@@ -536,7 +537,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    cp.add(btnFoglioFatturazione);
 	    
 	    Button btnReportDatiFatt = new Button();
-	    btnReportDatiFatt.setToolTip("Gestione Dati Fatturazione");
+	    btnReportDatiFatt.setToolTip("Report Dati Fatturazione");
 	    btnReportDatiFatt.setHeight(65);
 	    btnReportDatiFatt.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
 	    btnReportDatiFatt.setIconAlign(IconAlign.BOTTOM);
@@ -557,7 +558,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        
 //----------------------------------------------------------------------------------------------
 	    
-	   center.add(new PanelRiepilogoAnnualeOreDipendenti()); 
+	   center.add(new CenterLayout_RiepiloghiSalPcl()); 
 	   	   
 	   container.add(north, northData);
 	   container.add(west, westData);

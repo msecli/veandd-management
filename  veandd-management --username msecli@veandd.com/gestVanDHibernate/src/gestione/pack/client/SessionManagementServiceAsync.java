@@ -1,5 +1,9 @@
 package gestione.pack.client;
 
+import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
+
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface SessionManagementServiceAsync {
@@ -27,5 +31,7 @@ public interface SessionManagementServiceAsync {
 
 	void setDataReportDatiFatturazioneInSession(String anno, String mese,
 			String string, AsyncCallback<Boolean> asyncCallback);
+
+	void setNomeReport(String string, List<RiepilogoOreNonFatturabiliModel> list, AsyncCallback<Boolean> asyncCallback);
 
 }

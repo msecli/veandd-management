@@ -77,7 +77,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	private TextField<String> txtfldExt;
 	private TextField<String> txtfldOreRecupero;
 	private FormPanel frmpnlAnagrPersonale;
-	private PagingToolBar toolBar = new PagingToolBar(20);
+	private PagingToolBar toolBar = new PagingToolBar(30);
 		
 	//private Button btnLoad;
 	private Button btnReset;
@@ -1027,10 +1027,13 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    
 	    ListStore<PersonaleModel> store1= new ListStore<PersonaleModel>(loader);
 	    store1.setDefaultSort("cognome", SortDir.ASC);
-	    loader.load(0, 30); 
+	     
 	    loader.setSortDir(SortDir.ASC);
 	    loader.setSortField("cognome");
 	    toolBar.bind(loader); 
+	    
+	    loader.load(0, 30); 
+	    
 	    toolBar.setActivePage(1);
 		grid.reconfigure(store1, cm);
 		

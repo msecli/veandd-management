@@ -74,6 +74,7 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 	
 	private Button btnAssocia= new Button("Associa");
 	private Button btnRemove= new Button();
+	private Button btnRemoveAll;
 	private Button btnReset= new Button("X");
 	private Button btnAdd= new Button();
 	private Button btnRefresh= new Button("R");
@@ -213,7 +214,7 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 		btnRemove.setToolTip("Elimina Dipendente");
 		btnRemove.setSize(26, 26);
 		btnRemove.setIconAlign(IconAlign.TOP);
-		btnRemove.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.elimina()));
+		btnRemove.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.delete()));
 		btnRemove.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			
 			@Override
@@ -229,6 +230,52 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 				idAssociazione=Integer.parseInt(txtfldIdAssociazione.getValue().toString());
 				
 				AdministrationService.Util.getInstance().deleteAssociazioneCommessaDipendenti(idAssociazione, commessa, nome, cognome, new AsyncCallback<Boolean>() {
+					
+					@Override
+					public void onSuccess(Boolean result) {
+						if(result==false)
+							Window.alert("error: Impossibile efettuare l'eliminazione del record.");
+						else {						
+							try {
+								caricaTabellaDati();
+							} catch (Exception e) {
+								e.printStackTrace();
+								Window.alert("error: Impossibile caricare i dati in tabella.");
+							}				
+						}						
+					}			
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Window.alert("Errore connessione on deleteAssociazioneCommessaDipendenti();");
+						caught.printStackTrace();					
+					}
+				});							
+			}
+		});
+		
+		
+		btnRemoveAll= new Button();
+		btnRemoveAll.setEnabled(false);
+		btnRemoveAll.setToolTip("Elimina Tutti i Dipendenti");
+		btnRemoveAll.setSize(26, 26);
+		btnRemoveAll.setIconAlign(IconAlign.TOP);
+		btnRemoveAll.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.deleteAll()));
+		btnRemoveAll.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			
+			@Override
+			public void componentSelected(ButtonEvent ce) {			
+				String commessa= new String();
+				//String nome= new String();
+				//String cognome= new String();
+				int idAssociazione;
+				
+				commessa=txtfldCommessa.getValue().toString();
+				//nome=txtfldNome.getValue().toString();
+				//cognome=txtfldCognome.getValue().toString();
+				idAssociazione=Integer.parseInt(txtfldIdAssociazione.getValue().toString());
+				
+				AdministrationService.Util.getInstance().deleteAssociazioneCommessaDipendenti(idAssociazione, commessa, "ALL", "", new AsyncCallback<Boolean>() {
 					
 					@Override
 					public void onSuccess(Boolean result) {
@@ -254,7 +301,6 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 			}
 		});
 		
-		
 		btnReset.addSelectionListener(new SelectionListener<ButtonEvent>() {			
 			@Override
 			public void componentSelected(ButtonEvent ce) {			
@@ -263,6 +309,7 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
             	list2.getStore().removeAll();
             	btnAssocia.setEnabled(true);
             	btnRemove.setEnabled(false);
+            	btnRemoveAll.setEnabled(false);
             	btnRefresh.setEnabled(false);
             	smplcmbxCommessa.setEnabled(true);
             	btnAdd.setEnabled(false);
@@ -283,7 +330,7 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 		btnAdd.setSize(26, 26);
 		btnAdd.setToolTip("Aggiungi Dipendente.");
 		btnAdd.setIconAlign(IconAlign.TOP);
-		btnAdd.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.add()));
+		btnAdd.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.addUser()));
 		btnAdd.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			
 			@Override
@@ -311,6 +358,7 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 		
 		ToolBar toolBar = new ToolBar();
 		toolBar.add(btnRemove);
+		toolBar.add(btnRemoveAll);
 		toolBar.add(btnAdd);
 		toolBar.setBorders(false);
 		toolBar.setHeight("30px");
@@ -405,6 +453,7 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 	            	btnAssocia.setEnabled(false);
 	            	
 	            	btnRemove.setEnabled(true);
+	            	btnRemoveAll.setEnabled(true);
 	            	btnAdd.setEnabled(true);
 	            	btnRefresh.setEnabled(true);
 	            	smplcmbxCommessa.setEnabled(false);

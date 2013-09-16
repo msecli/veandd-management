@@ -35,8 +35,6 @@ import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
  * */
 public class GestVanDHibernate implements EntryPoint {
 	
-		
-	
 	public void onModuleLoad() {		
 		LoginDialog d = new LoginDialog();
 		d.show();		

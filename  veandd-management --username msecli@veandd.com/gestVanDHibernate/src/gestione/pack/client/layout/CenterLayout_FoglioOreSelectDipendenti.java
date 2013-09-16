@@ -2999,11 +2999,12 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			
 			final NumberFormat number = NumberFormat.getFormat("0.00");
 			
-			if(result.getStatoRevisione().compareTo("0")!=0){
-				
-				btnConferma.setEnabled(false);
-			}
+			if(result.getStatoRevisione().compareTo("0")!=0)				
+				btnConferma.setEnabled(false);			
 			
+			if(txtfldRuolo.getValue().toString().compareTo("DIP")!=0)
+				btnConferma.setEnabled(true);
+				
 			setBorders(true);
 			setHeading("Giustificativo.");
 			setItemId("fldSetGiustificativi");
