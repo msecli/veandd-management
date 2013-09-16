@@ -2,7 +2,9 @@ package gestione.pack.client.layout.panel;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
+import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoOreDipCommesseGiornaliero;
+import gestione.pack.client.model.RiepilogoOreDipFatturazione;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.MyImages;
 
@@ -11,21 +13,31 @@ import java.util.Date;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.Style.SelectionMode;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.button.Button;
 
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridViewConfig;
 import com.extjs.gxt.ui.client.widget.grid.GroupSummaryView;
 import com.extjs.gxt.ui.client.widget.grid.SummaryColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
@@ -35,6 +47,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 
@@ -54,6 +67,7 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	private String username= "";
 	private Date data;
 	private Button btnPrint= new Button();
+	private Button btnViewFoglioOre= new Button();
 	private int idDip;
 	private String tipoL="0"; 
 	private TextField<String> txtOreTotaliIntCommesse;
@@ -63,6 +77,9 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	com.google.gwt.user.client.ui.Button btnPrint1 = new com.google.gwt.user.client.ui.Button("Stampa");
 	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
 	private static String url= "/gestvandhibernate/PrintDataServlet";
+	
+	private String dataSel= new String();
+	private String dipSel= new String();
 	
 	public PanelRiepilogoGiornalieroCommesse(String user, Date dataRiferimento){
 		username=user;
@@ -123,7 +140,9 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 		cntpnlTxtField.setHeight(100);
 		cntpnlTxtField.setStyleAttribute("padding-top", "20px");
 	  	
-	   	btnPrint.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.print()));
+	   	btnPrint.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.print24()));
+	   	btnPrint.setIconAlign(IconAlign.TOP);
+	   	btnPrint.setSize(26, 26);
 		btnPrint.setToolTip("Stampa");
 		btnPrint.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
@@ -160,6 +179,42 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 			}	
 		});		
 		
+		btnViewFoglioOre.setStyleAttribute("padding-left", "2px");
+	  	btnViewFoglioOre.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.datiTimb()));
+	  	btnViewFoglioOre.setIconAlign(IconAlign.TOP);
+	  	btnViewFoglioOre.setToolTip("Modifica dati giornalieri.");
+	  	btnViewFoglioOre.setSize(26, 26);
+	  	btnViewFoglioOre.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				  String giorno=dataSel.substring(0, 2);
+				  String mese=dataSel.substring(3,6);
+				  String anno= dataSel.substring(7,dataSel.length());
+				 // mese=mese.substring(0, 1).toUpperCase()+mese.substring(1, mese.length());
+				  mese=ClientUtility.traduciMeseToNumber(mese);
+				  Date retVal = null;
+			      
+				  try
+			        {
+			            retVal = DateTimeFormat.getFormat( "dd-MM-yyyy" ).parse( giorno+"-"+mese+"-"+anno );
+			        }
+			      catch ( Exception e )
+			        {
+			            retVal = null;
+			        }	    						
+					Dialog d =new  DialogRilevazionePresenze(retVal,dipSel);
+					d.setModal(false);
+					d.show();
+								
+					d.addListener(Events.Hide, new Listener<ComponentEvent>() {			     
+						@Override
+						public void handleEvent(ComponentEvent be) {
+								
+						}
+					});	
+				}
+		});
+		
 		txtOreTotaliIntCommesse= new TextField<String>();
 		txtOreTotaliIntCommesse.setFieldLabel("Totale Ore da Riepilogo Commesse");
 		txtOreTotaliIntCommesse.setValue("0.00");
@@ -184,11 +239,12 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 		
 		if(tipoL.compareTo("0")==0)
 			fp.add(btnPrint);
+		else
+			fp.add(btnViewFoglioOre);
 		fp.setMethod(FormPanel.METHOD_POST);
 	    fp.setAction(url);
 	    fp.addSubmitCompleteHandler(new FormSubmitCompleteHandler());  
-	   						
-				
+	   					
 		caricaTabellaDati();
 	    
 	    try {	    
@@ -206,11 +262,42 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	    summary.setShowGroupedColumn(false);
 	    summary.setStartCollapsed(false);
 		    
-	    gridRiepilogo= new EditorGrid<RiepilogoOreDipCommesseGiornaliero>(store, cmCommessa);  
+	    gridRiepilogo= new Grid<RiepilogoOreDipCommesseGiornaliero>(store, cmCommessa);  
 	    gridRiepilogo.setItemId("grid");
 	    gridRiepilogo.setBorders(false);  
 	    gridRiepilogo.setView(summary);  
+	    gridRiepilogo.setStripeRows(true);  
+		gridRiepilogo.setColumnLines(true);  
+		gridRiepilogo.setColumnReordering(true);
 	    gridRiepilogo.getView().setShowDirtyCells(false);
+	    gridRiepilogo.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);	    	    
+	    gridRiepilogo.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<RiepilogoOreDipCommesseGiornaliero>>() {  
+	          public void handleEvent(SelectionChangedEvent<RiepilogoOreDipCommesseGiornaliero> be) {  
+	        	
+	            if (be.getSelection().size() > 0) {      
+	            	String d=be.getSelectedItem().get("giorno");
+	            	dataSel= d;
+					dipSel= be.getSelectedItem().get("username");										
+	            		            		               		            	
+	            } else {  
+	                
+	           }
+	         }
+	    });
+	    gridRiepilogo.getView().setViewConfig(new GridViewConfig(){
+	    	@Override
+	        public String getRowStyle(ModelData model, int rowIndex, ListStore<ModelData> ds) {
+	    		if (model != null) {	    
+	            	String stato= new String();
+	            	stato= model.get("compilato");
+	                if (stato.compareTo("N")==0) 
+	                    return "red-row";               
+	                else if (model.get("compilato").toString().compareTo("S")==0) 
+	                    return "green-row";
+	            }
+				return "";            
+	    	}    	
+	    });
 	    
 	    cntpnlGrid.add(gridRiepilogo);	   
 	    
@@ -347,8 +434,7 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 				Float n=model.get(property);
 				return number.format(n);
 			}			
-		});
-	       
+		});	       
 	    configs.add(columnOreTotali); 		
 		return configs;
 	}
@@ -367,22 +453,7 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 			
 			nomeFile=cognome+nome+"_Report.pdf";
 			
-			Window.open("/FileStorage/RiepiloghiCommesse/"+nomeFile, "_blank", "1");
-			/*
-			 if(event.getResults().isEmpty()){
-				//Window.alert("Errore durante la creazione del file!");	 	
-			 }
-			else{		
-				nome=username.substring(0, username.indexOf("."));
-				nome=nome.substring(0, 1).toUpperCase()+nome.substring(1,nome.length());
-				
-				cognome=username.substring(username.indexOf(".")+1, username.length());
-				cognome=cognome.substring(0, 1).toUpperCase()+cognome.substring(1,cognome.length());
-				
-				nomeFile=cognome+nome+"_Report.pdf";
-				
-				Window.open(ConstantiMSG.PATHAmazon+"FileStorage/RiepiloghiCommesse/"+nomeFile, "_blank", "1");
-			}*/
+			Window.open("/FileStorage/RiepiloghiCommesse/"+nomeFile, "_blank", "1");			
 		}
 	}
 }

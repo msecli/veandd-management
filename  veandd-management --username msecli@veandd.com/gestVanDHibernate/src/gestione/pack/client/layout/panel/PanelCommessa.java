@@ -22,6 +22,7 @@ import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.binding.FormBinding;
 import com.extjs.gxt.ui.client.binding.SimpleComboBoxFieldBinding;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -43,6 +44,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.gwtext.client.widgets.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
@@ -98,6 +100,7 @@ public class PanelCommessa extends LayoutContainer {
 	private SimpleComboBox<String> smplcmbxPM;
 	private SimpleComboBox<String> smplcmbxStatoCommessa;
 	private SimpleComboBox<String> smplcmbxTipoCommessa;
+	private SimpleComboBox<String> smplcmbxSelectStatoCommessa;
 	
 	private Button btnOrdine;
 	private Button btnClose;
@@ -146,9 +149,29 @@ public class PanelCommessa extends LayoutContainer {
 		btnClose.setIconAlign(IconAlign.TOP);
 		
 		final TextField<String> txtfldsearch= new TextField<String>();
+		txtfldsearch.setEmptyText("Cerca...");
 		Button btnSearch= new Button();
 		
+		smplcmbxSelectStatoCommessa= new SimpleComboBox<String>();
+		smplcmbxSelectStatoCommessa.setFieldLabel("Stato Commessa");
+		smplcmbxSelectStatoCommessa.setName("statoCommessa");
+		smplcmbxSelectStatoCommessa.add("Aperta");
+		smplcmbxSelectStatoCommessa.add("Conclusa");
+		smplcmbxSelectStatoCommessa.add("Tutte");
+		smplcmbxSelectStatoCommessa.setTriggerAction(TriggerAction.ALL);
+		smplcmbxSelectStatoCommessa.setSimpleValue("Aperta");
+		smplcmbxSelectStatoCommessa.addListener(Events.Select, new Listener<BaseEvent>(){
+			@Override
+			public void handleEvent(BaseEvent be) {
+				if(txtRuolo.getText().compareTo("AMM")==0 || txtRuolo.getText().compareTo("UA")==0 )
+					caricaTabellaDati("");
+				else caricaTabellaDati(txtCognome.getText());
+			}		
+		});
+		
 		ToolBar toolBar = new ToolBar();
+		toolBar.setLayoutData(new FormLayout());
+		toolBar.add(smplcmbxSelectStatoCommessa);
 		toolBar.add(txtfldsearch);
 		toolBar.add(btnSearch);
 		toolBar.add(btnClose);
@@ -951,8 +974,10 @@ public class PanelCommessa extends LayoutContainer {
 	
 
 	private void caricaTabellaDati(String cognomePm) {
+		String statoSelezionato=smplcmbxSelectStatoCommessa.getRawValue().toString();
+		
 		if(cognomePm.compareTo("")==0)
-			AdministrationService.Util.getInstance().getAllCommesseModel(new AsyncCallback<List<CommessaModel>>() {
+			AdministrationService.Util.getInstance().getAllCommesseModel("",statoSelezionato, new AsyncCallback<List<CommessaModel>>() {
 			
 				@Override
 				public void onSuccess(List<CommessaModel> result) {
@@ -1068,8 +1093,7 @@ public class PanelCommessa extends LayoutContainer {
 	}
 	
 	
-	private void recuperoSessionRuolo() {
-		
+	private void recuperoSessionRuolo() {		
 		SessionManagementService.Util.getInstance().getRuolo(new AsyncCallback<String>() {
 			
 			@Override
@@ -1102,13 +1126,11 @@ public class PanelCommessa extends LayoutContainer {
 			
 			@Override
 			public void onSuccess(String result) {
-				
 				setNomeCognome(result);
 			}
 			
 			@Override
-			public void onFailure(Throwable caught) {
-				
+			public void onFailure(Throwable caught) {		
 				Window.alert("Error on getUserName();");
 			}
 		});		
@@ -1116,7 +1138,6 @@ public class PanelCommessa extends LayoutContainer {
 	
 	
 	public  void setNomeCognome(String result){
-				
 		String nome=new String();
 		String cognome=new String();
 		int i=result.indexOf(".");
@@ -1126,8 +1147,6 @@ public class PanelCommessa extends LayoutContainer {
 		
 		txtNome.setText(nome);
 		txtCognome.setText(cognome);
-		recuperoSessionRuolo();
-		
+		recuperoSessionRuolo();	
 	}
-
 }

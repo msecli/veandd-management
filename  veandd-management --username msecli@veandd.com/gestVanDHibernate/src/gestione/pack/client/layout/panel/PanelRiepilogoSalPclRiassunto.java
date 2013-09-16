@@ -83,7 +83,7 @@ public class PanelRiepilogoSalPclRiassunto  extends LayoutContainer{
 		cpGrid.setScrollMode(Scroll.AUTO);
 		cpGrid.setLayout(new FitLayout());
 								
-		Resizable r=new Resizable(cpGrid);
+		//Resizable r=new Resizable(cpGrid);
 	   	    		
 		smplcmbxScelta=new SimpleComboBox<String>();
 		smplcmbxScelta.setFieldLabel("SAL/PCL");

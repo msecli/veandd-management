@@ -5,21 +5,26 @@ import java.util.List;
 import java.util.Map;
 
 import gestione.pack.client.AdministrationService;
+import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
-import gestione.pack.client.model.RiepilogoSALPCLModel;
+import gestione.pack.client.utility.ClientUtility;
+import gestione.pack.client.utility.MyImages;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.fx.Resizable;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Status;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -38,6 +43,10 @@ import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 
 public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 
@@ -48,9 +57,14 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 	private String data;
 	
 	private SimpleComboBox<String> smplcmbxOrderBy;
+	private Button btnPrint;
+	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
+	private static String url= "/gestvandhibernate/PrintDataServlet";
 	
 	private int h=Window.getClientHeight();
 	private int w=Window.getClientWidth();
+	
+	protected Status status;
 	
 	public PanelRiepilogoOreNonFatturabili(String data) {	
 		this.data=data;
@@ -61,6 +75,11 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 	
 	    final FitLayout fl= new FitLayout();
 		
+	    status = new Status();
+	    status.setBusy("Please wait...");
+	    status.hide();
+	    status.setAutoWidth(true);
+	    
 		try {			
 			cmRiepilogo=new ColumnModel(createColumnsRiassunto());
 			caricaTabellaRiass();			
@@ -68,7 +87,7 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 			e.printStackTrace();
 			Window.alert("error: Problema createColumns().");			
 		}
-		
+			
 		LayoutContainer layoutContainer= new LayoutContainer();
 		layoutContainer.setBorders(false);
 		layoutContainer.setLayout(fl);
@@ -87,9 +106,9 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 		smplcmbxOrderBy.setFieldLabel("Group By");
 		smplcmbxOrderBy.setEmptyText("Selezionare..");
 		smplcmbxOrderBy.setAllowBlank(false);
-		smplcmbxOrderBy.add("PM");
+		smplcmbxOrderBy.add("GruppoLavoro");
 		smplcmbxOrderBy.add("Sede");
-		smplcmbxOrderBy.add("Attivita'");
+		smplcmbxOrderBy.add("Attivita");
 		smplcmbxOrderBy.setWidth(80);
 		smplcmbxOrderBy.setTriggerAction(TriggerAction.ALL);
 		smplcmbxOrderBy.setSimpleValue("Sede");
@@ -101,15 +120,54 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 				gridRiepilogo.reconfigure(store, cmRiepilogo);
 			}		
 		});
+				
+		btnPrint = new Button();
+		btnPrint.setSize("55px","25px");	   
+		btnPrint.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.print24()));
+		btnPrint.setToolTip("Stampa");
+		btnPrint.setIconAlign(IconAlign.TOP);
+		btnPrint.setSize(26, 26);
+		btnPrint.setEnabled(true);
+		btnPrint.setEnabled(false);
+		btnPrint.addSelectionListener(new SelectionListener<ButtonEvent>() {		
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+							
+				SessionManagementService.Util.getInstance().setNomeReport("RIEP.NON.FATT", store.getModels(),
+						new AsyncCallback<Boolean>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Window.alert("Error on setNomeReport()");					
+					}
+
+					@Override
+					public void onSuccess(Boolean result) {
+						if(result)
+							fp.submit();
+						else
+							Window.alert("Problemi durante il settaggio dei parametri in Sessione (http)");
+					}
+				});				
+			}
+		});
 		
-			
+		fp.setMethod(FormPanel.METHOD_POST);
+		fp.setAction(url);
+		fp.addSubmitCompleteHandler(new FormSubmitCompleteHandler());  
+		fp.add(btnPrint);
+		ContentPanel cp= new ContentPanel();
+		cp.setHeaderVisible(false);
+		cp.add(fp);
+		
 		ToolBar tlBar= new ToolBar();
-		//tlBar.add(smplcmbxScelta);
 		tlBar.add(smplcmbxOrderBy);
+		tlBar.add(cp);
+		tlBar.add(status);
 		
 		cpGrid.setTopComponent(tlBar);
-				
-	    store.groupBy("pm");
+						
+	    store.groupBy("sede");
 	    
 	    GroupSummaryView summary = new GroupSummaryView();  
 	    summary.setForceFit(false);  
@@ -128,15 +186,24 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 	}
 	
 	
+	private class FormSubmitCompleteHandler implements SubmitCompleteHandler {
+
+		@Override
+		public void onSubmitComplete(final SubmitCompleteEvent event) {
+			
+			//Window.open("/FileStorage/RiepilogoAnnuale.pdf", "_blank", "1");
+			
+		}
+	}
+	
 	private void caricaTabellaRiass() {
 		
-		//String selezione="riassunto";		
-		
-		//Ricaricata anche in base al group by che scelgo in modo tale da poter calcolare il totale in modo adeguato
-		
-		String groupBy= new String();
-		
-		AdministrationService.Util.getInstance().getRiepilogoOreNonFatturate(data, groupBy, new AsyncCallback<List<RiepilogoOreNonFatturabiliModel>>() {
+		//String selezione="riassunto";				
+		//Ricaricata anche in base al group by che scelgo in modo tale da poter calcolare il totale in modo adeguato	
+		//String groupBy= new String();
+		status.setBusy("Please wait...");
+	    status.show();
+		AdministrationService.Util.getInstance().getRiepilogoOreNonFatturate(data, "", new AsyncCallback<List<RiepilogoOreNonFatturabiliModel>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				Window.alert("Errore di connessione on getRiepilogoSalPcl();");			
@@ -144,6 +211,8 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 
 			@Override
 			public void onSuccess(List<RiepilogoOreNonFatturabiliModel> result) {
+				status.hide();
+				btnPrint.setEnabled(true);
 				loadTableRiass(result);		
 			}
 		 });		
@@ -152,17 +221,17 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 	
 	private List<ColumnConfig> createColumnsRiassunto() {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
-		
+		final NumberFormat number= NumberFormat.getFormat("0.00");
 		SummaryColumnConfig<Double> column=new SummaryColumnConfig<Double>();		
 	    column.setId("sede");  
 	    column.setHeader("Sede");  
-	    column.setWidth(40);  
+	    column.setWidth(30);  
 	    column.setRowHeader(true);  
 	    configs.add(column); 
 	    
 	    column=new SummaryColumnConfig<Double>();		
-	    column.setId("pm");  
-	    column.setHeader("Project Manager");  
+	    column.setId("gruppolavoro");  
+	    column.setHeader("Gruppo di Lavoro");  
 	    column.setWidth(140);  
 	    column.setRowHeader(true);  
 	    configs.add(column); 
@@ -170,7 +239,7 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("attivita");  
 	    column.setHeader("Attivita");  
-	    column.setWidth(80);  
+	    column.setWidth(120);  
 	    column.setRowHeader(true);  
 	    configs.add(column);
 	    
@@ -183,86 +252,334 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 	    
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("m1");  
-	    column.setHeader("Gennaio");  
-	    column.setWidth(80);  
+	    column.setHeader("Gen");  
+	    column.setWidth(55);  
 	    column.setRowHeader(true);  
+	    column.setSummaryType(SummaryType.SUM);  
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    column.setRenderer(new GridCellRenderer<RiepilogoOreNonFatturabiliModel>() {
+			@Override
+			public Object render(RiepilogoOreNonFatturabiliModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store,
+					Grid<RiepilogoOreNonFatturabiliModel> grid) {
+				Float n=model.get(property);
+				return number.format(n);
+			}  	
+		});
+	    column.setSummaryRenderer(new SummaryRenderer() {  
+   			@Override
+   			public String render(Number value, Map<String, Number> data) {
+   					return number.format(value);
+   			}  
+      	});  
 	    configs.add(column);
-	    
+	    	    
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("m2");  
-	    column.setHeader("Febbraio");  
-	    column.setWidth(80);  
+	    column.setHeader("Feb");  
+	    column.setWidth(55);  
 	    column.setRowHeader(true);  
+	    column.setSummaryType(SummaryType.SUM);  
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    column.setRenderer(new GridCellRenderer<RiepilogoOreNonFatturabiliModel>() {
+			@Override
+			public Object render(RiepilogoOreNonFatturabiliModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store,
+					Grid<RiepilogoOreNonFatturabiliModel> grid) {
+				Float n=model.get(property);
+				return number.format(n);
+			}  	
+		});
+	    column.setSummaryRenderer(new SummaryRenderer() {  
+   			@Override
+   			public String render(Number value, Map<String, Number> data) {
+   					return number.format(value);
+   			}  
+      	});  
 	    configs.add(column);
 	    
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("m3");  
-	    column.setHeader("Marzo");  
-	    column.setWidth(80);  
+	    column.setHeader("Mar");  
+	    column.setWidth(55);  
 	    column.setRowHeader(true);  
+	    column.setSummaryType(SummaryType.SUM);  
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    column.setRenderer(new GridCellRenderer<RiepilogoOreNonFatturabiliModel>() {
+			@Override
+			public Object render(RiepilogoOreNonFatturabiliModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store,
+					Grid<RiepilogoOreNonFatturabiliModel> grid) {
+				Float n=model.get(property);
+				return number.format(n);
+			}  	
+		});
+	    column.setSummaryRenderer(new SummaryRenderer() {  
+   			@Override
+   			public String render(Number value, Map<String, Number> data) {
+   					return number.format(value);
+   			}  
+      	});  
 	    configs.add(column);
 	    
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("m4");  
-	    column.setHeader("Aprile");  
-	    column.setWidth(80);  
+	    column.setHeader("Apr");  
+	    column.setWidth(55);  
 	    column.setRowHeader(true);  
+	    column.setSummaryType(SummaryType.SUM);  
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    column.setRenderer(new GridCellRenderer<RiepilogoOreNonFatturabiliModel>() {
+			@Override
+			public Object render(RiepilogoOreNonFatturabiliModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store,
+					Grid<RiepilogoOreNonFatturabiliModel> grid) {
+				Float n=model.get(property);
+				return number.format(n);
+			}  	
+		});
+	    column.setSummaryRenderer(new SummaryRenderer() {  
+   			@Override
+   			public String render(Number value, Map<String, Number> data) {
+   					return number.format(value);
+   			}  
+      	});  
 	    configs.add(column);
 	    
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("m5");  
-	    column.setHeader("Maggio");  
-	    column.setWidth(80);  
+	    column.setHeader("Mag");  
+	    column.setWidth(55);  
 	    column.setRowHeader(true);  
+	    column.setSummaryType(SummaryType.SUM);  
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    column.setRenderer(new GridCellRenderer<RiepilogoOreNonFatturabiliModel>() {
+			@Override
+			public Object render(RiepilogoOreNonFatturabiliModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store,
+					Grid<RiepilogoOreNonFatturabiliModel> grid) {
+				Float n=model.get(property);
+				return number.format(n);
+			}  	
+		});
+	    column.setSummaryRenderer(new SummaryRenderer() {  
+   			@Override
+   			public String render(Number value, Map<String, Number> data) {
+   					return number.format(value);
+   			}  
+      	});  
 	    configs.add(column);
 	    
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("m6");  
-	    column.setHeader("Giugno");  
-	    column.setWidth(80);  
+	    column.setHeader("Giu");  
+	    column.setWidth(55);  
 	    column.setRowHeader(true);  
+	    column.setSummaryType(SummaryType.SUM);  
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    column.setRenderer(new GridCellRenderer<RiepilogoOreNonFatturabiliModel>() {
+			@Override
+			public Object render(RiepilogoOreNonFatturabiliModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store,
+					Grid<RiepilogoOreNonFatturabiliModel> grid) {
+				Float n=model.get(property);
+				return number.format(n);
+			}  	
+		});
+	    column.setSummaryRenderer(new SummaryRenderer() {  
+   			@Override
+   			public String render(Number value, Map<String, Number> data) {
+   					return number.format(value);
+   			}  
+      	});  
 	    configs.add(column);
 	    
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("m7");  
-	    column.setHeader("Luglio");  
-	    column.setWidth(80);  
+	    column.setHeader("Lug");  
+	    column.setWidth(55);  
 	    column.setRowHeader(true);  
+	    column.setSummaryType(SummaryType.SUM);  
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    column.setRenderer(new GridCellRenderer<RiepilogoOreNonFatturabiliModel>() {
+			@Override
+			public Object render(RiepilogoOreNonFatturabiliModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store,
+					Grid<RiepilogoOreNonFatturabiliModel> grid) {
+				Float n=model.get(property);
+				return number.format(n);
+			}  	
+		});
+	    column.setSummaryRenderer(new SummaryRenderer() {  
+   			@Override
+   			public String render(Number value, Map<String, Number> data) {
+   					return number.format(value);
+   			}  
+      	});  
 	    configs.add(column);
 	    
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("m8");  
-	    column.setHeader("Agosto");  
-	    column.setWidth(80);  
+	    column.setHeader("Ago");  
+	    column.setWidth(55);  
 	    column.setRowHeader(true);  
+	    column.setSummaryType(SummaryType.SUM);  
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    column.setRenderer(new GridCellRenderer<RiepilogoOreNonFatturabiliModel>() {
+			@Override
+			public Object render(RiepilogoOreNonFatturabiliModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store,
+					Grid<RiepilogoOreNonFatturabiliModel> grid) {
+				Float n=model.get(property);
+				return number.format(n);
+			}  	
+		});
+	    column.setSummaryRenderer(new SummaryRenderer() {  
+   			@Override
+   			public String render(Number value, Map<String, Number> data) {
+   					return number.format(value);
+   			}  
+      	});  
 	    configs.add(column);
 	    
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("m9");  
-	    column.setHeader("Settembre");  
-	    column.setWidth(80);  
+	    column.setHeader("Set");  
+	    column.setWidth(55);  
 	    column.setRowHeader(true);  
+	    column.setSummaryType(SummaryType.SUM);  
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    column.setRenderer(new GridCellRenderer<RiepilogoOreNonFatturabiliModel>() {
+			@Override
+			public Object render(RiepilogoOreNonFatturabiliModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store,
+					Grid<RiepilogoOreNonFatturabiliModel> grid) {
+				Float n=model.get(property);
+				return number.format(n);
+			}  	
+		});
+	    column.setSummaryRenderer(new SummaryRenderer() {  
+   			@Override
+   			public String render(Number value, Map<String, Number> data) {   				  				
+   					return number.format(value);
+   			}  
+      	});  
 	    configs.add(column);
 	    
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("m10");  
-	    column.setHeader("Ottobre");  
-	    column.setWidth(80);  
+	    column.setHeader("Ott");  
+	    column.setWidth(55);  
 	    column.setRowHeader(true);  
+	    column.setSummaryType(SummaryType.SUM);  
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    column.setRenderer(new GridCellRenderer<RiepilogoOreNonFatturabiliModel>() {
+			@Override
+			public Object render(RiepilogoOreNonFatturabiliModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store,
+					Grid<RiepilogoOreNonFatturabiliModel> grid) {
+				Float n=model.get(property);
+				return number.format(n);
+			}  	
+		});
+	    column.setSummaryRenderer(new SummaryRenderer() {  
+   			@Override
+   			public String render(Number value, Map<String, Number> data) {
+   					return number.format(value);
+   			}  
+      	});  
 	    configs.add(column);
 	    
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("m11");  
-	    column.setHeader("Novembre");  
-	    column.setWidth(80);  
+	    column.setHeader("Nov");  
+	    column.setWidth(55);  
 	    column.setRowHeader(true);  
+	    column.setSummaryType(SummaryType.SUM);  
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    column.setRenderer(new GridCellRenderer<RiepilogoOreNonFatturabiliModel>() {
+			@Override
+			public Object render(RiepilogoOreNonFatturabiliModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store,
+					Grid<RiepilogoOreNonFatturabiliModel> grid) {
+				Float n=model.get(property);
+				return number.format(n);
+			}  	
+		});
+	    column.setSummaryRenderer(new SummaryRenderer() {  
+   			@Override
+   			public String render(Number value, Map<String, Number> data) {
+   				return number.format(value);
+   			}  
+      	});  
 	    configs.add(column);
 	    
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("m12");  
-	    column.setHeader("Dicembre");  
-	    column.setWidth(80);  
+	    column.setHeader("Dic");  
+	    column.setWidth(55);  
 	    column.setRowHeader(true);  
+	    column.setSummaryType(SummaryType.SUM);  
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    column.setRenderer(new GridCellRenderer<RiepilogoOreNonFatturabiliModel>() {
+			@Override
+			public Object render(RiepilogoOreNonFatturabiliModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store,
+					Grid<RiepilogoOreNonFatturabiliModel> grid) {
+				Float n=model.get(property);
+				return number.format(n);
+			}  	
+		});
+	    column.setSummaryRenderer(new SummaryRenderer() {  
+   			@Override
+   			public String render(Number value, Map<String, Number> data) {
+   					return number.format(value);
+   			}  
+      	});  
+	    configs.add(column);
+	    
+	    column=new SummaryColumnConfig<Double>();		
+	    column.setId("totOre");  
+	    column.setHeader("Totale Ore");  
+	    column.setWidth(100);  
+	    column.setRowHeader(true);  
+	    column.setSummaryType(SummaryType.SUM);  
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    column.setRenderer(new GridCellRenderer<RiepilogoOreNonFatturabiliModel>() {
+			@Override
+			public Object render(RiepilogoOreNonFatturabiliModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store,
+					Grid<RiepilogoOreNonFatturabiliModel> grid) {
+				Float n=model.get(property);
+				return number.format(n);
+			}  	
+		});
+	    column.setSummaryRenderer(new SummaryRenderer() {  
+   			@Override
+   			public String render(Number value, Map<String, Number> data) {
+   					return number.format(value);
+   			}  
+      	});  
+	    configs.add(column);
+	    
+	    column=new SummaryColumnConfig<Double>();		
+	    column.setId("costoOrario");  
+	    column.setHeader("Costo/h");  
+	    column.setWidth(100);  
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    configs.add(column);
+	    
+	    column=new SummaryColumnConfig<Double>();		
+	    column.setId("costoEffettivo");  
+	    column.setHeader("Costo Tot.");  
+	    column.setWidth(100);  
+	    column.setRowHeader(true);  
+	    column.setSummaryType(SummaryType.SUM);  
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    column.setRenderer(new GridCellRenderer<RiepilogoOreNonFatturabiliModel>() {
+			@Override
+			public Object render(RiepilogoOreNonFatturabiliModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store,
+					Grid<RiepilogoOreNonFatturabiliModel> grid) {
+				Float n=model.get(property);
+				return number.format(n);
+			}  	
+		});
+	    column.setSummaryRenderer(new SummaryRenderer() {  
+   			@Override
+   			public String render(Number value, Map<String, Number> data) {
+   					GroupingStore<RiepilogoOreNonFatturabiliModel>store1 = new GroupingStore<RiepilogoOreNonFatturabiliModel>();
+   				  				
+   					return number.format(value);
+   			}  
+      	});  
 	    configs.add(column);
 	    	    
 		return configs;

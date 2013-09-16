@@ -40,6 +40,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.i18n.client.NumberFormat;
 
+import com.google.gwt.user.cellview.client.RowStyles;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -149,7 +150,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	    gridRiepilogo.getView().setViewConfig(new GridViewConfig(){
 	    	@Override
 	        public String getRowStyle(ModelData model, int rowIndex, ListStore<ModelData> ds) {
-	            if (model != null) {	    
+	    		if (model != null) {	    
 	            	String stato= new String();
 	            	stato= model.get("compilato");
 	                if (stato.compareTo("1")==0) 
