@@ -47,7 +47,10 @@
       <mapping class="gestione.pack.shared.DettaglioTimbrature"/> 
  	  <mapping class="gestione.pack.shared.Commenti"/>
  	  <mapping class="gestione.pack.shared.DatiOreMese"/>
- 	  <mapping class="gestione.pack.shared.DatiRiepilogoMensileCommesse"/>  
+ 	  <mapping class="gestione.pack.shared.AssociazionePtohwsw"/>  
+      <mapping class="gestione.pack.shared.DatiRiepilogoMensileCommesse"/>  
+      <mapping class="gestione.pack.shared.CostiHwSw"/>  
+      <mapping class="gestione.pack.shared.CostoAzienda"/> 
  	
 </session-factory>
  
