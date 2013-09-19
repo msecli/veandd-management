@@ -44,9 +44,11 @@ import gestione.pack.client.AdministrationService;
 import gestione.pack.client.model.ClienteModel;
 import gestione.pack.client.model.CommentiModel;
 import gestione.pack.client.model.CommessaModel;
+import gestione.pack.client.model.CostiHwSwModel;
 import gestione.pack.client.model.DatiFatturazioneCommessaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.FoglioFatturazioneModel;
+import gestione.pack.client.model.GestioneCostiDipendentiModel;
 import gestione.pack.client.model.GestioneRdoCommesse;
 import gestione.pack.client.model.GiustificativiModel;
 import gestione.pack.client.model.IntervalliCommesseModel;
@@ -157,41 +159,60 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Personale p = new Personale();
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
-
-		try {
-			tx=	session.beginTransaction();
+		
+		if(nome.compareTo("PSSWD")!=0){
+			try {
+				tx=	session.beginTransaction();
 			
-			p=(Personale)session.createQuery("from Personale where id_personale=:id").setParameter("id", id).uniqueResult();
+				p=(Personale)session.createQuery("from Personale where id_personale=:id").setParameter("id", id).uniqueResult();
 			
-			p.setNome(nome);
-			p.setCognome(cognome);
-			p.setNumeroBadge(nBadge);
-			p.setTipologiaOrario(tipoOrario);
-			p.setTipologiaLavoratore(tipoLavoratore);
-			p.setCostoOrario(costoOrario);
-			p.setCostoStruttura(costoStruttura);
-			p.setRuolo(ruolo);
-			p.setUsername(username);
-			//p.setPassword(password);
-			p.setGruppoLavoro(gruppoLavoro);
-			p.setSede(sede);
-			p.setSedeOperativa(sedeOperativa);
-			p.setOreDirette(oreDirette);
-			p.setOreIndirette(oreIndirette);
-			p.setOrePermessi(permessi);
-			p.setOreFerie(ferie);
-			p.setOreRecupero(oreRecupero);
-			//p.setOreExFest(ext);
+				p.setNome(nome);
+				p.setCognome(cognome);
+				p.setNumeroBadge(nBadge);
+				p.setTipologiaOrario(tipoOrario);
+				p.setTipologiaLavoratore(tipoLavoratore);
+				p.setCostoOrario(costoOrario);
+				p.setCostoStruttura(costoStruttura);
+				p.setRuolo(ruolo);
+				p.setUsername(username);
+				//p.setPassword(password);
+				p.setGruppoLavoro(gruppoLavoro);
+				p.setSede(sede);
+				p.setSedeOperativa(sedeOperativa);
+				p.setOreDirette(oreDirette);
+				p.setOreIndirette(oreIndirette);
+				p.setOrePermessi(permessi);
+				p.setOreFerie(ferie);
+				p.setOreRecupero(oreRecupero);
+				//p.setOreExFest(ext);
 
-			tx.commit();
+				tx.commit();
 
-		} catch (Exception e) {
-			if (tx!=null)
-				tx.rollback();		    	
-			e.printStackTrace();
-		} finally {
-			 session.close();
-		}					
+			} catch (Exception e) {
+				if (tx!=null)
+					tx.rollback();		    	
+				e.printStackTrace();
+			} finally {
+				session.close();
+			}
+		}else{
+			try {
+				tx=	session.beginTransaction();
+			
+				p=(Personale)session.createQuery("from Personale where id_personale=:id").setParameter("id", id).uniqueResult();
+							
+				p.setPassword(password);
+				
+				tx.commit();
+
+			} catch (Exception e) {
+				if (tx!=null)
+					tx.rollback();		    	
+				e.printStackTrace();
+			} finally {
+				session.close();
+			}
+		}
 	}
 	
 	
@@ -6218,6 +6239,28 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			session.close();
 		}
 		return listaR;
+	}
+
+	
+//-------------
+//---------------------------------------------------COSTI------------------------------------------------------------------------------------------------
+	
+	@Override
+	public List<GestioneCostiDipendentiModel> getDatiCostiPersonale(
+			int idPersonale) throws IllegalArgumentException {
+		
+		List<GestioneCostiDipendentiModel> lista= new ArrayList<GestioneCostiDipendentiModel>();
+				
+		GestioneCostiDipendentiModel g= new GestioneCostiDipendentiModel(1, "Secli", "10", "", "", Float.valueOf("10.0"), Float.valueOf("10.0"));
+		lista.add(g);
+		GestioneCostiDipendentiModel g1= new GestioneCostiDipendentiModel(1, "Secli", "10", "", "", Float.valueOf("10.0"), Float.valueOf("10.0"));
+		lista.add(g1);
+		GestioneCostiDipendentiModel g2= new GestioneCostiDipendentiModel(1, "Secli", "10", "", "", Float.valueOf("10.0"), Float.valueOf("10.0"));
+		lista.add(g2);
+		GestioneCostiDipendentiModel g3= new GestioneCostiDipendentiModel(1, "Secli", "10", "", "", Float.valueOf("10.0"), Float.valueOf("10.0"));
+		lista.add(g3);
+		
+		return lista;
 	}
 
 		

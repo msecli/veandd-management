@@ -2,6 +2,7 @@ package gestione.pack.client.layout;
 
 import gestione.pack.client.AdministrationService;
 
+import gestione.pack.client.layout.CenterLayout_FoglioOreGiornalieroAutoTimb.FldsetIntervalliIU;
 import gestione.pack.client.layout.panel.DialogInvioCommenti;
 import gestione.pack.client.layout.panel.FormInserimentoIntervalloCommessa;
 import gestione.pack.client.layout.panel.PanelRiepilogoMeseFoglioOre;
@@ -228,6 +229,8 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			config.setAnchor("left");
 			config.setMouseOffset(new int[]{0, -5});
 			btnMostraIntervalli.setToolTip(config);
+			btnMostraIntervalli.setSize(26, 26);
+			btnMostraIntervalli.setIconAlign(IconAlign.TOP);
 			
 			
 			btnInviaCommenti.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.escl1()));
@@ -3092,7 +3095,7 @@ String movimento= new String();
 		private void load(GiustificativiModel result) {
 			
 			final NumberFormat number = NumberFormat.getFormat("0.00");
-			
+					
 			setBorders(true);
 			setHeading("Giustificativo.");
 			setItemId("fldSetGiustificativi");

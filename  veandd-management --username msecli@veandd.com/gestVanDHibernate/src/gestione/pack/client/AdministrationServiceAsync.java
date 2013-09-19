@@ -9,6 +9,7 @@ import gestione.pack.client.model.CommessaModel;
 import gestione.pack.client.model.DatiFatturazioneCommessaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.FoglioFatturazioneModel;
+import gestione.pack.client.model.GestioneCostiDipendentiModel;
 import gestione.pack.client.model.GestioneRdoCommesse;
 import gestione.pack.client.model.GiustificativiModel;
 import gestione.pack.client.model.IntervalliCommesseModel;
@@ -320,6 +321,11 @@ public interface AdministrationServiceAsync {
 
 	void getRiepilogoTotCommessePerDipendenti(String mese, String sede,
 			AsyncCallback<List<RiepilogoOreDipFatturazione>> callback);
+
+//-------------------------------------------------COSTI---------------------------------
+	
+	void getDatiCostiPersonale(int idPersonale,
+			AsyncCallback<List<GestioneCostiDipendentiModel>> asyncCallback);
 
 	
 

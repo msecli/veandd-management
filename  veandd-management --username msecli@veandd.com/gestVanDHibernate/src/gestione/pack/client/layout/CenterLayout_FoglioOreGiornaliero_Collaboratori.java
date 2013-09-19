@@ -5,7 +5,7 @@ import gestione.pack.client.AdministrationService;
 import gestione.pack.client.utility.MyImages;
 
 import gestione.pack.client.layout.CenterLayout_FoglioOreGiornalieroAutoTimb.FldsetGiustificativi;
-import gestione.pack.client.layout.CenterLayout_FoglioOreSelectDipendenti.CreateFormIntervalliOre;
+import gestione.pack.client.layout.CenterLayout_FoglioOreSelectDipendentiOld.CreateFormIntervalliOre;
 import gestione.pack.client.layout.panel.DialogInvioCommenti;
 import gestione.pack.client.layout.panel.FormInserimentoIntervalloCommessa;
 import gestione.pack.client.layout.panel.PanelRiepilogoGiornalieroCommesse;
@@ -376,7 +376,7 @@ public class CenterLayout_FoglioOreGiornaliero_Collaboratori extends LayoutConta
 	
 	public class FldsetIntervalliCommesse extends FieldSet {
 
-		private FormInserimentoIntervalloCommessa frmInsCommesse = new FormInserimentoIntervalloCommessa();
+		private FormInserimentoIntervalloCommessa frmInsCommesse = new FormInserimentoIntervalloCommessa("2");
 		private Text txtNoCommesse = new Text();
 		private ButtonBar buttonBar = new ButtonBar();
 		private Date data= new Date();
@@ -454,7 +454,7 @@ public class CenterLayout_FoglioOreGiornaliero_Collaboratori extends LayoutConta
 					for (int i = 0; i < size; i++) {
 					String num = String.valueOf(i);
 
-					frmInsCommesse = new FormInserimentoIntervalloCommessa();
+					frmInsCommesse = new FormInserimentoIntervalloCommessa("2");
 					frmInsCommesse.setItemId(num);
 
 					frmInsCommesse.txtfldNumeroCommessa.setValue(result.get(i).getNumeroCommessa());
@@ -484,7 +484,7 @@ public class CenterLayout_FoglioOreGiornaliero_Collaboratori extends LayoutConta
 		TextField<String> txtfldOreLavoro=new TextField<String>();
 		TextField<String> txtfldOreViaggio=new TextField<String>();
 		Text txtDescrizione= new Text();
-		FormInserimentoIntervalloCommessa frm=new FormInserimentoIntervalloCommessa();
+		FormInserimentoIntervalloCommessa frm=new FormInserimentoIntervalloCommessa("2");
 		
 		IntervalliCommesseModel intervallo;
 		List<IntervalliCommesseModel>  intervalliC= new ArrayList<IntervalliCommesseModel>();

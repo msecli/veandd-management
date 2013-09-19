@@ -149,10 +149,8 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    grid.setBorders(false);  
 	    grid.setStripeRows(true);  
 	    grid.setColumnLines(true);  
-	    grid.setColumnReordering(true);  
-	    
-	    grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-	   	      
+	    grid.setColumnReordering(true);	    
+	    grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);	   	      
 	    grid.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<PersonaleModel>>() {  
 	          public void handleEvent(SelectionChangedEvent<PersonaleModel> be) {  
 	        	
@@ -168,7 +166,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	              formBindings.unbind();  
 	            }	            
 	          }             
-	        }); 
+	    }); 
 	    	   
 	    cntpnlGrid.add(grid);  
 	    
@@ -662,7 +660,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    txtfldCostoOrario.setMaxLength(7);
 	    //txtfldCostoOrario.addKeyListener(keyListener);
 	    txtfldCostoOrario.setName("costoOrario");
-	    frmpnlAnagrPersonale.add(txtfldCostoOrario, new FormData("55%"));
+	    //frmpnlAnagrPersonale.add(txtfldCostoOrario, new FormData("55%"));
 	    txtfldCostoOrario.setFieldLabel("Costo Orario");
 	    txtfldCostoOrario.setValue("0.0");
 	    txtfldCostoOrario.setRegex("[0-9]+[.]{1}[0-9]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
@@ -701,7 +699,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    txtfldCostoStruttura.setMaxLength(7);
 	    txtfldCostoStruttura.setName("costoStruttura");
 	    txtfldCostoStruttura.setValue("0.0");
-	    frmpnlAnagrPersonale.add(txtfldCostoStruttura, new FormData("55%"));
+	    //frmpnlAnagrPersonale.add(txtfldCostoStruttura, new FormData("55%"));
 	    txtfldCostoStruttura.setFieldLabel("Costo Struttura");
 	    txtfldCostoStruttura.setRegex("[0-9]+[.]{1}[0-9]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
 	    txtfldCostoStruttura.getMessages().setRegexText("Deve essere un numero nel formato 99.59");

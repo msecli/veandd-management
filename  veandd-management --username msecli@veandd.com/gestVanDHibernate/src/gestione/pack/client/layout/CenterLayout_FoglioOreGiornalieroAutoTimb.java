@@ -15,6 +15,7 @@ import gestione.pack.client.model.TimbraturaModel;
 
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.DatiComboBox;
+import gestione.pack.server.ServerUtility;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -410,9 +411,6 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 						controlloDati="error: Impossibile effettuare i controlli di correttezza sui dati inseriti.";
 					}
 					
-					//TODO si potrebbe pensare di introdurre uno stato di completamento del giorno: 0 compilato OK, 1 solo commesse, 2 solo I/U ed 
-					//aggiungere eventuale errore riscontrato. Nel riepilogo dei giorni potrei aggiungere il campo flag che indichi se ci sono errori
-					//salvandolo lato server 
 					
 					if(fldSetIntervalliIU.numeroInseriti()%2==0){ //controllo su intervalli compilati che siano in numero pari
 						if(controlloDati.compareTo("OK")==0){
@@ -586,6 +584,13 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 						return controllo="E' stato indicato un numero di ore uguale al valore del delta giornaliero \n" +
 								"ed e' anche stato indicato un giustificativo.";
 			}		
+		}		
+		else{
+			String totOreViaggioSuCommesse="0.00";
+			for(IntervalliCommesseModel i:listaC)
+				totOreViaggioSuCommesse=ClientUtility.aggiornaTotGenerale(totOreViaggioSuCommesse, i.getOreViaggio());				
+			if(totOreViaggioSuCommesse.compareTo(oreViaggio)!=0)
+				return controllo="E' stato indicato un numero di ore viaggio non coerente tra intervalli commesse e giustificativo.";			
 		}		
 		return controllo;
 	}
@@ -4097,7 +4102,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 	
 	public class FldsetIntervalliCommesse extends FieldSet {
 
-		private FormInserimentoIntervalloCommessa frmInsCommesse = new FormInserimentoIntervalloCommessa();
+		private FormInserimentoIntervalloCommessa frmInsCommesse;
 		private Text txtNoCommesse = new Text();
 		private ButtonBar buttonBar = new ButtonBar();
 		private Date data= new Date();
@@ -4147,6 +4152,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		
 		private void caricaFieldSet(List<IntervalliCommesseModel> result) {
 			List<IntervalliCommesseModel> lista = new ArrayList<IntervalliCommesseModel>();
+			frmInsCommesse= new FormInserimentoIntervalloCommessa("1");//indico il tipo di foglio ore che fa da parent
 			
 			Collections.sort(result, new Comparator<IntervalliCommesseModel>(){
 				  public int compare(IntervalliCommesseModel s1, IntervalliCommesseModel s2) {
@@ -4175,7 +4181,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					for (int i = 0; i < size; i++) {
 					String num = String.valueOf(i);
 
-					frmInsCommesse = new FormInserimentoIntervalloCommessa();
+					frmInsCommesse = new FormInserimentoIntervalloCommessa("1");
 					frmInsCommesse.setItemId(num);
 
 					frmInsCommesse.txtfldNumeroCommessa.setValue(result.get(i).getNumeroCommessa());
@@ -4208,7 +4214,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		TextField<String> txtfldOreLavoro=new TextField<String>();
 		TextField<String> txtfldOreViaggio=new TextField<String>();
 		Text txtDescrizione= new Text();
-		FormInserimentoIntervalloCommessa frm=new FormInserimentoIntervalloCommessa();
+		FormInserimentoIntervalloCommessa frm=new FormInserimentoIntervalloCommessa("1");
 		
 		IntervalliCommesseModel intervallo;
 		List<IntervalliCommesseModel>  intervalliC= new ArrayList<IntervalliCommesseModel>();
