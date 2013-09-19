@@ -23,6 +23,7 @@ import gestione.pack.client.model.CommessaModel;
 import gestione.pack.client.model.DatiFatturazioneCommessaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.FoglioFatturazioneModel;
+import gestione.pack.client.model.GestioneCostiDipendentiModel;
 import gestione.pack.client.model.GestioneRdoCommesse;
 import gestione.pack.client.model.GiustificativiModel;
 import gestione.pack.client.model.IntervalliCommesseModel;
@@ -328,6 +329,10 @@ public interface AdministrationService extends RemoteService {
 
 	List<RiepilogoOreDipFatturazione> getRiepilogoTotCommessePerDipendenti(
 			String mese, String sede)throws IllegalArgumentException;
+
+	
+//---------------------------------------------COSTI
+	List<GestioneCostiDipendentiModel> getDatiCostiPersonale(int idPersonale) throws IllegalArgumentException;
 
 	
 }

@@ -3,6 +3,8 @@ package gestione.pack.client.layout;
 //import gestione.pack.client.utility.RecuperoParametriSessione;
 
 import gestione.pack.client.SessionManagementService;
+import gestione.pack.client.layout.panel.PanelEditPasswordUtenti;
+import gestione.pack.client.layout.panel.PanelGestioneCostiDipendenti;
 import gestione.pack.client.layout.panel.PanelPrintAll;
 import gestione.pack.client.layout.panel.PanelRiepilogoAnnualeOreDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
@@ -551,14 +553,57 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    cp.add(btnReportDatiFatt);
 	    panel.add(cp);
 	    
-	   // panel.add(cp);    
+	    cp = new ContentPanel();
+	    cp.setAnimCollapse(false);
+	    cp.setBodyStyleName("pad-text");
+	    cp.setHeading("Tools Amministrativi");
+	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent be) {
+            	center.removeAll();
+	        	center.add(new PanelEditPasswordUtenti());
+	        	center.layout(true);               
+            }
+        });
+	    
+	    Button btnGestionePassword = new Button();
+	    btnGestionePassword.setToolTip("Gestione Password");
+	    btnGestionePassword.setHeight(65);
+	    btnGestionePassword.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.editPass()));
+	    btnGestionePassword.setIconAlign(IconAlign.BOTTOM);
+	    btnGestionePassword.setWidth("100%");
+	    btnGestionePassword.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelEditPasswordUtenti());
+	        	center.layout(true);}      
+	      });
+	    btnGestionePassword.setWidth("100%");
+	    cp.add(btnGestionePassword);
+	    
+	    Button btnGestioneHwSw = new Button();
+	    btnGestioneHwSw.setToolTip("Gestione HW/SW");
+	    btnGestioneHwSw.setHeight(65);
+	    btnGestioneHwSw.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.gestHwSw()));
+	    btnGestioneHwSw.setIconAlign(IconAlign.BOTTOM);
+	    btnGestioneHwSw.setWidth("100%");
+	    btnGestioneHwSw.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelEditPasswordUtenti());
+	        	center.layout(true);}      
+	      });
+	    btnGestioneHwSw.setWidth("100%");
+	    cp.add(btnGestioneHwSw);
+	    	        
+	    panel.add(cp);
+	    	    
 	    panel.setSize(180,Window.getClientHeight()-70);
 	    panel.setBorders(false);
 	    west.add(panel);
 	        
 //----------------------------------------------------------------------------------------------
 	    
-	   center.add(new CenterLayout_RiepiloghiSalPcl()); 
+	   center.add(new PanelGestioneCostiDipendenti()); 
 	   	   
 	   container.add(north, northData);
 	   container.add(west, westData);

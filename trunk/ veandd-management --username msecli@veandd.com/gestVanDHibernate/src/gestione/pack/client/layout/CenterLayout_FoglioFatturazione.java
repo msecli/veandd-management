@@ -1258,14 +1258,14 @@ public CenterLayout_FoglioFatturazione(){}
 			chbxSalButtare= new CheckBox();
 			chbxSalButtare.setValue(false);
 			//chbxSalButtare.setStyleAttribute("padding-top", "15px");
-			chbxSalButtare.setFieldLabel("Sal da scartare:");
+			chbxSalButtare.setFieldLabel("Sal da scartare");
 			
 			String r= new String();
 			r=txtRuolo.getText();
 			if(r.compareTo("PM")==0)
 				chbxSalButtare.setVisible(false);
 			chbxSalButtare.addListener(Events.OnClick, new Listener<ComponentEvent>() {
-
+	
 				@Override
 				public void handleEvent(ComponentEvent be) {
 					String salTotale= new String();
@@ -1283,6 +1283,7 @@ public CenterLayout_FoglioFatturazione(){}
 					}				
 				}
 			});
+			
 			
 			RowData data1 = new RowData(.20, 1);
 			data.setMargins(new Margins(5));
@@ -1576,8 +1577,7 @@ public CenterLayout_FoglioFatturazione(){}
 		}
 		
 		
-		private void loadFormFatturazione(FoglioFatturazioneModel result, String numeroCommessa) {			
-					
+		private void loadFormFatturazione(FoglioFatturazioneModel result, String numeroCommessa) {								
 			ListStore<RiepilogoOreDipFatturazione> store= new ListStore<RiepilogoOreDipFatturazione>();
 			List<RiepilogoOreDipFatturazione> lista= new ArrayList<RiepilogoOreDipFatturazione>();
 			String ncommessa= new String();
@@ -1615,8 +1615,6 @@ public CenterLayout_FoglioFatturazione(){}
 				if(!nuovo){
 					
 	    	  		variazionePCL=number.format(Float.valueOf(result.getVariazionePcl())*(-1));
-	    	  		
-	
 					scaricate=ClientUtility.aggiornaTotGenerale(result.getOreFatturate(), result.getVariazioneSal());
 					scaricate=ClientUtility.aggiornaTotGenerale(scaricate, variazionePCL);
 									    
@@ -1659,6 +1657,13 @@ public CenterLayout_FoglioFatturazione(){}
 	    	  		
 	    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldVariazionePCL.getValue().toString()));
 	    	  		txtVariazionePcl.setText("("+totaleEuro+")");
+	    	  		
+	    	  		String chbxValue= result.get("flagSalDaButtare");
+	    	  		if(chbxValue.compareTo("S")==0)
+	    	  			chbxSalButtare.setValue(true);
+	    	  		else
+	    	  			chbxSalButtare.setValue(false);
+	    	  		
 					
 				}else{
 									
@@ -1696,8 +1701,17 @@ public CenterLayout_FoglioFatturazione(){}
 	    	  		txtVariazioneSal.setText("("+totaleEuro+")");
 	    	  		
 	    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldVariazionePCL.getValue().toString()));
-	    	  		txtVariazionePcl.setText("("+totaleEuro+")");				
+	    	  		txtVariazionePcl.setText("("+totaleEuro+")");	
+	    	  		
+	    	  		chbxSalButtare.setValue(false);
 				}
+				
+				String r=txtRuolo.getText();
+				
+				if(txtfldOreResiduoOrdine.getValue().toString().compareTo("0.00")==0 && r.compareTo("PM")==0)
+					txtfldOreDaFatturare.setEnabled(false);
+				else
+					txtfldOreDaFatturare.setEnabled(true);	
 			
 			} catch (Exception e) {
 				e.printStackTrace();

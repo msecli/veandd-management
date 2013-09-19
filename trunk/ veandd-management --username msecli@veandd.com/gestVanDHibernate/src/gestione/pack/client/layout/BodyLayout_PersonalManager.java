@@ -269,7 +269,7 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	    btnPresenzeDipendenti.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	          center.removeAll();
-	        	center.add(new CenterLayout_FoglioOreSelectDipendenti());
+	        	center.add(new CenterLayout_FoglioOreSelectDipendentiOld());
 	        	center.layout(true);}      
 	      });
 	    btnPresenzeDipendenti.setWidth("100%");

@@ -112,8 +112,6 @@ public class DialogRilevazionePresenze extends Dialog {
 		add(layoutContainer);			
 	}
 	
-	
-
 
 	public class CreateFormIntervalliOre extends FormPanel {
 		
@@ -3859,7 +3857,7 @@ public class DialogRilevazionePresenze extends Dialog {
 	
 	public class FldsetIntervalliCommesse extends FieldSet {
 
-		private FormInserimentoIntervalloCommessa frmInsCommesse = new FormInserimentoIntervalloCommessa();
+		private FormInserimentoIntervalloCommessa frmInsCommesse = new FormInserimentoIntervalloCommessa("2");
 		private Text txtNoCommesse = new Text();
 		private ButtonBar buttonBar = new ButtonBar();
 		private Date data= new Date();
@@ -3937,7 +3935,7 @@ public class DialogRilevazionePresenze extends Dialog {
 					for (int i = 0; i < size; i++) {
 					String num = String.valueOf(i);
 
-					frmInsCommesse = new FormInserimentoIntervalloCommessa();
+					frmInsCommesse = new FormInserimentoIntervalloCommessa("2");
 					frmInsCommesse.setItemId(num);
 
 					frmInsCommesse.txtfldNumeroCommessa.setValue(result.get(i).getNumeroCommessa());
@@ -3967,7 +3965,7 @@ public class DialogRilevazionePresenze extends Dialog {
 		TextField<String> txtfldOreLavoro=new TextField<String>();
 		TextField<String> txtfldOreViaggio=new TextField<String>();
 		Text txtDescrizione= new Text();
-		FormInserimentoIntervalloCommessa frm=new FormInserimentoIntervalloCommessa();
+		FormInserimentoIntervalloCommessa frm=new FormInserimentoIntervalloCommessa("2");
 		
 		IntervalliCommesseModel intervallo;
 		List<IntervalliCommesseModel>  intervalliC= new ArrayList<IntervalliCommesseModel>();

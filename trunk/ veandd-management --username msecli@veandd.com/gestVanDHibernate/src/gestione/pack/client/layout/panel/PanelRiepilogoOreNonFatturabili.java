@@ -109,7 +109,7 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 		smplcmbxOrderBy.add("GruppoLavoro");
 		smplcmbxOrderBy.add("Sede");
 		smplcmbxOrderBy.add("Attivita");
-		smplcmbxOrderBy.setWidth(80);
+		smplcmbxOrderBy.setWidth(110);
 		smplcmbxOrderBy.setTriggerAction(TriggerAction.ALL);
 		smplcmbxOrderBy.setSimpleValue("Sede");
 		smplcmbxOrderBy.addListener(Events.Select, new Listener<BaseEvent>(){
@@ -206,6 +206,7 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 		AdministrationService.Util.getInstance().getRiepilogoOreNonFatturate(data, "", new AsyncCallback<List<RiepilogoOreNonFatturabiliModel>>() {
 			@Override
 			public void onFailure(Throwable caught) {
+				status.hide();
 				Window.alert("Errore di connessione on getRiepilogoSalPcl();");			
 			}
 

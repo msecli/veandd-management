@@ -48,6 +48,10 @@ public class PersonaleModel extends BaseModel implements IsSerializable{
 	    public String getNome() {
 			return get("nome");
 		}
+	    
+	    public int getIdPersonale(){
+	    	return get("idPersonale");
+	    }
 
 	    public String getCognome() {
 			return get("cognome");

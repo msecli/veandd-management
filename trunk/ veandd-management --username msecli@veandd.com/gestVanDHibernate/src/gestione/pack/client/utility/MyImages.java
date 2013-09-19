@@ -112,5 +112,17 @@ public interface MyImages extends ClientBundle{
 	
 	@Source("Icone/addUser.png")
 	ImageResource addUser();
+	
+	@Source("Icone/tool1.png")
+	ImageResource tool();
+	
+	@Source("Icone/editPass.png")
+	ImageResource editPass();
+	
+	@Source("Icone/question2.png")
+	ImageResource question();
+	
+	@Source("Icone/gestHwSw.png")
+	ImageResource gestHwSw();
 }
 
