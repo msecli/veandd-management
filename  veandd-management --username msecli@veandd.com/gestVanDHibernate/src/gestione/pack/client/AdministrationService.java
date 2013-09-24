@@ -20,6 +20,7 @@ import java.util.List;
 import gestione.pack.client.model.ClienteModel;
 import gestione.pack.client.model.CommentiModel;
 import gestione.pack.client.model.CommessaModel;
+import gestione.pack.client.model.CostiHwSwModel;
 import gestione.pack.client.model.DatiFatturazioneCommessaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.FoglioFatturazioneModel;
@@ -32,6 +33,7 @@ import gestione.pack.client.model.PersonaleAssociatoModel;
 import gestione.pack.client.model.PersonaleModel;
 import gestione.pack.client.model.RdaModel;
 import gestione.pack.client.model.RdoCompletaModel;
+import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoOreAnnualiDipendente;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
@@ -260,7 +262,8 @@ public interface AdministrationService extends RemoteService {
 
 	List<String> loadIntervalliToolTip(String username, Date giorno);
 	
-
+	List<RiepilogoOreDipCommesseGiornaliero> checkOreIntervalliIUOreCommesse(
+			String username, Date data);
 
 //----------------------------------FATTURAZIONE-------------------------------------------------------------------
 	List<RiepilogoOreDipFatturazione> getRiepilogoOreDipFatturazione(
@@ -334,5 +337,13 @@ public interface AdministrationService extends RemoteService {
 //---------------------------------------------COSTI
 	List<GestioneCostiDipendentiModel> getDatiCostiPersonale(int idPersonale) throws IllegalArgumentException;
 
+	List<CostiHwSwModel> getDatiCostiHwSw(int id) throws IllegalArgumentException;
+
+	boolean saveAssociaCostiHwSw(int idSelected, CostiHwSwModel costo)  throws IllegalArgumentException;
+
+	void editDatiCostiAzienda(GestioneCostiDipendentiModel g) throws IllegalArgumentException;
+
+	List<RiepilogoCostiDipendentiModel> getRiepilogoDatiCostiPersonale(
+			String string) throws IllegalArgumentException;
 	
 }

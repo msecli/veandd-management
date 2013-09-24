@@ -13,11 +13,12 @@ public class CostiHwSwModel extends BaseModel{
 		
 	}
 	
-	public CostiHwSwModel(int idCosto, String tipologia, String descrizione, String costo ){
+	public CostiHwSwModel(int idCosto, String tipologia, String descrizione, String costo, boolean utilizzato ){
 		set("idCosto",idCosto);
 		set("tipologia",tipologia);
 		set("descrizione",descrizione);
 		set("costo",costo);
+		set("utilizzato",utilizzato); //se esiste l'associazione è utilizzato
 	}
 	
 }

@@ -7,6 +7,7 @@ import gestione.pack.client.layout.panel.PanelEditPasswordUtenti;
 import gestione.pack.client.layout.panel.PanelGestioneCostiDipendenti;
 import gestione.pack.client.layout.panel.PanelPrintAll;
 import gestione.pack.client.layout.panel.PanelRiepilogoAnnualeOreDipendenti;
+import gestione.pack.client.layout.panel.PanelRiepilogoCostiDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
 import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoOreNonFatturabili;
@@ -312,7 +313,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
             	center.removeAll();
-	        	center.add(new CenterLayout_AnagraficaPersonale());
+	        	center.add(new PanelGestioneCostiDipendenti());
 	        	center.layout(true);               
             }
         });
@@ -331,7 +332,39 @@ public class BodyLayout_Administration extends LayoutContainer {
 	      });
 	    btnAnagrP.setWidth("100%");
 	    cp.add(btnAnagrP);
-	   // cp.setExpanded(true);
+	   
+	    Button btnGestioneCostiDip = new Button();
+	    btnGestioneCostiDip.setToolTip("Gestione Costi Dipendenti");
+	    btnGestioneCostiDip.setHeight(65);
+	    btnGestioneCostiDip.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.presenzeDip()));
+	    btnGestioneCostiDip.setIconAlign(IconAlign.BOTTOM);
+	    btnGestioneCostiDip.setWidth("100%");
+	    btnGestioneCostiDip.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelGestioneCostiDipendenti());
+	        	center.layout(true);}
+	        
+	      });
+	    btnAnagrP.setWidth("100%");
+	    cp.add(btnGestioneCostiDip);
+	    
+	    Button btnRiepilogoCostiDip = new Button();
+	    btnRiepilogoCostiDip.setToolTip("Riepilogo Costi");
+	    btnRiepilogoCostiDip.setHeight(65);
+	    btnRiepilogoCostiDip.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnRiepilogoCostiDip.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoCostiDip.setWidth("100%");
+	    btnRiepilogoCostiDip.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelRiepilogoCostiDipendenti());
+	        	center.layout(true);}
+	        
+	      });
+	    btnAnagrP.setWidth("100%");
+	    cp.add(btnRiepilogoCostiDip);
+	    
 	    panel.add(cp);
    
 	    cp = new ContentPanel();
@@ -604,7 +637,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 //----------------------------------------------------------------------------------------------
 	    
 	   center.add(new PanelGestioneCostiDipendenti()); 
-	   	   
+	  // center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb());   
 	   container.add(north, northData);
 	   container.add(west, westData);
 	   container.add(center, centerData);

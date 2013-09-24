@@ -10,6 +10,7 @@ import gestione.pack.client.layout.panel.PanelRiepilogoMeseFoglioOre;
 import gestione.pack.client.model.GiustificativiModel;
 import gestione.pack.client.model.IntervalliCommesseModel;
 import gestione.pack.client.model.IntervalliIUModel;
+import gestione.pack.client.model.RiepilogoOreDipCommesseGiornaliero;
 import gestione.pack.client.model.RiepilogoOreModel;
 import gestione.pack.client.model.TimbraturaModel;
 
@@ -40,6 +41,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
+import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
@@ -673,6 +675,61 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					Window.alert("Errore di connessione on loadIntervalliIU();");
 				}
 			});
+			
+			//metodo che permette di visualizzare un warning nel momento in cui rileva incongruenze tra IU e commesse
+			AdministrationService.Util.getInstance().checkOreIntervalliIUOreCommesse(username, data, 
+					new AsyncCallback<List<RiepilogoOreDipCommesseGiornaliero> >() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					Window.alert("Errore di connessione on checkOreIntervalliIUOreCommesse()");
+					
+				}
+
+				@Override
+				public void onSuccess(List<RiepilogoOreDipCommesseGiornaliero> result) {
+					if(result!=null){
+						showCheck(result);
+					}else
+						Window.alert("Impossibile effettuare il controllo tra le ore I/U totali e le ore totali attribuite alle commesse.");					
+				}				
+			});
+		}
+
+		private void showCheck(List<RiepilogoOreDipCommesseGiornaliero> result) {
+			
+			final NumberFormat number = NumberFormat.getFormat("0.00");
+			RiepilogoOreDipCommesseGiornaliero recordTotali= new RiepilogoOreDipCommesseGiornaliero();
+			recordTotali=result.remove(result.size()-1);
+				
+			String oreTotCommesse=number.format(recordTotali.getTotOre());
+			String oreTotIU=number.format(recordTotali.getOreViaggio());
+									
+			if(oreTotCommesse.compareTo(oreTotIU)!=0){
+				Dialog d= new Dialog();
+				d.setSize(600, 200);
+				d.setModal(true);
+				d.setButtons("");
+				d.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.warning()));
+						
+				VerticalPanel vp= new VerticalPanel();
+				vp.setSpacing(10);
+				
+				Text txtCheck= new Text();
+				txtCheck.setText("!!!E' Presente un'incongruenza tra i dati inseriti nel mese!!! Le ore inserite negli intervalli di I/U non sono coerenti" +
+						" con quelle attribuite alle commesse!"+
+						" Per un maggiore dettaglio controllare il riepilogo giornaliero. (Si ricorda che un'eventuale giorno scritto in grigio, puo' indicare " +
+						" la mancata attribuzione delle ore sulle commesse)");
+				
+				txtCheck.setStyleAttribute("padding-top", "10px");
+				txtCheck.setStyleAttribute("font-size", "15px");
+				txtCheck.setStyleAttribute("color", "red");
+				
+				vp.add(txtCheck);
+				
+				d.add(vp);
+				d.show();
+			}				
 		}
 		
 		private void load(String tipo, List<IntervalliIUModel> result) {

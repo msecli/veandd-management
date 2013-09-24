@@ -14,6 +14,8 @@
  *******************************************************************************/
 package gestione.pack.client;
 
+import gestione.pack.client.model.GestioneCostiDipendentiModel;
+import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 
 import java.util.List;
@@ -63,6 +65,9 @@ public interface SessionManagementService extends RemoteService {
 
 	boolean setNomeReport(String string,
 			List<RiepilogoOreNonFatturabiliModel> list);
+
+	boolean setDatiReportCostiDip(String string,
+			List<RiepilogoCostiDipendentiModel> models)throws IllegalArgumentException;
 	
 	
 }
