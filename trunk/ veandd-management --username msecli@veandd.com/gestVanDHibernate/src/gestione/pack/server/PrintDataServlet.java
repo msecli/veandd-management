@@ -2,6 +2,8 @@ package gestione.pack.server;
 
 import gestione.pack.client.model.DatiFatturazioneMeseJavaBean;
 import gestione.pack.client.model.RiepilogoAnnualeJavaBean;
+import gestione.pack.client.model.RiepilogoCostiDipendentiBean;
+import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliJavaBean;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 import gestione.pack.shared.Personale;
@@ -360,6 +362,69 @@ public class PrintDataServlet extends HttpServlet  {
 					}								
 				}
 			else
+				if(operazione.compareTo("RIEP.COSTI")==0){
+					List<RiepilogoCostiDipendentiModel> lista= new ArrayList<RiepilogoCostiDipendentiModel>();
+					List<RiepilogoCostiDipendentiBean> listaB= new ArrayList<RiepilogoCostiDipendentiBean>();
+					
+					lista= (List<RiepilogoCostiDipendentiModel>) httpSession.getAttribute("lista");
+					
+					listaB.addAll(ServerUtility.traduciCostiModelToBean(lista));
+					
+					Map parameters = new HashMap();
+											
+					JasperPrint jasperPrint;
+					FileInputStream fis;
+					BufferedInputStream bufferedInputStream;
+
+					try {
+											
+						fis = new FileInputStream(/*Constanti.PATHAmazon+*/"JasperReport/ReportRiepilogoCostiDipendenti.jasper");
+												
+						bufferedInputStream = new BufferedInputStream(fis);
+
+						JasperReport jasperReport = (JasperReport) JRLoader
+									.loadObject(bufferedInputStream);
+
+						jasperPrint = JasperFillManager.fillReport(jasperReport,
+									parameters, getDataSourceCosti(listaB));
+						
+						JRXlsExporter exporterXLS = new JRXlsExporter();
+						exporterXLS.setParameter(JRXlsExporterParameter.JASPER_PRINT, jasperPrint);
+						exporterXLS.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
+						exporterXLS.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
+						exporterXLS.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+						exporterXLS.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
+						exporterXLS.setParameter(JRXlsExporterParameter.IS_IGNORE_CELL_BACKGROUND, Boolean.FALSE);
+						exporterXLS.setParameter(JRXlsExporterParameter.IS_IGNORE_GRAPHICS, Boolean.FALSE);
+						exporterXLS.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, /*Constanti.PATHAmazon+*/"FileStorage/ReportRiepilogoCostiDipendenti.xls");
+						exporterXLS.exportReport();
+							
+						File f=new File(/*Constanti.PATHAmazon+*/"FileStorage/ReportRiepilogoCostiDipendenti.xls");
+						FileInputStream fin = new FileInputStream(f);
+						ServletOutputStream outStream = response.getOutputStream();
+						// SET THE MIME TYPE.
+						response.setContentType("application/vnd.ms-excel");
+						// set content dispostion to attachment in with file name.
+						// case the open/save dialog needs to appear.
+						response.setHeader("Content-Disposition", "attachment;filename=ReportRiepilogoCostiDipendenti.xls");
+
+						byte[] buffer = new byte[1024];
+						int n = 0;
+						while ((n = fin.read(buffer)) != -1) {
+						outStream.write(buffer, 0, n);
+						System.out.println(buffer);
+						}
+						
+						outStream.flush();
+						fin.close();
+						outStream.close();
+						
+					} catch (JRException e) {
+							e.printStackTrace();
+					}			
+				}
+			
+			else				
 			{
 			//operazione ONE
 			stampato = ServerUtility.PrintRiepilogoOreMese(dataRif, sedeOperativa, username);
@@ -409,6 +474,15 @@ public class PrintDataServlet extends HttpServlet  {
 	}
 
 	
+	private static JRDataSource getDataSourceCosti(List<RiepilogoCostiDipendentiBean> listaB) {
+		Collection<RiepilogoCostiDipendentiBean> riep= new ArrayList<RiepilogoCostiDipendentiBean>();
+		for(RiepilogoCostiDipendentiBean r: listaB)
+			riep.add(r);
+		
+		return new JRBeanCollectionDataSource(riep);
+	}
+
+
 	private static JRDataSource getDataSourceNonFatt(List<RiepilogoOreNonFatturabiliJavaBean> listaR) {
 		Collection<RiepilogoOreNonFatturabiliJavaBean> riep= new ArrayList<RiepilogoOreNonFatturabiliJavaBean>();		
 		for(RiepilogoOreNonFatturabiliJavaBean r: listaR){
