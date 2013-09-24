@@ -3,7 +3,9 @@ package gestione.pack.client.layout;
 //import gestione.pack.client.utility.RecuperoParametriSessione;
 
 import gestione.pack.client.SessionManagementService;
+import gestione.pack.client.layout.panel.PanelGestioneCostiDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoAnnualeOreDipendenti;
+import gestione.pack.client.layout.panel.PanelRiepilogoCostiDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoSituazioneMensileOreDipendenti;
 import gestione.pack.client.utility.ClientUtility;
@@ -256,6 +258,51 @@ public class BodyLayout_Direzione extends LayoutContainer {
 	      });
 	   
 	    cp.add(btnRiepilogoMeseDip);*/
+	    
+	    panel.add(cp);
+	    
+	    cp = new ContentPanel();
+	    cp.setExpanded(false);
+	    cp.setAnimCollapse(false);
+	    cp.setBodyStyleName("pad-text");
+	    cp.setHeading("Personale");  
+	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent be) {
+            	center.removeAll();
+	        	center.add(new PanelGestioneCostiDipendenti());
+	        	center.layout(true);               
+            }
+        });
+	  	   
+	    Button btnGestioneCostiDip = new Button();
+	    btnGestioneCostiDip.setToolTip("Gestione Costi Dipendenti");
+	    btnGestioneCostiDip.setHeight(65);
+	    btnGestioneCostiDip.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.presenzeDip()));
+	    btnGestioneCostiDip.setIconAlign(IconAlign.BOTTOM);
+	    btnGestioneCostiDip.setWidth("100%");
+	    btnGestioneCostiDip.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelGestioneCostiDipendenti());
+	        	center.layout(true);}
+	        
+	      });
+	    cp.add(btnGestioneCostiDip);
+	    
+	    Button btnRiepilogoCostiDip = new Button();
+	    btnRiepilogoCostiDip.setToolTip("Riepilogo Costi");
+	    btnRiepilogoCostiDip.setHeight(65);
+	    btnRiepilogoCostiDip.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnRiepilogoCostiDip.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoCostiDip.setWidth("100%");
+	    btnRiepilogoCostiDip.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelRiepilogoCostiDipendenti());
+	        	center.layout(true);}
+	        
+	      });
+	    cp.add(btnRiepilogoCostiDip);
 	    
 	    panel.add(cp);
 	    

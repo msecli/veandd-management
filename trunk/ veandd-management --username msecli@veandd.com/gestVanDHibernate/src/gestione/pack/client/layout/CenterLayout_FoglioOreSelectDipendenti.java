@@ -197,7 +197,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			cmbxDipendente.setFieldLabel("Dipendente");
 			cmbxDipendente.setEnabled(true);
 			cmbxDipendente.setEmptyText("Selezionare il dipendente..");
-			cmbxDipendente.setEditable(false);
+			cmbxDipendente.setEditable(true);
 			cmbxDipendente.setVisible(true);
 			cmbxDipendente.setTriggerAction(TriggerAction.ALL);
 			cmbxDipendente.setAllowBlank(false);

@@ -6,6 +6,7 @@ import java.util.List;
 import gestione.pack.client.model.ClienteModel;
 import gestione.pack.client.model.CommentiModel;
 import gestione.pack.client.model.CommessaModel;
+import gestione.pack.client.model.CostiHwSwModel;
 import gestione.pack.client.model.DatiFatturazioneCommessaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.FoglioFatturazioneModel;
@@ -18,6 +19,7 @@ import gestione.pack.client.model.PersonaleAssociatoModel;
 import gestione.pack.client.model.PersonaleModel;
 import gestione.pack.client.model.RdaModel;
 import gestione.pack.client.model.RdoCompletaModel;
+import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoOreAnnualiDipendente;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
@@ -244,6 +246,7 @@ public interface AdministrationServiceAsync {
 	void getRiepilogoMeseFoglioOre(String username,
 			Date data, AsyncCallback<List<RiepilogoFoglioOreModel>> asyncCallback);
 
+	void checkOreIntervalliIUOreCommesse(String username, Date data, AsyncCallback<List<RiepilogoOreDipCommesseGiornaliero>> asyncCallback);
 	
 //----------------------------------------------FATTURAZIONE
 	
@@ -326,6 +329,20 @@ public interface AdministrationServiceAsync {
 	
 	void getDatiCostiPersonale(int idPersonale,
 			AsyncCallback<List<GestioneCostiDipendentiModel>> asyncCallback);
+
+	void getDatiCostiHwSw(int id,
+			AsyncCallback<List<CostiHwSwModel>> asyncCallback);
+
+	void saveAssociaCostiHwSw(int idSelected, CostiHwSwModel costo,
+			AsyncCallback<Boolean> asyncCallback);
+
+	void editDatiCostiAzienda(GestioneCostiDipendentiModel g,
+			AsyncCallback<Void> asyncCallback);
+
+	void getRiepilogoDatiCostiPersonale(String string,
+			AsyncCallback<List<RiepilogoCostiDipendentiModel>> asyncCallback);
+
+	
 
 	
 

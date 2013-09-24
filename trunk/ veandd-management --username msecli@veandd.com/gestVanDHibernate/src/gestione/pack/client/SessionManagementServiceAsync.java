@@ -1,5 +1,7 @@
 package gestione.pack.client;
 
+import gestione.pack.client.model.GestioneCostiDipendentiModel;
+import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 
 import java.util.List;
@@ -33,5 +35,11 @@ public interface SessionManagementServiceAsync {
 			String string, AsyncCallback<Boolean> asyncCallback);
 
 	void setNomeReport(String string, List<RiepilogoOreNonFatturabiliModel> list, AsyncCallback<Boolean> asyncCallback);
+
+
+	void setDatiReportCostiDip(String string,
+			List<RiepilogoCostiDipendentiModel> models,
+			AsyncCallback<Boolean> callback);
+	
 
 }

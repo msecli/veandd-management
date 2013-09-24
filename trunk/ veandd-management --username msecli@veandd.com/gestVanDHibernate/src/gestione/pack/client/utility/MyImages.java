@@ -124,5 +124,8 @@ public interface MyImages extends ClientBundle{
 	
 	@Source("Icone/gestHwSw.png")
 	ImageResource gestHwSw();
+	
+	@Source("Icone/warning.png")
+	ImageResource warning();
 }
 
