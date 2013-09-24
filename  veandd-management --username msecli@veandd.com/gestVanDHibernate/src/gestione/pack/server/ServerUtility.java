@@ -3,6 +3,8 @@ package gestione.pack.server;
 import gestione.pack.client.model.DatiFatturazioneMeseJavaBean;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.RiepilogoAnnualeJavaBean;
+import gestione.pack.client.model.RiepilogoCostiDipendentiBean;
+import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
 import gestione.pack.client.model.RiepilogoOreAnnualiDipendente;
 import gestione.pack.client.model.RiepilogoOreDipFatturazione;
@@ -575,7 +577,7 @@ public class ServerUtility {
 		try {
 			tx = session.beginTransaction();
 			
-			listaPers=(List<Personale>)session.createQuery("from Personale where sedeOperativa=:sede")
+			listaPers=(List<Personale>)session.createQuery("from Personale where sedeOperativa=:sede order by cognome")
 					.setParameter("sede", sedeOperativa).list();
 						
 		    for(Personale p:listaPers){
@@ -1674,6 +1676,125 @@ public class ServerUtility {
 		}		
 		
 		return listaR;
+	}
+	
+	
+	public static List<RiepilogoCostiDipendentiBean> traduciCostiModelToBean(
+			List<RiepilogoCostiDipendentiModel> lista) {
+		
+		List<RiepilogoCostiDipendentiBean> listaB= new ArrayList<RiepilogoCostiDipendentiBean>();
+		RiepilogoCostiDipendentiBean rB;
+		
+		for(RiepilogoCostiDipendentiModel r:lista){
+			
+			rB= new RiepilogoCostiDipendentiBean((int)r.get("idPersonale"),(String)r.get("nome") , (String)r.get("costoAnnuo"), (String)r.get("costoOrario"), 
+					(String)r.get("gruppoLavoro"), (String)r.get("costoStruttura"), (String)r.get("costoOneri"), (String)r.get("tipoCad"), (String)r.get("tipoTc"), 
+					(String)r.get("costoCad"), (String)r.get("costoTc"), (String)r.get("tipoHardware"), (String)r.get("costoHardware"), (String)r.get("sommaCostoHwSw"), 
+					(String)r.get("costoAggiuntivo"), (String)r.get("costoTotaleRisorsa"), (String)r.get("tipoOrario"), (String)r.get("colocation"), 
+					(Float)r.get("oreCig"), (Float)r.get("orePreviste"), (Float)r.get("orePianificate"), (String)r.get("saturazione"), (String)r.get("oreAssegnare"));
+			listaB.add(rB);
+		}
+		
+		return listaB;
+		
+	}
+	
+	
+	public static int getOreAnno() {//TODO passare anno
+		String data=new String();
+		String mese=new String();
+		String anno= new String();
+		String giorno= new String();
+		String daydd=new String();
+		String dataGiornoMese= new String();
+		String dataCompleta= new String();
+		
+		int giorniMese;
+		int oreLavorative=0;
+		
+		
+		Date date;
+		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
+		anno=formatter.format(new Date());
+		
+		for(String d:getListaMesiPerAnno(anno)){
+			
+			mese=d.substring(0,3);
+			giorniMese=ServerUtility.getGiorniMese(mese, anno);
+			for(int i=1;i<=giorniMese;i++){
+				if(i<10)
+					dataGiornoMese=(anno+"-"+mese+"-"+"0"+i);
+				else
+					dataGiornoMese=(anno+"-"+mese+"-"+i);
+				
+				formatter = new SimpleDateFormat("yyyy-MMM-dd",Locale.ITALIAN);
+				try {
+					date = (Date)formatter.parse(dataGiornoMese);
+					data=date.toString();	
+					giorno=data.substring(0, 3);
+					
+					formatter = new SimpleDateFormat("yyyy") ; 
+					anno=formatter.format(date);
+					formatter = new SimpleDateFormat("MMM",Locale.ITALIAN);
+					mese=formatter.format(date);
+				    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
+				    formatter= new SimpleDateFormat("dd");
+				    daydd=formatter.format(date);
+				    
+				    dataCompleta=(anno+"-"+mese+"-"+daydd);
+				    			
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				
+				if(giorno.compareTo("Sun")!=0 && giorno.compareTo("Sat")!=0 && !isFestivo(dataCompleta)) //TODO creare uno strumento per l'aggiunta di date festive/chiusura
+					oreLavorative= oreLavorative + Integer.parseInt("8");			
+			}
+						
+		}			
+		
+		return 1760; //per 2013
+	}
+	
+	public static String getShortGruppoLavoro(String gruppoLavoro) {
+		String s= new String();
+		
+		switch (gruppoLavoro) {
+		case "Trasmissioni":
+			s="TRA";
+			break;
+		case "Motori":
+			s="MOT";
+			break;
+		case "Autotelaio":
+			s="AUT";
+			break;
+		case "Affidabilita":
+			s="AFF";
+			break;
+		default:
+			break;
+		}
+		
+		return s;
+		
+	}
+	public static String getColocation(String sede) {
+		String s= new String();
+		
+		switch (sede) {
+		case "F":
+			s="Coloc.";
+			break;
+		case "S":
+			s="Sede";
+			break;
+		
+		default:
+			break;
+		}
+		
+		return s;
 	}
 }
 

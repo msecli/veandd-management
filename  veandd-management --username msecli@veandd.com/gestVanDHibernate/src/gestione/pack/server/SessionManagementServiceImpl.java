@@ -28,6 +28,8 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import gestione.pack.client.SessionManagementService;
+import gestione.pack.client.model.GestioneCostiDipendentiModel;
+import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 import gestione.pack.shared.Personale;
 
@@ -236,6 +238,24 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 		   	 HttpSession httpSession = request.getSession();
 		   	   
 		   	 httpSession.setAttribute("operazione", tipoReport);
+		   	 httpSession.setAttribute("lista", lista);
+		     
+			 return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+
+	@Override
+	public boolean setDatiReportCostiDip(String operazione,	List<RiepilogoCostiDipendentiModel> lista)
+			throws IllegalArgumentException {
+		try {
+			 HttpServletRequest request = this.getThreadLocalRequest();
+		   	 HttpSession httpSession = request.getSession();
+		   	   
+		   	 httpSession.setAttribute("operazione", operazione);
 		   	 httpSession.setAttribute("lista", lista);
 		     
 			 return true;
