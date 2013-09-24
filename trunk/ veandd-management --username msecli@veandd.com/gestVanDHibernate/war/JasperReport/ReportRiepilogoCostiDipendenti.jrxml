@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReportRiepilogoCostiDipendenti" pageWidth="1580" pageHeight="995" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0a3523bf-3bfa-4604-a355-fc38fa110190">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="24"/>
+	<property name="ireport.y" value="0"/>
+	<import value="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<field name="nome" class="java.lang.String"/>
+	<field name="costoAnnuo" class="java.lang.String"/>
+	<field name="costoOrario" class="java.lang.String"/>
+	<field name="gruppoLavoro" class="java.lang.String"/>
+	<field name="costoStruttura" class="java.lang.String"/>
+	<field name="costoOneri" class="java.lang.String"/>
+	<field name="tipoCad" class="java.lang.String"/>
+	<field name="tipoTc" class="java.lang.String"/>
+	<field name="costoCad" class="java.lang.String"/>
+	<field name="costoTc" class="java.lang.String"/>
+	<field name="tipoHardware" class="java.lang.String"/>
+	<field name="costoHardware" class="java.lang.String"/>
+	<field name="sommaCostoHwSw" class="java.lang.String"/>
+	<field name="costoAggiuntivo" class="java.lang.String"/>
+	<field name="costoTotaleRisorsa" class="java.lang.String"/>
+	<field name="tipoOrario" class="java.lang.String"/>
+	<field name="colocation" class="java.lang.String"/>
+	<field name="oreCig" class="java.lang.Float"/>
+	<field name="orePreviste" class="java.lang.Float"/>
+	<field name="orePianificate" class="java.lang.Float"/>
+	<field name="saturazione" class="java.lang.String"/>
+	<field name="oreAssegnare" class="java.lang.String"/>
+	<title>
+		<band height="42" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="44c850a4-9c34-44bb-99ac-437ad2da54d3" x="0" y="0" width="106" height="24"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nome]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3ebc6034-0af5-444c-a7de-031a7543bb69" x="108" y="0" width="56" height="37"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Costo Annuo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0cbdd18e-8d0f-4b7d-8e44-a7d78bfbb455" x="166" y="0" width="55" height="37"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Costo Orario]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="10fe1ecd-0246-4d54-8de3-c6b1b2028952" x="223" y="0" width="49" height="24"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Area]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="59cd5109-14e7-4b4d-9195-836433155e49" x="274" y="0" width="61" height="37"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Costo Struttura]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="268828b3-9a91-4328-8408-73f1828d4677" x="337" y="0" width="59" height="37"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Costo Oneri]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b0124c15-d113-4dcf-8b49-f906553b0fe5" x="398" y="0" width="66" height="24"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Tipo CAD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0c26c81c-11d6-483e-90d0-b2aec185bcfd" x="466" y="0" width="66" height="24"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Tipo TC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ce586363-498c-4b80-9641-6df681ae6239" x="534" y="0" width="66" height="24"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Costo CAD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e387218f-0b41-4418-bb5e-dc487d8275fe" x="602" y="0" width="66" height="24"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Costo TC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="16177dd7-fca5-43f8-b5cd-a2c0e4d68975" x="670" y="0" width="39" height="24"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[HW]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f2a84069-7155-4bad-89cc-b35ef3076b12" x="711" y="0" width="66" height="24"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Costo HW]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="cf5ccd6c-b4c6-4b96-abf0-a5670970d9c4" x="779" y="0" width="66" height="24"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Costo H/S]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fcee2d00-a55b-420a-8906-89ef38850604" x="847" y="0" width="72" height="37"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Costo Aggiuntivo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8c0bebba-c738-4cec-ac9c-fa789cbc06ee" x="921" y="0" width="72" height="37"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Costo Tot. Risorsa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d828092d-0ac0-4480-b408-344d16dad4d9" x="995" y="0" width="51" height="37"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Ore giorno]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e447e85b-5413-4885-8d1a-610bd5de5cb4" x="1048" y="0" width="66" height="24"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Colocation]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="00df936f-ebb6-479c-8438-58283c305958" x="1116" y="0" width="66" height="24"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Ore CIG]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1f18cf55-9f14-4f05-8725-fd5252d81970" x="1184" y="0" width="68" height="37"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Ore Previste]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="cbb45494-7241-407d-a874-f6b607c60504" x="1254" y="0" width="68" height="37"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Ore Pianificate]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="828dc4bd-9f3c-40e5-95a2-f768fd1c0aae" x="1324" y="0" width="78" height="24"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Saturazione]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="dd493ace-dfe5-4532-9d26-3fb2a4f5dedd" x="1404" y="0" width="91" height="37"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Ore da Assegnare]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="24" splitType="Stretch">
+			<textField>
+				<reportElement uuid="8f1fe5bb-614e-4bec-9372-f962a6906a47" x="0" y="0" width="106" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="36b84991-ec5e-4041-bda3-712c37609020" mode="Opaque" x="108" y="0" width="56" height="20" backcolor="#FFFF00"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{costoAnnuo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b2e7e30c-26af-4376-a3f6-cec6d17845b8" mode="Opaque" x="166" y="0" width="56" height="20" backcolor="#FFFF00"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{costoOrario}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ffd9a7ee-a99c-4a38-9883-900bb6dad15f" x="223" y="0" width="49" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{gruppoLavoro}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ac5bd9b7-1c88-4b3b-8a14-22cbcab42e80" mode="Opaque" x="274" y="0" width="61" height="20" backcolor="#FFFF00"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{costoStruttura}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="53bb1325-f9f5-4323-b07d-2ba13901ad6c" mode="Opaque" x="337" y="0" width="59" height="20" backcolor="#FFFF00"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{costoOneri}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="be4bb7ba-da1a-4f3d-84ce-cb288fce4b22" x="398" y="0" width="66" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{tipoCad}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="52edc614-5bf9-4169-8a1c-2e8cf46b0511" x="466" y="0" width="66" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{tipoTc}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a59c39b7-6bc2-4ca4-be09-0397f32426bc" mode="Opaque" x="534" y="0" width="66" height="20" backcolor="#FFFF00"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{costoCad}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="866a2377-b633-4a38-b01e-55a9f2b9b53c" mode="Opaque" x="602" y="0" width="66" height="20" backcolor="#FFFF00"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{costoTc}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="2fd1f1f2-4f45-42e5-b94e-f44a7a4a4854" x="670" y="0" width="39" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{tipoHardware}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a360c673-440a-4b88-a28a-0840f96cffe2" mode="Opaque" x="711" y="0" width="66" height="20" backcolor="#FFFF00"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{costoHardware}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="811b4d73-cfd2-4462-ab65-d442c590d953" x="779" y="0" width="66" height="20" backcolor="#FFFF00"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{sommaCostoHwSw}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e74b0ae3-de80-48dc-a0d9-4913966ede0c" mode="Opaque" x="847" y="0" width="72" height="20" backcolor="#FFFF00"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{costoAggiuntivo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="35e6a72f-ca7e-40e8-9a59-f99443093f2b" mode="Opaque" x="921" y="0" width="72" height="20" backcolor="#FFFF00"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{costoTotaleRisorsa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d8605aee-d9c6-4e9b-8c6d-7c6b6740096c" x="995" y="0" width="51" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{tipoOrario}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0a78666a-fc87-41ad-8209-4a734393be3e" x="1048" y="0" width="66" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{colocation}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b0bde4c6-5d42-4df7-a816-4f1a70d2efb9" x="1116" y="0" width="66" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{oreCig}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bd02064c-9ba2-4663-b48f-1c7c5a1329b4" x="1184" y="0" width="68" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{orePreviste}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="85c244dd-9a93-4225-a802-3c46b0df2069" x="1254" y="0" width="66" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{orePianificate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3d2440c2-7cbc-4b9a-965f-1102376728e8" mode="Opaque" x="1324" y="0" width="78" height="20" backcolor="#00CCCC"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{saturazione}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8455a3c6-d76f-4220-b711-1b1a3681f443" x="1404" y="0" width="91" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{oreAssegnare}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
