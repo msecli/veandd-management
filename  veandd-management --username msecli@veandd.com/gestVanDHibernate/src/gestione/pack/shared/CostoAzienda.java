@@ -19,6 +19,8 @@ public class CostoAzienda extends LightEntity implements IsSerializable {
 	private String costoAnnuo;
 
 	private String costoStruttura;
+	
+	private String tipoOrario;
 
 	private String oreCig;
 
@@ -86,6 +88,14 @@ public class CostoAzienda extends LightEntity implements IsSerializable {
 
 	public void setPersonale(Personale personale) {
 		this.personale = personale;
+	}
+
+	public String getTipoOrario() {
+		return tipoOrario;
+	}
+
+	public void setTipoOrario(String tipoOrario) {
+		this.tipoOrario = tipoOrario;
 	}
 	
 }
