@@ -4,20 +4,11 @@ package gestione.pack.client.layout;
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.utility.MyImages;
 
-import gestione.pack.client.layout.CenterLayout_FoglioOreGiornalieroAutoTimb.FldsetGiustificativi;
-import gestione.pack.client.layout.CenterLayout_FoglioOreSelectDipendentiOld.CreateFormIntervalliOre;
+//import gestione.pack.client.layout.CenterLayout_FoglioOreGiornalieroAutoTimb.FldsetGiustificativi;
 import gestione.pack.client.layout.panel.DialogInvioCommenti;
 import gestione.pack.client.layout.panel.FormInserimentoIntervalloCommessa;
 import gestione.pack.client.layout.panel.PanelRiepilogoGiornalieroCommesse;
-import gestione.pack.client.layout.panel.PanelRiepilogoMeseFoglioOre;
-import gestione.pack.client.model.GiustificativiModel;
 import gestione.pack.client.model.IntervalliCommesseModel;
-import gestione.pack.client.model.IntervalliIUModel;
-import gestione.pack.client.model.RiepilogoOreModel;
-import gestione.pack.client.model.TimbraturaModel;
-
-import gestione.pack.client.utility.ClientUtility;
-import gestione.pack.client.utility.DatiComboBox;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,44 +18,27 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.IconAlign;
-import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.DatePickerEvent;
 import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.util.Margins;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
-import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
-import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.ColumnLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
-import com.extjs.gxt.ui.client.widget.layout.RowData;
-import com.extjs.gxt.ui.client.widget.layout.RowLayout;
-import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -276,7 +250,7 @@ public class CenterLayout_FoglioOreGiornaliero_Collaboratori extends LayoutConta
 															
 					
 					FldsetIntervalliCommesse fldSetIntervalliC;
-					FldsetGiustificativi fldSetGiustificativi;
+					//FldsetGiustificativi fldSetGiustificativi;
 					//FldsetRiepilogo fldSetRiepilogoTotale;
 					LayoutContainer lc=new LayoutContainer();
 					LayoutContainer lcR=new LayoutContainer();
@@ -300,7 +274,7 @@ public class CenterLayout_FoglioOreGiornaliero_Collaboratori extends LayoutConta
 					//Giustificativi
 					lcR=(LayoutContainer)frm.getItemByItemId("main");
 					lcR=(LayoutContainer)lcR.getItemByItemId("right");
-					fldSetGiustificativi=(FldsetGiustificativi) lcR.getItemByItemId("fldSetGiustificativi");
+					//fldSetGiustificativi=(FldsetGiustificativi) lcR.getItemByItemId("fldSetGiustificativi");
 					
 					
 							AdministrationService.Util.getInstance().insertFoglioOreGiorno(username, giorno, intervalliC, new AsyncCallback<Boolean>() {

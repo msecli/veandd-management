@@ -2,10 +2,8 @@ package gestione.pack.client.layout.panel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import gestione.pack.client.AdministrationService;
-import gestione.pack.client.model.DatiFatturazioneCommessaModel;
 import gestione.pack.client.model.RiepilogoOreDipCommesse;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;

@@ -56,7 +56,7 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
-import com.google.gwt.i18n.client.DateTimeFormat;
+//import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -133,7 +133,7 @@ public class DialogRilevazionePresenze extends Dialog {
 			setStyleAttribute("padding-left", "10px");
 			setStyleAttribute("padding-top", "10px");
 			setBorders(false);
-			
+			/*
 			 Date retVal = null;
 		        try
 		        {
@@ -143,7 +143,7 @@ public class DialogRilevazionePresenze extends Dialog {
 		        {
 		            retVal = null;
 		        }
-		       
+		      */ 
 		        
 				txtfldUsername.setValue(user);
 				txtfldRuolo.setValue("AMM");
@@ -251,7 +251,7 @@ public class DialogRilevazionePresenze extends Dialog {
 					String username= new String();
 					Date giorno=new Date();
 					DateField dtfld= new DateField();
-					String controlloDati= new String(); //quando viene effettuato il controllo dei dati inseriti restituisce OK o errori
+					//String controlloDati= new String(); //quando viene effettuato il controllo dei dati inseriti restituisce OK o errori
 					
 					username=txtfldUsername.getValue().toString();
 					
@@ -435,61 +435,6 @@ public class DialogRilevazionePresenze extends Dialog {
 			frm.layout(true);
 		}			
 	}
-	
-	
-	private String checkCoerenzaDatiInput(FldsetGiustificativi fldSetGiustificativi, FldsetIntervalliCommesse fldSetIntervalliC) {
-		String controllo= "OK";
-		String totOreLavoro= "0.0";
-		String totOreGenerale=fldSetGiustificativi.txtfldTotGenerale.getValue();
-		String delta=fldSetGiustificativi.txtfldOreDelta.getValue();
-		String giustificativo = fldSetGiustificativi.smplcmbxAltroGiustificativo.getRawValue();
-		String oreRecupero= fldSetGiustificativi.txtfldRecupero.getValue().toString();
-		List<IntervalliCommesseModel> listaC= new ArrayList<IntervalliCommesseModel>();
-		listaC= elaboraIntervalliC(fldSetIntervalliC);
-		String oreStraordinario=fldSetGiustificativi.txtfldStraordinario.getValue();
-		String orePermessi= fldSetGiustificativi.txtfldPermesso.getValue();
-		String oreFerie= fldSetGiustificativi.txtfldFerie.getValue();
-		String oreViaggio= fldSetGiustificativi.txtfldOreViaggio.getValue();
-				
-		if (listaC.size()>0){
-			for(IntervalliCommesseModel c:listaC){
-				totOreLavoro=ClientUtility.aggiornaTotGenerale(totOreLavoro, c.getOreLavoro());		
-			}
-			if(totOreLavoro.compareTo(totOreGenerale)!=0)
-				return controllo="Le ore indicate sulle commesse non sono coerenti con il numero di ore ricavate dagli intervalli I/U.";			
-		}	
-		
-		
-		if(oreViaggio.compareTo("0.00")==0){//Controlli di coerenza se non sono state inserite ore viaggio
-			
-			if(Float.valueOf(delta)>0){			
-				String sommaStrRec= ClientUtility.sommaOreStrOreRec(oreStraordinario, oreRecupero);
-				
-				if(sommaStrRec.compareTo(delta)!=0 && giustificativo.compareTo("")==0)
-					return controllo="E' stato indicato un numero di ore di straordinario o recupero diverso dal valore del delta giornaliero \n" +
-							"ma non e' stato indicato un giustificativo.";
-				else
-				if(sommaStrRec.compareTo(delta)==0 && giustificativo.compareTo("")!=0 && giustificativo.compareTo("23.Abbuono")!=0)
-					return controllo="E' stato indicato un numero di ore uguale al valore del delta giornaliero \n" +
-							"ed e' anche stato indicato un giustificativo.";			
-			}
-			
-			if(Float.valueOf(delta)<0){
-				String sommaGiustificativi=ClientUtility.calcolaSommaGiustificativi(oreRecupero, orePermessi, oreFerie, "0.00");
-				
-				if(sommaGiustificativi.compareTo(delta)!=0 && giustificativo.compareTo("")==0)
-					return controllo="E' stato indicato un numero di ore diverso dal valore del delta giornaliero \n" +
-							"ma non e' stato indicato un giustificativo.";	
-				else
-					if(sommaGiustificativi.compareTo(delta)==0 && giustificativo.compareTo("")!=0 && giustificativo.compareTo("23.Abbuono")!=0)
-						return controllo="E' stato indicato un numero di ore uguale al valore del delta giornaliero \n" +
-								"ed e' anche stato indicato un giustificativo.";
-			}		
-		}
-		
-		return controllo;
-	}
-
 	
 	public class FldsetIntervalliIU extends FieldSet {
 						

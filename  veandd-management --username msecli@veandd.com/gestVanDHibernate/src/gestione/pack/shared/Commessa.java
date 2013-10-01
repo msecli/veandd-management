@@ -70,6 +70,11 @@ public class Commessa extends LightEntity implements IsSerializable {
 	@Cascade({CascadeType.SAVE_UPDATE})
 	private Set<FoglioFatturazione> foglioFatturaziones;
 
+	//bi-directional many-to-one association to Costing
+	@OneToMany(mappedBy="commessa", fetch=FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	private Set<Costing> costings;
+	
     public Commessa() {
     }
 
@@ -215,6 +220,14 @@ public class Commessa extends LightEntity implements IsSerializable {
 
 	public void setSalAttuale(String salAttuale) {
 		this.salAttuale = salAttuale;
+	}
+
+	public Set<Costing> getCostings() {
+		return costings;
+	}
+
+	public void setCostings(Set<Costing> costings) {
+		this.costings = costings;
 	}
 	
 	

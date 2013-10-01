@@ -5,7 +5,6 @@ package gestione.pack.client.layout;
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
 import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
-import gestione.pack.client.layout.panel.PanelRiepilogoSituazioneMensileOreDipendenti;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
 import gestione.pack.client.utility.MyImages;
@@ -269,7 +268,7 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	    btnPresenzeDipendenti.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	          center.removeAll();
-	        	center.add(new CenterLayout_FoglioOreSelectDipendentiOld());
+	        	center.add(new CenterLayout_FoglioOreSelectDipendenti());
 	        	center.layout(true);}      
 	      });
 	    btnPresenzeDipendenti.setWidth("100%");

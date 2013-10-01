@@ -7,7 +7,6 @@ import java.util.Map;
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
-import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.MyImages;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -576,7 +575,7 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 	    column.setSummaryRenderer(new SummaryRenderer() {  
    			@Override
    			public String render(Number value, Map<String, Number> data) {
-   					GroupingStore<RiepilogoOreNonFatturabiliModel>store1 = new GroupingStore<RiepilogoOreNonFatturabiliModel>();
+   					//GroupingStore<RiepilogoOreNonFatturabiliModel>store1 = new GroupingStore<RiepilogoOreNonFatturabiliModel>();
    				  				
    					return number.format(value);
    			}  

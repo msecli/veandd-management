@@ -2,9 +2,7 @@ package gestione.pack.client.layout.panel;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
-import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoOreDipCommesseGiornaliero;
-import gestione.pack.client.model.RiepilogoOreDipFatturazione;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.MyImages;
 
@@ -32,10 +30,8 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.button.Button;
 
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridViewConfig;
 import com.extjs.gxt.ui.client.widget.grid.GroupSummaryView;
@@ -47,7 +43,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 
@@ -256,7 +251,8 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	    
 	    store.groupBy("numeroCommessa");
 	    store.setSortField("giorno");
-	    
+	       
+	          
 	    GroupSummaryView summary = new GroupSummaryView();  
 	    summary.setForceFit(true);  
 	    summary.setShowGroupedColumn(false);
@@ -299,6 +295,7 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	    	}    	
 	    });
 	    
+	
 	    cntpnlGrid.add(gridRiepilogo);	   
 	    
 	    ContentPanel cntpnlLayout= new ContentPanel();
@@ -368,7 +365,7 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	private List<ColumnConfig> createColumns() {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 		final NumberFormat number= NumberFormat.getFormat("0.00");
-		
+		       
 		SummaryColumnConfig<Double> column=new SummaryColumnConfig<Double>();		
 	    column.setId("numeroCommessa");  
 	    column.setHeader("Commessa");  
@@ -381,6 +378,7 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	    column.setHeader("Giorno");  
 	    column.setWidth(85);  
 	    column.setRowHeader(true);  
+	    //column.setRenderer(renderer);
 	    configs.add(column); 
 	       	    	    
 	    SummaryColumnConfig<Double> columnOreLavoro=new SummaryColumnConfig<Double>();		

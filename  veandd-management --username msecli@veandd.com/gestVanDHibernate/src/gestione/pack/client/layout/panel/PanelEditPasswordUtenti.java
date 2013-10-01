@@ -25,15 +25,15 @@ import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
-import com.extjs.gxt.ui.client.widget.grid.RowEditor;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.gwtext.client.widgets.ToolbarSeparator;
 
 public class PanelEditPasswordUtenti  extends LayoutContainer{
 
@@ -46,7 +46,7 @@ public class PanelEditPasswordUtenti  extends LayoutContainer{
 	protected Button btnReset;
 	
 	private int h=Window.getClientHeight();
-	private int w=Window.getClientWidth();	
+	//private int w=Window.getClientWidth();	
 		
 	public PanelEditPasswordUtenti(){
 		
@@ -131,9 +131,11 @@ public class PanelEditPasswordUtenti  extends LayoutContainer{
 				
 		ToolBar tlbrButtons= new ToolBar();
 		tlbrButtons.add(btnConferma);
+		tlbrButtons.add(new SeparatorToolItem());
 		tlbrButtons.add(btnReset);
+		tlbrButtons.add(new SeparatorToolItem());
 		tlbrButtons.add(btnGuida);
-				
+						
 	    cpGrid.setTopComponent(tlbrButtons);
 				
 		layoutContainer.add(cpGrid, new FitData(3, 3, 3, 3));

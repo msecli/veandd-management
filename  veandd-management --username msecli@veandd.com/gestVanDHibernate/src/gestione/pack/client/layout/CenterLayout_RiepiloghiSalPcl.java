@@ -238,7 +238,7 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 
 			@Override
 			public void handleEvent(ComponentEvent be) {
-				String meseRif= new String(); 
+				//String meseRif= new String(); 
 		    	String anno= new String();
 		    				    				    	
 		    	anno= smplcmbxAnno.getRawValue().toString();

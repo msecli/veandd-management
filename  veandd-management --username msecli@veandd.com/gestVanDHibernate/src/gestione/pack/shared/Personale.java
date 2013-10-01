@@ -90,6 +90,11 @@ public class Personale  extends LightEntity implements IsSerializable {
 	@OneToMany(mappedBy="personale", fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	private Set<CostoAzienda> costoAziendas;
+	
+	//bi-directional many-to-one association to CostingRisorsa
+	@OneToMany(mappedBy="personale", fetch=FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	private Set<CostingRisorsa> costingRisorsas;
 
     public Personale() {
     }

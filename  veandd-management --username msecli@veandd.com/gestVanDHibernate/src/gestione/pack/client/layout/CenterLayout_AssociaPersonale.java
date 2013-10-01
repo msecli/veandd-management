@@ -26,7 +26,6 @@ import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.WindowListener;
 
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.GroupingStore;
@@ -621,11 +620,11 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 	private void loadList(List<PersonaleModel> lista) {
 		ListStore<PersonaleModel> store = new ListStore<PersonaleModel>();  
 	    List<PersonaleModel> listaApp= new ArrayList<PersonaleModel>();
-	    String app= new String();
+	    //String app= new String();
 	    String app1=new String();
 	    
 		for(PersonaleModel p:lista){
-			app=p.getTipologiaLavoratore();
+		//	app=p.getTipologiaLavoratore();
 			app1=p.getRuolo();
 			
 			boolean ruolo=(app1.compareTo("AU")==0);//||(app1.compareTo("PM")==0)||(app1.compareTo("DIR")==0);

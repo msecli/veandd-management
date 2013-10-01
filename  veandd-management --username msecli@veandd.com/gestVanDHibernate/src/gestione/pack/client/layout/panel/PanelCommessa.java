@@ -9,8 +9,6 @@ import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.layout.panel.DialogAssociaOrdine;
 import gestione.pack.client.model.CommessaModel;
-import gestione.pack.client.model.PersonaleModel;
-import gestione.pack.client.model.RdoCompletaModel;
 import gestione.pack.client.utility.DatiComboBox;
 import gestione.pack.client.utility.MyImages;
 
@@ -39,7 +37,6 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Text;
-import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -345,7 +342,7 @@ public class PanelCommessa extends LayoutContainer {
 							public void componentSelected(ButtonEvent ce) {
 						    	 if(frmpnlCommessa.isValid()){
 										
-						    		final NumberFormat number = NumberFormat.getFormat("0.00");
+						    		//final NumberFormat number = NumberFormat.getFormat("0.00");
 						    		
 									String numCommessa = new String(); 	
 									String estensione= new String();
@@ -1097,14 +1094,12 @@ public class PanelCommessa extends LayoutContainer {
 		SessionManagementService.Util.getInstance().getRuolo(new AsyncCallback<String>() {
 			
 			@Override
-			public void onSuccess(String result) {
-				
+			public void onSuccess(String result) {			
 				setRuolo(result);
 			}
 			
 			@Override
-			public void onFailure(Throwable caught) {
-				
+			public void onFailure(Throwable caught) {				
 				Window.alert("Error on getRuolo();");
 			}
 		});				

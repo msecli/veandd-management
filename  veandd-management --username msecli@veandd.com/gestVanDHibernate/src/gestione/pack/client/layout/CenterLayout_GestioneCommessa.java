@@ -2,9 +2,6 @@ package gestione.pack.client.layout;
 
 import gestione.pack.client.layout.panel.PanelCommessa;
 
-import com.extjs.gxt.ui.client.Style.Scroll;
-
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;

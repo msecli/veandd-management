@@ -4,8 +4,11 @@ import gestione.pack.client.model.DatiFatturazioneMeseJavaBean;
 import gestione.pack.client.model.RiepilogoAnnualeJavaBean;
 import gestione.pack.client.model.RiepilogoCostiDipendentiBean;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
+import gestione.pack.client.model.RiepilogoDatiOreMeseJavaBean;
+import gestione.pack.client.model.RiepilogoMensileDatiIntervalliCommesseJavaBean;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliJavaBean;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
+import gestione.pack.shared.DatiRiepilogoMensileCommesse;
 import gestione.pack.shared.Personale;
 
 import java.io.BufferedInputStream;
@@ -65,20 +68,10 @@ public class PrintDataServlet extends HttpServlet  {
 		
 		if (operazione.compareTo("ALL") == 0) {
 
-			stampato = ServerUtility.PrintRiepilogoOreMese(dataRif, sedeOperativa);
-
-			if (stampato) {
-				//List<DatiOreMese> lista = new ArrayList<DatiOreMese>();
-
-				Session session = MyHibernateUtil.getSessionFactory()
-						.openSession();
-				Transaction tx = null;
-				tx = session.beginTransaction();
-
+			List<RiepilogoDatiOreMeseJavaBean> listaJB= new ArrayList<RiepilogoDatiOreMeseJavaBean>();
+			listaJB= ServerUtility.PrintRiepilogoOreMese(dataRif, sedeOperativa);
+			
 				Map parameters = new HashMap();
-				parameters.put(JRHibernateQueryExecuterFactory.PARAMETER_HIBERNATE_SESSION,
-								session);// Parametri che usa il file jasper per
-										 // connettersi!
 				
 				JasperPrint jasperPrint;
 				FileInputStream fis;
@@ -94,7 +87,7 @@ public class PrintDataServlet extends HttpServlet  {
 							.loadObject(bufferedInputStream);
 
 					jasperPrint = JasperFillManager.fillReport(jasperReport,
-							parameters);
+							parameters, getDataSourceRiepMensile(listaJB));
 
 					JasperExportManager.exportReportToPdfFile(jasperPrint,Constanti.PATHAmazon+"FileStorage/RiepilogoTotali.pdf");
 
@@ -102,16 +95,12 @@ public class PrintDataServlet extends HttpServlet  {
 
 					e.printStackTrace();
 				}
-				tx.rollback();
-				session.close();
-				httpSession.setAttribute("result", stampato);
-			}
-			else
-				httpSession.setAttribute("result", stampato);
-		
+			
 		}else
 		
-			if(operazione.compareTo("COMM")==0){
+		if(operazione.compareTo("COMM")==0){
+			
+			List<RiepilogoMensileDatiIntervalliCommesseJavaBean> listaJB=new ArrayList<RiepilogoMensileDatiIntervalliCommesseJavaBean>();
 			
 			String nome=username.substring(0, username.indexOf("."));
 			nome=nome.substring(0, 1).toUpperCase()+nome.substring(1,nome.length());
@@ -124,19 +113,13 @@ public class PrintDataServlet extends HttpServlet  {
 			String totOreCommesse=(String) httpSession.getAttribute("totOreCommesse");
 			String totOreIU=(String) httpSession.getAttribute("totOreIU");
 			
-			stampato = ServerUtility.getRiepilogoGiornalieroCommesse(username, dataRif);
+			
+			listaJB= ServerUtility.getRiepilogoGiornalieroCommesse(username, dataRif);
 
-			if (stampato) {
-				//List<DatiOreMese> lista = new ArrayList<DatiOreMese>();
-
-				Session session = MyHibernateUtil.getSessionFactory().openSession();
-				Transaction tx = null;
-				tx = session.beginTransaction();
-
+			try {
+				
 				Map parameters = new HashMap();
-				parameters.put(JRHibernateQueryExecuterFactory.PARAMETER_HIBERNATE_SESSION,
-								session);// Parametri che usa il file jasper per
-											// connettersi!
+				
 				parameters.put("Nominativo", username);
 				parameters.put("Data", dataRif);
 				parameters.put("Nome", nome);
@@ -148,29 +131,19 @@ public class PrintDataServlet extends HttpServlet  {
 				FileInputStream fis;
 				BufferedInputStream bufferedInputStream;
 
-				try {
+				fis = new FileInputStream(Constanti.PATHAmazon+"JasperReport/ReportRiepilogoCommesseJB.jasper");
+				bufferedInputStream = new BufferedInputStream(fis);
 
-					fis = new FileInputStream(Constanti.PATHAmazon+"JasperReport/ReportRiepilogoCommesse.jasper");
-
-					bufferedInputStream = new BufferedInputStream(fis);
-
-					JasperReport jasperReport = (JasperReport) JRLoader
+				JasperReport jasperReport = (JasperReport) JRLoader
 							.loadObject(bufferedInputStream);
 
-					jasperPrint = JasperFillManager.fillReport(jasperReport,
-							parameters);
-					JasperExportManager.exportReportToPdfFile(jasperPrint,Constanti.PATHAmazon+"FileStorage/RiepiloghiCommesse/"+nomeFile);
-					
+				jasperPrint = JasperFillManager.fillReport(jasperReport,parameters,	
+						getDataSourceRiepilogoCommesse(listaJB));
+				JasperExportManager.exportReportToPdfFile(jasperPrint, Constanti.PATHAmazon+"FileStorage/RiepiloghiCommesse/"+nomeFile);
+				
 				} catch (JRException e) {
 					e.printStackTrace();
 				}
-
-				tx.rollback();
-				session.close();
-				httpSession.setAttribute("result", stampato);//ritorno all'applicazione se è andata a buon fine o meno
-			}
-			else
-				httpSession.setAttribute("result", stampato);	//TODO effettuare il controllo sul return	
 		}
 		
 		else 
@@ -427,53 +400,56 @@ public class PrintDataServlet extends HttpServlet  {
 			else				
 			{
 			//operazione ONE
-			stampato = ServerUtility.PrintRiepilogoOreMese(dataRif, sedeOperativa, username);
-
-			if (stampato) {
-				//List<DatiOreMese> lista = new ArrayList<DatiOreMese>();
-
-				Session session = MyHibernateUtil.getSessionFactory()
-						.openSession();
-				Transaction tx = null;
-				tx = session.beginTransaction();
-
-				Map parameters = new HashMap();
-				parameters.put(JRHibernateQueryExecuterFactory.PARAMETER_HIBERNATE_SESSION,
-								session);// Parametri che usa il file jasper per
-										 // connettersi!
 				
-				JasperPrint jasperPrint;
-				FileInputStream fis;
-				BufferedInputStream bufferedInputStream;
+			List<RiepilogoDatiOreMeseJavaBean> listaJB= new ArrayList<RiepilogoDatiOreMeseJavaBean>();
+			listaJB= ServerUtility.PrintRiepilogoOreMese(dataRif, sedeOperativa, username);
+			
+			Map parameters = new HashMap();
+			
+			JasperPrint jasperPrint;
+			FileInputStream fis;
+			BufferedInputStream bufferedInputStream;
 
-				try {
+			try {
 
-					fis = new FileInputStream(Constanti.PATHAmazon+"JasperReport/ReportRiepilogoOre.jasper");
-										
-					bufferedInputStream = new BufferedInputStream(fis);
+				fis = new FileInputStream(Constanti.PATHAmazon+"JasperReport/ReportRiepilogoOre.jasper");
+									
+				bufferedInputStream = new BufferedInputStream(fis);
 
-					JasperReport jasperReport = (JasperReport) JRLoader
+				JasperReport jasperReport = (JasperReport) JRLoader
 							.loadObject(bufferedInputStream);
 
-					jasperPrint = JasperFillManager.fillReport(jasperReport,
-							parameters);
+				jasperPrint = JasperFillManager.fillReport(jasperReport,
+							parameters, getDataSourceRiepMensile(listaJB));
 					
-					JasperExportManager.exportReportToPdfFile(jasperPrint,Constanti.PATHAmazon+"FileStorage/RiepilogoOre_"+username+".pdf");
+				JasperExportManager.exportReportToPdfFile(jasperPrint,Constanti.PATHAmazon+"FileStorage/RiepilogoOre_"+username+".pdf");
 
-				} catch (JRException e) {
+			} catch (JRException e) {
 
-					e.printStackTrace();
-				}
-				tx.rollback();
-				session.close();
-				httpSession.setAttribute("result", stampato);
-			}
-			else
-				httpSession.setAttribute("result", stampato);				
+				e.printStackTrace();
+			}				
 		}
 	}
 
 	
+	private static JRDataSource getDataSourceRiepMensile(List<RiepilogoDatiOreMeseJavaBean> listaJB) {
+		Collection<RiepilogoDatiOreMeseJavaBean> riep= new ArrayList<RiepilogoDatiOreMeseJavaBean>();
+		for(RiepilogoDatiOreMeseJavaBean r: listaJB)
+			riep.add(r);
+		
+		return new JRBeanCollectionDataSource(riep);
+	}
+
+
+	private static JRDataSource getDataSourceRiepilogoCommesse(List<RiepilogoMensileDatiIntervalliCommesseJavaBean> listaD) {
+		Collection<RiepilogoMensileDatiIntervalliCommesseJavaBean> riep= new ArrayList<RiepilogoMensileDatiIntervalliCommesseJavaBean>();
+		for(RiepilogoMensileDatiIntervalliCommesseJavaBean r: listaD)
+			riep.add(r);
+		
+		return new JRBeanCollectionDataSource(riep);
+	}
+
+
 	private static JRDataSource getDataSourceCosti(List<RiepilogoCostiDipendentiBean> listaB) {
 		Collection<RiepilogoCostiDipendentiBean> riep= new ArrayList<RiepilogoCostiDipendentiBean>();
 		for(RiepilogoCostiDipendentiBean r: listaB)

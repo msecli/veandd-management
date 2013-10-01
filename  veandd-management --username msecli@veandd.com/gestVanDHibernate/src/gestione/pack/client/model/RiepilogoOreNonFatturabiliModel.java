@@ -10,25 +10,6 @@ public class RiepilogoOreNonFatturabiliModel extends BaseModel implements IsSeri
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private String  sede;
-	private String gruppolavoro;
-	private String attivita;
-	private String risorsa;
-	private Float m1;
-	private Float m2;
-	private Float m3;
-	private Float m4;
-	private Float m5;
-	private Float m6;
-	private Float m7;
-	private Float m8;
-	private Float m9;
-	private Float m10;
-	private Float m11;
-	private Float m12;
-	private String costoOrario;
-	private Float totOre;
-	private Float costoEffettivo;
 	
 	public RiepilogoOreNonFatturabiliModel(){}
 	

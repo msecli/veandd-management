@@ -106,16 +106,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		LayoutContainer bodyContainer = new LayoutContainer();
 		bodyContainer.setLayout(new FlowLayout());
 		bodyContainer.setBorders(false);		
-		
-		ContentPanel cntpnlRdo = new ContentPanel();
-		cntpnlRdo.setHeading("Gestione Rdo.");
-		cntpnlRdo.setHeaderVisible(true);
-		cntpnlRdo.setCollapsible(false);
-		cntpnlRdo.setBorders(false);
-		cntpnlRdo.setWidth(w-215);
-		cntpnlRdo.setHeight(h-55);
-		cntpnlRdo.setScrollMode(Scroll.AUTO);
-		
+				
 		hpLayout= new VerticalPanel();
 		hpLayout.setSpacing(10);
 		hpLayout.setItemId("hpLayout");

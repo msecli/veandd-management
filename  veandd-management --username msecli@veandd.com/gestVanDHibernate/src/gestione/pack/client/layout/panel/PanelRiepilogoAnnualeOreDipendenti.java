@@ -41,8 +41,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
@@ -66,6 +64,9 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 	private Button btnSelect;
 	private Button btnPrint;
 	
+	private int h=Window.getClientHeight();
+	private int w=Window.getClientWidth();
+	
 	public PanelRiepilogoAnnualeOreDipendenti(){
 		
 	}
@@ -87,7 +88,7 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 		cpGrid.setHeaderVisible(false);
 		cpGrid.setBorders(false);
 		cpGrid.setFrame(true);
-		cpGrid.setSize(980, 870);
+		cpGrid.setSize(w-230, h-65);
 		cpGrid.setScrollMode(Scroll.AUTO);
 		cpGrid.setLayout(new FitLayout());
 	

@@ -1,6 +1,5 @@
 package gestione.pack.client;
 
-import gestione.pack.client.model.GestioneCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 

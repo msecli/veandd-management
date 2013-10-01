@@ -8,9 +8,7 @@ import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.model.PersonaleModel;
 import gestione.pack.client.utility.ClientUtility;
-import gestione.pack.client.utility.ConstantiMSG;
 import gestione.pack.client.utility.DatiComboBox;
-import gestione.pack.server.Constanti;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.SortDir;
