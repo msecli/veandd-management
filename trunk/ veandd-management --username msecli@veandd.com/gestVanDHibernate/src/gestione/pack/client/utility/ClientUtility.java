@@ -1,8 +1,7 @@
 package gestione.pack.client.utility;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gwt.i18n.client.NumberFormat;
 
 public class ClientUtility {
 
@@ -406,7 +405,7 @@ public class ClientUtility {
 	
 	
 	public static String traduciMeseToIt(String month){
-		String mese=new String();
+		//String mese=new String();
 		
 		if(month.compareTo("Jan") ==0)
 			month="Gen";
@@ -621,5 +620,23 @@ public class ClientUtility {
 	}
 	
 	
+	public static List<String> getListaMesiPerAnno(String data) {
+		List<String> listaMesi=new ArrayList<String>();
+		
+		listaMesi.add("Gen"+data);
+		listaMesi.add("Feb"+data);
+		listaMesi.add("Mar"+data);
+		listaMesi.add("Apr"+data);
+		listaMesi.add("Mag"+data);
+		listaMesi.add("Giu"+data);
+		listaMesi.add("Lug"+data);
+		listaMesi.add("Ago"+data);
+		listaMesi.add("Set"+data);
+		listaMesi.add("Ott"+data);
+		listaMesi.add("Nov"+data);
+		listaMesi.add("Dic"+data);
+		
+		return listaMesi;
+	}
 	
 }

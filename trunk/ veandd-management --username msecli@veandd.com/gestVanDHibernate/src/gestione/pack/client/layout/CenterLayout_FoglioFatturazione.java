@@ -14,7 +14,6 @@ import gestione.pack.client.utility.DatiComboBox;
 import gestione.pack.client.utility.MyImages;
 import gestione.pack.client.model.FoglioFatturazioneModel;
 
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.KeyListener;
@@ -1269,7 +1268,7 @@ public CenterLayout_FoglioFatturazione(){}
 				@Override
 				public void handleEvent(ComponentEvent be) {
 					String salTotale= new String();
-					String varSal= new String();
+					//String varSal= new String();
 					
 					boolean check= chbxSalButtare.getValue();
 					if(check){

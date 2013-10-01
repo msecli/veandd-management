@@ -57,6 +57,9 @@ public class PanelRiepilogoMeseGiornalieroHorizontal extends LayoutContainer{
 	private SimpleComboBox<String> smplcmbxMese;
 	private SimpleComboBox<String> smplcmbxSede;
 	
+	private int h=Window.getClientHeight();
+	private int w=Window.getClientWidth();
+	
 	public PanelRiepilogoMeseGiornalieroHorizontal(){
 		
 	}
@@ -79,7 +82,7 @@ public class PanelRiepilogoMeseGiornalieroHorizontal extends LayoutContainer{
 		cpGrid.setHeaderVisible(false);
 		cpGrid.setBorders(false);
 		cpGrid.setFrame(true);
-		cpGrid.setSize(980, 870);
+		cpGrid.setSize(w-225, h-65);
 		cpGrid.setScrollMode(Scroll.AUTOY);
 		cpGrid.setLayout(new FitLayout());
 		

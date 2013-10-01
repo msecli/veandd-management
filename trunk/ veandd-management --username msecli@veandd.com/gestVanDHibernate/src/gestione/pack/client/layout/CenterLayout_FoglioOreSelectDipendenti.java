@@ -2,7 +2,6 @@ package gestione.pack.client.layout;
 
 import gestione.pack.client.AdministrationService;
 
-import gestione.pack.client.layout.CenterLayout_FoglioOreGiornalieroAutoTimb.FldsetIntervalliIU;
 import gestione.pack.client.layout.panel.DialogInvioCommenti;
 import gestione.pack.client.layout.panel.FormInserimentoIntervalloCommessa;
 import gestione.pack.client.layout.panel.PanelRiepilogoMeseFoglioOre;
@@ -85,7 +84,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 	private Button btnConferma= new Button();		
 	private Button btnMostraIntervalli= new Button();
 	private Button btnInviaCommenti= new Button();
-	private Button btnPrint= new Button();
+	//private Button btnPrint= new Button();
 	public DateField dtfldGiorno= new DateField(); //settato al momento della creazione del form sul valore del datefield interno
 												   //quando viene cambiata la data viene resettato anche questo 
 	protected void onRender(Element target, int index) {  
@@ -315,7 +314,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 						String username= new String();
 						Date giorno=new Date();
 						DateField dtfld= new DateField();
-						String controlloDati= new String(); //quando viene effettuato il controllo dei dati inseriti restituisce OK o errori
+						//String controlloDati= new String(); //quando viene effettuato il controllo dei dati inseriti restituisce OK o errori
 						
 						username=cmbxDipendente.getValue().get("username");
 						

@@ -3,12 +3,9 @@ package gestione.pack.client.layout.panel;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import gestione.pack.client.AdministrationService;
-import gestione.pack.client.model.RiepilogoFoglioOreModel;
 import gestione.pack.client.model.RiepilogoOreDipFatturazione;
-import gestione.pack.client.model.RiepilogoOreTotaliCommesse;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.DatiComboBox;
 import gestione.pack.client.utility.MyImages;
@@ -17,7 +14,6 @@ import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -39,8 +35,6 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GroupSummaryView;
 import com.extjs.gxt.ui.client.widget.grid.SummaryColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.SummaryRenderer;
-import com.extjs.gxt.ui.client.widget.grid.SummaryType;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
@@ -64,6 +58,9 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 	private Button btnShowDettaglioOre;
 	private int idDip;
 		
+	private int h=Window.getClientHeight();
+	private int w=Window.getClientWidth();
+	
 	public PanelRiepilogoOreDipendentiPerCommesse(){
 		
 	}
@@ -90,7 +87,7 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 		cpGrid.setHeaderVisible(false);
 		cpGrid.setBorders(false);
 		cpGrid.setFrame(true);
-		cpGrid.setSize(980, 870);
+		cpGrid.setSize(w-230, h-65);
 		cpGrid.setScrollMode(Scroll.AUTO);
 		cpGrid.setLayout(new FitLayout());
 	
@@ -178,8 +175,8 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 	          public void handleEvent(SelectionChangedEvent<RiepilogoOreDipFatturazione> be) {  
 	        	
 	            if (be.getSelection().size() > 0) {      
-	            	String commessa= new String();
-	            	commessa=be.getSelectedItem().getNumeroCommessa();
+	            	//String commessa= new String();
+	            	//commessa=be.getSelectedItem().getNumeroCommessa();
 	            		
 	            	idDip=be.getSelectedItem().get("idDip");
 	            	//numCommessa=commessa.substring(0,commessa.indexOf("."));

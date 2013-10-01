@@ -49,6 +49,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -135,30 +136,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	  	txtfldSearch= new TextField<String>();
 	  	txtfldSearch.setStyleAttribute("padding-left", "2px");
 	  	txtfldSearch.setEmptyText("Ricerca per Cognome..");
-	  	/*txtfldSearch.addKeyListener(new KeyListener(){
-	    	 public void componentKeyUp(ComponentEvent event) {
-	    		 
-	    		 if(txtfldSearch.getRawValue().isEmpty()){
-	    			 storeResult.removeAll();
-	    			 store.removeAll();
-	    			 store.add(storeCompleto.getModels());
-	    			 gridRiepilogo.reconfigure(store, cmCommessa);
-	    		 }else{
-	    		 	    		 	    		 
-	    			 String campo= txtfldSearch.getValue().toString();	    			 	    			 
-	    			 storeResult.removeAll();
-	    			 for(RiepilogoFoglioOreModel r:lista){
-	    				 if(r.getNome().contains(campo)){
-	    					 storeResult.add(r);		    				 
-	    				 }
-	    			 }
-	    			 lista.clear();
-	    			 lista.addAll(store.getModels());
-	    			 gridRiepilogo.reconfigure(storeResult, cmCommessa);			 
-	    		 } 
-	    	 }	    	  	 
-	  	});	
-	  	*/
+	  	
 	  	btnSearch= new Button();
 	  	btnSearch.setStyleAttribute("padding-left", "4px");
 	  	btnSearch.setStyleAttribute("padding-bottom", "2px");
@@ -259,11 +237,16 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	  	
 	  	toolBar.add(dtfldDataRiferimento);
 	  	//toolBar.add(smplcmbxPM);
+	  	toolBar.add(new SeparatorToolItem());
 	  	toolBar.add(smplcmbxSede);
+	  	toolBar.add(new SeparatorToolItem());
 	  	toolBar.add(txtfldSearch);
 	  	toolBar.add(btnSearch);
+	  	toolBar.add(new SeparatorToolItem());
 	  	toolBar.add(btnConferma);
+	  	toolBar.add(new SeparatorToolItem());
 	  	toolBar.add(btnConfermaTutti);
+	  	toolBar.add(new SeparatorToolItem());
 	  	toolBar.add(btnViewFoglioOre);
 		
 		ContentPanel cntpnlGrid= new ContentPanel();
@@ -425,8 +408,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	
 	
 	private void loadTable(List<RiepilogoFoglioOreModel> result) {
-		try {
-			
+		try {			
 			store.removeAll();
 			store.add(result);
 			gridRiepilogo.reconfigure(store, cmCommessa);	

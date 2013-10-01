@@ -127,5 +127,8 @@ public interface MyImages extends ClientBundle{
 	
 	@Source("Icone/warning.png")
 	ImageResource warning();
+	
+	@Source("Icone/addList.png")
+	ImageResource addList();
 }
 

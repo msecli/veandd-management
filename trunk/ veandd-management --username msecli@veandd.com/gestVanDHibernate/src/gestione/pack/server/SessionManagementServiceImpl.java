@@ -28,7 +28,6 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import gestione.pack.client.SessionManagementService;
-import gestione.pack.client.model.GestioneCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 import gestione.pack.shared.Personale;

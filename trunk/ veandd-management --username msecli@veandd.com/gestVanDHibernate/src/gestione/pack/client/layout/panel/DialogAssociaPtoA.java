@@ -27,7 +27,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.extjs.gxt.ui.client.dnd.ListViewDragSource;
 import com.extjs.gxt.ui.client.dnd.ListViewDropTarget;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.ListView;
 
@@ -189,11 +188,11 @@ public class DialogAssociaPtoA  extends Dialog{
 	private void loadList(List<PersonaleModel> lista) {
 		ListStore<PersonaleModel> store = new ListStore<PersonaleModel>();  
 	    List<PersonaleModel> listaApp= new ArrayList<PersonaleModel>();
-	    String app= new String();
+	    //String app= new String();
 	    String app1=new String();
 	    
 		for(PersonaleModel p:lista){
-			app=p.getTipologiaLavoratore();
+			//app=p.getTipologiaLavoratore();
 			app1=p.getRuolo();
 			
 			boolean ruolo=(app1.compareTo("AU")==0);//||(app1.compareTo("PM")==0)||(app1.compareTo("DIR")==0);

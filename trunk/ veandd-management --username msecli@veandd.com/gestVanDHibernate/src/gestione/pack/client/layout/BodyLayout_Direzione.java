@@ -7,7 +7,6 @@ import gestione.pack.client.layout.panel.PanelGestioneCostiDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoAnnualeOreDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoCostiDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
-import gestione.pack.client.layout.panel.PanelRiepilogoSituazioneMensileOreDipendenti;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
 import gestione.pack.client.utility.MyImages;
@@ -197,7 +196,7 @@ public class BodyLayout_Direzione extends LayoutContainer {
 	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
             	center.removeAll();
-	        	center.add(new CenterLayout_FoglioOreSelectDipendentiOld());
+	        	center.add(new CenterLayout_FoglioOreSelectDipendenti());
 	        	center.layout(true);               
             }
         });
@@ -224,7 +223,7 @@ public class BodyLayout_Direzione extends LayoutContainer {
 	    btnPresenzeDipendenti.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	          center.removeAll();
-	        	center.add(new CenterLayout_FoglioOreSelectDipendentiOld());
+	        	center.add(new CenterLayout_FoglioOreSelectDipendenti());
 	        	center.layout(true);}      
 	      });
 	    btnPresenzeDipendenti.setWidth("100%");
@@ -446,7 +445,7 @@ public class BodyLayout_Direzione extends LayoutContainer {
 //----------------------------------------------------------------------------------------------
 	    
 	   
-	   center.add(new CenterLayout_FoglioOreSelectDipendentiOld());
+	   center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb());
 	    
 	   container.add(north, northData);
 	   container.add(west, westData);

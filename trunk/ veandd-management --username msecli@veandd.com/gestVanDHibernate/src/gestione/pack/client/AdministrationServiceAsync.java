@@ -7,6 +7,7 @@ import gestione.pack.client.model.ClienteModel;
 import gestione.pack.client.model.CommentiModel;
 import gestione.pack.client.model.CommessaModel;
 import gestione.pack.client.model.CostiHwSwModel;
+import gestione.pack.client.model.CostingModel;
 import gestione.pack.client.model.DatiFatturazioneCommessaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.FoglioFatturazioneModel;
@@ -23,7 +24,6 @@ import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoOreAnnualiDipendente;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
-import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
 import gestione.pack.client.model.RiepilogoOreDipCommesse;
 import gestione.pack.client.model.RiepilogoOreDipCommesseGiornaliero;
@@ -279,6 +279,9 @@ public interface AdministrationServiceAsync {
 //----------------------------------------------------VARIE
 	void invioCommenti(String testo, String username,
 			AsyncCallback<Boolean> asyncCallback);
+	
+	void getAllCommenti(String utente,
+			AsyncCallback<List<CommentiModel>> asyncCallback);
 
 	void getAllCommesseModelByPm(String cognomePm,
 			AsyncCallback<List<CommessaModel>> asyncCallback);
@@ -342,11 +345,13 @@ public interface AdministrationServiceAsync {
 	void getRiepilogoDatiCostiPersonale(String string,
 			AsyncCallback<List<RiepilogoCostiDipendentiModel>> asyncCallback);
 
+	void checkIntervallicommesse(AsyncCallback<List<String>> asyncCallback);
 	
 
-	
+	void getListaDatiCosting(String username,
+			AsyncCallback<List<CostingModel>> asyncCallback);
 
-	
-
+	void getDatiCosting(int costing,
+			AsyncCallback<List<CostingModel>> asyncCallback);
 			
 }

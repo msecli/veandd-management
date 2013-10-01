@@ -85,15 +85,11 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	private Button btnEdit;
 	private Button btnDelete;
 	
-	private int h=Window.getClientHeight();
-	private int w=Window.getClientWidth();	
-	
 	private ListStore<PersonaleModel> store=new ListStore<PersonaleModel>();
 	private ColumnModel cm;
 	private Grid<PersonaleModel> grid;
 	private FormBinding formBindings;
 	private NumberField nmbrfldId;
-	private ContentPanel cntntpnlParent;
 	private HorizontalPanel horizontalPanel;
 	
 	//Creazione del Form per l'inserimento dei dati	    
@@ -112,8 +108,6 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 
 		layoutContainer.setBorders(false);
 		layoutContainer.setLayout(fl);
-		//layoutContainer.setWidth(w-225);
-		//layoutContainer.setHeight(h-54);
 			
 		LayoutContainer bodyContainer = new LayoutContainer();
 		bodyContainer.setLayout(new FlowLayout());
@@ -268,7 +262,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    		String cognome=new String();
 	    		String badge=new String();
 	    		String username=new String();
-	    		String password=new String();
+	    		//String password=new String();
 	    		String tipoL=new String();
 	    		String tipoO=new String();
 	    		String ruolo=new String();
@@ -289,7 +283,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    			if(txtfldCognome.getRawValue().isEmpty()){ cognome="";}else{cognome=txtfldCognome.getValue().toString();};
 	    			if(txtfldBadge.getRawValue().isEmpty()){  badge = "";}else{badge=txtfldBadge.getValue().toString();};
 	    			if(txtfldUsername.getRawValue().isEmpty()){  username = "";}else{username=txtfldUsername.getValue().toString();};
-	    			if(txtfldPassword.getRawValue().isEmpty()){  password = "";}else{password=txtfldPassword.getValue().toString();};
+	    			//if(txtfldPassword.getRawValue().isEmpty()){  password = "";}else{password=txtfldPassword.getValue().toString();};
 	    			if(smplcmbxTipoLavoratore.getRawValue().isEmpty()){  tipoL = "";}else{tipoL=smplcmbxTipoLavoratore.getRawValue().toString();};
 	    			if(smplcmbxTipoOrario.getRawValue().isEmpty()){  tipoO = "";}else{tipoO=smplcmbxTipoOrario.getRawValue().toString();};
 	    			if(smplcmbxRuolo.getRawValue().isEmpty()){  ruolo = "";}else{ruolo=smplcmbxRuolo.getRawValue().toString();};

@@ -19,8 +19,6 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -38,7 +36,6 @@ import net.sf.gilead.gwt.PersistentRemoteService;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.mapping.Array;
 
 
 import gestione.pack.client.AdministrationService;
@@ -46,6 +43,7 @@ import gestione.pack.client.model.ClienteModel;
 import gestione.pack.client.model.CommentiModel;
 import gestione.pack.client.model.CommessaModel;
 import gestione.pack.client.model.CostiHwSwModel;
+import gestione.pack.client.model.CostingModel;
 import gestione.pack.client.model.DatiFatturazioneCommessaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.FoglioFatturazioneModel;
@@ -77,6 +75,7 @@ import gestione.pack.shared.Commessa;
 import gestione.pack.shared.AssociazionePtohwsw;
 import gestione.pack.shared.Commenti;
 import gestione.pack.shared.CostiHwSw;
+import gestione.pack.shared.Costing;
 import gestione.pack.shared.CostoAzienda;
 import gestione.pack.shared.DettaglioIntervalliCommesse;
 import gestione.pack.shared.DettaglioIntervalliIU;
@@ -2523,6 +2522,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						dettOreGiornaliero.setNoteAggiuntive(noteAggiuntive);
 						dettOreGiornaliero.setStatoRevisione(revisione);
 						
+						
+						//TODO possibile ottimizzare?
 						if(dettOreGiornaliero.getDettaglioIntervalliIUs().isEmpty())
 							intervalliIUpresenti=false;
 						else intervalliIUpresenti=true;
@@ -2924,8 +2925,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String movimento= new String();
 		String sorgente;
 		
-		try {		
-			
+		try {					
 			for(int i=0; i<=4; i++){
 				//serve mettere il controllo che se il valore è "" allora non lo creo
 				intervallo=intervalliIU.get(i*4);//0,4,8,12,16
@@ -2939,8 +2939,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				sorgente=intervalliIU.get(i*4+3);//3,7,11,15,19
 				//if(intervallo.compareTo("")!=0)
 					editIntervalloIU(idDettGiorno, intervallo, movimento, sorgente);			
-			}	
-				
+			}					
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
@@ -3713,7 +3712,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 	
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public List<String> loadIntervalliToolTip(String username, Date giorno) {
 		Personale p= new Personale();
@@ -4021,7 +4020,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String numeroCommessa= new String();
 		String commessa= new String();
 		String estensione= new String();
-		String cliente= new String();
+		//String cliente= new String();
 		String numeroOrdine= new String();
 		String oreLavoro= new String();
 		String oreViaggio= new String();
@@ -4052,12 +4051,12 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				estensione = a.getCommessa().getEstensione();
 				
 				if(a.getCommessa().getOrdines().size()>0){
-					cliente=a.getCommessa().getOrdines().iterator().next().getRda().getCliente().getRagioneSociale();
+					//cliente=a.getCommessa().getOrdines().iterator().next().getRda().getCliente().getRagioneSociale();
 					numeroOrdine=a.getCommessa().getOrdines().iterator().next().getCodiceOrdine();
 					oreBudget=a.getCommessa().getOrdines().iterator().next().getOreBudget();
 				}
 				else {
-					cliente="#";
+					//cliente="#";
 					numeroOrdine="#";
 					oreBudget="0.0";
 				}
@@ -5166,7 +5165,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		List<FoglioOreMese> listaF= new ArrayList<FoglioOreMese>();
 		List<DettaglioOreGiornaliere> listaD= new ArrayList<DettaglioOreGiornaliere>();
 		List<DettaglioIntervalliCommesse> listaIntervalliC= new ArrayList<DettaglioIntervalliCommesse>();
-		List<DettaglioIntervalliIU> listaIntervalliIU=new ArrayList<DettaglioIntervalliIU>();
+		//List<DettaglioIntervalliIU> listaIntervalliIU=new ArrayList<DettaglioIntervalliIU>();
 		
 		List<AssociazionePtoA> listaAssociazioniPA= new ArrayList<AssociazionePtoA>();
 		List<DettaglioIntervalliCommesse> listaCommesse= new ArrayList<DettaglioIntervalliCommesse>(); //verrà usata per considerare tutte le commesse con intervalli inseriti e non solo quelle associate al momento
@@ -5450,8 +5449,42 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		return true;
 	}
 	
+	
+	@Override
+	public List<CommentiModel> getAllCommenti(String utente) {
+		List<Commenti> listaC= new ArrayList<Commenti>();
+		List<CommentiModel> listaCommentiM= new ArrayList<CommentiModel>();
+		CommentiModel cm;
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+			
+		try {
+							
+			tx=session.beginTransaction();
+				
+			listaC=(List<Commenti>)session.createQuery("from Commenti where username=:username").setParameter("username", utente).list();
+				
+			tx.commit();
+			
+			for(Commenti c:listaC){
+				cm=new CommentiModel(c.getIdCommenti(),c.getUsername(), c.getDataRichiesta(), c.getTesto(), Boolean.valueOf(c.getEditated()));
+				listaCommentiM.add(cm);
+			}
+			
+			return listaCommentiM;
+				
+		} catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return null;
+		}finally{
+			session.close();
+		}		
+	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")//TODO
 	@Override
 	public List<CommentiModel> getAllCommenti() throws IllegalArgumentException{
 
@@ -5525,7 +5558,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		List<RiepilogoSALPCLModel> listaM= new ArrayList<RiepilogoSALPCLModel>();
 		
 		String commessa= new String();
-		String estensione= new String();
+		//String estensione= new String();
 		String tariffaUtilizzata= new String();
 		String sommaVariazioniSal= "0.00";
 		String sommaVariazioniPcl= "0.00";
@@ -5742,7 +5775,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Float importoPcl=(float) 0.00;
 		
 		List<Personale> listaP= new ArrayList<Personale>();
-		FoglioFatturazione ff= new FoglioFatturazione();
+		//FoglioFatturazione ff= new FoglioFatturazione();
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
 		
@@ -5895,7 +5928,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String mese=data.substring(0,3);
 		String anno=data.substring(3,7);
 		String meseN;
-		int ngiorni;
 		String giornoR;
 		
 		
@@ -5904,7 +5936,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 			listaP=(List<Personale>)session.createQuery("from Personale where sedeOperativa=:sede").setParameter("sede", sede).list();
 			
-			ngiorni=ServerUtility.getGiorniMese(mese, anno);
+			//ngiorni=ServerUtility.getGiorniMese(mese, anno);
 			meseN=ServerUtility.traduciMeseToNumber(mese.toLowerCase());
 			
 			for(Personale p:listaP){
@@ -6104,10 +6136,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		List<AssociazionePtoA> listaAss=new ArrayList<AssociazionePtoA>();
 		List<Commessa> listaCommAss= new ArrayList<Commessa>();
 		List<String> listaMesiConsiderati= new ArrayList<String>();
-		List<Commessa> listaCommInterne= new ArrayList<Commessa>();
 		List<DettaglioIntervalliCommesse> listaDettComm= new ArrayList<DettaglioIntervalliCommesse>();
-		FoglioOreMese f= new FoglioOreMese();
-		
+				
 		String totOreCommMese="0.00";
 		String totMesi[]= new String[12];
 		String totOre="0.00";
@@ -6433,6 +6463,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<CostiHwSwModel> getDatiCostiHwSw(int id)throws IllegalArgumentException {
 		
@@ -6607,6 +6638,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<RiepilogoCostiDipendentiModel> getRiepilogoDatiCostiPersonale(
 			String sede) throws IllegalArgumentException {
@@ -6728,5 +6760,125 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			session.close();
 		}
 		return listaC;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> checkIntervallicommesse() {
+		
+		List<Personale> listaP= new ArrayList<Personale>();
+		List<FoglioOreMese> listaF= new ArrayList<FoglioOreMese>();
+		List<DettaglioOreGiornaliere> listaD= new ArrayList<DettaglioOreGiornaliere>();
+		List<DettaglioIntervalliCommesse> listaDC= new ArrayList<DettaglioIntervalliCommesse>();
+		List<AssociazionePtoA> listaAss= new ArrayList<AssociazionePtoA>();
+		Commessa c= new Commessa();
+		FoglioOreMese f= new FoglioOreMese();
+		List<String> listaCheck= new ArrayList<String>();
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {
+			tx=session.beginTransaction();
+			
+			listaP=(List<Personale>)session.createQuery("from Personale where sedeOperativa=:sede").setParameter("sede", "T").list();
+			
+			for(Personale p:listaP){
+								
+				if(!p.getAssociazionePtoas().isEmpty())
+					listaAss.addAll(p.getAssociazionePtoas());
+				
+					f=(FoglioOreMese)session.createQuery("from FoglioOreMese where meseRiferimento=:mese and id_personale=:id")
+						.setParameter("id", p.getId_PERSONALE()).setParameter("mese", "Set2013").uniqueResult();//TODO impostare la scelta del mese
+					if(f!=null)
+						if(!f.getDettaglioOreGiornalieres().isEmpty())
+							listaD.addAll(f.getDettaglioOreGiornalieres());
+				
+					for(DettaglioOreGiornaliere d: listaD){
+					
+						for(AssociazionePtoA ass:listaAss){
+							c= ass.getAttivita().getCommessa();
+						
+							listaDC=(List<DettaglioIntervalliCommesse>)session.createQuery("from DettaglioIntervalliCommesse " +
+									"where id_dettaglio_ore=:id and numeroCommessa=:numeroCommessa and estensioneCommessa=:estensione")
+									.setParameter("id", d.getIdDettaglioOreGiornaliere()).setParameter("numeroCommessa", c.getNumeroCommessa())
+									.setParameter("estensione", c.getEstensione()).list();	
+						
+							if(listaDC.size()>1)
+								listaCheck.add(c.getNumeroCommessa()+" "+c.getEstensione()+" "+String.valueOf(d.getIdDettaglioOreGiornaliere())+" "+p.getCognome());
+						
+							listaDC.clear();
+						}				
+				}	
+				listaD.clear();
+				listaF.clear();
+				listaAss.clear();
+			}
+			
+			tx.commit();		
+			return listaCheck;			
+			
+		} catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return null;
+		}				
+	}
+	
+
+	@Override
+	public List<CostingModel> getListaDatiCosting(String username) throws IllegalArgumentException{
+		List<CostingModel> listaCM= new ArrayList<CostingModel>();
+		List<Costing> listaC= new ArrayList<Costing>();
+		List<Commessa> listaCommesse= new ArrayList<Commessa>(); 
+		Personale p=new Personale();
+		CostingModel costingM;
+		String commessa;
+		
+		String pm= new String();
+							
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+
+		
+		try {
+			tx=session.beginTransaction();
+		
+			p=(Personale)session.createQuery("from Personale where username=:username").setParameter("username", username).uniqueResult();
+			//TODO mettere in matricola pm l'username!!!!!!!!!!!!!!!!!!
+			pm=p.getCognome()+" "+p.getNome();
+			
+			listaCommesse=(List<Commessa>)session.createQuery("from Commessa where matricolaPM=:pm").setParameter("pm", pm).list();
+			
+			for(Commessa c: listaCommesse)
+				if(!c.getCostings().isEmpty())
+					listaC.addAll(c.getCostings());
+			
+			for(Costing co: listaC){
+				commessa=co.getCommessa().getNumeroCommessa()+"."+co.getCommessa().getEstensione();
+				costingM=new CostingModel(co.getIdCosting(), co.getCliente(), commessa, co.getDescrizioneProgetto(), co.getNumerorevisione());
+				listaCM.add(costingM);
+			}
+			
+			tx.commit();
+		}catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return null;
+		} finally {
+			session.close();
+		}
+		
+		return listaCM;	
+	
+	}
+
+	@Override
+	public List<CostingModel> getDatiCosting(int costing)
+			throws IllegalArgumentException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

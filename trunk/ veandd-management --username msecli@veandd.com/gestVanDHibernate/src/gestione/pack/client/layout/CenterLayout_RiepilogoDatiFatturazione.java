@@ -3,11 +3,9 @@ package gestione.pack.client.layout;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
-import gestione.pack.client.model.DatiFatturazioneCommessaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.DatiComboBox;
@@ -25,7 +23,6 @@ import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
@@ -37,8 +34,6 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GroupSummaryView;
 import com.extjs.gxt.ui.client.widget.grid.SummaryColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.SummaryRenderer;
-import com.extjs.gxt.ui.client.widget.grid.SummaryType;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
@@ -78,7 +73,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		
 		private SimpleComboBox<String> smplcmbxMese= new SimpleComboBox<String>();
 		private SimpleComboBox<String> smplcmbxAnno;
-		private SimpleComboBox<String> smplcmbxPM;
+		//private SimpleComboBox<String> smplcmbxPM;
 		private GroupingStore<DatiFatturazioneMeseModel>store = new GroupingStore<DatiFatturazioneMeseModel>();
 		private EditorGrid<DatiFatturazioneMeseModel> gridRiepilogo;
 		private ColumnModel cm;
@@ -507,313 +502,6 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					e.printStackTrace();
 			}
 		}	
-	}
-	
-	
-	private class CntpnlRiepilogoDatiFatturazioneCommesse extends ContentPanel{
-		
-		private GroupingStore<DatiFatturazioneCommessaModel>store = new GroupingStore<DatiFatturazioneCommessaModel>();
-		private EditorGrid<DatiFatturazioneCommessaModel> gridRiepilogo;
-		private ColumnModel cm;	
-		
-		CntpnlRiepilogoDatiFatturazioneCommesse(){
-			
-			setHeading("Riepilogo Dati Fatturazione");
-			setHeaderVisible(true);
-			setCollapsible(false);
-			setExpanded(true);
-			setBorders(false);
-			setScrollMode(Scroll.NONE);	
-			setWidth(1000);
-			setFrame(true);
-			setScrollMode(Scroll.AUTOY);
-		
-			/*smplcmbxCommessa = new SimpleComboBox<String>();
-			smplcmbxCommessa.setFieldLabel("Personal Manager");
-			smplcmbxCommessa.setName("pm");
-			smplcmbxCommessa.setTriggerAction(TriggerAction.ALL);
-			smplcmbxCommessa.setEmptyText("Personal Manager..");
-			smplcmbxCommessa.setAllowBlank(false);
-			getCommesse();		
-			
-			btnSelect= new Button("OK");
-			btnSelect.addSelectionListener(new SelectionListener<ButtonEvent>() {		
-				@Override
-				public void componentSelected(ButtonEvent ce) {		
-					if(smplcmbxCommessa.isValid()){			
-						caricaTabellaDatiRiepilogoTotale(smplcmbxCommessa.getRawValue().toString());			
-					}else Window.alert("Controllare i dati selezionati!");
-				}
-			});*/	
-			
-			/*HorizontalPanel horizontalPanel = new HorizontalPanel();
-			horizontalPanel.setSpacing(5);
-			horizontalPanel.add(smplcmbxCommessa);
-			horizontalPanel.add(btnSelect);*/
-			
-			//setTopComponent(horizontalPanel);
-			
-			try {
-			    	cm = new ColumnModel(createColumnsRiepilogoTotale());	
-				} catch (Exception e) {
-					e.printStackTrace();
-					Window.alert("error: Problema createColumns().");			
-			}
-			
-			store.groupBy("numeroCommessa");
-				    
-			GroupSummaryView summary = new GroupSummaryView();  
-			summary.setForceFit(true);  
-			summary.setShowGroupedColumn(false);  
-			
-			gridRiepilogo= new EditorGrid<DatiFatturazioneCommessaModel>(store, cm);  
-			gridRiepilogo.setBorders(false);  
-			gridRiepilogo.setView(summary);  
-			gridRiepilogo.getView().setShowDirtyCells(false);	    
-			    
-			//caricaTabellaDatiFatturazioneCommesse();
-			
-			ContentPanel cntpnlGrid= new ContentPanel();
-			cntpnlGrid.setBodyBorder(false);  
-			cntpnlGrid.setBorders(false);
-			cntpnlGrid.setFrame(true);
-			cntpnlGrid.setLayout(new FitLayout());  
-			cntpnlGrid.setHeaderVisible(false);
-			cntpnlGrid.setWidth(980);
-			cntpnlGrid.setHeight(400);
-			cntpnlGrid.setScrollMode(Scroll.AUTOY);
-			cntpnlGrid.add(gridRiepilogo);
-			   	    
-			VerticalPanel vp= new VerticalPanel();
-			vp.setBorders(false);
-			vp.add(cntpnlGrid);
-			  	
-			add(vp);
-		}
-		
-
-		private List<ColumnConfig> createColumnsRiepilogoTotale() {
-			List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
-			final NumberFormat number= NumberFormat.getFormat("0.00");
-			SummaryColumnConfig<Double> column=new SummaryColumnConfig<Double>();		
-		    column.setId("numeroCommessa");  
-		    column.setHeader("Commessa");  
-		    column.setWidth(140);  
-		    column.setRowHeader(true);  
-		    configs.add(column); 
-		    
-		    column=new SummaryColumnConfig<Double>();		
-		    column.setId("mese");  
-			column.setHeader("Mese");  
-			column.setWidth(60);  
-			column.setRowHeader(true); 
-		    configs.add(column);
-		    	    
-		    SummaryColumnConfig<Double> columnOreLavoro=new SummaryColumnConfig<Double>();		
-		    columnOreLavoro.setId("oreEseguite");  
-		    columnOreLavoro.setHeader("Ore Eseguite");  
-		    columnOreLavoro.setWidth(80);    
-		    columnOreLavoro.setRowHeader(true); 
-		    columnOreLavoro.setSummaryType(SummaryType.SUM);  
-		    columnOreLavoro.setAlignment(HorizontalAlignment.RIGHT);  	
-		    columnOreLavoro.setRenderer(new GridCellRenderer<DatiFatturazioneCommessaModel>() {
-				@Override
-				public Object render(DatiFatturazioneCommessaModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneCommessaModel> store,
-						Grid<DatiFatturazioneCommessaModel> grid) {
-					Float n=model.get(property);
-					return number.format(n);
-				}  	
-			});
-		    columnOreLavoro.setSummaryRenderer(new SummaryRenderer() {  
-		   			@Override
-				public String render(Number value, Map<String, Number> data) {
-		   				Float n=value.floatValue();
-						return number.format(n);
-				}  
-		      });  
-		    configs.add(columnOreLavoro); 	
-		    
-		    SummaryColumnConfig<Double> columnOreFatturate=new SummaryColumnConfig<Double>();		
-		    columnOreFatturate.setId("oreFatturate");  
-		    columnOreFatturate.setHeader("Ore Fatturate");  
-		    columnOreFatturate.setWidth(80);    
-		    columnOreFatturate.setRowHeader(true); 
-		    columnOreFatturate.setSummaryType(SummaryType.SUM);  
-		    columnOreFatturate.setAlignment(HorizontalAlignment.RIGHT);    
-		    columnOreFatturate.setRenderer(new GridCellRenderer<DatiFatturazioneCommessaModel>() {
-				@Override
-				public Object render(DatiFatturazioneCommessaModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneCommessaModel> store,
-						Grid<DatiFatturazioneCommessaModel> grid) {
-					Float n=model.get(property);
-					return number.format(n);
-				}  	
-			});
-		    columnOreFatturate.setSummaryRenderer(new SummaryRenderer() {  
-		   			@Override
-				public String render(Number value, Map<String, Number> data) {
-		   				Float n=value.floatValue();
-						return number.format(n);
-				}  
-		      });      
-		    configs.add(columnOreFatturate); 	
-		      
-		    SummaryColumnConfig<Double> columnImporto=new SummaryColumnConfig<Double>();		
-		    columnImporto.setId("importo");  
-		    columnImporto.setHeader("Importo");  
-		    columnImporto.setWidth(80);    
-		    columnImporto.setRowHeader(true); 
-		    columnImporto.setSummaryType(SummaryType.SUM);  
-		    columnImporto.setAlignment(HorizontalAlignment.RIGHT);
-		    columnImporto.setStyle("color:#e71d2b;");
-		    //columnImporto.setNumberFormat(NumberFormat.getCurrencyFormat("EUR"));
-		    
-		    columnImporto.setRenderer(new GridCellRenderer<DatiFatturazioneCommessaModel>() {
-				@Override
-				public Object render(DatiFatturazioneCommessaModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneCommessaModel> store,
-						Grid<DatiFatturazioneCommessaModel> grid) {				
-					final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
-					Float n=model.get(property);
-					return num.format(n);
-				}  	
-			});
-		    columnImporto.setSummaryRenderer(new SummaryRenderer() {  
-		   			@Override
-				public String render(Number value, Map<String, Number> data) {
-		   				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
-		   				Float n=value.floatValue();
-						return num.format(n);
-				}  
-		      });      
-		    configs.add(columnImporto); 	
-		    	    
-		    SummaryColumnConfig<Double> variazioneSal=new SummaryColumnConfig<Double>();		
-		    variazioneSal.setId("variazioneSal");  
-		    variazioneSal.setHeader("SAL");  
-		    variazioneSal.setWidth(80);    
-		    variazioneSal.setRowHeader(true); 
-		    variazioneSal.setSummaryType(SummaryType.SUM);  
-		    variazioneSal.setAlignment(HorizontalAlignment.RIGHT);  	
-		    variazioneSal.setRenderer(new GridCellRenderer<DatiFatturazioneCommessaModel>() {
-				@Override
-				public Object render(DatiFatturazioneCommessaModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneCommessaModel> store,
-						Grid<DatiFatturazioneCommessaModel> grid) {
-					Float n=model.get(property);
-					return number.format(n);
-				}  	
-			});
-		    variazioneSal.setSummaryRenderer(new SummaryRenderer() {  
-		   			@Override
-				public String render(Number value, Map<String, Number> data) {
-		   				Float n=value.floatValue();
-						return number.format(n);
-				}  
-		      });  
-		    configs.add(variazioneSal); 	    
-		    
-		    SummaryColumnConfig<Double> variazionePcl=new SummaryColumnConfig<Double>();		
-		    variazionePcl.setId("variazionePcl");  
-		    variazionePcl.setHeader("PCL");  
-		    variazionePcl.setWidth(80);    
-		    variazionePcl.setRowHeader(true); 
-		    variazionePcl.setSummaryType(SummaryType.SUM);  
-		    variazionePcl.setAlignment(HorizontalAlignment.RIGHT);  	
-		    variazionePcl.setRenderer(new GridCellRenderer<DatiFatturazioneCommessaModel>() {
-				@Override
-				public Object render(DatiFatturazioneCommessaModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneCommessaModel> store,
-						Grid<DatiFatturazioneCommessaModel> grid) {
-					Float n=model.get(property);
-					return number.format(n);
-				}  	
-			});
-		    variazionePcl.setSummaryRenderer(new SummaryRenderer() {  
-		   			@Override
-				public String render(Number value, Map<String, Number> data) {
-		   				Float n=value.floatValue();
-						return number.format(n);
-				}  
-		      });  
-		    configs.add(variazionePcl);     
-		    
-		    SummaryColumnConfig<Double> margine=new SummaryColumnConfig<Double>();		
-		    margine.setId("margine");  
-		    margine.setHeader("Margine");  
-		    margine.setWidth(80);    
-		    margine.setRowHeader(true); 
-		    margine.setSummaryType(SummaryType.SUM);  
-		    margine.setAlignment(HorizontalAlignment.RIGHT);  	
-		    margine.setRenderer(new GridCellRenderer<DatiFatturazioneCommessaModel>() {
-				@Override
-				public Object render(DatiFatturazioneCommessaModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneCommessaModel> store,
-						Grid<DatiFatturazioneCommessaModel> grid) {
-					Float n=model.get(property);
-					return number.format(n);
-				}  	
-			});
-		    margine.setSummaryRenderer(new SummaryRenderer() {		
-				@Override
-				public String render(Number value, Map<String, Number> data) {				
-					Float n=value.floatValue();
-					return number.format(n);
-				}
-			});
-		   configs.add(margine);
-			
-			return configs;
-		}
-		
-		
-		private void caricaTabellaDatiFatturazioneCommesse() {
-			AdministrationService.Util.getInstance().getRiepilogoDatiFatturazioneCommessa(".",new AsyncCallback<List<DatiFatturazioneCommessaModel>>() {
-				
-				@Override
-				public void onSuccess(List<DatiFatturazioneCommessaModel> result) {
-					if(result==null)
-						Window.alert("error: Problemi durante l'accesso ai dati di fatturazione");
-					else	
-						if(result.size()==0)
-							Window.alert("Nessun dato rilevato in base ai criteri di ricerca selezionati.");
-						loadTable(result);			
-				}
-
-				@Override
-				public void onFailure(Throwable caught) {
-					Window.alert("Errore connessione on getRiepilogoDatiFatturazioneCommessa();");
-					caught.printStackTrace();		
-				}
-			}); //AsyncCallback	   
-		}
-		
-		private void loadTable(List<DatiFatturazioneCommessaModel> result) {
-			try {
-				store.removeAll();
-				store.add(result);
-				store.groupBy("numeroCommessa");
-				gridRiepilogo.reconfigure(store, cm);
-		    		    	
-			} catch (NullPointerException e) {
-				Window.alert("error: Impossibile effettuare il caricamento dati in tabella.");
-					e.printStackTrace();
-			}			
-		}
-		/*
-		private void getCommesse() {//ricavo le commesse con dati di foglio fatturazione
-			AdministrationService.Util.getInstance().getCommesseRiepilogoDatiFatturazione(new AsyncCallback<List<String>>() {
-
-				@Override
-				public void onFailure(Throwable caught) {
-					Window.alert("Errore connessione on getCommesseRiepilogoDatiFatturazione();");
-					caught.printStackTrace();
-				}
-
-				@Override
-				public void onSuccess(List<String> result) {
-					if(result!=null){
-						smplcmbxCommessa.add(result);
-						smplcmbxCommessa.recalculate();
-					}else Window.alert("error: Errore durante l'accesso ai dati Commesse.");			
-				}
-			});		
-		}*/
 	}	
 }
 

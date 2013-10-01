@@ -1,12 +1,12 @@
 package gestione.pack.server;
 
 import gestione.pack.client.model.DatiFatturazioneMeseJavaBean;
-import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.RiepilogoAnnualeJavaBean;
 import gestione.pack.client.model.RiepilogoCostiDipendentiBean;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
+import gestione.pack.client.model.RiepilogoDatiOreMeseJavaBean;
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
-import gestione.pack.client.model.RiepilogoOreAnnualiDipendente;
+import gestione.pack.client.model.RiepilogoMensileDatiIntervalliCommesseJavaBean;
 import gestione.pack.client.model.RiepilogoOreDipFatturazione;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliJavaBean;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
@@ -29,7 +29,6 @@ import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -165,7 +164,7 @@ public class ServerUtility {
 				e.printStackTrace();
 			}
 			
-			if(giorno.compareTo("Sun")!=0 && giorno.compareTo("Sat")!=0 && !isFestivo(dataCompleta)) //TODO creare uno strumento per l'aggiunta di date festive/chiusura
+			if(giorno.compareTo("Sun")!=0 && giorno.compareTo("Sat")!=0 && !isFestivo(dataCompleta)) 
 				oreLavorative= oreLavorative + Integer.parseInt(orePreviste);			
 		}
 		return oreLavorative;
@@ -541,16 +540,17 @@ public class ServerUtility {
 	
 	
 	@SuppressWarnings("unchecked")
-	public static Boolean PrintRiepilogoOreMese(String dataRif, String sedeOperativa){
-		List<RiepilogoFoglioOreModel> listaGiorni= new ArrayList<RiepilogoFoglioOreModel>();
+	public static List<RiepilogoDatiOreMeseJavaBean> PrintRiepilogoOreMese(String dataRif, String sedeOperativa){
+		
 		List<DettaglioOreGiornaliere> listaDettGiorno= new ArrayList<DettaglioOreGiornaliere>();
 		List<FoglioOreMese> listaMesi=new ArrayList<FoglioOreMese>();
 		List<Personale> listaPers= new ArrayList<Personale>();
-		RiepilogoFoglioOreModel giorno;
+		List<RiepilogoDatiOreMeseJavaBean> listaJB= new ArrayList<RiepilogoDatiOreMeseJavaBean>();
+		RiepilogoDatiOreMeseJavaBean rJB;
+		
 		DatiOreMese datoG= new DatiOreMese();		
 		
 		List<DatiOreMese> listaDatiMese= new ArrayList<DatiOreMese>();
-		Boolean exportOk= false;
 		
 		String sumTotGiorno="0.00";
 		String sumOreViaggio="0.00";
@@ -604,11 +604,11 @@ public class ServerUtility {
 					
 					datoG=new DatiOreMese();
 					
-					String day=new String();
+					//String day=new String();
 					String oreTotali= "0.00";
 					
 					DateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy",Locale.ITALIAN);
-					day=formatter.format(d.getGiornoRiferimento());
+					//day=formatter.format(d.getGiornoRiferimento());
 					
 					if(d.getOreViaggio().compareTo("0.00")!=0){
 						if(Float.valueOf(d.getDeltaOreGiorno())<0){
@@ -738,12 +738,14 @@ public class ServerUtility {
 		    
 		  tx.commit();
 		  		  
-		  exportOk=exportListaDatiOreMese(listaDatiMese);
-		  
-		  if(exportOk)
-			  return true;
-		  else 
-			  return false;
+		  for(DatiOreMese d:listaDatiMese){
+				 rJB= new RiepilogoDatiOreMeseJavaBean(d.getUsername(), d.getGiorno(), d.getTotGiorno(), d.getOreViaggio(), d.getDeltaOreViaggio(),
+						 d.getOreTotali(), d.getOreRecupero(), d.getOreFerie(), d.getOrePermesso(), d.getOreStraordinario(), d.getDeltaGiornaliero(), 
+						 d.getGiustificativo(), d.getNoteAggiuntive());
+				 listaJB.add(rJB);				 
+		  }
+			
+		  return listaJB;
 				 
 		} catch (Exception e) {
 			if (tx != null)
@@ -752,19 +754,20 @@ public class ServerUtility {
 			return null;
 		} finally {
 			session.close();
-		}
-			
+		}			
 	}
 	
 	//TODO aggiunta abbuono anche tabella datioremese
 	//PER IL SINGOLO DIPENDENTE
-	public static Boolean PrintRiepilogoOreMese(String dataRif, String sedeOperativa, String username){
+	public static List<RiepilogoDatiOreMeseJavaBean> PrintRiepilogoOreMese(String dataRif, String sedeOperativa, String username){
 		List<DettaglioOreGiornaliere> listaDettGiorno= new ArrayList<DettaglioOreGiornaliere>();
 		List<FoglioOreMese> listaMesi=new ArrayList<FoglioOreMese>();
+		List<RiepilogoDatiOreMeseJavaBean> listaJB= new ArrayList<RiepilogoDatiOreMeseJavaBean>();
+		RiepilogoDatiOreMeseJavaBean rJB;
+		
 		DatiOreMese datoG= new DatiOreMese();		
 		
 		List<DatiOreMese> listaDatiMese= new ArrayList<DatiOreMese>();
-		Boolean exportOk= false;
 		
 		String sumTotGiorno="0.00";
 		String sumOreViaggio="0.00";
@@ -775,7 +778,7 @@ public class ServerUtility {
 		String sumOrePermesso="0.00";
 		String sumOreStraordinario="0.00";
 		String sumDeltaGiorno="0.00";
-		String sumOreAbbuono="0.00";
+		//String sumOreAbbuono="0.00";
 		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
@@ -806,11 +809,11 @@ public class ServerUtility {
 					
 					datoG=new DatiOreMese();
 					
-					String day=new String();
+					//String day=new String();
 					String oreTotali= "0.00";
 					
 					DateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy",Locale.ITALIAN);
-					day=formatter.format(d.getGiornoRiferimento());
+					//day=formatter.format(d.getGiornoRiferimento());
 					
 					if(d.getOreViaggio().compareTo("0.00")!=0){
 						if(Float.valueOf(d.getDeltaOreGiorno())<0){
@@ -937,17 +940,26 @@ public class ServerUtility {
 			}
 		 
 		  
-		  session.createSQLQuery("truncate datioremese").executeUpdate();
+			 for(DatiOreMese d:listaDatiMese){
+				 rJB= new RiepilogoDatiOreMeseJavaBean(d.getUsername(), d.getGiorno(), d.getTotGiorno(), d.getOreViaggio(), d.getDeltaOreViaggio(),
+						 d.getOreTotali(), d.getOreRecupero(), d.getOreFerie(), d.getOrePermesso(), d.getOreStraordinario(), d.getDeltaGiornaliero(), 
+						 d.getGiustificativo(), d.getNoteAggiuntive());
+				 listaJB.add(rJB);				 
+			 }
+			 
+			 
+		 // session.createSQLQuery("truncate datioremese").executeUpdate();
 		    
 		  tx.commit();
 		  		  
-		  exportOk=exportListaDatiOreMese(listaDatiMese);
+		 /* exportOk=exportListaDatiOreMese(listaDatiMese);
 		  
 		  if(exportOk)
 			  return true;
 		  else 
-			  return false;
-				 
+			  return false;*/
+			
+		  return listaJB;
 		} catch (Exception e) {
 			if (tx != null)
 				tx.rollback();
@@ -959,46 +971,8 @@ public class ServerUtility {
 			
 	}
 
-	
-	private static Boolean exportListaDatiOreMese(List<DatiOreMese> listaDatiMese) {
-				
-		Boolean saveRecordOK=true;
-		
-		for(DatiOreMese d: listaDatiMese){
 			
-			saveRecordOK=saveDateG(d);		
-		}
-		
-		if(saveRecordOK)		
-			return true;
-		else
-			return false;
-	}
-	
-
-	private static Boolean saveDateG(DatiOreMese d) {
-		Session session= MyHibernateUtil.getSessionFactory().openSession();
-		Transaction tx= null;
-		
-		try {
-			tx = session.beginTransaction();
-			
-			session.save(d);
-			tx.commit();
-			return true;
-			
-		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
-			e.printStackTrace();
-			return false;
-		}finally{
-			session.close();
-		}		
-	}
-	
-	
-	public static Boolean getRiepilogoGiornalieroCommesse(
+	public static List<RiepilogoMensileDatiIntervalliCommesseJavaBean> getRiepilogoGiornalieroCommesse(
 			String username, String data) throws IllegalArgumentException {
 		
 		List<DatiRiepilogoMensileCommesse> listaG= new ArrayList<DatiRiepilogoMensileCommesse>();
@@ -1006,26 +980,22 @@ public class ServerUtility {
 		List<DettaglioOreGiornaliere> listaD= new ArrayList<DettaglioOreGiornaliere>();
 		List<DettaglioIntervalliCommesse> listaIntervalliC= new ArrayList<DettaglioIntervalliCommesse>();
 		List<AssociazionePtoA> listaAssociazioniPA= new ArrayList<AssociazionePtoA>();
+		List<RiepilogoMensileDatiIntervalliCommesseJavaBean> listaJB= new ArrayList<RiepilogoMensileDatiIntervalliCommesseJavaBean>();
+		RiepilogoMensileDatiIntervalliCommesseJavaBean rJB;
 		
 		FoglioOreMese fM=new FoglioOreMese();
 		Personale p= new Personale();
-		Commessa c= new Commessa();
+		//Commessa c= new Commessa();
 		
 		String totaleOreLavoroC= "0.00";
 		String totaleOreViaggioC= "0.00";
 		String totaleOreC= "0.00";
 				
 		Date giorno= new Date();  
-		String dipendente= new String();
+		//String dipendente= new String();
 		
 		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
-		/*String anno=formatter.format(meseRiferimento);
-		formatter = new SimpleDateFormat("MMM",Locale.ITALIAN);
-		String mese=formatter.format(meseRiferimento);
-	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
 		
-	    String data=mese+anno;
-	    */
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
 		
@@ -1034,7 +1004,7 @@ public class ServerUtility {
 			tx=session.beginTransaction();
 			p=(Personale)session.createQuery("from Personale where username=:username").setParameter("username", username).uniqueResult();
 			
-			dipendente= p.getCognome()+" "+p.getNome();
+			//dipendente= p.getCognome()+" "+p.getNome();
 			
 			listaF.addAll(p.getFoglioOreMeses());
 			listaAssociazioniPA.addAll(p.getAssociazionePtoas());
@@ -1128,16 +1098,13 @@ public class ServerUtility {
 				totaleOreC= "0.00";
 			}
 			
-			//eliminare dalla tabella i record presenti per username e periodo indicato(in modo tale da non creare duplicati)
-			session.createSQLQuery("delete from dati_riepilogomensile_commesse where username=:username and dataRiferimento=:dataRif")
-			.setParameter("username", username).setParameter("dataRif", data).executeUpdate();
-			tx.commit();
-					
-			Boolean exportOK=exportListaDatiCommesse(listaG);
-			if(exportOK)	
-				return true;
-			else
-				return false;
+			for(DatiRiepilogoMensileCommesse d:listaG){
+				rJB= new RiepilogoMensileDatiIntervalliCommesseJavaBean(d.getUsername(), d.getDataRiferimento(), d.getNumeroCommessa(),
+						d.getGiorno(), d.getOreLavoro(), d.getOreViaggio(), d.getOreTotali());
+				listaJB.add(rJB);
+			}
+			
+			return listaJB;
 			
 		} catch (Exception e) {
 			if (tx != null)
@@ -1149,41 +1116,7 @@ public class ServerUtility {
 		}
 	}
 	
-	private static Boolean exportListaDatiCommesse(List<DatiRiepilogoMensileCommesse> listaDatiMese) {
-		
-		Boolean saveRecordOK=true;
-		
-		for(DatiRiepilogoMensileCommesse d: listaDatiMese){
-			
-			saveRecordOK=saveDateC(d);		
-		}
-		
-		if(saveRecordOK)		
-			return true;
-		else
-			return false;
-	}
-
-	private static Boolean saveDateC(DatiRiepilogoMensileCommesse d) {
-		Session session= MyHibernateUtil.getSessionFactory().openSession();
-		Transaction tx= null;
-		
-		try {
-			tx = session.beginTransaction();
-			
-			session.save(d);
-			tx.commit();
-			return true;
-			
-		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
-			e.printStackTrace();
-			return false;
-		}finally{
-			session.close();
-		}		
-	}
+	
 	public static boolean isNotIncludedCommessa(List<DettaglioIntervalliCommesse> listaCommesse,
 			DettaglioIntervalliCommesse dett) {
 		
@@ -1306,7 +1239,7 @@ public class ServerUtility {
 		if(!existDay)
 			return "1";
 		else 
-			//TODO
+			
 			if(dettSelected.getDettaglioIntervalliIUs().size()>0 && hasValue(dettSelected.getDettaglioIntervalliCommesses()))
 				return "0";								
 			else
@@ -1369,6 +1302,7 @@ public class ServerUtility {
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	public static List<RiepilogoAnnualeJavaBean> PrintRiepilogoOreAnnuale(String anno,
 			String sede) {
 		
@@ -1484,6 +1418,7 @@ public class ServerUtility {
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	public static List<DatiFatturazioneMeseJavaBean> PrintRiepilogoDatiFatturazione(
 			String anno, String mese) {
 		List<DatiFatturazioneMeseJavaBean> listaDati= new ArrayList<DatiFatturazioneMeseJavaBean>();
@@ -1779,6 +1714,7 @@ public class ServerUtility {
 		return s;
 		
 	}
+	
 	public static String getColocation(String sede) {
 		String s= new String();
 		
@@ -1792,8 +1728,7 @@ public class ServerUtility {
 		
 		default:
 			break;
-		}
-		
+		}		
 		return s;
 	}
 }

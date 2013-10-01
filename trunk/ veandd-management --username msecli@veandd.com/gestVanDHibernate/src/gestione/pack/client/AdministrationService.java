@@ -21,6 +21,7 @@ import gestione.pack.client.model.ClienteModel;
 import gestione.pack.client.model.CommentiModel;
 import gestione.pack.client.model.CommessaModel;
 import gestione.pack.client.model.CostiHwSwModel;
+import gestione.pack.client.model.CostingModel;
 import gestione.pack.client.model.DatiFatturazioneCommessaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.FoglioFatturazioneModel;
@@ -37,7 +38,6 @@ import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoOreAnnualiDipendente;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
-import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
 import gestione.pack.client.model.RiepilogoOreDipCommesse;
 import gestione.pack.client.model.RiepilogoOreDipCommesseGiornaliero;
@@ -345,5 +345,14 @@ public interface AdministrationService extends RemoteService {
 
 	List<RiepilogoCostiDipendentiModel> getRiepilogoDatiCostiPersonale(
 			String string) throws IllegalArgumentException;
+
+	List<CommentiModel> getAllCommenti(String utente);
+
+	List<String> checkIntervallicommesse();
+
+
+	List<CostingModel> getListaDatiCosting(String username)throws IllegalArgumentException;
+
+	List<CostingModel> getDatiCosting(int costing)throws IllegalArgumentException;
 	
 }

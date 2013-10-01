@@ -51,6 +51,8 @@
       <mapping class="gestione.pack.shared.DatiRiepilogoMensileCommesse"/>  
       <mapping class="gestione.pack.shared.CostiHwSw"/>  
       <mapping class="gestione.pack.shared.CostoAzienda"/> 
+      <mapping class="gestione.pack.shared.Costing"/>
+      <mapping class="gestione.pack.shared.CostingRisorsa"/> 
  	
 </session-factory>
  

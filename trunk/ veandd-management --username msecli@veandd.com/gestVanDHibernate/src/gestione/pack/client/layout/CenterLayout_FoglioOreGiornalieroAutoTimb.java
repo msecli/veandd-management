@@ -16,7 +16,6 @@ import gestione.pack.client.model.TimbraturaModel;
 
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.DatiComboBox;
-import gestione.pack.server.ServerUtility;
 
 import java.util.ArrayList;
 import java.util.Collections;
