@@ -22,6 +22,7 @@ import gestione.pack.client.model.CommentiModel;
 import gestione.pack.client.model.CommessaModel;
 import gestione.pack.client.model.CostiHwSwModel;
 import gestione.pack.client.model.CostingModel;
+import gestione.pack.client.model.CostingRisorsaModel;
 import gestione.pack.client.model.DatiFatturazioneCommessaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.FoglioFatturazioneModel;
@@ -107,6 +108,8 @@ public interface AdministrationService extends RemoteService {
 	void removeDataCliente(int parseInt) throws IllegalArgumentException;
 	
 	List<String> getRagioneSociale() throws IllegalArgumentException;
+	
+	List<ClienteModel> getListaClientiModel() throws IllegalArgumentException;
 	
 	
 	//----------------------RDA
@@ -262,7 +265,7 @@ public interface AdministrationService extends RemoteService {
 
 	List<String> loadIntervalliToolTip(String username, Date giorno);
 	
-	List<RiepilogoOreDipCommesseGiornaliero> checkOreIntervalliIUOreCommesse(
+	Boolean checkOreIntervalliIUOreCommesse(
 			String username, Date data);
 
 //----------------------------------FATTURAZIONE-------------------------------------------------------------------
@@ -354,5 +357,19 @@ public interface AdministrationService extends RemoteService {
 	List<CostingModel> getListaDatiCosting(String username)throws IllegalArgumentException;
 
 	List<CostingModel> getDatiCosting(int costing)throws IllegalArgumentException;
+
+	boolean insertDataCosting(String commessa, String area, int idCliente,
+			String descrizione);
+
+	List<CostingRisorsaModel> getRiepilogoDatiCostingRisorse(int idCosting)throws IllegalArgumentException;
+
+	CostingRisorsaModel getDatiCostiDipendenteSelezionato(int idPersonale, int idCosting)throws IllegalArgumentException;
+
+	boolean confermaCostingDipendente(int idSelected, CostingRisorsaModel c)throws IllegalArgumentException;
+
+	boolean deleteRisorsaCosting(int idSelected)throws IllegalArgumentException;
+
+	boolean saveNewVersionCosting(int idSelected)throws IllegalArgumentException;
+	
 	
 }

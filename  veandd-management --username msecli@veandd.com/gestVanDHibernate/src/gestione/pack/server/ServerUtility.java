@@ -1,5 +1,6 @@
 package gestione.pack.server;
 
+import gestione.pack.client.model.CostingRisorsaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseJavaBean;
 import gestione.pack.client.model.RiepilogoAnnualeJavaBean;
 import gestione.pack.client.model.RiepilogoCostiDipendentiBean;
@@ -12,6 +13,7 @@ import gestione.pack.client.model.RiepilogoOreNonFatturabiliJavaBean;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 import gestione.pack.shared.AssociazionePtoA;
 import gestione.pack.shared.Commessa;
+import gestione.pack.shared.CostingRisorsa;
 import gestione.pack.shared.DatiOreMese;
 import gestione.pack.shared.DatiRiepilogoMensileCommesse;
 import gestione.pack.shared.DettaglioIntervalliCommesse;
@@ -1686,8 +1688,7 @@ public class ServerUtility {
 					oreLavorative= oreLavorative + Integer.parseInt("8");			
 			}
 						
-		}			
-		
+		}					
 		return 1760; //per 2013
 	}
 	
@@ -1731,5 +1732,106 @@ public class ServerUtility {
 		}		
 		return s;
 	}
+	
+	public static int costingPresente(List<CostingRisorsa> listaCR,
+			int id_PERSONALE) {
+				
+		int id=0;
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+			
+		try {
+			tx = session.beginTransaction();
+		
+			for(CostingRisorsa c:listaCR){
+				id=c.getPersonale().getId_PERSONALE();
+				
+				if(id==id_PERSONALE)
+					return c.getIdCostingRisorsa();				
+			}	
+			
+			tx.commit();	
+			
+		}catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return 0;
+			
+		}finally{
+			session.close();
+		}		
+		
+		return 0;		
+	}
+	
+	
+	public static CostingRisorsaModel elaboraRecordTotaliCostingCommessa(
+			List<CostingRisorsaModel> listaCostR) {
+		
+		CostingRisorsaModel costingM=new CostingRisorsaModel();	
+		
+		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+	    formatSymbols.setDecimalSeparator('.');
+	    String pattern="0.00";
+	    DecimalFormat d= new DecimalFormat(pattern,formatSymbols);
+		
+		Float sommaCostiOrari=(float) 0;
+		Float sommaOreCorrette=(float) 0;
+		Float sommaCostoRisorsa=(float) 0;
+		Float sommaCostiStrRisorse=(float) 0;
+		Float sommaCostiTotaliAzienda=(float) 0;
+		Float sommaIncidenzaCosti=(float) 0;
+		Float sommaCostiHwSw=(float)0;
+		Float sommaCostiHwSwOneriH=(float) 0;
+		Float sommaCostiHwSwOneriRisorse=(float) 0;
+		Float sommaIncidenzaCostiAzienda=(float) 0;
+		Float sommaCostiConsulenza=(float) 0;
+		Float sommaCostiTotaliHwSw=(float) 0;
+		Float sommaEfficienza=(float) 0;
+		Float sommaOreFatturare=(float)0;
+		Float sommaTariffa=(float) 0;
+		Float sommaFatturato=(float) 0;
+		Float sommaMol=(float) 0;
+		Float sommaMolPerc=(float) 0;
+		Float sommaEbit=(float) 0;
+		Float sommaEbitPerc=(float) 0;
+		
+		for(CostingRisorsaModel c:listaCostR){
+		
+			sommaCostiOrari+=Float.valueOf((String) c.get("costoOrario"))*Float.valueOf((String) c.get("orePianificate"));
+			sommaOreCorrette+=Float.valueOf((String) c.get("orePianificate"))*Float.valueOf((String) c.get("lc"));
+			sommaCostoRisorsa+=Float.valueOf((String) c.get("costoRisorsa"));
+			sommaCostiStrRisorse+=Float.valueOf((String) c.get("costoRisorsaStruttura"));
+			sommaCostiTotaliAzienda+=Float.valueOf((String) c.get("costoTotaleAzienda"));
+			sommaCostiHwSw+= Float.valueOf((String) c.get("costoHwSw"))*Float.valueOf((String) c.get("orePianificate"));
+			sommaCostiHwSwOneriH=Float.valueOf((String) c.get("costoOneri"));
+			sommaCostiHwSwOneriRisorse+=Float.valueOf((String) c.get("costoRisorsaSommaHwSwOneri"));
+			sommaCostiConsulenza+=Float.valueOf((String) c.get("costoConsulenza"));
+			sommaCostiTotaliHwSw+=Float.valueOf((String) c.get("costoTotaleHwSw"));
+			sommaOreFatturare+=Float.valueOf((String) c.get("oreFatturare"));
+			sommaEfficienza+=Float.valueOf((String) c.get("efficienza")) *  Float.valueOf((String) c.get("oreFatturare"));
+			sommaFatturato+=Float.valueOf((String) c.get("fatturato"));
+			
+			//TODO mol e ebit e totale ore con formula 60esimi ed usare per il prodotto il cambio da 60esimi a 100esimi
+		}
+		
+		sommaIncidenzaCostiAzienda=(sommaCostiTotaliAzienda-sommaCostoRisorsa)/sommaCostiTotaliAzienda;
+		sommaCostiOrari=sommaCostiOrari/sommaOreCorrette;
+		sommaCostiHwSw=sommaCostiHwSw/sommaOreCorrette;
+		sommaCostiHwSwOneriH+=sommaCostiHwSw;
+		sommaIncidenzaCosti=sommaCostiHwSwOneriRisorse/sommaCostoRisorsa;
+		sommaEfficienza=sommaEfficienza/sommaOreFatturare;
+		sommaTariffa=sommaFatturato/sommaOreFatturare;
+		
+		costingM= new CostingRisorsaModel(0, "", "", "", "TOTALE", 0, "", d.format(sommaCostiOrari), "", d.format(sommaOreCorrette), "", d.format(sommaCostoRisorsa), "",  
+				d.format(sommaCostiStrRisorse),d.format(sommaCostiTotaliAzienda), d.format(sommaIncidenzaCostiAzienda), d.format(sommaCostiHwSw), "", d.format(sommaCostiHwSwOneriH), 
+				d.format(sommaCostiHwSwOneriRisorse), d.format(sommaIncidenzaCosti),d.format(sommaCostiConsulenza), d.format(sommaCostiTotaliHwSw), d.format(sommaEfficienza), 
+				d.format(sommaOreFatturare), d.format(sommaTariffa), "", d.format(sommaFatturato), d.format(sommaMol), d.format(sommaMolPerc), d.format(sommaEbit), d.format(sommaEbitPerc));
+		
+		return costingM;		
+	}	
+	
+	
 }
 

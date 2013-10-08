@@ -216,6 +216,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	private List<ColumnConfig> createColumns() {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 		final NumberFormat number = NumberFormat.getFormat("0.00");
+		
 		GridCellRenderer<RiepilogoFoglioOreModel> renderer = new GridCellRenderer<RiepilogoFoglioOreModel>() {
             public String render(RiepilogoFoglioOreModel model, String property, ColumnData config, int rowIndex,
                     int colIndex, ListStore<RiepilogoFoglioOreModel> store, Grid<RiepilogoFoglioOreModel> grid) {

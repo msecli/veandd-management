@@ -1,31 +1,60 @@
 package gestione.pack.client.layout.panel;
 
 
+import java.util.List;
+
+import gestione.pack.client.AdministrationService;
+import gestione.pack.client.model.ClienteModel;
+import gestione.pack.client.utility.DatiComboBox;
+import gestione.pack.client.utility.MyImages;
+
+import com.extjs.gxt.ui.client.Style.IconAlign;
+import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 
 public class DialogNewCosting extends Dialog{
 
-	private SimpleComboBox<String> smplcmbxCliente;
+	private ComboBox<ClienteModel> cmbxCliente;
 	private SimpleComboBox<String> smplcmbxCommessa;
+	private SimpleComboBox<String> smplcmbxArea;
 	private TextArea txtaDescrizione;
-	
+	private Button btnHelp;
+	private Button btnSave;
+	private Label lblCommessa;
+		
 	public DialogNewCosting(){
 		
 		setLayout(new FitLayout());
 		setBodyBorder(true);
 		setBodyStyle("padding: 8px; background: none");
 		setWidth(380);
-		setHeight(400);
+		setHeight(500);
 		setResizable(false);
 		setClosable(true);
 		setButtons("");
@@ -38,7 +67,7 @@ public class DialogNewCosting extends Dialog{
 		
 		ContentPanel cntpnlCosting= new ContentPanel();
 		cntpnlCosting.setHeaderVisible(false);
-		cntpnlCosting.setHeight(350);
+		cntpnlCosting.setHeight(450);
 		cntpnlCosting.setFrame(true);
 		cntpnlCosting.setBorders(false);
 				
@@ -46,34 +75,166 @@ public class DialogNewCosting extends Dialog{
 		FormLayout layout= new FormLayout();
 		layout.setLabelWidth(30);
 		layout.setLabelSeparator("");
-		layout.setLabelAlign(LabelAlign.LEFT);
+		layout.setLabelAlign(LabelAlign.TOP);
 		layout1.setLayout(layout);
 		layout1.setWidth(360);
 		
-		smplcmbxCliente= new SimpleComboBox<String>();
-		smplcmbxCliente.setEmptyText("Selezionare il cliente..");
-		smplcmbxCliente.setAllowBlank(false);
-		smplcmbxCliente.setStyleAttribute("padding-top", "15px");
+		HorizontalPanel vp= new HorizontalPanel();
+		vp.setSpacing(5);
+		vp.setStyleAttribute("padding-top", "10px");
 		
+		ToolBar tlbTop= new ToolBar();
+		tlbTop.setBorders(false);
 		
+		ListStore<ClienteModel> store=new ListStore<ClienteModel>();
+		cmbxCliente= new ComboBox<ClienteModel>();
+		cmbxCliente.setEmptyText("Selezionare il cliente..");
+		cmbxCliente.setAllowBlank(false);
+		cmbxCliente.setStore(store);
+		cmbxCliente.setEnabled(true);
+		cmbxCliente.setEditable(true);
+		cmbxCliente.setVisible(true);
+		cmbxCliente.setTriggerAction(TriggerAction.ALL);
+		cmbxCliente.setDisplayField("ragioneSociale");
+		cmbxCliente.addListener(Events.OnClick, new Listener<BaseEvent>(){
+			@Override
+			public void handleEvent(BaseEvent be) {					
+					getAllClienti();					
+			}	
+		});
+			
+		lblCommessa= new Label();
+		lblCommessa.setText("Commessa: ");
 		
+		smplcmbxArea=new SimpleComboBox<String>();
+		smplcmbxArea.setAllowBlank(false);
+		smplcmbxArea.setEditable(true);
+		smplcmbxArea.setTriggerAction(TriggerAction.ALL);
+		for(String l : DatiComboBox.getGruppoLavoro()){
+			smplcmbxArea.add(l);}
+		smplcmbxArea.setEmptyText("Area di Lavoro..");		
+			
 		smplcmbxCommessa= new SimpleComboBox<String>();
-		smplcmbxCommessa.setStyleAttribute("padding-top", "10px");
-		
+		smplcmbxCommessa.setAllowBlank(false);
+		smplcmbxCommessa.setEnabled(true);
+		smplcmbxCommessa.setEditable(true);
+		smplcmbxCommessa.setVisible(true);
+		smplcmbxCommessa.setTriggerAction(TriggerAction.ALL);
+		getCommesseAperte();
+				
 		txtaDescrizione= new TextArea();
 		txtaDescrizione.setEmptyText("Descrizione..");
-		txtaDescrizione.setStyleAttribute("padding-top", "10px");
+		//txtaDescrizione.setStyleAttribute("padding-top", "10px");
 		txtaDescrizione.setHeight(170);
+		txtaDescrizione.setAllowBlank(false);
+	
+		btnHelp= new Button();
+		btnHelp.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.question()));
+		btnHelp.setIconAlign(IconAlign.TOP);
+		btnHelp.setToolTip("Il numero di commessa e' generato automaticamente, ma e' possibile scegliere una commessa eventualmente gia' registrata.");
+		btnHelp.setSize(24, 24);
+
+		btnSave= new Button();
+		btnSave.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.confirm()));
+		btnSave.setIconAlign(IconAlign.TOP);
+		btnSave.setToolTip("Salva");
+		btnSave.setSize(24, 24);
+		btnSave.addSelectionListener(new SelectionListener<ButtonEvent>() {
+					
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+							
+				if(smplcmbxCommessa.isValid()&&cmbxCliente.isValid()&&txtaDescrizione.isValid()&&smplcmbxArea.isValid()){
+					
+					String commessa=smplcmbxCommessa.getRawValue().toString();
+					int idCliente=cmbxCliente.getValue().get("idCliente");
+					String descrizione=txtaDescrizione.getValue().toString();
+					String area=smplcmbxArea.getRawValue().toString();
+					
+					AdministrationService.Util.getInstance().insertDataCosting(commessa, area, idCliente, descrizione, new AsyncCallback<Boolean>() {
+
+						@Override
+						public void onFailure(Throwable caught) {
+							Window.alert("Errore di connessione on insertDataCosting();");
+						}
+
+						@Override
+						public void onSuccess(Boolean result) {
+							hide();
+						}
+					});		
+				}else
+					Window.alert("Controllare i campi inseriti!");
+			}
+		});
 		
-		layout1.add(smplcmbxCliente,new FormData("70%"));
-		layout1.add(smplcmbxCommessa,new FormData("70%"));
+		tlbTop.add(btnSave);
+		
+		vp.add(lblCommessa);
+		vp.add(smplcmbxCommessa);
+		
+		vp.add(btnHelp);
+		
+		layout1.add(cmbxCliente,new FormData("80%"));
+		layout1.add(smplcmbxArea, new FormData("80%"));
+		layout1.add(vp,new FormData("70%"));
 		layout1.add(txtaDescrizione,new FormData("80%"));
 		
 		cntpnlCosting.add(layout1);
+		cntpnlCosting.setTopComponent(tlbTop);
 		
 		bodyContainer.add(cntpnlCosting);
-		add(bodyContainer);
-		
+		add(bodyContainer);	
+	}	
+	
+	
+	private void getAllClienti() {
+		AdministrationService.Util.getInstance().getListaClientiModel(new AsyncCallback<List<ClienteModel>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("Errore connessione on getListaClientiModel();");
+				caught.printStackTrace();		
+			}
+
+			@Override
+			public void onSuccess(List<ClienteModel> result) {
+				if(result!=null){		
+					ListStore<ClienteModel> lista= new ListStore<ClienteModel>();
+					lista.setStoreSorter(new StoreSorter<ClienteModel>());  
+					lista.setDefaultSort("ragioneSociale", SortDir.ASC);
+					
+					lista.add(result);				
+					cmbxCliente.clear();
+					cmbxCliente.setStore(lista);
+					
+				}else Window.alert("error: Errore durante l'accesso ai dati Cliente.");				
+			}
+		});
 	}
 	
+	private void getCommesseAperte() {
+		AdministrationService.Util.getInstance().getCommesseAperte( new AsyncCallback<List<String>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("Errore connessione on getCommesseByPM();");
+				caught.printStackTrace();				
+			}
+
+			@Override
+			public void onSuccess(List<String> result) {
+				String max=result.get(result.size()-1);
+				if(result!=null){
+					smplcmbxCommessa.removeAll();
+					java.util.Collections.sort(result);
+					smplcmbxCommessa.add(result);
+					smplcmbxCommessa.recalculate();
+					//smplcmbxCommessa.reset();
+					smplcmbxCommessa.setSimpleValue(max);
+				}else Window.alert("error: Errore durante l'accesso ai dati Commesse.");
+				
+			}
+		});
+	}
 }

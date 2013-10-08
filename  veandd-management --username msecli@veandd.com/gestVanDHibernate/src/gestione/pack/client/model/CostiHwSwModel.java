@@ -21,4 +21,6 @@ public class CostiHwSwModel extends BaseModel{
 		set("utilizzato",utilizzato); //se esiste l'associazione è utilizzato
 	}
 	
+	
+	
 }

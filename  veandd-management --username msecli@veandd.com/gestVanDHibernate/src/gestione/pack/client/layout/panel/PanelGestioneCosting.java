@@ -8,8 +8,9 @@ import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.model.CostiHwSwModel;
 import gestione.pack.client.model.CostingModel;
 import gestione.pack.client.model.CostingRisorsaModel;
-import gestione.pack.client.model.GestioneCostiDipendentiModel;
 import gestione.pack.client.model.PersonaleModel;
+import gestione.pack.client.model.RiepilogoFoglioOreModel;
+import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
 import gestione.pack.client.utility.MyImages;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -17,15 +18,16 @@ import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.fx.Resizable;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -33,14 +35,21 @@ import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
+import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
+import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.selection.SelectionModel;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Element;
@@ -61,15 +70,22 @@ public class PanelGestioneCosting extends LayoutContainer{
 	
 	private EditorGrid<CostingModel> gridCosting;
 	private EditorGrid<CostingRisorsaModel> gridCostingDipendente;
+	private CheckBoxSelectionModel<CostingModel> sm = new CheckBoxSelectionModel<CostingModel>();
+	private CellSelectionModel<CostingRisorsaModel> cm;
 	 
+	private ComboBox<PersonaleModel> cmbxPersonale= new ComboBox<PersonaleModel>();
 	private ComboBox<CostingModel> cmbbxCosting;
-	private Button btnConferma= new Button();
-	private Button btnConfermaDip;
 	private Button btnAddCosting;
+	private Button btnAddRisorsa;
+	private Button btnDelRisorsa;
+	private Button btnConfermaDip;
+	private Button btnConfermaNewVersione;
+	
 	private Text txtCognome= new Text();
 	private int idSelected;
 	
 	private String username= new String();
+	
 	
 	public PanelGestioneCosting(){
 		
@@ -92,7 +108,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 		cpGridCosting.setHeading("Selezione Costing.");
 		cpGridCosting.setBorders(false);
 		cpGridCosting.setFrame(true);
-		cpGridCosting.setHeight((h-55)/2-80);
+		cpGridCosting.setHeight((h-55)/2-130);
 		cpGridCosting.setWidth(w-240);
 		cpGridCosting.setScrollMode(Scroll.AUTO);
 		cpGridCosting.setLayout(new FitLayout());
@@ -104,7 +120,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 		cpGridCostingRisorsa.setHeading("Costing Dettagliato per Dipendente");
 		cpGridCostingRisorsa.setBorders(false);
 		cpGridCostingRisorsa.setFrame(true);
-		cpGridCostingRisorsa.setHeight((h-55)/2+80);
+		cpGridCostingRisorsa.setHeight((h-55)/2+130);
 		cpGridCostingRisorsa.setWidth(w-240);
 		cpGridCostingRisorsa.setScrollMode(Scroll.AUTO);
 		cpGridCostingRisorsa.setLayout(new FitLayout());
@@ -125,7 +141,8 @@ public class PanelGestioneCosting extends LayoutContainer{
 		cmbbxCosting.setVisible(true);
 		cmbbxCosting.setTriggerAction(TriggerAction.ALL);
 		cmbbxCosting.setAllowBlank(false);
-		cmbbxCosting.setDisplayField("commessa");
+		cmbbxCosting.setDisplayField("displayField");
+		cmbbxCosting.setWidth(350);
 		cmbbxCosting.addListener(Events.OnClick, new Listener<BaseEvent>(){
 			@Override
 			public void handleEvent(BaseEvent be) {			
@@ -135,74 +152,13 @@ public class PanelGestioneCosting extends LayoutContainer{
 		cmbbxCosting.addListener(Events.Select, new Listener<BaseEvent>(){
 			@Override
 			public void handleEvent(BaseEvent be) {	
+				idSelected=cmbbxCosting.getValue().get("idCosting");
 				caricaTabellaDatiCosting();
 			}		
 		});
 		
 		txtCognome.setStyleAttribute("padding-left", "10px");
-		txtCognome.setStyleAttribute("font-size", "15px");
-		
-		btnConferma.setEnabled(false);
-		btnConferma.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.confirm()));
-	  	btnConferma.setIconAlign(IconAlign.TOP);
-	  	btnConferma.setToolTip("Conferma Dati.");
-	  	btnConferma.setSize(26, 26);
-	  	btnConferma.addSelectionListener(new SelectionListener<ButtonEvent>() {		
-  		
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-				List<CostiHwSwModel> lista=new ArrayList<CostiHwSwModel>();
-		  		//lista.addAll(storeCostingRisorsa.getModels());
-				
-		  		for(CostiHwSwModel c:lista)
-		  			AdministrationService.Util.getInstance().saveAssociaCostiHwSw(idSelected, c, new AsyncCallback<Boolean>() {
-		  				@Override
-		  				public void onFailure(Throwable caught) {
-		  					Window.alert("Errore di connessione on saveAssociaCostiHwSw()");
-						
-		  				}
-
-		  				@Override
-		  				public void onSuccess(Boolean result) {
-		  					
-		  					if(!result)
-		  						Window.alert("Impossibile effettuare le modifiche indicate!");
-		  					else
-		  						storeCostingRisorsa.commitChanges();					
-		  				}
-		  			});
-			}
-		});
-	  	
-	  	btnConfermaDip= new Button();
-	  	btnConfermaDip.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.confirm()));
-	  	btnConfermaDip.setIconAlign(IconAlign.TOP);
-	  	btnConfermaDip.setToolTip("Conferma Dati.");
-	  	btnConfermaDip.setSize(26, 26);
-	  	btnConfermaDip.addSelectionListener(new SelectionListener<ButtonEvent>() {			
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-				for(Record record: storeCosting.getModifiedRecords()){		    		  
-		    		  GestioneCostiDipendentiModel g= new GestioneCostiDipendentiModel();
-		    		  g=(GestioneCostiDipendentiModel) record.getModel();		    		  
-		    		  AdministrationService.Util.getInstance().editDatiCostiAzienda(g, new AsyncCallback<Void>() {
-
-								@Override
-								public void onFailure(Throwable caught) {
-									Window.alert("Errore di connessione on editDataCostiAzienda();");
-								}
-
-								@Override
-								public void onSuccess(Void result) {
-									caricaTabellaDatiCosting();
-									storeCosting.commitChanges();
-								}		    			  
-						}); 	  
-		    	  }
-		    	  storeCosting.commitChanges();				
-			}
-		});
-	
+		txtCognome.setStyleAttribute("font-size", "15px");	
 	  	
 	  	btnAddCosting= new Button();
 	  	btnAddCosting.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.addList()));
@@ -213,43 +169,189 @@ public class PanelGestioneCosting extends LayoutContainer{
 			
 			@Override
 			public void componentSelected(ButtonEvent ce) {
+				
 				DialogNewCosting d= new DialogNewCosting();
 				d.show();
-				
+				d.addListener(Events.Hide, new Listener<ComponentEvent>() {
+				     
+					@Override
+					public void handleEvent(ComponentEvent be) {
+						try {
+							cmbbxCosting.clear();
+							caricaTabellaDatiCosting();
+						} catch (Exception e) {
+							e.printStackTrace();
+							Window.alert("error: Impossibile caricare i dati in tabella.");
+						}			
+				    }
+				});
 			}
 		});
+	  
+	    btnAddRisorsa= new Button();
+	    btnAddRisorsa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.addUser()));
+	    btnAddRisorsa.setIconAlign(IconAlign.TOP);
+	    btnAddRisorsa.setToolTip("Aggiungi Risorsa");
+	    btnAddRisorsa.setSize(26, 26);
+	    btnAddRisorsa.setEnabled(false);
+	    btnAddRisorsa.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				
+				CostingRisorsaModel cm= new CostingRisorsaModel();  
+		        
+		        gridCostingDipendente.stopEditing();  
+		        storeCostingRisorsa.insert(cm, 0);  
+		        gridCostingDipendente.startEditing(storeCostingRisorsa.indexOf(cm), 0);  
+			}
+		});
+	  
+	    btnDelRisorsa= new Button();
+	    btnDelRisorsa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.delete()));
+	    btnDelRisorsa.setIconAlign(IconAlign.TOP);
+	    btnDelRisorsa.setToolTip("Elimina Risorsa");
+	    btnDelRisorsa.setSize(26, 26);
+	    btnDelRisorsa.setEnabled(false);
+	    btnDelRisorsa.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				
+				int idRisorsa;
+				idRisorsa=cm.getSelectedItem().get("idCostingRisorsa");
+				
+				AdministrationService.Util.getInstance().deleteRisorsaCosting(idRisorsa, new AsyncCallback<Boolean>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Window.alert("Errore di connessione on deleteRisorsaCosting()");
+					}
+
+					@Override
+					public void onSuccess(Boolean result) {
+						if(result)
+							caricaTabellaCostingRisorsa(idSelected);
+						else
+							Window.alert("Impossibile accedere ai dati sul costing delle risorse!");
+						
+					}
+				});
+				
+			}
+		});	  	
+	  			
+	    btnConfermaDip=new Button();
+	    btnConfermaDip.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.confirm()));
+	    btnConfermaDip.setIconAlign(IconAlign.TOP);
+	    btnConfermaDip.setToolTip("Conferma Modifiche");
+	    btnConfermaDip.setSize(26, 26);
+	    btnConfermaDip.setEnabled(false);
+	    btnConfermaDip.addSelectionListener(new SelectionListener<ButtonEvent>() {		
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				List<CostingRisorsaModel> lista=new ArrayList<CostingRisorsaModel>();
+		  		lista.addAll(storeCostingRisorsa.getModels());
+		  		String commessa;
+		  		for(CostingRisorsaModel c:lista){
+		  			commessa=c.get("commessa");
+		  			if(commessa.compareTo("TOTALE")!=0)
+		  			AdministrationService.Util.getInstance().confermaCostingDipendente(idSelected, c, new AsyncCallback<Boolean>() {
+		  				@Override
+		  				public void onFailure(Throwable caught) {
+		  					Window.alert("Errore di connessione on saveAssociaCostiHwSw()");				
+		  				}
+
+		  				@Override
+		  				public void onSuccess(Boolean result) {
+		  					
+		  					if(!result)
+		  						Window.alert("Impossibile effettuare le modifiche indicate!");
+		  					else{
+		  						storeCostingRisorsa.commitChanges();
+		  						caricaTabellaCostingRisorsa(idSelected);
+		  					}
+		  						
+		  				}
+		  			});
+		  		}
+			}				
+		});	  
+	    
+	    btnConfermaNewVersione=new Button();
+	    btnConfermaNewVersione.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.newVersion()));
+	    btnConfermaNewVersione.setIconAlign(IconAlign.TOP);
+	    btnConfermaNewVersione.setToolTip("Salva come nuova versione");
+	    btnConfermaNewVersione.setSize(26, 26);
+	    btnConfermaNewVersione.setEnabled(false);
+	    btnConfermaNewVersione.addSelectionListener(new SelectionListener<ButtonEvent>() {		
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				
+				AdministrationService.Util.getInstance().saveNewVersionCosting(idSelected, new AsyncCallback<Boolean>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void onSuccess(Boolean result) {
+						// TODO Auto-generated method stub
+						
+					}
+				});				
+			}
+		});	  
+	    
+	    
 		cmCosting = new ColumnModel(createColumnsCosting());		
 		gridCosting= new EditorGrid<CostingModel>(storeCosting, cmCosting);  
 		gridCosting.setBorders(false);  
 		gridCosting.setItemId("grid");
 	    gridCosting.setColumnLines(true);
 	    gridCosting.setStripeRows(true);
-	    gridCosting.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-	    gridCosting.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<GestioneCostiDipendentiModel>>() {  
-	          public void handleEvent(SelectionChangedEvent<GestioneCostiDipendentiModel> be) {  
+	    gridCosting.addPlugin(sm);
+	    gridCosting.setSelectionModel(sm);
+	    gridCosting.getView().setShowDirtyCells(false);	
+	    //gridCosting.getSelectionModel().setSelectionMode(SelectionMode.SIMPLE);
+	    gridCosting.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<CostingModel>>() {  
+	          public void handleEvent(SelectionChangedEvent<CostingModel> be) {  
 		        	
 		            if (be.getSelection().size() > 0) { 
-		            	btnConferma.setEnabled(true);
-		            	idSelected=be.getSelectedItem().get("idPersonale");
-		            	txtCognome.setText("Selezionato: "+(String)be.getSelectedItem().get("cognome"));
+		            	btnAddRisorsa.enable();
+		            	btnDelRisorsa.enable();
+		            	btnConfermaDip.enable();
+		            	btnConfermaNewVersione.enable();
+		            	idSelected=be.getSelectedItem().get("idCosting");
 		            	caricaTabellaCostingRisorsa(idSelected);           
 		            } else {  
 		              
-		            	txtCognome.setText("");
+		            	
 		            }	            
 		          }		            
 		}); 
 	    
+	    cm=new CellSelectionModel<CostingRisorsaModel>();
+	    cm.setSelectionMode(SelectionMode.SIMPLE);
+   
 	    cmCostingRisorsa=new ColumnModel(createColumnsCostingRisorse());
 	    gridCostingDipendente= new EditorGrid<CostingRisorsaModel>(storeCostingRisorsa, cmCostingRisorsa);
 	    gridCostingDipendente.setBorders(false);
 	    gridCostingDipendente.setItemId("grid");
 	    gridCostingDipendente.setStripeRows(true); 
 	    gridCostingDipendente.setColumnLines(true);
-	    	   
+	    gridCostingDipendente.setSelectionModel(cm);
+	    gridCostingDipendente.addListener(Events.CellClick, new Listener<ComponentEvent>() {
+			@Override
+			public void handleEvent(ComponentEvent be) {
+	            	btnConfermaDip.enable();
+	            	btnConfermaNewVersione.enable();
+			}
+		});	  
+	    
 	    cpGridCosting.add(gridCosting); 
-	  //tlbCosting.add(btnConferma);
 	    tlbCosting.add(new SeparatorToolItem());
 	    tlbCosting.add(cmbbxCosting);
 	    tlbCosting.add(new SeparatorToolItem());
@@ -258,10 +360,17 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    cpGridCosting.setTopComponent(tlbCosting);
 	    
 	    cpGridCostingRisorsa.add(gridCostingDipendente);
+	    tlbCostingRisorsa.add(new SeparatorToolItem());
+	    tlbCostingRisorsa.add(btnAddRisorsa);
+	    tlbCostingRisorsa.add(new SeparatorToolItem());
+	    tlbCostingRisorsa.add(btnDelRisorsa);
+	    tlbCostingRisorsa.add(new SeparatorToolItem());
 	    tlbCostingRisorsa.add(btnConfermaDip);
-	    tlbCostingRisorsa.add(txtCognome);	    
+	    tlbCostingRisorsa.add(new SeparatorToolItem());
+	    tlbCostingRisorsa.add(btnConfermaNewVersione);
+	    tlbCostingRisorsa.add(new SeparatorToolItem());
 	    cpGridCostingRisorsa.setTopComponent(tlbCostingRisorsa);
-	    
+	  	    
 	    vp.add(cpGridCosting);
 	    vp.add(cpGridCostingRisorsa);
 	   
@@ -274,30 +383,80 @@ public class PanelGestioneCosting extends LayoutContainer{
 	private List<ColumnConfig> createColumnsCosting() {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 			
+		GridCellRenderer<CostingModel> renderer = new GridCellRenderer<CostingModel>() {
+            public String render(CostingModel model, String property, ColumnData config, int rowIndex,
+                    int colIndex, ListStore<CostingModel> store, Grid<CostingModel> grid) {
+            	
+            	String stato;
+            	if((property.compareTo("stato")==0)){
+            		stato=model.get("stato");
+            		
+            		if(stato.compareTo("A")==0){
+            			config.style = config.style + ";background-color:#d2f5af;";//verde
+            			return "";
+            		}
+            		else
+            			if(stato.compareTo("R")==0){
+            				config.style = config.style + ";background-color:#f5afaf;";//rosso
+            				return "";
+            			}
+            			else{
+            				config.style = config.style + ";background-color:#fffb8c;";//giallo
+            				return "";
+            			}
+            	}else
+            	  	return model.get(property);       	
+        }};
+		
 		ColumnConfig column = new ColumnConfig();  
 	    
 	    column = new ColumnConfig();  
 	    column.setId("cliente");  
 	    column.setHeader("Cliente");  
+	    column.setWidth(250);  
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    configs.add(column);
+	    
+	    column = new ColumnConfig();  
+	    column.setId("area");  
+	    column.setHeader("Area");  
 	    column.setWidth(140);  
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
 	    
 	    column = new ColumnConfig();  
 	    column.setId("commessa");  
 	    column.setHeader("Commessa");  
 	    column.setWidth(140);  
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
 		
 	    column = new ColumnConfig();  
 	    column.setId("descrizione");  
 	    column.setHeader("Descrizione");  
 	    column.setWidth(200);  
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
 	    
 	    column = new ColumnConfig();  
 	    column.setId("numeroRevisione");  
 	    column.setHeader("#Revisione");  
 	    column.setWidth(80);  
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    configs.add(column);
+	    
+	    column = new ColumnConfig();  
+	    column.setId("stato");  
+	    column.setHeader("Stato Approvazione");  
+	    column.setWidth(60);  
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    column.setRenderer(renderer);
 	    configs.add(column);
 		
 		return configs;
@@ -308,115 +467,295 @@ public class PanelGestioneCosting extends LayoutContainer{
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 		
 		ColumnConfig column = new ColumnConfig();  
-	       
+		CellEditor editorTxt;
+		GridCellRenderer<CostingRisorsaModel> renderer = new GridCellRenderer<CostingRisorsaModel>() {
+            public String render(CostingRisorsaModel model, String property, ColumnData config, int rowIndex,
+                    int colIndex, ListStore<CostingRisorsaModel> store, Grid<CostingRisorsaModel> grid) {
+            	
+            	String ncommessa=model.get("commessa");
+            	if(ncommessa!=null)           	
+            		if((property.compareTo("risorsa")==0 || property.compareTo("orePianificate")==0 || property.compareTo("lc")==0 || property.compareTo("costoConsulenza")==0
+            			|| property.compareTo("efficienza")==0 || property.compareTo("tariffa")==0) && ncommessa.compareTo("TOTALE")!=0){
+            		config.style = config.style + ";background-color:#d2f5af;";//verde
+            	 	return model.get(property);
+            		}else
+            	
+            			if(ncommessa.compareTo("TOTALE")==0){
+            				config.style = config.style + ";background-color:#f5afaf;" +"font-weight:bold;" ;//rosso
+            				return model.get(property);
+            	 	         
+            			}else
+            	          	return model.get(property);
+            	else
+            		if((property.compareTo("risorsa")==0 || property.compareTo("orePianificate")==0 || property.compareTo("lc")==0 || property.compareTo("costoConsulenza")==0
+        				|| property.compareTo("efficienza")==0 || property.compareTo("tariffa")==0)){
+            			config.style = config.style + ";background-color:#d2f5af;";//verde
+            			return model.get(property);
+            		}
+            		else
+            			return model.get(property);
+        }};
+		
 	    column = new ColumnConfig();  
 	    column.setId("area");  
 	    column.setHeader("Area");  
-	    column.setWidth(100);  
+	    column.setWidth(100);
+	    column.setRenderer(renderer);
+	    //column.setColumnStyleName("red-background");
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column); 
 	    
 	    column = new ColumnConfig();  
 	    column.setId("cliente");  
 	    column.setHeader("Cliente");  
-	    column.setWidth(100);  
+	    column.setWidth(100); 
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    //column.setColumnStyleName("red-background");
 	    configs.add(column); 
 	    
 	    column = new ColumnConfig();  
 	    column.setId("progetto");  
 	    column.setHeader("Progetto");  
 	    column.setWidth(100);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column); 
 	    
 	    column = new ColumnConfig();  
 	    column.setId("commessa");  
 	    column.setHeader("Commessa");  
-	    column.setWidth(100);  
+	    column.setWidth(80);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column); 
 	    
 	    column = new ColumnConfig();  
 	    column.setId("risorsa");  
 	    column.setHeader("Risorsa");  
-	    column.setWidth(100);  
-	    configs.add(column);
-	    	
-			    
+	    column.setWidth(150);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    ListStore<PersonaleModel> store= new ListStore<PersonaleModel>();
+	    cmbxPersonale.setStore(store);
+	    cmbxPersonale.setDisplayField("nomeCompleto");
+	    cmbxPersonale.setEmptyText("Selezionare..");
+	    cmbxPersonale.setEditable(true);
+	    cmbxPersonale.setVisible(true);
+	    cmbxPersonale.setTriggerAction(TriggerAction.ALL);
+	    cmbxPersonale.setForceSelection(true);
+	    cmbxPersonale.setAllowBlank(false);
+	    cmbxPersonale.addListener(Events.OnClick, new Listener<BaseEvent>(){
+			@Override
+			public void handleEvent(BaseEvent be) {					
+					getAllDipendenti();					
+			}		
+		});
+	    cmbxPersonale.addListener(Events.Select, new Listener<BaseEvent>(){
+			@Override
+			public void handleEvent(BaseEvent be) {	
+				int idPersonale=cmbxPersonale.getValue().get("idPersonale");
+				int idCosting=cmbbxCosting.getValue().get("idCosting");
+				final int index=cm.getSelectCell().row;			
+				AdministrationService.Util.getInstance().getDatiCostiDipendenteSelezionato(idPersonale, idCosting, new AsyncCallback<CostingRisorsaModel>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Window.alert("Errore di connessione on getDatiCostiDipendenteSelezionato();");
+					}
+
+					@Override
+					public void onSuccess(CostingRisorsaModel result) {
+						if(result==null)
+							Window.alert("Nessun dato di costo trovato per il dipendente selezionato.");
+						else{
+							gridCostingDipendente.stopEditing(); 
+							storeCostingRisorsa.remove(index);
+							storeCostingRisorsa.insert(result, index);  
+							gridCostingDipendente.startEditing(storeCostingRisorsa.indexOf(result), 0);
+						}
+					}
+				});
+			}		
+		});    
+	    CellEditor editor = new CellEditor(cmbxPersonale) {  
+	    	@Override  
+	        public Object preProcessValue(Object value) {  
+	          if (value == null) {  
+	            return value;  
+	          }  
+	          return cmbxPersonale.getValue();  
+	        } 
+	        @Override  
+	        public Object postProcessValue(Object value) {  
+	          if (value == null) {  
+	            return value;  
+	          }  
+	          return ((ModelData) value).get("nomeCompleto");  
+	        }  
+	    };
+	    column.setEditor(editor);
+	    configs.add(column);	    	
+			
+	    
 	    column = new ColumnConfig();  
 	    column.setId("costoOrario");  
 	    column.setHeader("Costo Orario");  
 	    column.setWidth(80);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
-	        
+	    
+	    
 	    column = new ColumnConfig();  
 	    column.setId("orePianificate");  
 	    column.setHeader("Ore Pianificate");  
-	    column.setWidth(120);  
+	    column.setWidth(80);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    TextField<String> txtfldOrePianificate= new TextField<String>();
 	    txtfldOrePianificate.setRegex("[0-9]+[.]{1}[0-9]{2}|[0-9]");
 	    txtfldOrePianificate.getMessages().setRegexText("Deve essere un numero!");
-	    column.setEditor(new CellEditor(txtfldOrePianificate));
+	    txtfldOrePianificate.setValue("0.00");
+	    editorTxt= new CellEditor(txtfldOrePianificate){
+	    	@Override  
+	        public Object preProcessValue(Object value) {  
+	          if (value == null) {  
+	            return value;  
+	          }  
+	          return value.toString();  
+	        }  
+	    
+	        @Override  
+	        public Object postProcessValue(Object value) {  
+	          if (value == null) {  
+	            return value;  
+	          }  
+	          return value.toString();  
+	        }  
+	    };	    
+	    column.setEditor(editorTxt);
+	    column.setRenderer(renderer);
 	    configs.add(column);
+	    
 	    
 	    column = new ColumnConfig();  
 	    column.setId("lc");  
 	    column.setHeader("LC");  
-	    column.setWidth(60);  
+	    column.setWidth(50);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    TextField<String> txtfldLc= new TextField<String>();
-	    column.setEditor(new CellEditor(txtfldLc));
-	    //TODO settare di default 100%
+	    txtfldLc.setValue("1.0");
+	    editorTxt= new CellEditor(txtfldLc){
+	    	@Override  
+	        public Object preProcessValue(Object value) {  
+	          if (value == null) {  
+	            return value;  
+	          }  
+	          return value.toString();  
+	        }  
+	    
+	        @Override  
+	        public Object postProcessValue(Object value) {  
+	          if (value == null) {  
+	            return value;  
+	          }  
+	          return value.toString();  
+	        }  
+	    };	    
+	    column.setEditor(editorTxt);
 	    configs.add(column);	    
+	    
 	    
 	    column = new ColumnConfig();  
 	    column.setId("oreCorrette");  
 	    column.setHeader("Ore Corrette");  
-	    column.setWidth(140);  
+	    column.setWidth(80);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);    
+	    
 	    
 	    column = new ColumnConfig();  
 	    column.setId("costoRisorsa");  
 	    column.setHeader("Costo Risorsa");  
 	    column.setWidth(80);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
 	    
 	    column = new ColumnConfig();  
 	    column.setId("costoOrarioStruttura");  
 	    column.setHeader("Costo Struttura (h)");  
 	    column.setWidth(80);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
 	    
 	    column = new ColumnConfig();  
 	    column.setId("costoRisorsaStruttura");  
 	    column.setHeader("Costo Struttura Risorsa");  
 	    column.setWidth(80);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
 	    
 	    column = new ColumnConfig();  
 	    column.setId("costoTotaleAzienda");  
 	    column.setHeader("CostoTotale");  
 	    column.setWidth(80);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
 	    
 	    column = new ColumnConfig();  
-	    column.setId("incidenzaCosti");  
+	    column.setId("incidenzaCostiAzienda");  
 	    column.setHeader("Incidenza");  
 	    column.setWidth(80);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
 	 
 		column = new ColumnConfig();  
 	    column.setId("costoHwSw");  
 	    column.setHeader("Somma Costi Hw/Sw");  
 	    column.setWidth(80);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
 	  		
 	    column = new ColumnConfig();  
 	    column.setId("costoOneri");  
 	    column.setHeader("Costo Oneri");  
 	    column.setWidth(80);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
 	    
 	    column = new ColumnConfig();  
 	    column.setId("costoSommaHwSwOneri");  
 	    column.setHeader("Totale Costi");  
 	    column.setWidth(80);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
 	    
 	    column = new ColumnConfig();  
@@ -424,92 +763,212 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    column.setHeader("Costo Risorsa");
 	    column.setToolTip("Somma costi Hw/Sw/Oneri");
 	    column.setWidth(80);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
 	    
 	    column = new ColumnConfig();  
 	    column.setId("incidenzaCostiHwSw");  
 	    column.setHeader("Incidenza");  
-	    column.setWidth(80);  
+	    column.setWidth(65);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
 	    
 	    column = new ColumnConfig();  
 	    column.setId("costoConsulenza");  
 	    column.setHeader("Costo Consulenza");  
 	    column.setWidth(80);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    TextField<String> txtfldCostoConsulenza= new TextField<String>();
 	    txtfldCostoConsulenza.setRegex("[0-9]+[.]{1}[0-9]{2}|[0-9]");
 	    txtfldCostoConsulenza.getMessages().setRegexText("Deve essere un numero!");
-	    column.setEditor(new CellEditor(txtfldCostoConsulenza));
+	    txtfldCostoConsulenza.setValue("0.00");
+	    editorTxt= new CellEditor(txtfldCostoConsulenza){
+	    	@Override  
+	        public Object preProcessValue(Object value) {  
+	          if (value == null) {  
+	            return value;  
+	          }  
+	          return value.toString();  
+	        }  
+	    
+	        @Override  
+	        public Object postProcessValue(Object value) {  
+	          if (value == null) {  
+	            return value;  
+	          }  
+	          return value.toString();  
+	        }  
+	    };	    
+	    column.setEditor(editorTxt);
 	    configs.add(column);
+	    
+	    //TODO costoTotaleHwSw
+	    
 	    
 	    column = new ColumnConfig();  
 	    column.setId("efficienza");  
 	    column.setHeader("Efficienza");  
-	    column.setWidth(80);  
+	    column.setWidth(65);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    TextField<String> txtfldEfficienza= new TextField<String>();
+	    txtfldEfficienza.setValue("1.0");
+	    editorTxt= new CellEditor(txtfldEfficienza){
+	    	@Override  
+	        public Object preProcessValue(Object value) {  
+	          if (value == null) {  
+	            return value;  
+	          }  
+	          return value.toString();  
+	        }  
+	    
+	        @Override  
+	        public Object postProcessValue(Object value) {  
+	          if (value == null) {  
+	            return value;  
+	          }  
+	          return value.toString();  
+	        }  
+	    };	    
+	    column.setEditor(editorTxt);
 	    configs.add(column);
 	   	
 		column = new ColumnConfig();  
 	    column.setId("oreFatturare");  
 	    column.setHeader("Ore da Fatturare");  
-	    column.setWidth(120);  
+	    column.setWidth(100);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
 	    
 	    column = new ColumnConfig();  
 	    column.setId("tariffa");  
 	    column.setHeader("Tariffa");  
-	    column.setWidth(80);  
+	    column.setWidth(65);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    TextField<String> txtfldTariffa= new TextField<String>();
 	    txtfldTariffa.setRegex("[0-9]+[.]{1}[0-9]{2}|[0-9]");
 	    txtfldTariffa.getMessages().setRegexText("Deve essere un numero!");
-	    column.setEditor(new CellEditor(txtfldTariffa));
+	    txtfldTariffa.setValue("0.00");
+	    editorTxt= new CellEditor(txtfldTariffa){
+	    	@Override  
+	        public Object preProcessValue(Object value) {  
+	          if (value == null) {  
+	            return value;  
+	          }  
+	          return value.toString();  
+	        }  
+	    
+	        @Override  
+	        public Object postProcessValue(Object value) {  
+	          if (value == null) {  
+	            return value;  
+	          }  
+	          return value.toString();  
+	        }  
+	    };	    
+	    column.setEditor(editorTxt);
 	    configs.add(column);
 	    
 	    column = new ColumnConfig();  
 	    column.setId("tariffaDerivata");  
 	    column.setHeader("Tariffa Derivata");  
 	    column.setWidth(80);  
-	    TextField<String> txtfldTariffaDerivata= new TextField<String>();
-	    txtfldTariffaDerivata.setRegex("[0-9]+[.]{1}[0-9]{2}|[0-9]");
-	    txtfldTariffaDerivata.getMessages().setRegexText("Deve essere un numero!");
-	    column.setEditor(new CellEditor(txtfldTariffaDerivata));
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
 	    
 	    column = new ColumnConfig();  
 	    column.setId("fatturato");  
 	    column.setHeader("Fatturato");    
 	    column.setWidth(80);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
 	    
 	    column = new ColumnConfig();  
 	    column.setId("mol");  
 	    column.setHeader("MOL");    
 	    column.setWidth(50);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
 	    
 	    column = new ColumnConfig();  
 	    column.setId("molPerc");  
 	    column.setHeader("MOL%");    
 	    column.setWidth(50);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
 	    
 	    column = new ColumnConfig();  
 	    column.setId("ebit");  
 	    column.setHeader("EBIT");    
 	    column.setWidth(50);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
 	    
 	    column = new ColumnConfig();  
 	    column.setId("ebitPerc");  
 	    column.setHeader("EBIT%");    
 	    column.setWidth(50);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
 	    
 	    return configs;
 	}
 	
+	private void getAllDipendenti() {	
+		AdministrationService.Util.getInstance().getListaDipendentiModel("", new AsyncCallback<List<PersonaleModel>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("Errore connessione on getListaDipendentiModel();");
+				caught.printStackTrace();		
+			}
+
+			@Override
+			public void onSuccess(List<PersonaleModel> result) {
+				if(result!=null){		
+					ListStore<PersonaleModel> lista= new ListStore<PersonaleModel>();
+					lista.setStoreSorter(new StoreSorter<PersonaleModel>());  
+					lista.setDefaultSort("nomeCompleto", SortDir.ASC);
+					
+					lista.add(result);				
+					cmbxPersonale.clear();
+					cmbxPersonale.setStore(lista);
+					
+				}else Window.alert("error: Errore durante l'accesso ai dati Personale.");				
+			}
+		});
+	}
+	
 	
 	private void caricaTabellaDatiCosting() {
-		int costing=cmbbxCosting.getValue().get("idCosting");
+		int costing;
+		if(cmbbxCosting.getValue()!=null)
+			costing=cmbbxCosting.getValue().get("idCosting");
+		else
+			costing=0;
 		
 		try {
 			AdministrationService.Util.getInstance().getDatiCosting(costing, new AsyncCallback<List<CostingModel>>() {
@@ -529,22 +988,34 @@ public class PanelGestioneCosting extends LayoutContainer{
 			Window.alert("Problemi durante il caricamento dei dati sui costi personale.");
 		}	
 	}
+	
+	private void loadTableCosting(List<CostingModel> result) {
+		storeCosting.removeAll();
+		storeCosting.setStoreSorter(new StoreSorter<CostingModel>());  
+	    storeCosting.setDefaultSort("numeroRevisione", SortDir.DESC);
+		storeCosting.add(result);
+		caricaTabellaCostingRisorsa(idSelected);
+	}
 		
 	
-	private void caricaTabellaCostingRisorsa(int id) {
-		/*AdministrationService.Util.getInstance().getDatiCostiHwSw(id, new AsyncCallback<List<CostingRisorsaModel>>() {
+	private void caricaTabellaCostingRisorsa(int idCosting) {
+		
+		btnAddRisorsa.enable();
+		btnDelRisorsa.enable();
+		
+		AdministrationService.Util.getInstance().getRiepilogoDatiCostingRisorse(idCosting, new AsyncCallback<List<CostingRisorsaModel>>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				Window.alert("Errore di connession on getDatiCostiHwSw();");
+				Window.alert("Errore di connession on getDatiCostiRisorse();");
 				
 			}
 
 			@Override
 			public void onSuccess(List<CostingRisorsaModel> result) {
-				loadTableHwSw(result);
+				loadTableCostingRisorse(result);
 			}		
-		});*/		
+		});		
 	} 
 		
 	private void loadTableCostingRisorse(List<CostingRisorsaModel> result) {
@@ -554,13 +1025,12 @@ public class PanelGestioneCosting extends LayoutContainer{
 	}
 	
 	
-	private void getCosting() {
-			
+	private void getCosting() {			
 			//recupero il ruolo dalla sessione
 			SessionManagementService.Util.getInstance().getRuolo(new AsyncCallback<String>() {
 				@Override
 				public void onSuccess(String result) {						
-					if(result.compareTo("AMM")==0)
+					if(result.compareTo("PM")==0)				
 						//recupero l'username dalla sessione
 						SessionManagementService.Util.getInstance().getUserName(new AsyncCallback<String>() {
 							
@@ -568,6 +1038,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 							public void onSuccess(String result) {			
 								//carico i dati per username pm
 								username=result;
+								
 								AdministrationService.Util.getInstance().getListaDatiCosting(username, new AsyncCallback<List<CostingModel>>() {
 
 									@Override
@@ -620,14 +1091,6 @@ public class PanelGestioneCosting extends LayoutContainer{
 				}
 			});					
 	}	
-	
-	
-	private void loadTableCosting(List<CostingModel> result) {
-		storeCosting.removeAll();
-		storeCosting.setStoreSorter(new StoreSorter<CostingModel>());  
-	    storeCosting.setDefaultSort("cognome", SortDir.ASC);
-		storeCosting.add(result);
-	}
 	
 }
 

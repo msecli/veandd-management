@@ -13,9 +13,9 @@ public class CostingRisorsaModel extends BaseModel{
 		
 	}
 	
-	public CostingRisorsaModel(int idCostingRisorsa, String area, String cliente, String progetto, String commessa, String risorsa, String costoOrario, String orePianificate,
+	public CostingRisorsaModel(int idCostingRisorsa, String area, String cliente, String progetto, String commessa, int idRisorsa, String risorsa, String costoOrario, String orePianificate,
 			String oreCorrette, String lc, String costoRisorsa, String costoOrarioStruttura, String costoRisorsaStruttura, String costoTotaleAzienda, String incidenzaCostiAzienda,
-			String costoHwSw, String costoOneri, String costoSommaHwSwOneri, String costoRisorsaSommaHwSwOneri, String incidenzaCostiHwSw, String costoConsulenza, 
+			String costoHwSw, String costoOneri, String costoHSommaHwSwOneri, String costoRisorsaSommaHwSwOneri, String incidenzaCostiHwSw, String costoConsulenza, 
 			String costoTotaleHwSw, String efficienza, String oreFatturare,  String tariffa, String tariffaDerivata, String fatturato, String mol, String molPerc, String ebit, String ebitPerc){
 		
 		set("idCostingRisorsa",idCostingRisorsa);
@@ -23,7 +23,8 @@ public class CostingRisorsaModel extends BaseModel{
 		set("cliente",cliente);
 		set("progetto",progetto);
 		set("commessa",commessa);
-		set("risorsa", risorsa);
+		set("idRisorsa", idRisorsa);
+		set("risorsa", risorsa);		
 		set("costoOrario",costoOrario);
 		set("orePianificate",orePianificate);
 		set("oreCorrette",oreCorrette);
@@ -35,10 +36,11 @@ public class CostingRisorsaModel extends BaseModel{
 		set("incidenzaCostiAzienda",incidenzaCostiAzienda);		
 		set("costoHwSw",costoHwSw);
 		set("costoOneri",costoOneri);
-		set("costoSommaHwSwOneri",costoSommaHwSwOneri);
+		set("costoSommaHwSwOneri",costoHSommaHwSwOneri);
 		set("costoRisorsaSommaHwSwOneri",costoRisorsaSommaHwSwOneri);
 		set("incidenzaCostiHwSw",incidenzaCostiHwSw);
 		set("costoConsulenza",costoConsulenza);
+		set("costoTotaleHwSw",costoTotaleHwSw);
 		set("efficienza",efficienza);
 		set("oreFatturare",oreFatturare);
 		set("tariffa",tariffa);

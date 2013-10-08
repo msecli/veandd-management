@@ -751,7 +751,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    
 		    tlbarSearchField.add(txtfldsearch);
 		    tlbarSearchField.add(btnSearch);
-		    tlbarSearchField.add(btnChiudiOrdine);
+		   // tlbarSearchField.add(btnChiudiOrdine);
 		    
 		    ContentPanel cntpnlGrid= new ContentPanel();
 		    cntpnlGrid.setBodyBorder(false);  

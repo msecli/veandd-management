@@ -263,5 +263,23 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 			return false;
 		}
 	}
+
+
+	@Override
+	public boolean setDataFileTmbInSession(String data, String sede)
+			throws IllegalArgumentException {
+		try {
+			 HttpServletRequest request = this.getThreadLocalRequest();
+		   	 HttpSession httpSession = request.getSession();
+		   	   
+		   	 httpSession.setAttribute("data", data);
+		   	 httpSession.setAttribute("sede", sede);
+		     
+			 return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 	
 }

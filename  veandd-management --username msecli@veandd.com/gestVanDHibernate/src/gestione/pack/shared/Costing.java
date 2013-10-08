@@ -24,9 +24,13 @@ public class Costing  extends LightEntity implements IsSerializable {
 
 	private int cliente;
 
+	private String area;
+	
 	private String descrizioneProgetto;
 	
 	private String numerorevisione;
+	
+	private String statoCosting;
 
 	//bi-directional many-to-one association to Commessa
     @ManyToOne
@@ -86,6 +90,22 @@ public class Costing  extends LightEntity implements IsSerializable {
 
 	public void setNumerorevisione(String numerorevisione) {
 		this.numerorevisione = numerorevisione;
+	}
+
+	public String getStatoCosting() {
+		return statoCosting;
+	}
+
+	public void setStatoCosting(String statoCosting) {
+		this.statoCosting = statoCosting;
+	}
+
+	public String getArea() {
+		return area;
+	}
+
+	public void setArea(String area) {
+		this.area = area;
 	}
 	
 }

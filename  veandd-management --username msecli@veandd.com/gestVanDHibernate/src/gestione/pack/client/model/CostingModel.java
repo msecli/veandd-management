@@ -14,13 +14,16 @@ public class CostingModel extends BaseModel{
 	}
 	
 	//anche per il cliente salvo l'id
-	public CostingModel(int idCosting, int cliente, String numeroCommessa, String descrizione, String numeroRevisione){
+	public CostingModel(int idCosting, String cliente, String area, String numeroCommessa, String descrizione, String numeroRevisione, String stato){
 		
 		set("idCosting",idCosting);
 		set("cliente", cliente);
+		set("area",area);
 		set("commessa", numeroCommessa);
 		set("descrizione", descrizione);
 		set("numeroRevisione", numeroRevisione);		
+		set("displayField", cliente+"; " +area +"; " +numeroCommessa+"; "+descrizione);
+		set("stato", stato);
 	}
 	
 }

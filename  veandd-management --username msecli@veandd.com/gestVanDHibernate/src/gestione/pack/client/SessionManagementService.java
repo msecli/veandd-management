@@ -67,6 +67,8 @@ public interface SessionManagementService extends RemoteService {
 
 	boolean setDatiReportCostiDip(String string,
 			List<RiepilogoCostiDipendentiModel> models)throws IllegalArgumentException;
+
+	boolean setDataFileTmbInSession(String data, String sede)throws IllegalArgumentException;
 	
 	
 }

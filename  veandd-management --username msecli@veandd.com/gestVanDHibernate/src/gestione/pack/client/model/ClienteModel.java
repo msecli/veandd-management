@@ -60,6 +60,11 @@ public class ClienteModel extends BaseModel implements IsSerializable {
 
 	private Set<Rda> rdas= new HashSet<Rda>();
 
+	public ClienteModel(int codCliente, String ragioneSociale){
+		set("idCliente", codCliente);
+		set("ragioneSociale",ragioneSociale);
+	}
+	
 	public ClienteModel(int codCliente2, String ragioneSociale2, String codFiscale2, String partitaIVA2, String codRaggr2,
 			String citta2, String provincia2, String stato2, String indirizzo2,	String cap2, String telefono2, String fax2, String email2,
 			String banca2, String valuta2, String codABI2, String codCAB2, String codCIN2, String condizioniPagamento2, Set<Rda> rdas2) {

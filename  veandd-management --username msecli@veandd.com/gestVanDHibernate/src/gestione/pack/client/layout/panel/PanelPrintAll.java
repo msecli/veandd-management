@@ -9,17 +9,23 @@ import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.model.PersonaleModel;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.DatiComboBox;
+import gestione.pack.client.utility.MyImages;
 
+import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.VerticalPanel;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
@@ -32,6 +38,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
@@ -187,6 +194,7 @@ public class PanelPrintAll extends LayoutContainer {
 	    fp1.addSubmitCompleteHandler(new FormSubmitCompleteHandlerONE());  
 	    fp1.add(btnPrint1);
 	    
+	    
 	    btnPrint1.setWidth("100%");
 	    hpSingolo.add(smplcmbxAnno);
 	  	hpSingolo.add(smplcmbxMese);
@@ -194,9 +202,10 @@ public class PanelPrintAll extends LayoutContainer {
 	  	hpSingolo.add(fp1);
 	  	
 	  	cp1.add(hpSingolo);
-	    
+	    	  	 	
 	    bodyContainer.add(cp);
 	    bodyContainer.add(cp1);
+	    bodyContainer.add(new ContentPanelTMB());
 		
 		layoutContainer.add(bodyContainer, new FitData(5, 5, 5, 8));
 		add(layoutContainer);    
@@ -343,6 +352,116 @@ public class PanelPrintAll extends LayoutContainer {
 				}else Window.alert("error: Errore durante l'accesso ai dati Personale.");				
 			}
 		});
-	}	
+	}
 	
+	
+	public class ContentPanelTMB extends ContentPanel{
+		
+		private Button btnGeneraFileTmb;
+		private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
+		private String tmb= "/gestvandhibernate/GenerateFileServlet";
+		private SimpleComboBox<String> smplcmbxAnno;
+	    private SimpleComboBox<String> smplcmbxMese;
+	    private SimpleComboBox<String> smplcmbxSede;
+		
+		public ContentPanelTMB(){
+			
+			setHeading("Crea file Tmb");
+			setSize(290, 160);
+			setStyleAttribute("padding-top", "15px");
+			setFrame(true);
+			
+			VerticalPanel vp= new VerticalPanel();
+			vp.setSpacing(8);
+			
+			HorizontalPanel hp= new HorizontalPanel();
+			hp.setSpacing(5);
+			
+			fp.setMethod(FormPanel.METHOD_POST);
+		    fp.setAction(tmb);
+		   			  
+		    Date d= new Date();
+			String data= d.toString();
+			String mese= ClientUtility.meseToLong(ClientUtility.traduciMeseToIt(data.substring(4, 7)));
+			String anno= data.substring(data.length()-4, data.length());
+			
+		    smplcmbxMese= new SimpleComboBox<String>();
+		    smplcmbxMese.setFieldLabel("Mese");
+			smplcmbxMese.setName("mese");
+			smplcmbxMese.setEmptyText("Mese..");
+			smplcmbxMese.setAllowBlank(false);
+			 for(String l : DatiComboBox.getMese()){
+				 smplcmbxMese.add(l);}
+			smplcmbxMese.setTriggerAction(TriggerAction.ALL);
+			smplcmbxMese.setSimpleValue(mese);
+			
+			smplcmbxAnno = new SimpleComboBox<String>();
+			smplcmbxAnno.setFieldLabel("Anno");
+			smplcmbxAnno.setName("anno");
+			smplcmbxAnno.setWidth(75);
+			smplcmbxAnno.setEmptyText("Anno..");
+			smplcmbxAnno.setAllowBlank(false);
+			 for(String l : DatiComboBox.getAnno()){
+				 smplcmbxAnno.add(l);}
+			smplcmbxAnno.setTriggerAction(TriggerAction.ALL);
+			smplcmbxAnno.setSimpleValue(anno);
+		    
+			smplcmbxSede=new SimpleComboBox<String>();
+			smplcmbxSede.setFieldLabel("Sede");
+			smplcmbxSede.setWidth(65);
+			smplcmbxSede.setEmptyText("Sede..");
+			smplcmbxSede.setAllowBlank(false);
+			smplcmbxSede.add("T");
+			smplcmbxSede.add("B");
+			
+			btnGeneraFileTmb= new Button();
+			btnGeneraFileTmb.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.generate()));
+			btnGeneraFileTmb.setIconAlign(IconAlign.TOP);
+			btnGeneraFileTmb.setSize(85, 85);
+			btnGeneraFileTmb.setToolTip("Genera file tmb");
+			btnGeneraFileTmb.setStyleAttribute("padding-top", "5px");
+			btnGeneraFileTmb.addSelectionListener(new SelectionListener<ButtonEvent>() {
+				@Override
+				public void componentSelected(ButtonEvent ce) {					
+					
+					if(smplcmbxAnno.isValid()&&smplcmbxMese.isValid()&&smplcmbxSede.isValid()){
+						String sede=smplcmbxSede.getRawValue().toString();
+						String data= new String();
+						String anno=smplcmbxAnno.getRawValue().toString();
+						String meseCorrente=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
+						data=meseCorrente+anno;
+						
+						SessionManagementService.Util.getInstance().setDataFileTmbInSession(data, sede, new AsyncCallback<Boolean>() {
+
+							@Override
+							public void onFailure(Throwable caught) {
+								Window.alert("Error on setDataInSession()");					
+							}
+
+							@Override
+							public void onSuccess(Boolean result) {
+								if(result)
+									fp.submit();
+								else
+									Window.alert("Problemi durante il settaggio dei parametri in Sessione (http)");
+							}
+						});		
+					}				
+					else
+						Window.alert("Controllare i campi inseriti!");
+				}
+			});
+			
+			fp.add(btnGeneraFileTmb);
+			
+			vp.add(smplcmbxMese);
+			vp.add(smplcmbxAnno);
+			vp.add(smplcmbxSede);
+			
+			hp.add(vp);
+			hp.add(fp);
+					
+			add(hp);		
+		}
+	}
 }

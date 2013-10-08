@@ -39,6 +39,9 @@ public interface SessionManagementServiceAsync {
 	void setDatiReportCostiDip(String string,
 			List<RiepilogoCostiDipendentiModel> models,
 			AsyncCallback<Boolean> callback);
+
+	void setDataFileTmbInSession(String data, String sede,
+			AsyncCallback<Boolean> asyncCallback);
 	
 
 }

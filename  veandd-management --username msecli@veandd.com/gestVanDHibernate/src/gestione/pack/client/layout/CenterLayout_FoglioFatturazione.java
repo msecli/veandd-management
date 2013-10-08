@@ -306,15 +306,65 @@ public CenterLayout_FoglioFatturazione(){}
 		    summary.setForceFit(true);  
 		    summary.setShowGroupedColumn(false);
 		    summary.setStartCollapsed(true);
+		    summary.addListener(Events.BeforeExpand, new Listener<ComponentEvent>() {
+
+				@Override
+				public void handleEvent(ComponentEvent be) {
+					System.out.print("brauù");
+					
+				}
+			});
 		    		   		
 		    gridRiepilogo= new Grid<RiepilogoOreDipFatturazione>(store, cm);  
 		    gridRiepilogo.setItemId("grid");
-		    gridRiepilogo.setBorders(false);  
+		    gridRiepilogo.setBorders(false);
+		    
 		    gridRiepilogo.setStripeRows(true);  
 		    gridRiepilogo.setColumnLines(true);  
 		    gridRiepilogo.setColumnReordering(true);  
 		    gridRiepilogo.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 		    gridRiepilogo.setView(summary);
+		    gridRiepilogo.addListener(Events.RowClick, new Listener<ComponentEvent>() {
+				@Override
+				public void handleEvent(ComponentEvent be) {
+					/*List<RiepilogoOreDipFatturazione> listaRecord= new ArrayList<RiepilogoOreDipFatturazione>();
+					listaRecord.addAll(store.getModels());
+					String meseRif= new String(); 
+			    	String anno= new String();
+			    	int idDip=0;
+			    	
+			    	anno= smplcmbxAnno.getRawValue().toString();
+					meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString()).toLowerCase();
+						
+					
+					Date data= new Date();
+					DateFormat  formatter = new SimpleDateFormat("MMMyyyy", Locale.ITALIAN);
+				    	    
+					try {			
+						data= formatter.parse(meseRif+anno);
+						
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+					
+					for(RiepilogoOreDipFatturazione r: listaRecord)
+						AdministrationService.Util.getInstance().checkOreIntervalliIUOreCommesse((int)r.get("idDip"), data, new AsyncCallback<List<RiepilogoOreDipCommesseGiornaliero>>() {
+						
+							@Override
+							public void onSuccess(List<RiepilogoOreDipCommesseGiornaliero> result) {
+								// TODO Auto-generated method stub
+							
+							}
+						
+							@Override
+							public void onFailure(Throwable caught) {
+								// TODO Auto-generated method stub
+							
+							}
+						});
+					*/
+					}	
+				});
 		    
 		   // gridRiepilogo.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 		   
@@ -381,9 +431,9 @@ public CenterLayout_FoglioFatturazione(){}
 		    cntpnlGrid.setWidth(445);
 		    cntpnlGrid.setHeight(785);
 		    cntpnlGrid.setScrollMode(Scroll.AUTOY);
-		    cntpnlGrid.add(gridRiepilogo);
-		   	    
+		    
 		    cntpnlGrid.setTopComponent(tlbrRiepilogoOre);
+		    cntpnlGrid.add(gridRiepilogo);
 		    
 		    if(!smplcmbxMese.getRawValue().isEmpty()&&!smplcmbxPM.getRawValue().isEmpty()&&!smplcmbxAnno.getRawValue().isEmpty()){
 		    	String meseRif= new String(); 
@@ -492,7 +542,7 @@ public CenterLayout_FoglioFatturazione(){}
 				}			
 			});    
 		    configs.add(columnOreTotaliIU);
-		    
+		    */
 		    column=new SummaryColumnConfig<Double>();		
 		    column.setId("checkOre");  
 			column.setHeader("Check");  
@@ -524,7 +574,7 @@ public CenterLayout_FoglioFatturazione(){}
 					}
 				});
 		    configs.add(column);  
-		    */
+		    
 			return configs;
 		}	
 	
@@ -562,8 +612,7 @@ public CenterLayout_FoglioFatturazione(){}
 				Window.alert("error: Impossibile effettuare il caricamento dati in tabella.");
 					e.printStackTrace();
 			}
-		}
-		
+		}	
 	}
 	
 	
@@ -1658,6 +1707,8 @@ public CenterLayout_FoglioFatturazione(){}
 	    	  		txtVariazionePcl.setText("("+totaleEuro+")");
 	    	  		
 	    	  		String chbxValue= result.get("flagSalDaButtare");
+	    	  		
+	    	  		if(chbxValue!=null)
 	    	  		if(chbxValue.compareTo("S")==0)
 	    	  			chbxSalButtare.setValue(true);
 	    	  		else

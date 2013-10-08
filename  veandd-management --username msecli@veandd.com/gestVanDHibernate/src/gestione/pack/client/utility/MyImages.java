@@ -130,5 +130,11 @@ public interface MyImages extends ClientBundle{
 	
 	@Source("Icone/addList.png")
 	ImageResource addList();
+	
+	@Source("Icone/newVersion.png")
+	ImageResource newVersion();
+	
+	@Source("Icone/generate.png")
+	ImageResource generate();
 }
 
