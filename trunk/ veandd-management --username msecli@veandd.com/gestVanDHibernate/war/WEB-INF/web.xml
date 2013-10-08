@@ -39,6 +39,15 @@
     <url-pattern>/gestvandhibernate/PrintDataServlet</url-pattern>
   </servlet-mapping>
  
+   <servlet>
+	<servlet-name>generateFile</servlet-name>
+	<servlet-class>gestione.pack.server.GenerateFileServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+	<servlet-name>generateFile</servlet-name>
+    <url-pattern>/gestvandhibernate/GenerateFileServlet</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
    	<servlet-name>SessionManagementService</servlet-name>
   	<servlet-class>gestione.pack.server.SessionManagementServiceImpl</servlet-class>
