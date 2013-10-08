@@ -110,9 +110,9 @@ public class DatiComboBox {
 		
 		List <String> listaR=new ArrayList<String>();
 		
+		listaR.add("Costing");
 		listaR.add("Aperta");
 		//listaR.add("Prevista");
-		//listaR.add("Attiva");
 		listaR.add("Conclusa");
 					
 		return listaR;

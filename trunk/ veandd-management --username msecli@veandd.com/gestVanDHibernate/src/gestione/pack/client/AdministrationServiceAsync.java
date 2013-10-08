@@ -8,6 +8,7 @@ import gestione.pack.client.model.CommentiModel;
 import gestione.pack.client.model.CommessaModel;
 import gestione.pack.client.model.CostiHwSwModel;
 import gestione.pack.client.model.CostingModel;
+import gestione.pack.client.model.CostingRisorsaModel;
 import gestione.pack.client.model.DatiFatturazioneCommessaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.FoglioFatturazioneModel;
@@ -60,6 +61,8 @@ public interface AdministrationServiceAsync {
 	void removeDataCliente(int parseInt, AsyncCallback<Void> asyncCallback);
 	
 	void getRagioneSociale(AsyncCallback<List<String>> callback);
+	
+	void getListaClientiModel(AsyncCallback<List<ClienteModel>> asyncCallback);
 
 //-------------------Personale
 	void insertDataPersonale(String nome, String cognome, String username,
@@ -246,7 +249,7 @@ public interface AdministrationServiceAsync {
 	void getRiepilogoMeseFoglioOre(String username,
 			Date data, AsyncCallback<List<RiepilogoFoglioOreModel>> asyncCallback);
 
-	void checkOreIntervalliIUOreCommesse(String username, Date data, AsyncCallback<List<RiepilogoOreDipCommesseGiornaliero>> asyncCallback);
+	void checkOreIntervalliIUOreCommesse(String username, Date data, AsyncCallback<Boolean> asyncCallback);
 	
 //----------------------------------------------FATTURAZIONE
 	
@@ -353,5 +356,24 @@ public interface AdministrationServiceAsync {
 
 	void getDatiCosting(int costing,
 			AsyncCallback<List<CostingModel>> asyncCallback);
+
+	void insertDataCosting(String commessa, String area, int idCliente, String descrizione,
+			AsyncCallback<Boolean> asyncCallback);
+
+	void getRiepilogoDatiCostingRisorse(int idCosting,
+			AsyncCallback<List<CostingRisorsaModel>> asyncCallback);
+
+	void getDatiCostiDipendenteSelezionato(int idPersonale,
+			int idCosting, AsyncCallback<CostingRisorsaModel> asyncCallback);
+
+	void confermaCostingDipendente(int idSelected, CostingRisorsaModel c,
+			AsyncCallback<Boolean> asyncCallback);
+
+	void deleteRisorsaCosting(int idSelected, AsyncCallback<Boolean> asyncCallback);
+
+	void saveNewVersionCosting(int idSelected,
+			AsyncCallback<Boolean> asyncCallback);
+
+	
 			
 }

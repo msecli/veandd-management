@@ -309,6 +309,14 @@ public class Personale  extends LightEntity implements IsSerializable {
 		this.costoAziendas = costoAziendas;
 	}
 
+	public Set<CostingRisorsa> getCostingRisorsas() {
+		return costingRisorsas;
+	}
+
+	public void setCostingRisorsas(Set<CostingRisorsa> costingRisorsas) {
+		this.costingRisorsas = costingRisorsas;
+	}
+
 	
 	
 	

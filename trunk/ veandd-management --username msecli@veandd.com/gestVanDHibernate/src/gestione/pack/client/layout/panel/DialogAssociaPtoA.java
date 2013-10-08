@@ -99,8 +99,7 @@ public class DialogAssociaPtoA  extends Dialog{
 		} catch (Exception e) {
 			e.printStackTrace();
 			Window.alert("error: Caricamento lista nomi non effettuato.");
-		}
-		
+		}		
 		
 		list2.setDisplayProperty("nomeCompleto");
 		ListStore<PersonaleModel> store = new ListStore<PersonaleModel>();

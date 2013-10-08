@@ -587,11 +587,13 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			}		
 		}		
 		else{
-			String totOreViaggioSuCommesse="0.00";
-			for(IntervalliCommesseModel i:listaC)
-				totOreViaggioSuCommesse=ClientUtility.aggiornaTotGenerale(totOreViaggioSuCommesse, i.getOreViaggio());				
-			if(totOreViaggioSuCommesse.compareTo(oreViaggio)!=0)
-				return controllo="E' stato indicato un numero di ore viaggio non coerente tra intervalli commesse e giustificativo.";			
+			if(listaC.size()>0){
+				String totOreViaggioSuCommesse="0.00";
+				for(IntervalliCommesseModel i:listaC)
+					totOreViaggioSuCommesse=ClientUtility.aggiornaTotGenerale(totOreViaggioSuCommesse, i.getOreViaggio());				
+				if(totOreViaggioSuCommesse.compareTo(oreViaggio)!=0)
+					return controllo="E' stato indicato un numero di ore viaggio non coerente tra intervalli commesse e giustificativo.";
+			}
 		}		
 		return controllo;
 	}
@@ -677,7 +679,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			
 			//metodo che permette di visualizzare un warning nel momento in cui rileva incongruenze tra IU e commesse
 			AdministrationService.Util.getInstance().checkOreIntervalliIUOreCommesse(username, data, 
-					new AsyncCallback<List<RiepilogoOreDipCommesseGiornaliero> >() {
+					new AsyncCallback<Boolean >() {
 
 				@Override
 				public void onFailure(Throwable caught) {
@@ -686,7 +688,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 				}
 
 				@Override
-				public void onSuccess(List<RiepilogoOreDipCommesseGiornaliero> result) {
+				public void onSuccess(Boolean result) {
 					if(result!=null){
 						showCheck(result);
 					}else
@@ -695,16 +697,17 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			});
 		}
 
-		private void showCheck(List<RiepilogoOreDipCommesseGiornaliero> result) {
-			
+		private void showCheck(Boolean result) {
+			/*
 			final NumberFormat number = NumberFormat.getFormat("0.00");
 			RiepilogoOreDipCommesseGiornaliero recordTotali= new RiepilogoOreDipCommesseGiornaliero();
 			recordTotali=result.remove(result.size()-1);
 				
 			String oreTotCommesse=number.format(recordTotali.getTotOre());
 			String oreTotIU=number.format(recordTotali.getOreViaggio());
-									
-			if(oreTotCommesse.compareTo(oreTotIU)!=0){
+			*/						
+			//if(oreTotCommesse.compareTo(oreTotIU)!=0){
+			if(!result){
 				Dialog d= new Dialog();
 				d.setSize(600, 200);
 				d.setModal(true);
@@ -3676,7 +3679,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 						txtfldAbbuono.setValue("0.00");
 						
 						txtfldRecupero.setEnabled(true);
-						txtfldRecupero.setValue("0.00");
+						//txtfldRecupero.setValue("0.00");
 						txtfldStraordinario.setEnabled(true);
 						btnAssegnaOreStraordinario.setEnabled(true);
 						btnAssegnaRecupero.setEnabled(true);
@@ -3764,7 +3767,6 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			txtfldStraordinario.setValue(result.getOreStraordinario());
 			txtfldStraordinario.setAllowBlank(false);
 			txtfldStraordinario.setFieldLabel("Straordinario");		
-			//chbxStraordinario.setLabelSeparator("");
 			txtfldStraordinario.setRegex("[0-9]+[.]?[0-5]{1}[0-9]{1}|0.00|0.0");
 			txtfldStraordinario.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
 			txtfldStraordinario.setWidth(50);

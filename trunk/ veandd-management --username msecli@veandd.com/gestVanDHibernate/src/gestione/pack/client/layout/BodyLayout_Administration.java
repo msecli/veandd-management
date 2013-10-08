@@ -33,7 +33,6 @@ import com.extjs.gxt.ui.client.widget.Viewport;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
@@ -506,6 +505,20 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        	center.layout(true);}        
 	      });
 	    cp.add(btnRiepiloghiSalPcl);
+	    
+	    Button btnGestioneCosting = new Button();
+	    btnGestioneCosting.setToolTip("Costing");
+	    btnGestioneCosting.setHeight(65);
+	    btnGestioneCosting.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensPers()));
+	    btnGestioneCosting.setIconAlign(IconAlign.BOTTOM);
+	    btnGestioneCosting.setWidth("100%");
+	    btnGestioneCosting.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelGestioneCosting());
+	        	center.layout(true);}        
+	      });
+	    cp.add(btnGestioneCosting);
     
 	    panel.add(cp);
 	         

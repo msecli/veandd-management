@@ -120,11 +120,11 @@ public class CostingRisorsa extends LightEntity implements IsSerializable {
 		this.lc = lc;
 	}
 
-	public String getLocation() {
+	public String getDescProgetto() {
 		return this.progetto;
 	}
 
-	public void setLocation(String progetto) {
+	public void setDescProgetto(String progetto) {
 		this.progetto = progetto;
 	}
 

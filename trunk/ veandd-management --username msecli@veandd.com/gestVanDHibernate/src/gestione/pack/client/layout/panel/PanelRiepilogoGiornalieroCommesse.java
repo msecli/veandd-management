@@ -69,7 +69,7 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	private TextField<String> txtOreTotaliIntIU;
 	private Text txtCheck;
 	
-	com.google.gwt.user.client.ui.Button btnPrint1 = new com.google.gwt.user.client.ui.Button("Stampa");
+	//com.google.gwt.user.client.ui.Button btnPrint1 = new com.google.gwt.user.client.ui.Button("Stampa");
 	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
 	private static String url= "/gestvandhibernate/PrintDataServlet";
 	

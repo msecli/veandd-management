@@ -171,15 +171,16 @@ public class PanelGestioneCostiDipendenti extends LayoutContainer{
 	  	
 		caricaTabellaDati();
 			
-		sm.setSelectionMode(SelectionMode.SINGLE);
+		//sm.setSelectionMode(SelectionMode.SINGLE);
 		cm = new ColumnModel(createColumns());		
 		gridRiepilogo= new EditorGrid<GestioneCostiDipendentiModel>(store, cm);  
 		gridRiepilogo.setBorders(false);  
 		gridRiepilogo.setItemId("grid");
+		gridRiepilogo.setColumnLines(true);
+	    gridRiepilogo.setStripeRows(true);
 	    gridRiepilogo.addPlugin(sm);
 	    gridRiepilogo.setSelectionModel(sm);
-	    gridRiepilogo.setColumnLines(true);
-	    gridRiepilogo.setStripeRows(true);
+	    gridRiepilogo.getView().setShowDirtyCells(false);
 	    gridRiepilogo.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<GestioneCostiDipendentiModel>>() {  
 	          public void handleEvent(SelectionChangedEvent<GestioneCostiDipendentiModel> be) {  
 		        	
