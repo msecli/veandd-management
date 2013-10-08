@@ -5,47 +5,46 @@
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
-	<queryString language="hql">
+	<!--queryString language="hql">
 		<![CDATA[from DatiOreMese]]>
-	</queryString>
+	</queryString-->
 	<field name="username" class="java.lang.String">
-		<fieldDescription><![CDATA[username]]></fieldDescription>
+		
 	</field>
 	<field name="giorno" class="java.lang.String">
-		<fieldDescription><![CDATA[giorno]]></fieldDescription>
-	</field>
+			</field>
 	<field name="totGiorno" class="java.lang.String">
-		<fieldDescription><![CDATA[totGiorno]]></fieldDescription>
+		
 	</field>
 	<field name="oreRecupero" class="java.lang.String">
-		<fieldDescription><![CDATA[oreRecupero]]></fieldDescription>
+		
 	</field>
 	<field name="oreViaggio" class="java.lang.String">
-		<fieldDescription><![CDATA[oreViaggio]]></fieldDescription>
+		
 	</field>
 	<field name="deltaOreViaggio" class="java.lang.String">
-		<fieldDescription><![CDATA[deltaOreViaggio]]></fieldDescription>
+		
 	</field>
 	<field name="oreTotali" class="java.lang.String">
-		<fieldDescription><![CDATA[oreTotali]]></fieldDescription>
+		
 	</field>
 	<field name="oreFerie" class="java.lang.String">
-		<fieldDescription><![CDATA[oreFerie]]></fieldDescription>
+		
 	</field>
 	<field name="orePermesso" class="java.lang.String">
-		<fieldDescription><![CDATA[orePermesso]]></fieldDescription>
+		
 	</field>
 	<field name="oreStraordinario" class="java.lang.String">
-		<fieldDescription><![CDATA[oreStraordinario]]></fieldDescription>
+		
 	</field>
 	<field name="deltaGiornaliero" class="java.lang.String">
-		<fieldDescription><![CDATA[deltaGiornaliero]]></fieldDescription>
+		
 	</field>
 	<field name="giustificativo" class="java.lang.String">
-		<fieldDescription><![CDATA[giustificativo]]></fieldDescription>
+		
 	</field>
 	<field name="noteAggiuntive" class="java.lang.String">
-		<fieldDescription><![CDATA[noteAggiuntive]]></fieldDescription>
+		
 	</field>
 	<background>
 		<band splitType="Stretch"/>
