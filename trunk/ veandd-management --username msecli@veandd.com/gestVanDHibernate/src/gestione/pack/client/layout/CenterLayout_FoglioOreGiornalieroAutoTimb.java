@@ -10,7 +10,6 @@ import gestione.pack.client.layout.panel.PanelRiepilogoMeseFoglioOre;
 import gestione.pack.client.model.GiustificativiModel;
 import gestione.pack.client.model.IntervalliCommesseModel;
 import gestione.pack.client.model.IntervalliIUModel;
-import gestione.pack.client.model.RiepilogoOreDipCommesseGiornaliero;
 import gestione.pack.client.model.RiepilogoOreModel;
 import gestione.pack.client.model.TimbraturaModel;
 
@@ -2976,7 +2975,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 	       LayoutContainer right= new LayoutContainer();
 		   FldsetGiustificativi fldsetGiustificativo;
 		  
-		   //TODO
+		  
 		   if((LayoutContainer) getParent().getParent()!=null)
 			   lc=(LayoutContainer) getParent().getParent();
 		   right=(LayoutContainer) lc.getItemByItemId("right");
@@ -3237,52 +3236,6 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 				txtfld5I.setEnabled(true);
 				txtfld5U.setEnabled(true);			
 			
-			
-			//TODO modficato (i vari if commentati)
-					
-			 //abilitarli solo se hanno tooltip==DIP o ==""
-			/*
-			if(txtfldRuolo.getValue().compareTo("PM")==0 || txtfldRuolo.getValue().compareTo("GP")==0 
-					|| txtfldRuolo.getValue().compareTo("AMM")==0 || txtfldRuolo.getValue().compareTo("DIR")==0){
-				txtfld1I.setEnabled(true);
-				txtfld1U.setEnabled(true);
-				txtfld2I.setEnabled(true);
-				txtfld2U.setEnabled(true);
-				txtfld3I.setEnabled(true);
-				txtfld3U.setEnabled(true);
-				txtfld4I.setEnabled(true);
-				txtfld4U.setEnabled(true);
-				txtfld5I.setEnabled(true);
-				txtfld5U.setEnabled(true);			
-				
-			}else{
-				
-				if(txtfld1I.getData("sorgente").toString().compareTo("DIP")==0 || txtfld1I.getData("sorgente").toString().compareTo("")==0 )
-					txtfld1I.setEnabled(true);
-				if(txtfld1U.getData("sorgente").toString().compareTo("DIP")==0 || txtfld1U.getData("sorgente").toString().compareTo("")==0)
-					txtfld1U.setEnabled(true);
-				
-				if(txtfld2I.getData("sorgente").toString().compareTo("DIP")==0 || txtfld2I.getData("sorgente").toString().compareTo("")==0)
-					txtfld2I.setEnabled(true);
-				if(txtfld2U.getData("sorgente").toString().compareTo("DIP")==0 || txtfld2U.getData("sorgente").toString().compareTo("")==0)
-					txtfld2U.setEnabled(true);
-				
-				if(txtfld3I.getData("sorgente").toString().compareTo("DIP")==0 || txtfld3I.getData("sorgente").toString().compareTo("")==0)
-					txtfld3I.setEnabled(true);
-				if(txtfld3U.getData("sorgente").toString().compareTo("DIP")==0 || txtfld3U.getData("sorgente").toString().compareTo("")==0)
-					txtfld3U.setEnabled(true);
-				
-				if(txtfld4I.getData("sorgente").toString().compareTo("DIP")==0 || txtfld4I.getData("sorgente").toString().compareTo("")==0)
-					txtfld4I.setEnabled(true);
-				if(txtfld4U.getData("sorgente").toString().compareTo("DIP")==0 || txtfld4U.getData("sorgente").toString().compareTo("")==0)
-					txtfld4U.setEnabled(true);
-				
-				if(txtfld5I.getData("sorgente").toString().compareTo("DIP")==0 || txtfld5I.getData("sorgente").toString().compareTo("")==0)
-					txtfld5I.setEnabled(true);
-				if(txtfld5U.getData("sorgente").toString().compareTo("DIP")==0 || txtfld5U.getData("sorgente").toString().compareTo("")==0)
-					txtfld5U.setEnabled(true);			
-			}
-			  */
 		}	
 	}
 	
@@ -3674,7 +3627,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 						btnAssegnaOreStraordinario.setEnabled(false);
 						btnAssegnaRecupero.setEnabled(false);
 					}
-					else{//TODO
+					else{
 						txtfldAbbuono.setEnabled(false);
 						txtfldAbbuono.setValue("0.00");
 						
@@ -4062,7 +4015,8 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		}
 
 		protected boolean hasValueOreViaggio(TextField<String> field) {
-		    return field.getValue() != null && field.isValid();
+			
+		    return field.getValue() != null && field.isValid() && field.getValue().toString().compareTo("0.00")!=0;
 		}	
 	}
 

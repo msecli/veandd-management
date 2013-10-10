@@ -3,6 +3,8 @@ package gestione.pack.client.layout.panel;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sf.jasperreports.engine.ReturnValue;
+
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.model.CostiHwSwModel;
@@ -52,6 +54,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.selection.SelectionModel;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -76,6 +79,9 @@ public class PanelGestioneCosting extends LayoutContainer{
 	private ComboBox<PersonaleModel> cmbxPersonale= new ComboBox<PersonaleModel>();
 	private ComboBox<CostingModel> cmbbxCosting;
 	private Button btnAddCosting;
+	private Button btnConfermaCosting;
+	private Button btnScartaCosting;
+	private Button btnChiudiCosting;
 	private Button btnAddRisorsa;
 	private Button btnDelRisorsa;
 	private Button btnConfermaDip;
@@ -130,7 +136,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 		
 		ToolBar tlbCosting= new ToolBar();
 		ToolBar tlbCostingRisorsa= new ToolBar();
-					
+		getCosting();	
 		ListStore<CostingModel> store=new ListStore<CostingModel>();
 		cmbbxCosting=new ComboBox<CostingModel>();		
 		cmbbxCosting.setStore(store);
@@ -143,12 +149,12 @@ public class PanelGestioneCosting extends LayoutContainer{
 		cmbbxCosting.setAllowBlank(false);
 		cmbbxCosting.setDisplayField("displayField");
 		cmbbxCosting.setWidth(350);
-		cmbbxCosting.addListener(Events.OnClick, new Listener<BaseEvent>(){
+		/*cmbbxCosting.addListener(Events.OnClick, new Listener<BaseEvent>(){
 			@Override
 			public void handleEvent(BaseEvent be) {			
-				getCosting();					
+									
 			}
-		});
+		});*/
 		cmbbxCosting.addListener(Events.Select, new Listener<BaseEvent>(){
 			@Override
 			public void handleEvent(BaseEvent be) {	
@@ -179,6 +185,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 						try {
 							cmbbxCosting.clear();
 							caricaTabellaDatiCosting();
+							getCosting();
 						} catch (Exception e) {
 							e.printStackTrace();
 							Window.alert("error: Impossibile caricare i dati in tabella.");
@@ -187,6 +194,66 @@ public class PanelGestioneCosting extends LayoutContainer{
 				});
 			}
 		});
+	  	
+	  	btnConfermaCosting=new Button();
+	  	btnConfermaCosting.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.confirm()));
+	  	btnConfermaCosting.setIconAlign(IconAlign.BOTTOM);
+	  	btnConfermaCosting.setToolTip("Conferma Costing");
+	  	btnConfermaCosting.setSize(26, 26);
+	  	btnConfermaCosting.setVisible(false);
+	  	btnConfermaCosting.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				String operazione="C";				
+				AdministrationService.Util.getInstance().editStatoCosting(idSelected, operazione, new AsyncCallback<Boolean>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void onSuccess(Boolean result) {
+						// TODO Auto-generated method stub
+						
+					}
+				});				
+			}	  		
+	  	});
+	  	
+	  	btnScartaCosting=new Button();
+	  	btnScartaCosting.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.respingi()));
+	  	btnScartaCosting.setIconAlign(IconAlign.BOTTOM);
+	  	btnScartaCosting.setToolTip("Respingi la versione del Costing");
+	  	btnScartaCosting.setSize(26, 26);
+	  	btnScartaCosting.setVisible(false);
+	  	btnScartaCosting.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				// TODO Auto-generated method stub
+				
+			}
+	  		
+	  	});
+	  	
+	  	btnChiudiCosting=new Button();
+	  	btnChiudiCosting.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.azzera()));
+	  	btnChiudiCosting.setIconAlign(IconAlign.BOTTOM);
+	  	btnChiudiCosting.setToolTip("Chiudi definitivamente il Costing");
+	  	btnChiudiCosting.setSize(26, 26);
+	  	btnChiudiCosting.setVisible(false);
+	  	btnChiudiCosting.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				// TODO Auto-generated method stub
+				
+			}
+	  		
+	  	});
 	  
 	    btnAddRisorsa= new Button();
 	    btnAddRisorsa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.addUser()));
@@ -292,13 +359,18 @@ public class PanelGestioneCosting extends LayoutContainer{
 
 					@Override
 					public void onFailure(Throwable caught) {
-						// TODO Auto-generated method stub
+						Window.alert("Errore di connessione on saveAssociaCostiHwSw()");
 						
 					}
 
 					@Override
 					public void onSuccess(Boolean result) {
-						// TODO Auto-generated method stub
+						if(!result)
+	  						Window.alert("Impossibile confermare la nuova versione!");
+	  					else{
+	  						//storeCostingRisorsa.commitChanges();
+	  						caricaTabellaDatiCosting();
+	  					}
 						
 					}
 				});				
@@ -343,6 +415,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    gridCostingDipendente.setStripeRows(true); 
 	    gridCostingDipendente.setColumnLines(true);
 	    gridCostingDipendente.setSelectionModel(cm);
+	    gridCostingDipendente.setWidth(2600);
 	    gridCostingDipendente.addListener(Events.CellClick, new Listener<ComponentEvent>() {
 			@Override
 			public void handleEvent(ComponentEvent be) {
@@ -357,6 +430,11 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    tlbCosting.add(new SeparatorToolItem());
 	    tlbCosting.add(btnAddCosting);
 	    tlbCosting.add(new SeparatorToolItem());
+	    tlbCosting.add(btnConfermaCosting);
+	    tlbCosting.add(new SeparatorToolItem());
+	    tlbCosting.add(btnScartaCosting);
+	    tlbCosting.add(new SeparatorToolItem());
+	    tlbCosting.add(btnChiudiCosting);
 	    cpGridCosting.setTopComponent(tlbCosting);
 	    
 	    cpGridCostingRisorsa.add(gridCostingDipendente);
@@ -465,8 +543,9 @@ public class PanelGestioneCosting extends LayoutContainer{
 	
 	private List<ColumnConfig> createColumnsCostingRisorse() {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
-		
+		final NumberFormat number = NumberFormat.getFormat("0.00");
 		ColumnConfig column = new ColumnConfig();  
+		
 		CellEditor editorTxt;
 		GridCellRenderer<CostingRisorsaModel> renderer = new GridCellRenderer<CostingRisorsaModel>() {
             public String render(CostingRisorsaModel model, String property, ColumnData config, int rowIndex,
@@ -475,7 +554,7 @@ public class PanelGestioneCosting extends LayoutContainer{
             	String ncommessa=model.get("commessa");
             	if(ncommessa!=null)           	
             		if((property.compareTo("risorsa")==0 || property.compareTo("orePianificate")==0 || property.compareTo("lc")==0 || property.compareTo("costoConsulenza")==0
-            			|| property.compareTo("efficienza")==0 || property.compareTo("tariffa")==0) && ncommessa.compareTo("TOTALE")!=0){
+            			|| property.compareTo("efficienza")==0 || property.compareTo("tariffa")==0 || property.compareTo("costoTrasferta")==0) && ncommessa.compareTo("TOTALE")!=0){
             		config.style = config.style + ";background-color:#d2f5af;";//verde
             	 	return model.get(property);
             		}else
@@ -488,13 +567,32 @@ public class PanelGestioneCosting extends LayoutContainer{
             	          	return model.get(property);
             	else
             		if((property.compareTo("risorsa")==0 || property.compareTo("orePianificate")==0 || property.compareTo("lc")==0 || property.compareTo("costoConsulenza")==0
-        				|| property.compareTo("efficienza")==0 || property.compareTo("tariffa")==0)){
+        				|| property.compareTo("efficienza")==0 || property.compareTo("tariffa")==0) || property.compareTo("costoTrasferta")==0){
             			config.style = config.style + ";background-color:#d2f5af;";//verde
             			return model.get(property);
             		}
             		else
             			return model.get(property);
         }};
+        
+        GridCellRenderer<CostingRisorsaModel> rendererPerc = new GridCellRenderer<CostingRisorsaModel>() {
+            public String render(CostingRisorsaModel model, String property, ColumnData config, int rowIndex,
+                    int colIndex, ListStore<CostingRisorsaModel> store, Grid<CostingRisorsaModel> grid) {
+				
+				String val=model.get(property);
+				String ncommessa=model.get("commessa");
+				Float valf=(float)0;
+				if(val!=null)
+					if(val.compareTo("#")!=0){
+						valf=Float.valueOf(val);	
+						valf*=100;
+					}					
+            	if(ncommessa!=null)
+            		if(ncommessa.compareTo("TOTALE")==0)
+            			config.style = config.style + ";background-color:#f5afaf;" +"font-weight:bold;" ;//rosso
+            	
+				return number.format(valf)+"%";				
+		}};
 		
 	    column = new ColumnConfig();  
 	    column.setId("area");  
@@ -808,8 +906,46 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    column.setEditor(editorTxt);
 	    configs.add(column);
 	    
-	    //TODO costoTotaleHwSw
+	    column = new ColumnConfig();  
+	    column.setId("costoTrasferta");  
+	    column.setHeader("Costo Trasferta");  
+	    column.setWidth(80);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    TextField<String> txtfldCostoTrasferta= new TextField<String>();
+	    txtfldCostoTrasferta.setRegex("[0-9]+[.]{1}[0-9]{2}|[0-9]");
+	    txtfldCostoTrasferta.getMessages().setRegexText("Deve essere un numero!");
+	    txtfldCostoTrasferta.setValue("0.00");
+	    editorTxt= new CellEditor(txtfldCostoTrasferta){
+	    	@Override  
+	        public Object preProcessValue(Object value) {  
+	          if (value == null) {  
+	            return value;  
+	          }  
+	          return value.toString();  
+	        }  
 	    
+	        @Override  
+	        public Object postProcessValue(Object value) {  
+	          if (value == null) {  
+	            return value;  
+	          }  
+	          return value.toString();  
+	        }  
+	    };	    
+	    column.setEditor(editorTxt);
+	    configs.add(column);
+	    
+	    
+	    column = new ColumnConfig();  
+	    column.setId("costoTotale");  
+	    column.setHeader("Costo Totale");  
+	    column.setWidth(100);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    configs.add(column);
 	    
 	    column = new ColumnConfig();  
 	    column.setId("efficienza");  
@@ -901,7 +1037,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    column = new ColumnConfig();  
 	    column.setId("mol");  
 	    column.setHeader("MOL");    
-	    column.setWidth(50);  
+	    column.setWidth(80);  
 	    column.setRenderer(renderer);
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
@@ -911,15 +1047,16 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    column.setId("molPerc");  
 	    column.setHeader("MOL%");    
 	    column.setWidth(50);  
-	    column.setRenderer(renderer);
+	    column.setRenderer(rendererPerc);
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    column.setNumberFormat(NumberFormat.getPercentFormat());
 	    configs.add(column);
 	    
 	    column = new ColumnConfig();  
 	    column.setId("ebit");  
 	    column.setHeader("EBIT");    
-	    column.setWidth(50);  
+	    column.setWidth(80);  
 	    column.setRenderer(renderer);
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
@@ -929,7 +1066,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    column.setId("ebitPerc");  
 	    column.setHeader("EBIT%");    
 	    column.setWidth(50);  
-	    column.setRenderer(renderer);
+	    column.setRenderer(rendererPerc);
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
@@ -1065,8 +1202,11 @@ public class PanelGestioneCosting extends LayoutContainer{
 							}
 						});	
 					
-					else
+					else{
 						//carico tutti i costing perchè username è ""
+						btnConfermaCosting.setVisible(true);
+						btnScartaCosting.setVisible(true);
+						btnChiudiCosting.setVisible(true);
 						AdministrationService.Util.getInstance().getListaDatiCosting("",new AsyncCallback<List<CostingModel>>() {
 
 							@Override
@@ -1084,6 +1224,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 								cmbbxCosting.setStore(lista);						
 							}
 						});
+					}
 				}		
 				@Override
 				public void onFailure(Throwable caught) {				

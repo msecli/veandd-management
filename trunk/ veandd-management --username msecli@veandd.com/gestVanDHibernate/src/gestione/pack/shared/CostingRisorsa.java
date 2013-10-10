@@ -37,7 +37,7 @@ public class CostingRisorsa extends LightEntity implements IsSerializable {
 
 	private String progetto;
 
-	private String oreCorrette;
+	private String costoTrasferta;
 
 	private String orePianificate;
 
@@ -128,12 +128,12 @@ public class CostingRisorsa extends LightEntity implements IsSerializable {
 		this.progetto = progetto;
 	}
 
-	public String getOreCorrette() {
-		return this.oreCorrette;
+	public String getCostoTrasferta() {
+		return this.costoTrasferta;
 	}
 
-	public void setOreCorrette(String oreCorrette) {
-		this.oreCorrette = oreCorrette;
+	public void setCostotrasferta(String costoTrasferta) {
+		this.costoTrasferta = costoTrasferta;
 	}
 
 	public String getOrePianificate() {

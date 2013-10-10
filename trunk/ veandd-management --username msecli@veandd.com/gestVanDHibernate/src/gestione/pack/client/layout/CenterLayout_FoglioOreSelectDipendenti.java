@@ -2965,27 +2965,42 @@ String movimento= new String();
 				   lc=(LayoutContainer) getParent().getParent();
 			   right=(LayoutContainer) lc.getItemByItemId("right");
 			   fldsetGiustificativo=(FldsetGiustificativi) right.getItemByItemId("fldSetGiustificativi");
-			   		   
-			   listaParziali.add(txtfldSomma1.getValue().toString());
-	  		   listaParziali.add(txtfldSomma2.getValue().toString());
-	  		   listaParziali.add(txtfldSomma3.getValue().toString());
-	  		   listaParziali.add(txtfldSomma4.getValue().toString());
-	  		   listaParziali.add(txtfldSomma5.getValue().toString());
-	  	   
-	  		   abbuono="-"+fldsetGiustificativo.txtfldAbbuono.getValue();
-	  		   totale=ClientUtility.calcolaTempo(listaParziali);
-	  		   totale=ClientUtility.aggiornaTotGenerale(totale, abbuono);
+			 		 
+			   if(txtfldSomma1.getValue().toString().length()<=5 && txtfldSomma2.getValue().toString().length()<=5 && txtfldSomma3.getValue().toString().length()<=5&&
+					   txtfldSomma4.getValue().toString().length()<=5 && txtfldSomma5.getValue().toString().length()<=5){
+				   listaParziali.add(txtfldSomma1.getValue().toString());
+				   listaParziali.add(txtfldSomma2.getValue().toString());
+				   listaParziali.add(txtfldSomma3.getValue().toString());
+				   listaParziali.add(txtfldSomma4.getValue().toString());
+				   listaParziali.add(txtfldSomma5.getValue().toString());
+	  	   	  		   	  		   
+				   abbuono="-"+fldsetGiustificativo.txtfldAbbuono.getValue();
+				   totale=ClientUtility.calcolaTempo(listaParziali);
+				   totale=ClientUtility.aggiornaTotGenerale(totale, abbuono);
 	  		   
-	  		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
-	  		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
-	  		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
+				   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
+				   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
+				   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
 	  		  
-	  		   if(isNew.compareTo("new")==0){
-	  			 fldsetGiustificativo.txtfldRecupero.setValue(delta);
-	  		   }
+				   if(isNew.compareTo("new")==0){
+					   fldsetGiustificativo.txtfldRecupero.setValue(delta);
+				   }
 	  		   	   
-	  		   setFieldGiustificativo(fldsetGiustificativo, delta);			
+				   setFieldGiustificativo(fldsetGiustificativo, delta);			
+			}else{
+								
+				totale="0.00";
+				delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
+				fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
+				fldsetGiustificativo.txtfldOreDelta.setValue(delta);
+	  		  
+				if(isNew.compareTo("new")==0){
+					   fldsetGiustificativo.txtfldRecupero.setValue(delta);
+				}
+	  		   	   
+				setFieldGiustificativo(fldsetGiustificativo, delta);			
 			}
+		}
 	}
 	
 	
@@ -3364,7 +3379,7 @@ String movimento= new String();
 						btnAssegnaOreStraordinario.setEnabled(false);
 						btnAssegnaRecupero.setEnabled(false);
 					}
-					else{//TODO
+					else{
 						txtfldAbbuono.setEnabled(false);
 						txtfldAbbuono.setValue("0.00");
 						

@@ -309,8 +309,7 @@ public class ClientUtility {
 				a_1=Integer.parseInt(totale);
 				b_1=0;				
 			}
-			
-			
+					
 			if(parziale.indexOf(".")!=-1){
 				a_2= Integer.parseInt(parziale.substring(0,parziale.indexOf(".")));
 				b_2= Integer.parseInt(parziale.substring(parziale.indexOf(".")+1, parziale.length()));
@@ -338,6 +337,7 @@ public class ClientUtility {
 				totale=(String.valueOf(totA)+"."+String.valueOf(totB));
 		}		
 		return totale;
+	
 	} 		
 	
 

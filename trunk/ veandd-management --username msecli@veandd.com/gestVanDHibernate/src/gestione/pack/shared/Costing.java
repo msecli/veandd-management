@@ -15,11 +15,13 @@ import java.util.Set;
  * 
  */
 @Entity
+@Table(name="costing")
 public class Costing  extends LightEntity implements IsSerializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name="idCosting")
 	private int idCosting;
 
 	private int cliente;

@@ -1093,301 +1093,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		return listaCM;
 		
 	}
-//---------------------------------------------------------------------------------------------------------
 
 	
-
-//----------------------------OFFERTA----------------------------------------------------------------------
-	/*
-	@Override
-	public void insertDataOfferta(String numOfferta, String numRda, Date dataOfferta, String descrizione, String tariffa) throws IllegalArgumentException {
-		
-		Rda r=new Rda();
-		Offerta o= new Offerta();
-		
-		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
-		Transaction tx= null;	
-		
-		try {
-			
-			tx=session.beginTransaction();
-			r = (Rda)session.createQuery("from Rda where codiceRDA= :numRda").setParameter("numRda", numRda).uniqueResult(); //prelevo l'id dell'Rda conoscendo il numero dell'Rda che è comunque univoco	
-					
-			o.setRda(r);
-			o.setCodiceOfferta(numOfferta);
-			o.setDescrizioneTecnica(descrizione);
-			o.setImporto(tariffa);
-			o.setDataRedazione(dataOfferta);
-			
-			r.getOffertas().add(o);
-		    
-		    session.save(r);
-		    tx.commit();
-			
-		} catch (Exception e) {
-			if (tx!=null)
-	    		tx.rollback();		    	
-			e.printStackTrace();
-		}
-	}
-
-
-	@Override
-	public void editDataOfferta(int idofferta, String numOfferta, String numRda, Date dataOfferta, String descrizione, String tariffa)throws IllegalArgumentException {
-		
-		Offerta o=new Offerta();
-		Rda r=new Rda();
-		
-		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
-		Transaction tx= null;	
-		
-		try {	
-			tx=session.beginTransaction();
-			o = (Offerta)session.get(Offerta.class, idofferta);	
-			if(o.getRda().getCodiceRDA().compareTo(numRda)!=0){
-				r=(Rda)session.createQuery("from Rda where codiceRDA=:numRda").setParameter("numRda", numRda).uniqueResult();
-				o.setRda(r);
-				r.getOffertas().add(o);
-			}
-			
-			o.setCodiceOfferta(numOfferta);
-			o.setDescrizioneTecnica(descrizione);
-			o.setImporto(tariffa);
-			o.setDataRedazione(dataOfferta);	    
-			
-		    tx.commit();		
-		} catch (Exception e) {
-			if (tx!=null)
-	    		tx.rollback();		    	
-			e.printStackTrace();
-		}
-	}
-
-
-	@Override
-	public void deleteDataOfferta(int idOfferta)  throws IllegalArgumentException{
-		
-		Offerta o= new Offerta();
-		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
-		Transaction tx= null;
-				
-		try {
-			  tx=	session.beginTransaction();
-			  o=(Offerta)session.createQuery("from Offerta where numero_offerta =:idofferta").setParameter("idofferta", idOfferta).uniqueResult();
-			  session.delete(o);
-			  tx.commit();
-		     
-		    } catch (Exception e) {
-		    	if (tx!=null)
-		    		tx.rollback();		    	
-		    		e.printStackTrace();
-		    }		
-	}
 	
-	@Override
-	public Set<Offerta> getAllOfferte() throws IllegalArgumentException{
-		
-		Set<Offerta> listaO = ConverterUtil.getOfferte(); 
-		return listaO;
-		
-	}
-	
-	@Override
-	public List<OffertaModel> getAllOfferteModel() throws IllegalArgumentException {
-		
-		Set<Offerta> listaO = ConverterUtil.getOfferte();  
-		List<OffertaModel> listaDTO = new ArrayList<OffertaModel>(listaO!=null ? listaO.size() : 0);  
-		    
-		     try{
-					if(listaO!=null){
-					
-						for(Offerta o : listaO){	
-							listaDTO.add(ConverterUtil.offerteToModelConverter(o));
-							}
-						}
-							
-					}catch (Exception e) {
-						e.printStackTrace();
-					} 
-		     
-			return listaDTO;		
-	}
-	
-	
-//---------------------------------------------------------------------------------------------------------
-	
-
-//----------------------------ORDINE-----------------------------------------------------------------------
-
-	@Override
-	public boolean insertDataOrdine(String numOrdine, String numRda, String numeroCommessa, String estensione,
-			Date dataInizio, Date dataFine, String descrizione,
-			String tariffaOraria, String numeroRisorse, String numeroOre)
-			throws IllegalArgumentException {
-
-		Rda r=new Rda();
-		Ordine o= new Ordine();
-		Commessa c= new Commessa();
-		
-		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
-		Transaction tx= null;	
-		
-		try {			
-			tx=session.beginTransaction();		
-			if(numeroCommessa.compareTo("")!=0){//se è stata inserita una commessa la cerca
-				
-				r = (Rda)session.createQuery("from Rda where codiceRDA=:numRda").setParameter("numRda", numRda).uniqueResult(); //prelevo l'id dell'Rda conoscendo il numero dell'Rda che è comunque univoco		
-				c=(Commessa) session.createQuery("from Commessa where numeroCommessa=:numeroCommessa and estensione=:estensione")
-						.setParameter("numeroCommessa", numeroCommessa).setParameter("estensione", estensione).uniqueResult();
-				
-				o.setCommessa(c);
-				o.setCodiceOrdine(numOrdine);	//numero effettivo dell'ordine
-				o.setDescrizioneAttivita(descrizione);
-				o.setTariffaOraria(tariffaOraria);
-				o.setDataInizio(dataInizio);
-				o.setDataFine(dataFine);
-				o.setNumRisorse(numeroRisorse);
-				o.setOreBudget(numeroOre);
-				o.setOreResidueBudget(numeroOre);
-				c.getOrdines().add(o);
-				    	
-				if(r!=null){
-					o.setRda(r);
-					r.getOrdines().add(o);
-					session.save(r);
-				}else{
-					
-				}			
-		    	session.save(c);
-		    	tx.commit();		
-				
-		    }else{
-		    	r = (Rda)session.createQuery("from Rda where codiceRDA=:numRda").setParameter("numRda", numRda).uniqueResult(); //prelevo l'id dell'Rda conoscendo il numero dell'Rda che è comunque univoco		
-				
-				o.setCodiceOrdine(numOrdine);	//numero effettivo dell'ordine
-				o.setDescrizioneAttivita(descrizione);
-				o.setTariffaOraria(tariffaOraria);
-				o.setDataInizio(dataInizio);
-				o.setDataFine(dataFine);
-				o.setNumRisorse(numeroRisorse);
-				o.setOreBudget(numeroOre);
-				o.setOreResidueBudget(numeroOre);
-				if(r!=null){
-					o.setRda(r);
-					r.getOrdines().add(o);
-					session.save(r);
-				}else{
-					session.save(o);
-				}
-		    	tx.commit();		    	
-		    }    
-		    return true;		
-		} catch (Exception e) {
-			if (tx!=null)
-	    		tx.rollback();		    	
-			e.printStackTrace();
-			return false;
-		}	
-	}
-
-
-	@Override
-	public boolean editDataOrdine(int idordine, String numOrdine, String numRda, String numeroCommessa, String estensione,
-			Date dataInizio, Date dataFine, String descrizione,
-			String tariffaOraria, String numeroRisorse, String numeroOre)
-			throws IllegalArgumentException {
-
-		Ordine o=new Ordine();
-		Commessa c= new Commessa();
-		
-		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
-		Transaction tx= null;	
-		
-		try {
-				
-			tx=session.beginTransaction();
-			o = (Ordine)session.get(Ordine.class, idordine);	
-			o.setCodiceOrdine(numOrdine);
-			o.setDescrizioneAttivita(descrizione);
-			o.setTariffaOraria(tariffaOraria);
-			o.setDataInizio(dataInizio);
-			o.setDataFine(dataFine);
-			o.setNumRisorse(numeroRisorse);
-			o.setOreBudget(numeroOre);
-			o.setOreResidueBudget(numeroOre);
-		    if(numeroCommessa.compareTo("")!=0){    	
-		    	c=(Commessa) session.createQuery("from Commessa where numeroCommessa=:numeroCommessa and estensione=:estensione").setParameter("numeroCommessa", numeroCommessa).setParameter("estensione", estensione).uniqueResult();
-		    	o.setCommessa(c);    
-		    }		   
-		    
-		    if(numRda.compareTo("")!=0){//se è stato inserito un numero di Rda in fase di edit
-		    	Rda r=new Rda();
-		    	r=(Rda)session.createQuery("from Rda where codiceRDA=:numRda").setParameter("numRda", numRda).uniqueResult();
-		    	r.setCodiceRDA(numRda);
-		    	o.setRda(r);
-				r.getOrdines().add(o);
-				//session.save(r);
-		    }
-		    tx.commit();
-		    
-		    return true;
-			
-		} catch (Exception e) {
-			if (tx!=null)
-	    		tx.rollback();		    	
-			e.printStackTrace();		
-			return false;
-		}
-		
-	}
-
-	
-	@Override
-	public boolean deleteDataOrdine(int idOrdine) throws IllegalArgumentException {
-
-		Ordine o= new Ordine();
-		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
-		Transaction tx= null;
-				
-		try {
-			  tx=	session.beginTransaction();
-			  o=(Ordine)session.createQuery("from Ordine where numero_ordine =:idordine").setParameter("idordine", idOrdine).uniqueResult();
-			  session.delete(o);
-			  tx.commit();
-			  
-			  return true;
-		     
-		    } catch (Exception e) {
-		    	if (tx!=null)
-		    		tx.rollback();		    	
-		    		e.printStackTrace();    		
-		    		return false;
-		    }
-	}
-	
-
-	@Override
-	public List<OrdineModel> getAllOrdineModel() throws IllegalArgumentException {
-
-		Set<Ordine> listaO = ConverterUtil.getOrdini();  
-		List<OrdineModel> listaDTO = new ArrayList<OrdineModel>(listaO!=null ? listaO.size() : 0);  
-		    
-		try {
-			if (listaO != null) {
-
-				for (Ordine o : listaO) {
-					listaDTO.add(ConverterUtil.ordiniToModelConverter(o));
-				}
-			}
-
-			return listaDTO;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
-	*/
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<String> getAllListaOrdini() throws IllegalArgumentException {
@@ -2117,12 +1825,11 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			e.printStackTrace();
 		}finally{
 			session.close();
-		}
-		
+		}		
 	}	
 	
-	private void createAssociazionePtoA(String numeroCommessa, String estensione, String dipendente) {
-		
+	
+	private void createAssociazionePtoA(String numeroCommessa, String estensione, String dipendente) {		
 		Commessa c= new Commessa();
 		Attivita a= new Attivita();
 		Personale p= new Personale();
@@ -6819,7 +6526,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					listaAss.addAll(p.getAssociazionePtoas());
 				
 					f=(FoglioOreMese)session.createQuery("from FoglioOreMese where meseRiferimento=:mese and id_personale=:id")
-						.setParameter("id", p.getId_PERSONALE()).setParameter("mese", "Set2013").uniqueResult();//TODO impostare la scelta del mese
+						.setParameter("id", p.getId_PERSONALE()).setParameter("mese", "Ott2013").uniqueResult();//TODO impostare la scelta del mese
 					if(f!=null)
 						if(!f.getDettaglioOreGiornalieres().isEmpty())
 							listaD.addAll(f.getDettaglioOreGiornalieres());
@@ -6983,10 +6690,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		Costing cs= new Costing();
 		Commessa c= new Commessa();
-		
 		String numeroCommessa= commessa.substring(0,commessa.indexOf("."));
-		String estensione= commessa.substring(commessa.indexOf(".")+1,commessa.length());
-		
+		String estensione= commessa.substring(commessa.indexOf(".")+1,commessa.length());		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
 		
@@ -7057,7 +6762,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String costoSommaHwSwOneri="";
 		String costoRisorsaSommaHwSwOneri="";
 		String incidenzaCostiHwSw="";
-		String costoTotaleHwSw="";
+		String costoTotale="";
 		String oreFatturare="";
 		String tariffaDerivata="";
 		String fatturato="";
@@ -7078,17 +6783,19 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			tx=session.beginTransaction();
 			
 			cost=(Costing)session.get(Costing.class, idCosting);
-			cliente=(Cliente)session.get(Cliente.class, cost.getCliente());
 			
-			if(cost.getCostingRisorsas().iterator().hasNext())
-				listaCost.addAll(cost.getCostingRisorsas());
+			if(cost!=null){
+				cliente=(Cliente)session.get(Cliente.class, cost.getCliente());
+				ragioneSociale=cliente.getRagioneSociale();
 			
-			area=cost.getArea();
-			ragioneSociale=cliente.getRagioneSociale();
-			progetto=cost.getDescrizioneProgetto();
-			commessa=cost.getCommessa().getNumeroCommessa();
+				if(cost.getCostingRisorsas().iterator().hasNext())
+					listaCost.addAll(cost.getCostingRisorsas());
 			
+				area=cost.getArea();
 			
+				progetto=cost.getDescrizioneProgetto();
+				commessa=cost.getCommessa().getNumeroCommessa();
+						
 			for(CostingRisorsa c:listaCost){
 				
 				idRisorsa=c.getPersonale().getId_PERSONALE();
@@ -7101,24 +6808,26 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				costoSommaHwSwOneri=d.format(Float.valueOf(c.getCostoHwSw())* Float.valueOf(c.getCostoOneri()));
 				costoRisorsaSommaHwSwOneri=d.format(Float.valueOf(costoSommaHwSwOneri)* Float.valueOf(oreCorrette));
 				incidenzaCostiHwSw=d.format(Float.valueOf(costoSommaHwSwOneri)/ Float.valueOf(c.getCostoOrarioRisorsa()));
-				costoTotaleHwSw=d.format(Float.valueOf(c.getCostoConsulenza())+ Float.valueOf(costoTotaleAzienda)+ Float.valueOf(costoRisorsaSommaHwSwOneri));
+				costoTotale=d.format(Float.valueOf(c.getCostoConsulenza())+ Float.valueOf(costoTotaleAzienda)+ Float.valueOf(costoRisorsaSommaHwSwOneri));
 				oreFatturare=d.format(Float.valueOf(c.getEfficienza())*Float.valueOf(oreCorrette));
 				tariffaDerivata="";
 				fatturato=d.format(Float.valueOf(c.getTariffa())* Float.valueOf(oreFatturare));
 				mol=d.format(Float.valueOf(fatturato)-Float.valueOf(costoTotaleAzienda));
 				molPerc=d.format(Float.valueOf(mol)/ Float.valueOf(fatturato));
+				ebit="#";
+				ebitPerc="#";
 								
 				costRMod= new CostingRisorsaModel(c.getIdCostingRisorsa(), area, ragioneSociale, progetto, commessa, idRisorsa, risorsa, c.getCostoOrarioRisorsa(), c.getOrePianificate(), oreCorrette,
 						c.getLc(), costoRisorsa, c.getCostoStruttura(), costoRisorsaStruttura, costoTotaleAzienda, incidenzaCostiAzienda, c.getCostoHwSw(), c.getCostoOneri(), 
-						costoSommaHwSwOneri, costoRisorsaSommaHwSwOneri, incidenzaCostiHwSw, c.getCostoConsulenza(), costoTotaleHwSw, c.getEfficienza(), oreFatturare, 
+						costoSommaHwSwOneri, costoRisorsaSommaHwSwOneri, incidenzaCostiHwSw, c.getCostoConsulenza(), c.getCostoTrasferta(), costoTotale, c.getEfficienza(), oreFatturare, 
 						c.getTariffa(), tariffaDerivata, fatturato, mol, molPerc, ebit, ebitPerc);
 				listaCostR.add(costRMod);
 			}
 			
-			//Calcolo dei totali
-			if(listaCost.size()>0)
-				listaCostR.add(ServerUtility.elaboraRecordTotaliCostingCommessa(listaCostR));			
-						
+				//Calcolo dei totali
+				if(listaCost.size()>0)
+					listaCostR.add(ServerUtility.elaboraRecordTotaliCostingCommessa(listaCostR));			
+			}			
 			tx.commit();
 			
 		} catch (Exception e) {
@@ -7147,14 +6856,14 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Float incidenzaCostiAzienda=(float) 0.0;
 		Float costoSommaHwSwOneri=(float) 0.0;
 		
-		String costoTotaleHwSw="0.00";
+		String costoTotale="0.00";
 		String oreFatturare="0.00";
 		String tariffaDerivata="0.00";
 		String fatturato="0.00";
 		String mol="0";
-		String molPerc="0%";
+		String molPerc="0";
 		String ebit="0";
-		String ebitPerc="0%";
+		String ebitPerc="0";
 		
 		Float costoHw=(float) 0.0;
 		Float costoSw=(float) 0.0;
@@ -7197,7 +6906,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 				cM= new CostingRisorsaModel(0 , area, cl.getRagioneSociale(), costing.getDescrizioneProgetto(), costing.getCommessa().getNumeroCommessa(), p.getId_PERSONALE(), p.getCognome()+" "+p.getNome(), 
 					d.format(costoOrario)	, "0.00", "0.00", "1.0", "0.00", costoAzienda.getCostoStruttura(), "0.00", "0.00", d.format(incidenzaCostiAzienda), 
-					d.format(costoHwSw), costoAzienda.getCostiOneri(), d.format(costoSommaHwSwOneri), "0.00", "0.00", "0.00", costoTotaleHwSw, "1.0", oreFatturare, 
+					d.format(costoHwSw), costoAzienda.getCostiOneri(), d.format(costoSommaHwSwOneri), "0.00", "0.00", "0.00","0.00", costoTotale, "1.0", oreFatturare, 
 					"0.00", tariffaDerivata, fatturato, mol, molPerc, ebit, ebitPerc);
 			
 				tx.commit();
@@ -7223,6 +6932,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			CostingRisorsaModel c) throws IllegalArgumentException {
 		
 		Costing costing;
+		Commessa commessa= new Commessa();
 		Personale p= new Personale();
 		CostingRisorsa cR= new CostingRisorsa();
 		List<CostingRisorsa> listaCR= new ArrayList<CostingRisorsa>();
@@ -7233,7 +6943,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Transaction tx= null;
 		
 		try {		
-			
+									
 			tx=session.beginTransaction();
 			p=(Personale)session.get(Personale.class, (int)c.get("idRisorsa"));
 			costing=(Costing)session.get(Costing.class, idSelected);
@@ -7247,6 +6957,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					cR=(CostingRisorsa)session.get(CostingRisorsa.class, idCosting);
 										
 					cR.setCostoConsulenza((String) c.get("costoConsulenza"));
+					cR.setCostotrasferta((String) c.get("costoTrasferta"));
 					cR.setCostoHwSw((String) c.get("costoHwSw"));
 					cR.setCostoOneri((String) c.get("costoOneri"));
 					cR.setCostoOrarioRisorsa((String) c.get("costoOrario"));
@@ -7259,9 +6970,14 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					
 					tx.commit();
 					
-				}else{//creo il nuovo
+				}else{//creo il nuovo e l'associazione del dipendente alla commessa.
+					
+					commessa=costing.getCommessa();
+							
+					createAssociazionePtoA(commessa.getNumeroCommessa(), commessa.getEstensione(), p.getUsername());
 					
 					cR.setCostoConsulenza((String) c.get("costoConsulenza"));
+					cR.setCostotrasferta((String) c.get("costoTrasferta"));
 					cR.setCostoHwSw((String) c.get("costoHwSw"));
 					cR.setCostoOneri((String) c.get("costoOneri"));
 					cR.setCostoOrarioRisorsa((String) c.get("costoOrario"));
@@ -7287,7 +7003,12 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				}
 				
 			}else{
+				commessa=costing.getCommessa();
+				createAttivita(commessa.getNumeroCommessa(), commessa.getEstensione());
+				createAssociazionePtoA(commessa.getNumeroCommessa(), commessa.getEstensione(), p.getUsername());
+				
 				cR.setCostoConsulenza((String) c.get("costoConsulenza"));
+				cR.setCostotrasferta((String) c.get("costoTrasferta"));
 				cR.setCostoHwSw((String) c.get("costoHwSw"));
 				cR.setCostoOneri((String) c.get("costoOneri"));
 				cR.setCostoOrarioRisorsa((String) c.get("costoOrario"));
@@ -7321,32 +7042,81 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		return true;
 	}
 
+	
 	@Override
 	public boolean deleteRisorsaCosting(int idRisorsa)
 			throws IllegalArgumentException {
 		
-		CostingRisorsa c= new CostingRisorsa();		
+		Commessa commessa= new Commessa();
+		List<AssociazionePtoA> listaAss= new ArrayList<AssociazionePtoA>();
+		CostingRisorsa c= new CostingRisorsa();
+		int idPersonale;
+		int idAssociazionePa=0;
+		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
 		
 		try {
-		
-			tx=session.beginTransaction();			
+				
+			tx=session.beginTransaction();
+					
 			c=(CostingRisorsa)session.get(CostingRisorsa.class, idRisorsa);			
-			session.delete(c);		
-			tx.commit();
+			commessa=c.getCosting().getCommessa();
+			idPersonale=c.getPersonale().getId_PERSONALE();
 			
-			return true;	
+			listaAss.addAll(commessa.getAttivitas().iterator().next().getAssociazionePtoas());
+			
+			//elimino l'associazione creata sulla commessa
+			for(AssociazionePtoA ass:listaAss)
+				if(ass.getPersonale().getId_PERSONALE()==idPersonale)				
+					idAssociazionePa=ass.getIdAssociazionePa();					
+			
+			tx.commit();
+			session.close();
+			
+			deleteAssociazioneCommessaDipendenti(idAssociazionePa, "", "", "");
+			deleteDatiCostingRisorsa(idRisorsa);
+			//elimino ildettaglio del costing del dipendente
+			//session.delete(c);			
+			//tx.commit();
+			return true;
+			
 		} catch (Exception e) {
 			if (tx!=null)
 	    		tx.rollback();	
 			e.printStackTrace();
 			return false;
 		}finally{
-			session.close();
+			//session.close();
 		}	
 	}
 	
+
+	private void deleteDatiCostingRisorsa(int idRisorsa) {
+		
+		CostingRisorsa c= new CostingRisorsa();				
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {
+				
+			tx=session.beginTransaction();
+					
+			c=(CostingRisorsa)session.get(CostingRisorsa.class, idRisorsa);			
+		
+			session.delete(c);
+			
+			tx.commit();			
+					
+		} catch (Exception e) {
+			if (tx!=null)
+	    		tx.rollback();	
+			e.printStackTrace();
+			
+		}finally{
+			session.close();
+		}	
+	}
 
 	@Override
 	public boolean saveNewVersionCosting(int idSelected)
@@ -7361,14 +7131,13 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Transaction tx= null;
 		
 		try {
-		
-			//TODO dovrei controllare che se c'è più di un costing devo prendere il numero di revisione maggiore
+				
 			tx=session.beginTransaction();			
 			
 			c=(Costing)session.get(Costing.class, idSelected);			
-			revisione=Integer.valueOf(c.getNumerorevisione())+1;			
 			commessa=c.getCommessa();
-			
+						
+			revisione=commessa.getCostings().size()+1;
 			newC.setArea(c.getArea());
 			newC.setCliente(c.getCliente());
 			newC.setDescrizioneProgetto(c.getDescrizioneProgetto());
@@ -7378,7 +7147,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 			if(c.getCostingRisorsas().iterator().hasNext())
 				listaCR.addAll(c.getCostingRisorsas());
-										
+												
 			commessa.getCostings().add(newC);
 			session.save(commessa);
 			
@@ -7427,6 +7196,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					costing=cs;
 			
 			costingR.setCostoConsulenza(cr.getCostoConsulenza());
+			costingR.setCostotrasferta(cr.getCostoTrasferta());
 			costingR.setCostoHwSw(cr.getCostoHwSw());
 			costingR.setCostoOneri(cr.getCostoOneri());
 			costingR.setCostoOrarioRisorsa(cr.getCostoOrarioRisorsa());
@@ -7457,5 +7227,66 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}finally{
 			session.close();
 		}	
+	}
+
+	@Override
+	public boolean editStatoCosting(int idSelected, String operazione)
+			throws IllegalArgumentException {
+		
+		Costing c= new Costing();
+		Commessa commessa= new Commessa();
+		List<AssociazionePtoA> listaAss= new ArrayList<AssociazionePtoA>();
+		Attivita att= new Attivita();
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {
+				tx=session.beginTransaction();
+				c=(Costing)session.get(Costing.class, idSelected);
+				commessa=c.getCommessa();
+				
+				if(operazione.compareTo("C")==0){//conferma
+					//cambio lo stato ad aperta, al dipendente associato comparirà la nuova commessa
+					commessa.setStatoCommessa("Aperta");
+					tx.commit();
+					session.close();
+					return true;
+				}else 
+					if(operazione.compareTo("S")==0){//scarta
+						//cambio lo stato del costing a respinto
+						c.setStatoCosting("R");//respinto
+						tx.commit();
+						session.close();
+						return true;
+					}
+					else 
+						if(operazione.compareTo("D")==0){
+							//libero e chiudo la commessa ed elimino tutte le associazioni con i dipendenti
+							c.setStatoCosting("R");
+							commessa.setStatoCommessa("Conclusa");
+							
+							att=commessa.getAttivitas().iterator().next();
+							listaAss.addAll(att.getAssociazionePtoas());
+							
+							tx.commit();
+							session.close();
+														
+							for(AssociazionePtoA ass:listaAss){
+								deleteAssociazioneCommessaDipendenti(ass.getIdAssociazionePa(), "", "", "");
+							}
+							
+							return true;
+						}else
+							return true;			
+		
+		} catch (Exception e) {
+			if (tx!=null)
+				tx.rollback();	
+			e.printStackTrace();
+			return false;		
+		}finally{
+			
+		}				
 	}	
 }

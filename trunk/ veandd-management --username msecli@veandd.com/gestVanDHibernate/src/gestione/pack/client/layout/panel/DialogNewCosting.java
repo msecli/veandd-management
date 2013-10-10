@@ -1,6 +1,5 @@
 package gestione.pack.client.layout.panel;
 
-
 import java.util.List;
 
 import gestione.pack.client.AdministrationService;
@@ -144,6 +143,8 @@ public class DialogNewCosting extends Dialog{
 			@Override
 			public void componentSelected(ButtonEvent ce) {
 							
+				//TODO passare il pm per salvare la commessa
+				
 				if(smplcmbxCommessa.isValid()&&cmbxCliente.isValid()&&txtaDescrizione.isValid()&&smplcmbxArea.isValid()){
 					
 					String commessa=smplcmbxCommessa.getRawValue().toString();
@@ -232,8 +233,7 @@ public class DialogNewCosting extends Dialog{
 					smplcmbxCommessa.recalculate();
 					//smplcmbxCommessa.reset();
 					smplcmbxCommessa.setSimpleValue(max);
-				}else Window.alert("error: Errore durante l'accesso ai dati Commesse.");
-				
+				}
 			}
 		});
 	}

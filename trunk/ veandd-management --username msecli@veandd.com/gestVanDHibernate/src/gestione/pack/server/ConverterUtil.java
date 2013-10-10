@@ -595,7 +595,7 @@ public class ConverterUtil {
 					.setParameter("estensione", estensione).uniqueResult();
 			
 			//se la commessa non è Conclusa
-			if(c.getStatoCommessa().compareTo("Conclusa")!=0){ //TODO eliminare il controllo?
+			if(c.getStatoCommessa().compareTo("Conclusa")!=0 && c.getStatoCommessa().compareTo("Costing")!=0){ 
 				
 				intervalloModel= new IntervalliCommesseModel(commessa,  "0.00",  "0.00", "0.00", "0.00", c.getDenominazioneAttivita());
 				
