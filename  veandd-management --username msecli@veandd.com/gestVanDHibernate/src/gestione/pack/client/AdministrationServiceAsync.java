@@ -374,6 +374,9 @@ public interface AdministrationServiceAsync {
 	void saveNewVersionCosting(int idSelected,
 			AsyncCallback<Boolean> asyncCallback);
 
+	void editStatoCosting(int idSelected, String operazione,
+			AsyncCallback<Boolean> asyncCallback);
+
 	
 			
 }

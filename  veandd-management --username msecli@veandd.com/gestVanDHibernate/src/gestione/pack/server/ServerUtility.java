@@ -1787,10 +1787,11 @@ public class ServerUtility {
 		Float sommaCostiHwSwOneriRisorse=(float) 0;
 		Float sommaIncidenzaCostiAzienda=(float) 0;
 		Float sommaCostiConsulenza=(float) 0;
-		Float sommaCostiTotaliHwSw=(float) 0;
+		Float sommaCostiTotali=(float) 0;
 		Float sommaEfficienza=(float) 0;
 		Float sommaOreFatturare=(float)0;
 		Float sommaTariffa=(float) 0;
+		Float tariffaDerivata=(float) 0;
 		Float sommaFatturato=(float) 0;
 		Float sommaMol=(float) 0;
 		Float sommaMolPerc=(float) 0;
@@ -1808,12 +1809,11 @@ public class ServerUtility {
 			sommaCostiHwSwOneriH=Float.valueOf((String) c.get("costoOneri"));
 			sommaCostiHwSwOneriRisorse+=Float.valueOf((String) c.get("costoRisorsaSommaHwSwOneri"));
 			sommaCostiConsulenza+=Float.valueOf((String) c.get("costoConsulenza"));
-			sommaCostiTotaliHwSw+=Float.valueOf((String) c.get("costoTotaleHwSw"));
+			sommaCostiTotali+=Float.valueOf((String) c.get("costoTotale"));
 			sommaOreFatturare+=Float.valueOf((String) c.get("oreFatturare"));
 			sommaEfficienza+=Float.valueOf((String) c.get("efficienza")) *  Float.valueOf((String) c.get("oreFatturare"));
 			sommaFatturato+=Float.valueOf((String) c.get("fatturato"));
-			
-			//TODO mol e ebit e totale ore con formula 60esimi ed usare per il prodotto il cambio da 60esimi a 100esimi
+			sommaMol+=Float.valueOf((String) c.get("mol"));					
 		}
 		
 		sommaIncidenzaCostiAzienda=(sommaCostiTotaliAzienda-sommaCostoRisorsa)/sommaCostiTotaliAzienda;
@@ -1823,15 +1823,18 @@ public class ServerUtility {
 		sommaIncidenzaCosti=sommaCostiHwSwOneriRisorse/sommaCostoRisorsa;
 		sommaEfficienza=sommaEfficienza/sommaOreFatturare;
 		sommaTariffa=sommaFatturato/sommaOreFatturare;
+		tariffaDerivata=sommaFatturato/sommaOreCorrette;
+		sommaMolPerc=sommaMol/sommaFatturato;
+		sommaEbit=sommaFatturato-sommaCostiTotali;
+		sommaEbitPerc=sommaEbit/sommaFatturato;
 		
 		costingM= new CostingRisorsaModel(0, "", "", "", "TOTALE", 0, "", d.format(sommaCostiOrari), "", d.format(sommaOreCorrette), "", d.format(sommaCostoRisorsa), "",  
 				d.format(sommaCostiStrRisorse),d.format(sommaCostiTotaliAzienda), d.format(sommaIncidenzaCostiAzienda), d.format(sommaCostiHwSw), "", d.format(sommaCostiHwSwOneriH), 
-				d.format(sommaCostiHwSwOneriRisorse), d.format(sommaIncidenzaCosti),d.format(sommaCostiConsulenza), d.format(sommaCostiTotaliHwSw), d.format(sommaEfficienza), 
-				d.format(sommaOreFatturare), d.format(sommaTariffa), "", d.format(sommaFatturato), d.format(sommaMol), d.format(sommaMolPerc), d.format(sommaEbit), d.format(sommaEbitPerc));
+				d.format(sommaCostiHwSwOneriRisorse), d.format(sommaIncidenzaCosti),d.format(sommaCostiConsulenza),"", d.format(sommaCostiTotali), d.format(sommaEfficienza), 
+				d.format(sommaOreFatturare), d.format(sommaTariffa), d.format(tariffaDerivata), d.format(sommaFatturato), d.format(sommaMol), d.format(sommaMolPerc), d.format(sommaEbit), d.format(sommaEbitPerc));
 		
 		return costingM;		
 	}	
-	
-	
+		
 }
 

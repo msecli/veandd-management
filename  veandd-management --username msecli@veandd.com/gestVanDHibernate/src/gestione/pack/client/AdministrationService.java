@@ -370,6 +370,8 @@ public interface AdministrationService extends RemoteService {
 	boolean deleteRisorsaCosting(int idSelected)throws IllegalArgumentException;
 
 	boolean saveNewVersionCosting(int idSelected)throws IllegalArgumentException;
+
+	boolean editStatoCosting(int idSelected, String operazione)throws IllegalArgumentException;
 	
 	
 }

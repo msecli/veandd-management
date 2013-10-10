@@ -3,11 +3,14 @@ package gestione.pack.server;
 import gestione.pack.shared.DatiTimbratriceExt;
 import gestione.pack.shared.DettaglioTimbrature;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,14 +37,15 @@ public class GenerateFileServlet  extends HttpServlet{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String file="/var/lib/tomcat7/webapps/ROOT/FileStorage/FileUtili/tmb";
+	//private String file="/var/lib/tomcat7/webapps/ROOT/FileStorage/FileUtili/tmb";
+	final String fileAmazon = "/var/lib/tomcat7/webapps/ROOT/FileStorage/FileUtili/tmb";
+	final String fileLocale = "C:\\Users\\VE&D\\workspace\\veandd-management\\gestVanDHibernate\\war\\FileStorage\\FileUtili\\tmb";
 	
 	@SuppressWarnings("unchecked")
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		List<DettaglioTimbrature> listaDT= new ArrayList<DettaglioTimbrature>();
-		DatiTimbratriceExt datoTmbExt;
-			
+					
 		HttpSession httpSession = request.getSession();
 		String sede=(String) httpSession.getAttribute("sede"); 
 		String dataRif= (String) httpSession.getAttribute("data");
@@ -89,22 +93,19 @@ public class GenerateFileServlet  extends HttpServlet{
 			
 				 createEntryTmbExt(numeroBadge, giornoRiferimento, movimento, orario);
 	        }		
-			
-			
-			File f=new File(file);
-			
+					
+			File f=new File(fileAmazon);			
 			if(f.exists()){
 				f.delete();
 			}
 			
 			exportDataToFile();
-			
-			f=new File(file);
+			f=new File(fileAmazon);
 				
 			FileInputStream fin = new FileInputStream(f);
 			ServletOutputStream outStream = response.getOutputStream();
 			// SET THE MIME TYPE.
-			response.setContentType("text/plain");
+			response.setContentType("text/cvs");
 			// set content dispostion to attachment in with file name.
 			// case the open/save dialog needs to appear.
 			response.setHeader("Content-Disposition", "attachment;filename=tmb");
@@ -126,20 +127,15 @@ public class GenerateFileServlet  extends HttpServlet{
 			e.printStackTrace();
 		}finally{
 			//session.close();
-		}	
-		
+		}			
 	}
+	
 
 	private void exportDataToFile() {
-		
-		String rootDirectoryAmz = "/var/lib/tomcat7/webapps/ROOT/FileStorage/FileUtili/";
-		String rootDirectoryLoc = "/FileStorage/";
-		final String fileName="tmb";
-		
+				
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
-		Connection c;
 		Transaction tx= null;
-		
+					
 		try {			
 			tx=	session.beginTransaction();
 			
@@ -147,22 +143,52 @@ public class GenerateFileServlet  extends HttpServlet{
                 @Override
                 public void execute(Connection conn) throws SQLException {
                       PreparedStatement pStmt = null;
+                      ResultSet rs = null;
                       try
-                      {
-                             String sqlQry = "SELECT codice,matricolaPersonale,giorno,orario,movimento,codice1,codice2,codice3 FROM gestionaledb.dati_timbratrice_ext " +
-                 					"INTO OUTFILE '/var/lib/tomcat7/webapps/ROOT/FileStorage/FileUtili/tmb' FIELDS TERMINATED BY ' ' LINES TERMINATED BY '\r\n'";
-                             pStmt = conn.prepareStatement(sqlQry);
-                             pStmt.execute();
+                      {	
+                    	  String sqlQry = "SELECT codice,matricolaPersonale,giorno,orario,movimento,codice1,codice2,codice3 FROM gestionaledb.dati_timbratrice_ext";
+                    	  pStmt = conn.prepareStatement(sqlQry);
+                    	  rs=pStmt.executeQuery();
+                    	                     	  
+                    	  File file = new File(fileAmazon);  
+                    	  FileWriter fstream;
+                    	  BufferedWriter out=null;
+                    	  try {
+                    		  fstream = new FileWriter(file);
+                    		  out = new BufferedWriter(fstream);
+                    		  
+                    		  while(rs.next()){                                  
+                    			  out.write(rs.getString(1));
+                    			  out.write(" ");
+                    			  out.write(rs.getString(2));
+                    			  out.write(" ");
+                    			  out.write(rs.getString(3));
+                    			  out.write(" ");
+                    			  out.write(rs.getString(4));
+                    			  out.write(" ");
+                    			  out.write(rs.getString(5));
+                    			  out.write(" ");
+                    			  out.write(rs.getString(6));
+                    			  out.write(" ");
+                    			  out.write(rs.getString(7));
+                    			  out.write(" ");
+                    			  out.write(rs.getString(8));
+                    			  out.write("\r\n");
+                              }
+                    		  
+                    		  out.close();                   		  
+                    	  } catch (IOException e) {
+								e.printStackTrace();
+                    	  }           	                     	
                       }
                       finally
                       {
                              pStmt.close();
                       }                                
                 }
-			});		
-			
-			tx.commit();
-			
+			});				
+			if (!tx.wasCommitted())
+			    tx.commit();		
 		}catch (Exception e) {
 			if (tx!=null)
 	    		tx.rollback();		    	
@@ -188,7 +214,7 @@ public class GenerateFileServlet  extends HttpServlet{
 			datoTmbExt.setGiorno(giornoRiferimento);
 			datoTmbExt.setMovimento(movimento);
 			datoTmbExt.setOrario(orario);
-			datoTmbExt.setCodice1("0001");
+			datoTmbExt.setCodice1("0003");
 			datoTmbExt.setCodice2("00");
 			datoTmbExt.setCodice3("P");	
 			

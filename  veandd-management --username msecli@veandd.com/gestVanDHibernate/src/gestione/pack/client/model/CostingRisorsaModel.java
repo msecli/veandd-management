@@ -15,8 +15,8 @@ public class CostingRisorsaModel extends BaseModel{
 	
 	public CostingRisorsaModel(int idCostingRisorsa, String area, String cliente, String progetto, String commessa, int idRisorsa, String risorsa, String costoOrario, String orePianificate,
 			String oreCorrette, String lc, String costoRisorsa, String costoOrarioStruttura, String costoRisorsaStruttura, String costoTotaleAzienda, String incidenzaCostiAzienda,
-			String costoHwSw, String costoOneri, String costoHSommaHwSwOneri, String costoRisorsaSommaHwSwOneri, String incidenzaCostiHwSw, String costoConsulenza, 
-			String costoTotaleHwSw, String efficienza, String oreFatturare,  String tariffa, String tariffaDerivata, String fatturato, String mol, String molPerc, String ebit, String ebitPerc){
+			String costoHwSw, String costoOneri, String costoHSommaHwSwOneri, String costoRisorsaSommaHwSwOneri, String incidenzaCostiHwSw, String costoConsulenza, String costoTrasferta, 
+			String costoTotale, String efficienza, String oreFatturare,  String tariffa, String tariffaDerivata, String fatturato, String mol, String molPerc, String ebit, String ebitPerc){
 		
 		set("idCostingRisorsa",idCostingRisorsa);
 		set("area",area);	
@@ -40,7 +40,8 @@ public class CostingRisorsaModel extends BaseModel{
 		set("costoRisorsaSommaHwSwOneri",costoRisorsaSommaHwSwOneri);
 		set("incidenzaCostiHwSw",incidenzaCostiHwSw);
 		set("costoConsulenza",costoConsulenza);
-		set("costoTotaleHwSw",costoTotaleHwSw);
+		set("costoTrasferta",costoTrasferta);
+		set("costoTotale",costoTotale);
 		set("efficienza",efficienza);
 		set("oreFatturare",oreFatturare);
 		set("tariffa",tariffa);

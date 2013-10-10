@@ -136,5 +136,8 @@ public interface MyImages extends ClientBundle{
 	
 	@Source("Icone/generate.png")
 	ImageResource generate();
+	
+	@Source("Icone/delete1.png")
+	ImageResource respingi();
 }
 
