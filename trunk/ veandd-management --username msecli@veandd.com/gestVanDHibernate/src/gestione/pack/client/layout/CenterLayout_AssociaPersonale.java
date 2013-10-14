@@ -106,15 +106,7 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 		LayoutContainer bodyContainer = new LayoutContainer();
 		bodyContainer.setLayout(new FlowLayout());
 		bodyContainer.setBorders(false);		
-						
-		/*ContentPanel cntpnlCommessa = new ContentPanel(); //pannello esterno
-		cntpnlCommessa.setHeading("Gestione Dipendenti");
-		cntpnlCommessa.setHeaderVisible(true);
-		cntpnlCommessa.setCollapsible(false);
-		cntpnlCommessa.setBorders(false);
-		cntpnlCommessa.setWidth(w-215);
-		cntpnlCommessa.setHeight(h-55);
-		cntpnlCommessa.setScrollMode(Scroll.AUTO);*/
+			
 		
 		ContentPanel cntpnlVista = new ContentPanel(); //Pannello contenente Form e Grid
 		cntpnlVista.setHeading("Associazione Commesse Dipendenti.");

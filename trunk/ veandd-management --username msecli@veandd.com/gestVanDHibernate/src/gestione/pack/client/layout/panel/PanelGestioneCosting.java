@@ -3,16 +3,11 @@ package gestione.pack.client.layout.panel;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sf.jasperreports.engine.ReturnValue;
-
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
-import gestione.pack.client.model.CostiHwSwModel;
 import gestione.pack.client.model.CostingModel;
 import gestione.pack.client.model.CostingRisorsaModel;
 import gestione.pack.client.model.PersonaleModel;
-import gestione.pack.client.model.RiepilogoFoglioOreModel;
-import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
 import gestione.pack.client.utility.MyImages;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -37,7 +32,6 @@ import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
@@ -51,7 +45,6 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.selection.SelectionModel;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.i18n.client.NumberFormat;
@@ -149,12 +142,6 @@ public class PanelGestioneCosting extends LayoutContainer{
 		cmbbxCosting.setAllowBlank(false);
 		cmbbxCosting.setDisplayField("displayField");
 		cmbbxCosting.setWidth(350);
-		/*cmbbxCosting.addListener(Events.OnClick, new Listener<BaseEvent>(){
-			@Override
-			public void handleEvent(BaseEvent be) {			
-									
-			}
-		});*/
 		cmbbxCosting.addListener(Events.Select, new Listener<BaseEvent>(){
 			@Override
 			public void handleEvent(BaseEvent be) {	
@@ -176,7 +163,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 			@Override
 			public void componentSelected(ButtonEvent ce) {
 				
-				DialogNewCosting d= new DialogNewCosting();
+				DialogNewCosting d= new DialogNewCosting(username);
 				d.show();
 				d.addListener(Events.Hide, new Listener<ComponentEvent>() {
 				     
@@ -186,6 +173,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 							cmbbxCosting.clear();
 							caricaTabellaDatiCosting();
 							getCosting();
+							enableButton();
 						} catch (Exception e) {
 							e.printStackTrace();
 							Window.alert("error: Impossibile caricare i dati in tabella.");
@@ -194,6 +182,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 				});
 			}
 		});
+	  	
 	  	
 	  	btnConfermaCosting=new Button();
 	  	btnConfermaCosting.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.confirm()));
@@ -210,18 +199,21 @@ public class PanelGestioneCosting extends LayoutContainer{
 
 					@Override
 					public void onFailure(Throwable caught) {
-						// TODO Auto-generated method stub
-						
+						Window.alert("Errore di connessione on editStatoCosting();");						
 					}
 
 					@Override
 					public void onSuccess(Boolean result) {
-						// TODO Auto-generated method stub
+						if(!result)
+							Window.alert("Impossibile completare l'operazione selezionata!");
+						else
+							caricaTabellaDatiCosting();
 						
 					}
 				});				
 			}	  		
 	  	});
+	  	
 	  	
 	  	btnScartaCosting=new Button();
 	  	btnScartaCosting.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.respingi()));
@@ -233,8 +225,23 @@ public class PanelGestioneCosting extends LayoutContainer{
 
 			@Override
 			public void componentSelected(ButtonEvent ce) {
-				// TODO Auto-generated method stub
-				
+				String operazione="S";				
+				AdministrationService.Util.getInstance().editStatoCosting(idSelected, operazione, new AsyncCallback<Boolean>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Window.alert("Errore di connessione on editStatoCosting();");						
+					}
+
+					@Override
+					public void onSuccess(Boolean result) {
+						if(!result)
+							Window.alert("Impossibile completare l'operazione selezionata!");
+						else
+							caricaTabellaDatiCosting();
+						
+					}
+				});	
 			}
 	  		
 	  	});
@@ -249,10 +256,26 @@ public class PanelGestioneCosting extends LayoutContainer{
 
 			@Override
 			public void componentSelected(ButtonEvent ce) {
-				// TODO Auto-generated method stub
-				
-			}
-	  		
+				String operazione="D";				
+				AdministrationService.Util.getInstance().editStatoCosting(idSelected, operazione, new AsyncCallback<Boolean>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Window.alert("Errore di connessione on editStatoCosting();");						
+					}
+
+					@Override
+					public void onSuccess(Boolean result) {
+						if(!result)
+							Window.alert("Impossibile completare l'operazione selezionata!");
+						else{
+							caricaTabellaDatiCosting();
+							disableButton();
+						}
+					}
+					
+				});	
+			}	  		
 	  	});
 	  
 	    btnAddRisorsa= new Button();
@@ -392,16 +415,13 @@ public class PanelGestioneCosting extends LayoutContainer{
 	          public void handleEvent(SelectionChangedEvent<CostingModel> be) {  
 		        	
 		            if (be.getSelection().size() > 0) { 
-		            	btnAddRisorsa.enable();
-		            	btnDelRisorsa.enable();
-		            	btnConfermaDip.enable();
-		            	btnConfermaNewVersione.enable();
+		            	//btnAddRisorsa.enable();
+		            	//btnDelRisorsa.enable();
+		            	//btnConfermaDip.enable();
+		            	//btnConfermaNewVersione.enable();
 		            	idSelected=be.getSelectedItem().get("idCosting");
 		            	caricaTabellaCostingRisorsa(idSelected);           
-		            } else {  
-		              
-		            	
-		            }	            
+		            }             
 		          }		            
 		}); 
 	    
@@ -419,8 +439,8 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    gridCostingDipendente.addListener(Events.CellClick, new Listener<ComponentEvent>() {
 			@Override
 			public void handleEvent(ComponentEvent be) {
-	            	btnConfermaDip.enable();
-	            	btnConfermaNewVersione.enable();
+	            	//btnConfermaDip.enable();
+	            	//btnConfermaNewVersione.enable();
 			}
 		});	  
 	    
@@ -474,7 +494,7 @@ public class PanelGestioneCosting extends LayoutContainer{
             			return "";
             		}
             		else
-            			if(stato.compareTo("R")==0){
+            			if(stato.compareTo("R")==0||(stato.compareTo("C")==0)){
             				config.style = config.style + ";background-color:#f5afaf;";//rosso
             				return "";
             			}
@@ -1126,7 +1146,16 @@ public class PanelGestioneCosting extends LayoutContainer{
 		}	
 	}
 	
+	
 	private void loadTableCosting(List<CostingModel> result) {
+		String stato= new String();
+		if(result.size()>0)
+			stato=result.iterator().next().get("stato");
+		if(stato.compareTo("C")==0)
+			disableButton();
+		else
+			enableButton();
+		
 		storeCosting.removeAll();
 		storeCosting.setStoreSorter(new StoreSorter<CostingModel>());  
 	    storeCosting.setDefaultSort("numeroRevisione", SortDir.DESC);
@@ -1137,9 +1166,8 @@ public class PanelGestioneCosting extends LayoutContainer{
 	
 	private void caricaTabellaCostingRisorsa(int idCosting) {
 		
-		btnAddRisorsa.enable();
-		btnDelRisorsa.enable();
-		
+		//btnAddRisorsa.enable();
+		//btnDelRisorsa.enable();
 		AdministrationService.Util.getInstance().getRiepilogoDatiCostingRisorse(idCosting, new AsyncCallback<List<CostingRisorsaModel>>() {
 
 			@Override
@@ -1167,7 +1195,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 			SessionManagementService.Util.getInstance().getRuolo(new AsyncCallback<String>() {
 				@Override
 				public void onSuccess(String result) {						
-					if(result.compareTo("PM")==0)				
+					if(result.compareTo("PM")==0||result.compareTo("DIR")==0)				
 						//recupero l'username dalla sessione
 						SessionManagementService.Util.getInstance().getUserName(new AsyncCallback<String>() {
 							
@@ -1207,7 +1235,8 @@ public class PanelGestioneCosting extends LayoutContainer{
 						btnConfermaCosting.setVisible(true);
 						btnScartaCosting.setVisible(true);
 						btnChiudiCosting.setVisible(true);
-						AdministrationService.Util.getInstance().getListaDatiCosting("",new AsyncCallback<List<CostingModel>>() {
+						username="";//non è un PM che ha salvato il costing
+						AdministrationService.Util.getInstance().getListaDatiCosting(username,new AsyncCallback<List<CostingModel>>() {
 
 							@Override
 							public void onFailure(Throwable caught) {
@@ -1232,6 +1261,27 @@ public class PanelGestioneCosting extends LayoutContainer{
 				}
 			});					
 	}	
+	
+	
+	private void disableButton() {
+		btnAddRisorsa.disable();
+		btnChiudiCosting.disable();
+		btnConfermaCosting.disable();
+		btnConfermaDip.disable();
+		btnDelRisorsa.disable();
+		btnScartaCosting.disable();	
+		btnConfermaNewVersione.disable();
+	}
+	
+	private void enableButton(){
+		btnAddRisorsa.enable();
+		btnChiudiCosting.enable();
+		btnConfermaCosting.enable();
+		btnConfermaDip.enable();
+		btnDelRisorsa.enable();
+		btnScartaCosting.enable();
+		btnConfermaNewVersione.enable();
+	}
 	
 }
 

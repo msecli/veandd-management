@@ -181,13 +181,13 @@ public class PanelRiepilogoMeseGiornalieroHorizontal extends LayoutContainer{
 					
 					Dialog d =new  DialogRilevazionePresenze(retVal,dipendente);
 					d.show();
-								
+					/*			
 					d.addListener(Events.Hide, new Listener<ComponentEvent>() {			     
 						@Override
 						public void handleEvent(ComponentEvent be) {
 								
 						}
-					});	
+					});	*/
 				}
 			}
 		});

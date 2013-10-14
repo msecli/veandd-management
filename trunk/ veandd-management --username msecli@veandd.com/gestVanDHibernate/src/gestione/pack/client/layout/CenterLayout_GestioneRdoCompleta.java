@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import gestione.pack.client.AdministrationService;
+import gestione.pack.client.layout.panel.DialogAssociaCommessaToOrdine;
 import gestione.pack.client.model.RdoCompletaModel;
 import gestione.pack.client.utility.MyImages;
 
@@ -89,6 +90,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 	private Button btnEdit;
 	private Button btnReset;
 	private Button btnDelete;
+	
 	
 	private int h=Window.getClientHeight();
 	private int w=Window.getClientWidth();
@@ -584,6 +586,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 	private class CntpnlGridRdo extends ContentPanel{
 		
 		private Button btnChiudiOrdine;
+		private Button btnAssociaCommessa;
 		
 		public CntpnlGridRdo(){
 		
@@ -593,7 +596,6 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			setBodyBorder(false);
 			setScrollMode(Scroll.NONE);	
 			setWidth(820);
-			//setHeight(360);
 			setFrame(false);
 			setStyleAttribute("margin-top", "10px");
 		
@@ -634,6 +636,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		            	Date dataOff = null, dataInizio=null, dataFine=null;
 		            	String statoOrdine=be.getSelectedItem().get("statoOrdine");
 		            	btnChiudiOrdine.setEnabled(true);
+		            	btnAssociaCommessa.setEnabled(true);
 		            	
 		            	String data=be.getSelectedItem().getData();
 		            	String dataI=be.getSelectedItem().getDataInizio();
@@ -699,8 +702,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 					AdministrationService.Util.getInstance().closeOrdine(numeroOrdine, new AsyncCallback<Boolean>(){
 
 						@Override
-						public void onFailure(Throwable caught) {
-							
+						public void onFailure(Throwable caught) {						
 							System.out.println("Errore di connessione oncloseOrdine()");
 						}
 
@@ -712,6 +714,28 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 					});
 				}
 			});
+		    
+		    btnAssociaCommessa= new Button();
+		    btnAssociaCommessa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.datiTimb()));
+		    btnAssociaCommessa.setIconAlign(IconAlign.TOP);
+		    btnAssociaCommessa.setToolTip("Associa una commessa all'ordine");
+		    btnAssociaCommessa.setEnabled(false);
+		    btnAssociaCommessa.addSelectionListener(new SelectionListener<ButtonEvent>() {			
+				@Override
+				public void componentSelected(ButtonEvent ce) {
+					String numeroOrdine= txtfldNumeroOrdine.getValue().toString();
+					
+					DialogAssociaCommessaToOrdine d= new DialogAssociaCommessaToOrdine(numeroOrdine);
+					d.show();					
+					d.addListener(Events.Hide, new Listener<ComponentEvent>() {
+						@Override
+						public void handleEvent(ComponentEvent be) {						
+							caricaTabellaDati();
+						}
+					});
+				}
+			});
+		    
 		    
 		    //barra per casella ricerca
 		    ToolBar tlbarSearchField= new ToolBar();
@@ -751,7 +775,8 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    
 		    tlbarSearchField.add(txtfldsearch);
 		    tlbarSearchField.add(btnSearch);
-		   // tlbarSearchField.add(btnChiudiOrdine);
+		    //tlbarSearchField.add(btnChiudiOrdine);
+		    tlbarSearchField.add(btnAssociaCommessa);
 		    
 		    ContentPanel cntpnlGrid= new ContentPanel();
 		    cntpnlGrid.setBodyBorder(false);  

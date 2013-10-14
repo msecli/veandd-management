@@ -36,6 +36,7 @@ public class CommessaModel extends BaseModel  implements IsSerializable{
 		set("tariffaSal", tariffaSal);
 		set("pclAttuale", pclAttuale);
 		set("salAttuale", salAttuale);
+		set("commessa", numeroCommessa+"."+estensione);
 			
 		//set("numRisorse", numRisorse); //da usare quando sono presenti le associazioni con il personale per ricavarne il numero		
 	}

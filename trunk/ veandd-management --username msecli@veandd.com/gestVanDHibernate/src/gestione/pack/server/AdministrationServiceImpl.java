@@ -1060,6 +1060,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<ClienteModel> getListaClientiModel() throws IllegalArgumentException {
 		
@@ -1562,7 +1563,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	public List<String> getCommesseAperte() throws IllegalArgumentException {
 		
 		List<String> listaCommesse= new ArrayList<String>();
-		List<Commessa> lista=new ArrayList<Commessa>();
+		List<Commessa> listaTutteCommesse=new ArrayList<Commessa>();
+		
+		//List<Commessa> lista=new ArrayList<Commessa>();
 		//String app=new String();	
 		List<Integer> listaNumeriCommesse= new ArrayList<Integer>();
 				
@@ -1573,17 +1576,17 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 		try {
 			  tx=session.beginTransaction();
-			  lista=(List<Commessa>)session.createQuery("from Commessa where statoCommessa!='Conclusa'").list();
-			 		  
-			  for(Commessa c: lista){
+			 // lista=(List<Commessa>)session.createQuery("from Commessa where statoCommessa!='Conclusa'").list();
+			  listaTutteCommesse=(List<Commessa>)session.createQuery("from Commessa").list();
+			  
+			  for(Commessa c: listaTutteCommesse){
 				  //app=c.getMatricolaPM();
 				  listaNumeriCommesse.add(Integer.valueOf(c.getNumeroCommessa()));
 				  
-				  if((!c.getAttivitas().iterator().hasNext())){
+				  if((!c.getAttivitas().iterator().hasNext())&&c.getStatoCommessa().compareTo("Conclusa")!=0){
 					  listaCommesse.add(c.getNumeroCommessa()+"."+c.getEstensione());				  
 				  }
-			
-			  }
+			  }		  
 			  
 			  for(Integer i: listaNumeriCommesse){
 				if(i>maxCommessa)  
@@ -1604,6 +1607,42 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		    	return null;
 		    }
 	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<CommessaModel> getCommesseAperteSenzaOrdine()
+			throws IllegalArgumentException {
+		List<CommessaModel> listaCommesse= new ArrayList<CommessaModel>();
+		List<Commessa> listaTutteCommesse=new ArrayList<Commessa>();
+		CommessaModel cm= new CommessaModel();
+		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
+		Transaction tx= null;
+			
+		try {
+			  tx=session.beginTransaction();
+			  //lista=(List<Commessa>)session.createQuery("from Commessa where statoCommessa!='Conclusa'").list();
+			  listaTutteCommesse=(List<Commessa>)session.createQuery("from Commessa").list();
+			  
+			  for(Commessa c: listaTutteCommesse){			 
+					if(!c.getOrdines().iterator().hasNext()&&c.getStatoCommessa().compareTo("Aperta")==0){
+					 
+						cm=new CommessaModel(c.getCodCommessa(), c.getNumeroCommessa(), "", "", "", c.getEstensione(), 
+								"", "", "", "", "", "", "", "", "", "", "", "", "", "");
+						listaCommesse.add(cm);
+					}
+			  }		  
+			 			  
+			  tx.commit();
+			  return listaCommesse;
+		     
+		    } catch (Exception e) {
+		    	if (tx!=null)
+		    		tx.rollback();		    	
+		    	e.printStackTrace();
+		    	return null;
+		    }
+	}	
 
 	
 	@SuppressWarnings("unchecked")
@@ -6686,12 +6725,15 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 
 	@Override
 	public boolean insertDataCosting(String commessa, String area, int idCliente,
-			String descrizione) {
+			String descrizione, String usernamePM) {
 		
 		Costing cs= new Costing();
 		Commessa c= new Commessa();
+		Personale p =new Personale();
 		String numeroCommessa= commessa.substring(0,commessa.indexOf("."));
 		String estensione= commessa.substring(commessa.indexOf(".")+1,commessa.length());		
+		String nomePM="";
+		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
 		
@@ -6700,16 +6742,20 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		try {		
 			tx=session.beginTransaction();
 			
+			if(usernamePM.compareTo("")!=0){
+				p=(Personale)session.createQuery("from Personale where username=:username").setParameter("username", usernamePM);
+				nomePM=p.getCognome()+" "+p.getNome();			
+			}
 			c=(Commessa)session.createQuery("from Commessa where numeroCommessa=:numeroCommessa and estensione=:estensione").setParameter("numeroCommessa", numeroCommessa)
 					 .setParameter("estensione", estensione).uniqueResult();
 			
 			if(c==null){
-				insertDataCommessa(numeroCommessa, estensione, "c", "", "Costing", "0.00", "0.00", 
+				insertDataCommessa(numeroCommessa, estensione, "c", nomePM, "Costing", "0.00", "0.00", 
 						"0.00", "0.00", "0.00", descrizione, "");
 				
 				tx.commit();
 				//session.close();				
-				costingInserito=insertDataCosting(commessa, area, idCliente, descrizione);
+				costingInserito=insertDataCosting(commessa, area, idCliente, descrizione, usernamePM);
 			}
 				
 			if(!costingInserito){
@@ -6718,7 +6764,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				cs.setDescrizioneProgetto(descrizione);
 				cs.setNumerorevisione("1");
 				cs.setCommessa(c);
-				cs.setStatoCosting("S"); //S:sospeso, A:approvato, R:respinto
+				cs.setStatoCosting("S"); //S:sospeso, A:approvato, R:respinto, C:chiuso
 			
 				c.getCostings().add(cs);					
 				session.save(c);
@@ -6754,22 +6800,22 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		int idRisorsa=0;
 		String risorsa="";
 		String progetto="";
-		String oreCorrette="";
-		String costoRisorsa="";
-		String costoRisorsaStruttura="";
-		String costoTotaleAzienda="";
-		String incidenzaCostiAzienda="";
-		String costoSommaHwSwOneri="";
-		String costoRisorsaSommaHwSwOneri="";
-		String incidenzaCostiHwSw="";
-		String costoTotale="";
-		String oreFatturare="";
-		String tariffaDerivata="";
-		String fatturato="";
-		String mol="";
-		String molPerc="";
-		String ebit="";//solo su totale commessa
-		String ebitPerc="";
+		String oreCorrette="0.0";
+		String costoRisorsa="0.0";
+		String costoRisorsaStruttura="0.0";
+		String costoTotaleAzienda="0.0";
+		String incidenzaCostiAzienda="0.0";
+		String costoSommaHwSwOneri="0.00";
+		String costoRisorsaSommaHwSwOneri="0.0";
+		String incidenzaCostiHwSw="0.0";
+		String costoTotale="0.0";
+		String oreFatturare="0.0";
+		String tariffaDerivata="0.0";
+		String fatturato="0.0";
+		String mol="0.0";
+		String molPerc="0.0";
+		String ebit="0.0";//solo su totale commessa
+		String ebitPerc="0.0";
 		
 		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
 	    formatSymbols.setDecimalSeparator('.');
@@ -6801,17 +6847,22 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				idRisorsa=c.getPersonale().getId_PERSONALE();
 				risorsa=c.getPersonale().getCognome()+" "+c.getPersonale().getNome();
 				oreCorrette=d.format(Float.valueOf(c.getOrePianificate())* Float.valueOf(c.getLc()));
-				costoRisorsa=d.format(Float.valueOf(oreCorrette)* Float.valueOf(c.getCostoOrarioRisorsa()));
-				costoRisorsaStruttura=d.format(Float.valueOf(oreCorrette)* Float.valueOf(c.getCostoStruttura()));
+				costoRisorsa=/*d.format(Float.valueOf(oreCorrette)* Float.valueOf(c.getCostoOrarioRisorsa()));*/
+						d.format(ServerUtility.calcolaImporto(c.getCostoOrarioRisorsa(), oreCorrette));
+				costoRisorsaStruttura=/*d.format(Float.valueOf(oreCorrette)* Float.valueOf(c.getCostoStruttura()));*/
+						d.format(ServerUtility.calcolaImporto(c.getCostoStruttura(), oreCorrette));
 				costoTotaleAzienda=d.format(Float.valueOf(costoRisorsa)+ Float.valueOf(costoRisorsaStruttura));
 				incidenzaCostiAzienda=d.format(Float.valueOf(c.getCostoStruttura())/ Float.valueOf(c.getCostoOrarioRisorsa()));
-				costoSommaHwSwOneri=d.format(Float.valueOf(c.getCostoHwSw())* Float.valueOf(c.getCostoOneri()));
-				costoRisorsaSommaHwSwOneri=d.format(Float.valueOf(costoSommaHwSwOneri)* Float.valueOf(oreCorrette));
+				costoSommaHwSwOneri=d.format(Float.valueOf(c.getCostoHwSw())+ Float.valueOf(c.getCostoOneri()));
+				costoRisorsaSommaHwSwOneri=/*d.format(Float.valueOf(costoSommaHwSwOneri)* Float.valueOf(oreCorrette));*/
+						d.format(ServerUtility.calcolaImporto(costoSommaHwSwOneri, oreCorrette));
 				incidenzaCostiHwSw=d.format(Float.valueOf(costoSommaHwSwOneri)/ Float.valueOf(c.getCostoOrarioRisorsa()));
 				costoTotale=d.format(Float.valueOf(c.getCostoConsulenza())+ Float.valueOf(costoTotaleAzienda)+ Float.valueOf(costoRisorsaSommaHwSwOneri));
-				oreFatturare=d.format(Float.valueOf(c.getEfficienza())*Float.valueOf(oreCorrette));
+				oreFatturare=/*d.format(Float.valueOf(c.getEfficienza())*Float.valueOf(oreCorrette));*/
+						d.format(ServerUtility.calcolaImporto(c.getEfficienza(), oreCorrette));
 				tariffaDerivata="";
-				fatturato=d.format(Float.valueOf(c.getTariffa())* Float.valueOf(oreFatturare));
+				fatturato=/*d.format(Float.valueOf(c.getTariffa())* Float.valueOf(oreFatturare));*/
+						d.format(ServerUtility.calcolaImporto(c.getTariffa(), oreCorrette));
 				mol=d.format(Float.valueOf(fatturato)-Float.valueOf(costoTotaleAzienda));
 				molPerc=d.format(Float.valueOf(mol)/ Float.valueOf(fatturato));
 				ebit="#";
@@ -7233,8 +7284,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	public boolean editStatoCosting(int idSelected, String operazione)
 			throws IllegalArgumentException {
 		
-		Costing c= new Costing();
+		Costing costing= new Costing();
 		Commessa commessa= new Commessa();
+		List<Costing> listaCosting= new ArrayList<Costing>();
 		List<AssociazionePtoA> listaAss= new ArrayList<AssociazionePtoA>();
 		Attivita att= new Attivita();
 		
@@ -7243,19 +7295,21 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		try {
 				tx=session.beginTransaction();
-				c=(Costing)session.get(Costing.class, idSelected);
-				commessa=c.getCommessa();
+				costing=(Costing)session.get(Costing.class, idSelected);
+				commessa=costing.getCommessa();
 				
 				if(operazione.compareTo("C")==0){//conferma
 					//cambio lo stato ad aperta, al dipendente associato comparirà la nuova commessa
 					commessa.setStatoCommessa("Aperta");
+					costing.setStatoCosting("A");
 					tx.commit();
 					session.close();
 					return true;
 				}else 
 					if(operazione.compareTo("S")==0){//scarta
 						//cambio lo stato del costing a respinto
-						c.setStatoCosting("R");//respinto
+						costing.setStatoCosting("R");//respinto
+						commessa.setStatoCommessa("Costing");
 						tx.commit();
 						session.close();
 						return true;
@@ -7263,7 +7317,11 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					else 
 						if(operazione.compareTo("D")==0){
 							//libero e chiudo la commessa ed elimino tutte le associazioni con i dipendenti
-							c.setStatoCosting("R");
+							listaCosting.addAll(commessa.getCostings());
+							
+							for(Costing c:listaCosting)
+								c.setStatoCosting("C");
+								 
 							commessa.setStatoCommessa("Conclusa");
 							
 							att=commessa.getAttivitas().iterator().next();
@@ -7288,5 +7346,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}finally{
 			
 		}				
-	}	
+	}
+
+	
 }

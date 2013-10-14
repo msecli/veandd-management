@@ -227,6 +227,8 @@ public interface AdministrationService extends RemoteService {
 	
 	List<IntervalliCommesseModel> getAssociazioniPersonaleCommessaByUsername(
 			String username, Date data);
+	
+	List<CommessaModel> getCommesseAperteSenzaOrdine()throws IllegalArgumentException;
 
 	//List<IntervalliIUModel> getIntervalliIUTimbratrice(String u)throws IllegalArgumentException;
 
@@ -359,7 +361,7 @@ public interface AdministrationService extends RemoteService {
 	List<CostingModel> getDatiCosting(int costing)throws IllegalArgumentException;
 
 	boolean insertDataCosting(String commessa, String area, int idCliente,
-			String descrizione);
+			String descrizione, String usernamePM);
 
 	List<CostingRisorsaModel> getRiepilogoDatiCostingRisorse(int idCosting)throws IllegalArgumentException;
 
@@ -372,6 +374,8 @@ public interface AdministrationService extends RemoteService {
 	boolean saveNewVersionCosting(int idSelected)throws IllegalArgumentException;
 
 	boolean editStatoCosting(int idSelected, String operazione)throws IllegalArgumentException;
+
+
 	
 	
 }

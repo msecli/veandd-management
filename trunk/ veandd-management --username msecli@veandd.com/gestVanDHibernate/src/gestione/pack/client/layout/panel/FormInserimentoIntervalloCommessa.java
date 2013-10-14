@@ -100,8 +100,9 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 		txtfldOreIntervallo.setMaxLength(7);
 		txtfldOreIntervallo.setItemId("oreLavoro");
 		txtfldOreIntervallo.setAllowBlank(false);
-		txtfldOreIntervallo.setRegex("[0-9]*[.]?[0-5]{1}[0-9]{1}|0.0|0.00");
-		txtfldOreIntervallo.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+		//txtfldOreIntervallo.setRegex("[0-9]*[.]?[0-5]{1}[0-9]{1}|0.0|0.00");
+		txtfldOreIntervallo.setRegex("^([0-9]{1}|[0-1][0-9]|[2][0-3]).(0|00|15|30|45)$");
+		txtfldOreIntervallo.getMessages().setRegexText("Deve essere un numero nel formato 99.59 ed espresso in sessantesimi");
 		txtfldOreIntervallo.addKeyListener(new KeyListener(){
 			 @Override
 		      public void componentKeyDown(ComponentEvent event) { 	  
@@ -137,8 +138,8 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 		txtfldOreViaggio.setMaxLength(7);
 		txtfldOreViaggio.setItemId("oreViaggio");
 		txtfldOreViaggio.setAllowBlank(false);
-		txtfldOreViaggio.setRegex("[0-9]*[.]?[0-5]{1}[0-9]{1}|0.0|0.00");
-		txtfldOreViaggio.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+		txtfldOreViaggio.setRegex("^([0-9]{1}|[0-1][0-9]|[2][0-3]).(0|00|15|30|45)$");
+		txtfldOreViaggio.getMessages().setRegexText("Deve essere un numero nel formato 99.59 ed espresso in sessantesimi");
 		txtfldOreViaggio.addKeyListener(new KeyListener(){
 			 @Override
 		      public void componentKeyDown(ComponentEvent event) { 	  
