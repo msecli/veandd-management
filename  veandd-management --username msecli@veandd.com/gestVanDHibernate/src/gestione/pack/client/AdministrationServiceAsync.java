@@ -207,6 +207,7 @@ public interface AdministrationServiceAsync {
 	void getAssociazioniPersonaleCommessa(
 			AsyncCallback<List<PersonaleAssociatoModel>> asyncCallback);
 
+	void getCommesseAperteSenzaOrdine(AsyncCallback<List<CommessaModel>> asyncCallback);
 
 	//------------------------------------------FOGLIO ORE
 	void getAssociazioniPersonaleCommessaByUsername(
@@ -357,7 +358,7 @@ public interface AdministrationServiceAsync {
 	void getDatiCosting(int costing,
 			AsyncCallback<List<CostingModel>> asyncCallback);
 
-	void insertDataCosting(String commessa, String area, int idCliente, String descrizione,
+	void insertDataCosting(String commessa, String area, int idCliente, String descrizione, String usernamePM,
 			AsyncCallback<Boolean> asyncCallback);
 
 	void getRiepilogoDatiCostingRisorse(int idCosting,
@@ -376,6 +377,8 @@ public interface AdministrationServiceAsync {
 
 	void editStatoCosting(int idSelected, String operazione,
 			AsyncCallback<Boolean> asyncCallback);
+
+	
 
 	
 			

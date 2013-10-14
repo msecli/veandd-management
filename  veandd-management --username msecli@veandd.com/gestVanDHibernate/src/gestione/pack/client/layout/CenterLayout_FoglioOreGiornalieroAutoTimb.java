@@ -518,6 +518,9 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		String oreScarto= fldSetGiustificativi.txtfldAbbuono.getValue();
 				
 		String campoU1=fldSetIntervalliIU.txtfld1U.getValue();
+		String campoI1=fldSetIntervalliIU.txtfld1I.getValue();
+		/*if(campoI1.length()==4)
+			campoI1="0"+campoI1;*/
 		
 		int contaOrari=elaboraIU(fldSetIntervalliIU);
 		
@@ -525,15 +528,16 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			for(IntervalliCommesseModel c:listaC){
 				totOreLavoro=ClientUtility.aggiornaTotGenerale(totOreLavoro, c.getOreLavoro());		
 			}
-			
-			if(txtSede.getText().compareTo("F")!=0)  //Controllo,nel caso in cui ci siano 2 bollature e l'uscita ha un valore superiore alle 14:00
-				 //che se inseriscono delle ore sulle commesse, queste devono essere uguali ale generali al netto della pausa pranzo per poter essere confermate
-				if((contaOrari==2)){
-					String ore=campoU1.substring(0,campoU1.indexOf(":"));
+		
+			if(txtSede.getText().compareTo("F")!=0){  //Controllo,nel caso in cui ci siano 2 bollature e l'uscita ha un valore superiore alle 14:00
+				 //che se inseriscono delle ore sulle commesse, queste devono essere uguali alle generali al netto della pausa pranzo per poter essere confermate
+				String oreI=campoI1.substring(0,campoI1.indexOf(":"));
+				String ore=campoU1.substring(0,campoU1.indexOf(":"));
+				if(contaOrari==2){					
 					String minuti= campoU1.substring(campoU1.indexOf(":")+1, campoU1.length());
-					boolean maggiore=((Integer.valueOf(ore)>14) || (Integer.valueOf(minuti)>0)&&(Integer.valueOf(ore)==14));
+					boolean maggiore=((Integer.valueOf(ore)>14) || (Integer.valueOf(minuti)>0)&&(Integer.valueOf(ore)==14) );
 
-					if(maggiore){
+					if(maggiore && (Integer.valueOf(oreI)<14)){
 						if(totOreLavoro.compareTo(ClientUtility.aggiornaTotGenerale(totOreGenerale, "-1.00"))!=0  && giustificativo.compareTo("23.Abbuono")!=0 )
 							return controllo="Per poter confermare i dati inseriti, le ore di lavoro delle commesse devono corrispondere" +
 									" alle ore totali rilevate al netto della pausa pranzo. Se necessario indicare un'ora di Abbuono (Giustificativo 23.Abbuono) .";
@@ -549,7 +553,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 												
 					}				
 				}
-
+		}
 			if(totOreLavoro.compareTo(totOreGenerale)!=0)
 				return controllo="Le ore indicate sulle commesse non sono coerenti con il numero di ore ricavate dagli intervalli I/U.";			
 		}
@@ -769,7 +773,8 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			txtfld1I.setItemId("1I");
 			txtfld1I.setFieldLabel("I");
 			txtfld1I.setMaxLength(5);
-			txtfld1I.setRegex("[0-1][0-9]:[0-5][0-9]|[0-9]{1}:[0-5][0-9]|[2][0-3]:[0-5][0-9]");
+			//txtfld1I.setRegex("^([0-9]{1}|[0-1][0-9]|[2][0-3]):([0-5][0-9])$");
+			txtfld1I.setRegex("^([0-9]{1}|[0-1][0-9]|[2][0-3]):(00|15|30|45)$");
 		    txtfld1I.getMessages().setRegexText("Deve essere nel formato 23:59.");
 		    if(statoRevisione==2)txtfld1I.setEnabled(false); 
 			txtfld1I.addKeyListener(new KeyListener() {
@@ -969,7 +974,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			txtfld1U.setItemId("1U");
 			txtfld1U.setFieldLabel("U");
 			txtfld1U.setMaxLength(5);
-			txtfld1U.setRegex("[0-1][0-9]:[0-5][0-9]|[0-9]{1}:[0-5][0-9]|[2][0-3]:[0-5][0-9]");
+			txtfld1U.setRegex("^([0-9]{1}|[0-1][0-9]|[2][0-3]):(00|15|30|45)$");
 		    txtfld1U.getMessages().setRegexText("Deve essere nel formato 23:59");
 		    if(statoRevisione==2)txtfld1U.setEnabled(false);
 			txtfld1U.addKeyListener(new KeyListener() {
@@ -1152,7 +1157,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			txtfld2I.setItemId("2I");
 			txtfld2I.setFieldLabel("I");
 			txtfld2I.setMaxLength(5);
-			txtfld2I.setRegex("[0-1][0-9]:[0-5][0-9]|[0-9]{1}:[0-5][0-9]|[2][0-3]:[0-5][0-9]");
+			txtfld2I.setRegex("^([0-9]{1}|[0-1][0-9]|[2][0-3]):(00|15|30|45)$");
 		    txtfld2I.getMessages().setRegexText("Deve essere nel formato 23:59");
 		    if(statoRevisione==2)txtfld2I.setEnabled(false);
 			txtfld2I.addKeyListener(new KeyListener() {
@@ -1360,7 +1365,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			txtfld2U.setItemId("2U");
 			txtfld2U.setFieldLabel("U");
 			txtfld2U.setMaxLength(5);
-			txtfld2U.setRegex("[0-1][0-9]:[0-5][0-9]|[0-9]{1}:[0-5][0-9]|[2][0-3]:[0-5][0-9]");
+			txtfld2U.setRegex("^([0-9]{1}|[0-1][0-9]|[2][0-3]):(00|15|30|45)$");
 		    txtfld2U.getMessages().setRegexText("Deve essere nel formato 23:59");
 		    if(statoRevisione==2)txtfld2U.setEnabled(false);
 			txtfld2U.addKeyListener(new KeyListener() {
@@ -1538,7 +1543,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			txtfld3I.setItemId("3I");
 			txtfld3I.setFieldLabel("I");
 			txtfld3I.setMaxLength(5);
-			txtfld3I.setRegex("[0-1][0-9]:[0-5][0-9]|[0-9]{1}:[0-5][0-9]|[2][0-3]:[0-5][0-9]");
+			txtfld3I.setRegex("^([0-9]{1}|[0-1][0-9]|[2][0-3]):(00|15|30|45)$");
 		    txtfld3I.getMessages().setRegexText("Deve essere nel formato 23:59");
 		    if(statoRevisione==2)txtfld3I.setEnabled(false);
 			txtfld3I.addKeyListener(new KeyListener() {
@@ -1734,7 +1739,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			txtfld3U.setItemId("3U");
 			txtfld3U.setFieldLabel("U");
 			txtfld3U.setMaxLength(5);
-			txtfld3U.setRegex("[0-1][0-9]:[0-5][0-9]|[0-9]{1}:[0-5][0-9]|[2][0-3]:[0-5][0-9]");
+			txtfld3U.setRegex("^([0-9]{1}|[0-1][0-9]|[2][0-3]):(00|15|30|45)$");
 		    txtfld3U.getMessages().setRegexText("Deve essere nel formato 23:59");
 		    if(statoRevisione==2)txtfld3U.setEnabled(false);
 			txtfld3U.addKeyListener(new KeyListener() {
@@ -1912,8 +1917,8 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			txtfld4I.setItemId("4I");
 			txtfld4I.setFieldLabel("I");
 			txtfld4I.setMaxLength(5);
-			txtfld4I.setRegex("[0-1][0-9]:[0-5][0-9]|[0-9]{1}:[0-5][0-9]|[2][0-3]:[0-5][0-9]");
-		    txtfld4I.getMessages().setRegexText("Deve essere nel formato 23:59");
+			txtfld4I.setRegex("^([0-9]{1}|[0-1][0-9]|[2][0-3]):(00|15|30|45)$");
+			txtfld4I.getMessages().setRegexText("Deve essere nel formato 23:59");
 		    if(statoRevisione==2)txtfld4I.setEnabled(false);
 			txtfld4I.addKeyListener(new KeyListener() {
 			      public void componentKeyUp(ComponentEvent event) {
@@ -2108,7 +2113,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			txtfld4U.setItemId("4U");
 			txtfld4U.setFieldLabel("U");
 			txtfld4U.setMaxLength(5);
-			txtfld4U.setRegex("[0-1][0-9]:[0-5][0-9]|[0-9]{1}:[0-5][0-9]|[2][0-3]:[0-5][0-9]");
+			txtfld4U.setRegex("^([0-9]{1}|[0-1][0-9]|[2][0-3]):(00|15|30|45)$");
 		    txtfld4U.getMessages().setRegexText("Deve essere nel formato 23:59");
 		    if(statoRevisione==2)txtfld4U.setEnabled(false);
 			txtfld4U.addKeyListener(new KeyListener() {
@@ -2290,7 +2295,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			txtfld5I.setItemId("5I");
 			txtfld5I.setFieldLabel("I");
 			txtfld5I.setMaxLength(5);
-			txtfld5I.setRegex("[0-1][0-9]:[0-5][0-9]|[0-9]{1}:[0-5][0-9]|[2][0-3]:[0-5][0-9]");
+			txtfld5I.setRegex("^([0-9]{1}|[0-1][0-9]|[2][0-3]):(00|15|30|45)$");
 		    txtfld5I.getMessages().setRegexText("Deve essere nel formato 23:59");
 		    if(statoRevisione==2)txtfld5I.setEnabled(false);
 			txtfld5I.addKeyListener(new KeyListener() {
@@ -2411,7 +2416,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			txtfld5U.setItemId("5U");
 			txtfld5U.setFieldLabel("U");
 			txtfld5U.setMaxLength(5);
-			txtfld5U.setRegex("[0-1][0-9]:[0-5][0-9]|[0-9]{1}:[0-5][0-9]|[2][0-3]:[0-5][0-9]");
+			txtfld5U.setRegex("^([0-9]{1}|[0-1][0-9]|[2][0-3]):(00|15|30|45)$");
 		    txtfld5U.getMessages().setRegexText("Deve essere nel formato 23:59");
 		    if(statoRevisione==2)txtfld5U.setEnabled(false);
 			txtfld5U.addKeyListener(new KeyListener() {
@@ -2981,26 +2986,43 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		   right=(LayoutContainer) lc.getItemByItemId("right");
 		   fldsetGiustificativo=(FldsetGiustificativi) right.getItemByItemId("fldSetGiustificativi");
 		   		   
-		   listaParziali.add(txtfldSomma1.getValue().toString());
-  		   listaParziali.add(txtfldSomma2.getValue().toString());
-  		   listaParziali.add(txtfldSomma3.getValue().toString());
-  		   listaParziali.add(txtfldSomma4.getValue().toString());
-  		   listaParziali.add(txtfldSomma5.getValue().toString());
-  	   
-  		   abbuono="-"+fldsetGiustificativo.txtfldAbbuono.getValue();
-  		   totale=ClientUtility.calcolaTempo(listaParziali);
-  		   totale=ClientUtility.aggiornaTotGenerale(totale, abbuono);
+		   if(txtfldSomma1.getValue().toString().length()<=5 && txtfldSomma2.getValue().toString().length()<=5 && txtfldSomma3.getValue().toString().length()<=5&&
+				   txtfldSomma4.getValue().toString().length()<=5 && txtfldSomma5.getValue().toString().length()<=5){
+			   listaParziali.add(txtfldSomma1.getValue().toString());
+			   listaParziali.add(txtfldSomma2.getValue().toString());
+			   listaParziali.add(txtfldSomma3.getValue().toString());
+			   listaParziali.add(txtfldSomma4.getValue().toString());
+			   listaParziali.add(txtfldSomma5.getValue().toString());
+  	   	  		   	  		   
+			   abbuono="-"+fldsetGiustificativo.txtfldAbbuono.getValue();
+			   totale=ClientUtility.calcolaTempo(listaParziali);
+			   totale=ClientUtility.aggiornaTotGenerale(totale, abbuono);
   		   
-  		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
-  		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
-  		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
+			   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
+			   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
+			   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
   		  
-  		   if(isNew.compareTo("new")==0){
-  			 fldsetGiustificativo.txtfldRecupero.setValue(delta);
-  		   }
+			   if(isNew.compareTo("new")==0){
+				   fldsetGiustificativo.txtfldRecupero.setValue(delta);
+			   }
   		   	   
-  		   setFieldGiustificativo(fldsetGiustificativo, delta);			
-		}
+			   setFieldGiustificativo(fldsetGiustificativo, delta);			
+		  }else{
+							
+			totale="0.00";
+			delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
+			fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
+			fldsetGiustificativo.txtfldOreDelta.setValue(delta);
+  		  
+			if(isNew.compareTo("new")==0){
+				   fldsetGiustificativo.txtfldRecupero.setValue(delta);
+			}
+  		   	   
+			setFieldGiustificativo(fldsetGiustificativo, delta);			
+		  
+		  }
+		   
+	}
 
 		
 		//I singoli intervalli possono avere sorgente: TMB DIP PM UG
@@ -4231,6 +4253,8 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		IntervalliCommesseModel intervallo;
 		List<IntervalliCommesseModel>  intervalliC= new ArrayList<IntervalliCommesseModel>();
 		String frmItemId= new String();
+		String oreV;
+		String oreL;
 		
 		int i;
 		
@@ -4245,9 +4269,15 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			txtfldOreLavoro=frm.txtfldOreIntervallo;
 			txtfldOreViaggio=frm.txtfldOreViaggio;
 			txtDescrizione=frm.txtDescrizione;
-			intervallo= new IntervalliCommesseModel(txtfldNumCommessa.getValue().toString(), txtfldOreLavoro.getValue().toString(), txtfldOreViaggio.getValue().toString()
+			
+			//TODO inserito il controllo
+			oreV=txtfldOreViaggio.getValue().toString();
+			oreL=txtfldOreLavoro.getValue().toString();
+			if(oreV.compareTo("0.00")!=0 || oreL.compareTo("0.00")!=0){
+				intervallo= new IntervalliCommesseModel(txtfldNumCommessa.getValue().toString(), txtfldOreLavoro.getValue().toString(), txtfldOreViaggio.getValue().toString()
 					,"","", txtDescrizione.toString());
-			intervalliC.add(intervallo);
+				intervalliC.add(intervallo);
+			}
 		}
 		
 		return intervalliC;

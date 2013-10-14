@@ -112,6 +112,8 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 		   HttpServletRequest request = this.getThreadLocalRequest();
 	   	   HttpSession httpSession = request.getSession();	   
 	   	   
+	   	   httpSession.setMaxInactiveInterval(16*60);
+	   	   
 	   	   if(!httpSession.isNew()){ 
 	   		   
 	   		   //httpSession.invalidate();  		  

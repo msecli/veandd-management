@@ -117,7 +117,8 @@ public class ServerUtility {
 		return mese;
 	}
 
-	*/
+*/
+	
 	public static int calcolaOreLavorativeMese(Date giornoRiferimento, String orePreviste) {
 		String data=new String();
 		String mese=new String();
@@ -188,6 +189,13 @@ public class ServerUtility {
 			return true;	
 		if(dataCompleta.compareTo("2013-Giu-24")==0)
 			return true;
+		if(dataCompleta.compareTo("2013-Gen-01")==0)
+			return true;
+		if(dataCompleta.compareTo("2013-Dic-25")==0)
+			return true;
+		if(dataCompleta.compareTo("2013-Dic-26")==0)
+			return true;
+	
 		return false;
 	}
 	
@@ -1760,8 +1768,7 @@ public class ServerUtility {
 			
 		}finally{
 			session.close();
-		}		
-		
+		}				
 		return 0;		
 	}
 	
@@ -1800,12 +1807,15 @@ public class ServerUtility {
 		
 		for(CostingRisorsaModel c:listaCostR){
 		
-			sommaCostiOrari+=Float.valueOf((String) c.get("costoOrario"))*Float.valueOf((String) c.get("orePianificate"));
-			sommaOreCorrette+=Float.valueOf((String) c.get("orePianificate"))*Float.valueOf((String) c.get("lc"));
+			sommaCostiOrari+=/*Float.valueOf((String) c.get("costoOrario"))*Float.valueOf((String) c.get("orePianificate"));*/
+					calcolaImporto((String)c.get("costoOrario"), (String)c.get("orePianificate"));
+			sommaOreCorrette+=/*Float.valueOf((String) c.get("orePianificate"))*Float.valueOf((String) c.get("lc"));*/
+					calcolaImporto((String)c.get("lc"), (String)c.get("orePianificate"));
 			sommaCostoRisorsa+=Float.valueOf((String) c.get("costoRisorsa"));
 			sommaCostiStrRisorse+=Float.valueOf((String) c.get("costoRisorsaStruttura"));
 			sommaCostiTotaliAzienda+=Float.valueOf((String) c.get("costoTotaleAzienda"));
-			sommaCostiHwSw+= Float.valueOf((String) c.get("costoHwSw"))*Float.valueOf((String) c.get("orePianificate"));
+			sommaCostiHwSw+= /*Float.valueOf((String) c.get("costoHwSw"))*Float.valueOf((String) c.get("orePianificate"));*/
+					calcolaImporto((String)c.get("costoHwSw"), (String)c.get("orePianificate"));
 			sommaCostiHwSwOneriH=Float.valueOf((String) c.get("costoOneri"));
 			sommaCostiHwSwOneriRisorse+=Float.valueOf((String) c.get("costoRisorsaSommaHwSwOneri"));
 			sommaCostiConsulenza+=Float.valueOf((String) c.get("costoConsulenza"));

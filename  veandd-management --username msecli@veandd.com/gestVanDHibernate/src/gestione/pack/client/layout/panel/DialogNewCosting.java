@@ -46,8 +46,12 @@ public class DialogNewCosting extends Dialog{
 	private Button btnHelp;
 	private Button btnSave;
 	private Label lblCommessa;
+	private String username;
 		
-	public DialogNewCosting(){
+	
+	
+	public DialogNewCosting(String u){
+		this.username=u;
 		
 		setLayout(new FitLayout());
 		setBodyBorder(true);
@@ -141,10 +145,8 @@ public class DialogNewCosting extends Dialog{
 		btnSave.addSelectionListener(new SelectionListener<ButtonEvent>() {
 					
 			@Override
-			public void componentSelected(ButtonEvent ce) {
-							
-				//TODO passare il pm per salvare la commessa
-				
+			public void componentSelected(ButtonEvent ce) {							
+								
 				if(smplcmbxCommessa.isValid()&&cmbxCliente.isValid()&&txtaDescrizione.isValid()&&smplcmbxArea.isValid()){
 					
 					String commessa=smplcmbxCommessa.getRawValue().toString();
@@ -152,7 +154,7 @@ public class DialogNewCosting extends Dialog{
 					String descrizione=txtaDescrizione.getValue().toString();
 					String area=smplcmbxArea.getRawValue().toString();
 					
-					AdministrationService.Util.getInstance().insertDataCosting(commessa, area, idCliente, descrizione, new AsyncCallback<Boolean>() {
+					AdministrationService.Util.getInstance().insertDataCosting(commessa, area, idCliente, descrizione, username, new AsyncCallback<Boolean>() {
 
 						@Override
 						public void onFailure(Throwable caught) {

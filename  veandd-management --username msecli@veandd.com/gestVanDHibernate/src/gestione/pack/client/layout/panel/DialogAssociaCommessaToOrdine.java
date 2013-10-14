@@ -3,36 +3,41 @@ package gestione.pack.client.layout.panel;
 import java.util.List;
 
 import gestione.pack.client.AdministrationService;
+import gestione.pack.client.model.CommessaModel;
+import gestione.pack.client.model.PersonaleModel;
 
+import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.StoreSorter;
+import com.extjs.gxt.ui.client.util.Margins;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
 import com.extjs.gxt.ui.client.widget.layout.ColumnData;
 import com.extjs.gxt.ui.client.widget.layout.ColumnLayout;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.util.Margins;
+public class DialogAssociaCommessaToOrdine extends Dialog{
 
-
-public class DialogAssociaOrdine extends Dialog{
+	private ComboBox<CommessaModel> smplcmbxListaCommesse;
+	private String numeroOrdine;
 	
-	private SimpleComboBox<String> smplcmbxNumeroRdo;
-	SimpleComboBox<String> smplcmbxOrdini = new SimpleComboBox<String>();
-	
-	public DialogAssociaOrdine(String idCommessa){
+	public DialogAssociaCommessaToOrdine(String numeroOrdine){
+		
+		this.numeroOrdine=numeroOrdine;
 		
 		setLayout(new FitLayout());
 		setBodyBorder(true);
@@ -42,7 +47,7 @@ public class DialogAssociaOrdine extends Dialog{
 		setResizable(false);
 		setClosable(true);
 		setButtons("");
-		setHeading("Associazione Ordine.");
+		setHeading("Associazione Commessa.");
 		setModal(true);
 		
 		FieldSet fldstFormNew= new FieldSet();
@@ -61,9 +66,7 @@ public class DialogAssociaOrdine extends Dialog{
 		fldstFormListaOrdini.setStyleAttribute("margin-top", "12px");
 		fldstFormListaOrdini.setHeading("Lista Ordini");
 		
-		//FormPanel formInsertNew= createFormNewOrdine(idCommessa);//form per inserire un nuovo ordine
-		//formInsertNew.setBorders(false);
-		FormPanel frmAddPresente= createFormListaOrdini(idCommessa);//form per la scelta di un ordine già presente
+		FormPanel frmAddPresente= createFormListaCommesse();//form per la scelta di un ordine già presente
 		frmAddPresente.setBorders(false);
 		
 		VerticalPanel vp= new VerticalPanel();
@@ -75,7 +78,7 @@ public class DialogAssociaOrdine extends Dialog{
 		panel.setHeaderVisible(false);
 		panel.setExpanded(true);
 		panel.setCollapsible(false);
-		panel.setHeading("Associazione Ordine.");
+		panel.setHeading("Associazione Commessa.");
 		panel.setFrame(false);
 		
 		//fldstFormNew.add(formInsertNew);
@@ -87,15 +90,16 @@ public class DialogAssociaOrdine extends Dialog{
 		
 		container.add(panel);
 		add(container);	
-	}
 		
+	}
 	
-	private FormPanel createFormListaOrdini(final String idCommessa) {
+	
+	private FormPanel createFormListaCommesse() {
 		
 		final FormPanel frmPanel= new FormPanel();
 		frmPanel.setFrame(false);
 		frmPanel.setHeaderVisible(false);
-		frmPanel.setHeading("Lista Ordini.");
+		frmPanel.setHeading("Lista Commesse.");
 		frmPanel.setCollapsible(false);
 		frmPanel.setLabelWidth(100);
 		frmPanel.setWidth("350px");
@@ -120,19 +124,21 @@ public class DialogAssociaOrdine extends Dialog{
 	    layout1.setLabelWidth(75);
 	    left1.setLayout(layout1);
 		
-		smplcmbxOrdini.setName("ordine");
-		smplcmbxOrdini.setTriggerAction(TriggerAction.ALL);
+	    ListStore<CommessaModel> store=new ListStore<CommessaModel>();
+	    smplcmbxListaCommesse=new ComboBox<CommessaModel>();
+	    smplcmbxListaCommesse.setStore(store);		
+		smplcmbxListaCommesse.setTriggerAction(TriggerAction.ALL);
 		try {	
-			getOrdini();
+			getListaCommesse();
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		
-		smplcmbxOrdini.setFieldLabel("Ordine");
-		smplcmbxOrdini.setName("numeroRda");
-		smplcmbxOrdini.setTriggerAction(TriggerAction.ALL);
-		smplcmbxOrdini.setAllowBlank(false);
-		left1.add(smplcmbxOrdini, new FormData("85%"));
+		}		
+		smplcmbxListaCommesse.setFieldLabel("Commesse");
+		smplcmbxListaCommesse.setName("commessa");
+		smplcmbxListaCommesse.setDisplayField("commessa");
+		smplcmbxListaCommesse.setTriggerAction(TriggerAction.ALL);
+		smplcmbxListaCommesse.setAllowBlank(false);
+		left1.add(smplcmbxListaCommesse, new FormData("85%"));
 		
 		LayoutContainer right1 = new LayoutContainer();  
 	    layout1 = new FormLayout();
@@ -148,8 +154,9 @@ public class DialogAssociaOrdine extends Dialog{
 			public void componentSelected(ButtonEvent ce) {
 				
 				if(frmPanel.isValid()){
-																	
-					AdministrationService.Util.getInstance().associaOrdinePresenteCommessa(idCommessa, smplcmbxOrdini.getRawValue().toString(), new AsyncCallback<Boolean>() {
+									
+					int idCommessa=smplcmbxListaCommesse.getValue().get("idCommessa");
+					AdministrationService.Util.getInstance().associaOrdinePresenteCommessa(String.valueOf(idCommessa), numeroOrdine, new AsyncCallback<Boolean>() {
 
 					@Override
 					public void onFailure(Throwable caught) {
@@ -181,54 +188,35 @@ public class DialogAssociaOrdine extends Dialog{
 	    fldstRdo.add(main1);   
 	    frmPanel.add(fldstRdo, fd_fldstRdo);
 	    
-		return frmPanel;
+		return frmPanel;	
 	}
 
 
-	
-	public void getRdos(){
+	private void getListaCommesse() {
 		
-		AdministrationService.Util.getInstance().getAllNumeroRdo(new AsyncCallback<List<String>>() {
+		AdministrationService.Util.getInstance().getCommesseAperteSenzaOrdine( new AsyncCallback<List<CommessaModel>>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				Window.alert("Errore connessione;");
-				caught.printStackTrace();
-				
+				Window.alert("Errore connessione on getCommesseByPM();");
+				caught.printStackTrace();				
 			}
 
 			@Override
-			public void onSuccess(List<String> result) {
-				if(result != null)
-					{
-						smplcmbxNumeroRdo.add(result);
-						smplcmbxNumeroRdo.recalculate();
-					}else Window.alert("error: Impossibile aggiornare la Lista.");		
+			public void onSuccess(List<CommessaModel> result) {
+				if(result!=null){
+					ListStore<CommessaModel> lista= new ListStore<CommessaModel>();
+					lista.setStoreSorter(new StoreSorter<CommessaModel>());  
+					lista.setDefaultSort("commessa", SortDir.ASC);
+					
+					lista.add(result);				
+					smplcmbxListaCommesse.clear();
+					smplcmbxListaCommesse.setStore(lista);
+				}else Window.alert("error: Errore durante l'accesso ai dati Commesse.");
+				
 			}
-		});	
-	}
-	
-	
-	private void getOrdini() {
+		});
 		
-		AdministrationService.Util.getInstance().getAllListaOrdini(new AsyncCallback<List<String>>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				Window.alert("Errore connessione;");
-				caught.printStackTrace();
-				
-			}
-
-			@Override
-			public void onSuccess(List<String> result) {
-				if(result != null)
-					{
-						smplcmbxOrdini.add(result);
-						smplcmbxOrdini.recalculate();
-					}else Window.alert("error: Impossibile aggiornare la Lista Ordini.");		
-			}
-		});	
 	}
-
+	
 }
