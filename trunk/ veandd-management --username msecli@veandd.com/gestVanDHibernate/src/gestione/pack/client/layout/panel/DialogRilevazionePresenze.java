@@ -4,6 +4,7 @@ package gestione.pack.client.layout.panel;
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.utility.MyImages;
 
+import gestione.pack.client.layout.CenterLayout_FoglioOreSelectDipendenti.FldsetGiustificativi;
 import gestione.pack.client.layout.panel.DialogInvioCommenti;
 import gestione.pack.client.layout.panel.FormInserimentoIntervalloCommessa;
 import gestione.pack.client.model.GiustificativiModel;
@@ -56,7 +57,6 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
-//import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -2674,37 +2674,54 @@ public class DialogRilevazionePresenze extends Dialog {
 		
 		private void aggiornaTotaleIntervalli() {
 			
-		   List<String> listaParziali= new ArrayList<String>();
-		   String totale=new String();
-		   String delta=new String();
-		   String abbuono=new String();
-		   
-		   LayoutContainer lc= new LayoutContainer(); 
-	       LayoutContainer right= new LayoutContainer();
-		   FldsetGiustificativi fldsetGiustificativo;
-		   lc=(LayoutContainer) getParent().getParent();
-		   right=(LayoutContainer) lc.getItemByItemId("right");
-		   fldsetGiustificativo=(FldsetGiustificativi) right.getItemByItemId("fldSetGiustificativi");
-		   
-		   listaParziali.add(txtfldSomma1.getValue().toString());
-  		   listaParziali.add(txtfldSomma2.getValue().toString());
-  		   listaParziali.add(txtfldSomma3.getValue().toString());
-  		   listaParziali.add(txtfldSomma4.getValue().toString());
-  		   listaParziali.add(txtfldSomma5.getValue().toString());
-  	   
-  		   abbuono="-"+fldsetGiustificativo.txtfldAbbuono.getValue();
-  		   totale=ClientUtility.calcolaTempo(listaParziali);
-  		   totale=ClientUtility.aggiornaTotGenerale(totale, abbuono);
-  		   
-  		   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
-  		   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
-  		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
-  		  
-  		   if(isNew.compareTo("new")==0){
-  			 fldsetGiustificativo.txtfldRecupero.setValue(delta);
-  		   }
-  		   	   
-  		   setFieldGiustificativo(fldsetGiustificativo, delta);			
+			List<String> listaParziali= new ArrayList<String>();
+			   String totale=new String();
+			   String delta=new String();
+			   String abbuono=new String();
+			   
+			   LayoutContainer lc= new LayoutContainer(); 
+		       LayoutContainer right= new LayoutContainer();
+			   FldsetGiustificativi fldsetGiustificativo;
+			  
+			   if((LayoutContainer) getParent().getParent()!=null)
+				   lc=(LayoutContainer) getParent().getParent();
+			   right=(LayoutContainer) lc.getItemByItemId("right");
+			   fldsetGiustificativo=(FldsetGiustificativi) right.getItemByItemId("fldSetGiustificativi");
+			 		 
+			   if(txtfldSomma1.getValue().toString().length()<=5 && txtfldSomma2.getValue().toString().length()<=5 && txtfldSomma3.getValue().toString().length()<=5&&
+					   txtfldSomma4.getValue().toString().length()<=5 && txtfldSomma5.getValue().toString().length()<=5){
+				   listaParziali.add(txtfldSomma1.getValue().toString());
+				   listaParziali.add(txtfldSomma2.getValue().toString());
+				   listaParziali.add(txtfldSomma3.getValue().toString());
+				   listaParziali.add(txtfldSomma4.getValue().toString());
+				   listaParziali.add(txtfldSomma5.getValue().toString());
+	  	   	  		   	  		   
+				   abbuono="-"+fldsetGiustificativo.txtfldAbbuono.getValue();
+				   totale=ClientUtility.calcolaTempo(listaParziali);
+				   totale=ClientUtility.aggiornaTotGenerale(totale, abbuono);
+	  		   
+				   delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
+				   fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
+				   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
+	  		  
+				   if(isNew.compareTo("new")==0){
+					   fldsetGiustificativo.txtfldRecupero.setValue(delta);
+				   }
+	  		   	   
+				   setFieldGiustificativo(fldsetGiustificativo, delta);			
+			   }else{
+								
+				totale="0.00";
+				delta=ClientUtility.calcoloDelta(totale, fldsetGiustificativo.txtfldOrePreviste.getValue());
+				fldsetGiustificativo.txtfldTotGenerale.setValue(totale);	
+				fldsetGiustificativo.txtfldOreDelta.setValue(delta);
+	  		  
+				if(isNew.compareTo("new")==0){
+					   fldsetGiustificativo.txtfldRecupero.setValue(delta);
+				}
+	  		   	   
+				setFieldGiustificativo(fldsetGiustificativo, delta);			
+			   }	
 		}
 
 		//I singoli intervalli possono avere sorgente: TMB DIP PM UG
@@ -3074,10 +3091,10 @@ public class DialogRilevazionePresenze extends Dialog {
 			
 			final NumberFormat number = NumberFormat.getFormat("0.00");
 			
-			if(result.getStatoRevisione().compareTo("0")!=0){
+			/*if(result.getStatoRevisione().compareTo("0")!=0){
 				statoRevisione=1;
 				btnConferma.setEnabled(false);
-			}
+			}*/
 			
 			setBorders(true);
 			setHeading("Giustificativo.");

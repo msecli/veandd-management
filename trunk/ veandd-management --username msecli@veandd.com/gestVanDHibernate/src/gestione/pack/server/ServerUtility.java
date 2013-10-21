@@ -1428,6 +1428,7 @@ public class ServerUtility {
 	}
 	
 	
+	//TODO modifiche per tariffe
 	@SuppressWarnings("unchecked")
 	public static List<DatiFatturazioneMeseJavaBean> PrintRiepilogoDatiFatturazione(
 			String anno, String mese) {
@@ -1844,6 +1845,36 @@ public class ServerUtility {
 				d.format(sommaOreFatturare), d.format(sommaTariffa), d.format(tariffaDerivata), d.format(sommaFatturato), d.format(sommaMol), d.format(sommaMolPerc), d.format(sommaEbit), d.format(sommaEbitPerc));
 		
 		return costingM;		
+	}
+
+	
+	public static String checkTariffa(int codCommessa) {
+		
+		//c'è l'ordine quale prendo se ci sono più tariffe??????????????
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		Commessa c= new Commessa();
+		
+		try{
+			tx=session.getTransaction();
+			
+			c=(Commessa)session.get(Commessa.class, codCommessa);
+			
+			
+			
+			tx.commit();			
+			
+		}catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return null;
+		}finally{
+			session.close();
+		}
+		
+		return null;
 	}	
 		
 }

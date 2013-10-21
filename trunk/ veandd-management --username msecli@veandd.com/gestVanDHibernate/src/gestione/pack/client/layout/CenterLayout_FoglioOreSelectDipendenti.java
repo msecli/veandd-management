@@ -3971,14 +3971,14 @@ String movimento= new String();
 			txtfldOreViaggio=frm.txtfldOreViaggio;
 			txtDescrizione=frm.txtDescrizione;
 			
-			//TODO inserito il controllo per non salvare gli intervalli 000
+			
 			oreV=txtfldOreViaggio.getValue().toString();
 			oreL=txtfldOreLavoro.getValue().toString();
-			if(oreV.compareTo("0.00")!=0 || oreL.compareTo("0.00")!=0){
+			//if(oreV.compareTo("0.00")!=0 || oreL.compareTo("0.00")!=0){
 				intervallo= new IntervalliCommesseModel(txtfldNumCommessa.getValue().toString(), txtfldOreLavoro.getValue().toString(), txtfldOreViaggio.getValue().toString()
 					,"","", txtDescrizione.toString());
 				intervalliC.add(intervallo);
-			}
+			//}
 		}
 		
 		return intervalliC;

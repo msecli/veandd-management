@@ -215,7 +215,9 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			   
 		    		    
 		    gridRiepilogo= new EditorGrid<DatiFatturazioneMeseModel>(store, cm);  
-		    gridRiepilogo.setBorders(false);  
+		    gridRiepilogo.setBorders(false); 
+		    gridRiepilogo.setColumnLines(true);
+		    gridRiepilogo.setStripeRows(true);
 		    gridRiepilogo.setView(summary);  
 		    gridRiepilogo.getView().setShowDirtyCells(false);
 		    			   		   	    	   
@@ -288,8 +290,15 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		    
 		    column=new SummaryColumnConfig<Double>();		
 		    column.setId("oggettoAttivita");  
-		    column.setHeader("Oggetto Att.");  
+		    column.setHeader("Oggetto");  
 		    column.setWidth(140);  
+		    column.setRowHeader(true); 
+		    configs.add(column);
+		    
+		    column=new SummaryColumnConfig<Double>();		
+		    column.setId("attivitaOrdine");  
+		    column.setHeader("Attivita' ordine");  
+		    column.setWidth(100);  
 		    column.setRowHeader(true); 
 		    configs.add(column);
 		    

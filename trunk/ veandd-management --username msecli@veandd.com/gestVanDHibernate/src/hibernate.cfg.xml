@@ -52,7 +52,8 @@
       <mapping class="gestione.pack.shared.CostiHwSw"/>  
       <mapping class="gestione.pack.shared.CostoAzienda"/> 
       <mapping class="gestione.pack.shared.Costing"/>
-      <mapping class="gestione.pack.shared.CostingRisorsa"/> 
+      <mapping class="gestione.pack.shared.CostingRisorsa"/>
+      <mapping class="gestione.pack.shared.AttivitaOrdine"/> 
  	
 </session-factory>
  
