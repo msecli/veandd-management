@@ -6,7 +6,9 @@ import java.util.List;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.layout.panel.DialogAssociaCommessaToOrdine;
+import gestione.pack.client.model.CostingRisorsaModel;
 import gestione.pack.client.model.RdoCompletaModel;
+import gestione.pack.client.model.RiepilogoSALPCLModel;
 import gestione.pack.client.model.TariffaOrdineModel;
 import gestione.pack.client.utility.MyImages;
 
@@ -24,6 +26,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.GroupingStore;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -35,8 +38,11 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.grid.CellEditor;
+import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridGroupRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GroupColumnData;
@@ -48,16 +54,18 @@ import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
-public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
+public class CenterLayout_GestioneRdoCompletaDup extends LayoutContainer{
 
-	public CenterLayout_GestioneRdoCompleta(){}
+	public CenterLayout_GestioneRdoCompletaDup(){}
 	
 	private TextField<String> txtfldNumeroRda;
 	private TextField<String> txtfldIdRda=new TextField<String>();	
@@ -119,8 +127,8 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		cntpnlLayout.setHeaderVisible(false);
 		cntpnlLayout.setCollapsible(false);
 		cntpnlLayout.setBorders(false);
-		cntpnlLayout.setWidth(860);
-		cntpnlLayout.setHeight(850);
+		cntpnlLayout.setWidth(970);
+		cntpnlLayout.setHeight(1000);
 		cntpnlLayout.setFrame(true);
 		cntpnlLayout.setButtonAlign(HorizontalAlignment.CENTER);
 		//cntpnlLayout.setStyleAttribute("padding-left", "7px");
@@ -153,11 +161,15 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 				String oreDisp="0.0";
 				String oreRes="0.0";
 				
+				
+				CntpnlFormRdo cpfrm=(CntpnlFormRdo) hpLayout.getItemByItemId("cpfrm");
+				ContentPanel cp=(ContentPanel) cpfrm.getItemByItemId("cp");
+				LayoutContainer layout=(LayoutContainer) cp.getItemByItemId("layout");
+				CntpnlGridTariffeOrdine cpTariffa=(CntpnlGridTariffeOrdine) layout.getItemByItemId("cpTariffa");
+				List<TariffaOrdineModel> listaTar= (List<TariffaOrdineModel>) cpTariffa.storeTariffe.getModels();
+				
 				if(formIsValid()&&!arePresent()){
 				
-					List<TariffaOrdineModel> listaTar = null;
-					
-					
 					cliente=smplcmbxCliente.getRawValue().toString();
 					if(!txtfldNumeroRda.getRawValue().isEmpty())numRdo=txtfldNumeroRda.getValue().toString();
 					
@@ -222,7 +234,11 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 				String oreDisp="0.0";
 				String oreRes="0.0";
 				
-				List<TariffaOrdineModel> listaTar = null;
+				CntpnlFormRdo cpfrm=(CntpnlFormRdo) hpLayout.getItemByItemId("cpfrm");
+				ContentPanel cp=(ContentPanel) cpfrm.getItemByItemId("cp");
+				LayoutContainer layout=(LayoutContainer) cp.getItemByItemId("layout");
+				CntpnlGridTariffeOrdine cpTariffa=(CntpnlGridTariffeOrdine) layout.getItemByItemId("cpTariffa");
+				List<TariffaOrdineModel> listaTar= (List<TariffaOrdineModel>) cpTariffa.storeTariffe.getModels();
 				
 				if(formIsValid()){
 					idRdo=Integer.valueOf(txtfldIdRda.getValue());
@@ -329,6 +345,8 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		add(layoutContainer);		
 	}
 	
+	
+	
 	private class CntpnlFormRdo extends ContentPanel{
 		
 		public CntpnlFormRdo() {
@@ -338,21 +356,24 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			setBorders(false);
 			setBodyBorder(false);
 			setScrollMode(Scroll.NONE);	
-			setWidth(800);
-			setHeight(200);
+			setWidth(940);
+			setHeight(315);
 			setFrame(false);
 			setStyleAttribute("margin-top", "0px");
+			setItemId("cpfrm");
 			
 			ContentPanel cp= new ContentPanel();
 			cp.setHeaderVisible(false);
-			cp.setSize(790, 200);
+			cp.setSize(920, 330);
 			cp.setBorders(false);
 			cp.setBodyBorder(false);
 			cp.setFrame(false);
 			cp.setLayout(new RowLayout(Orientation.HORIZONTAL));
+			cp.setItemId("cp");
 						
 			layoutCol2.setStyleAttribute("padding-left", "20px");
 			
+			layoutCol3.setItemId("layout");
 			layoutCol3.setStyleAttribute("padding-left", "5px");
 			
 			FormLayout layout= new FormLayout();
@@ -551,10 +572,11 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			layoutCol3.add(txtfldNumeroOrdine,new FormData("85%"));
 			layoutCol3.add(dtfldDataInizioOrdine,new FormData("85%"));
 			layoutCol3.add(dtfldDataFineOrdine, new FormData("85%"));
-			layoutCol3.add(txtfldTariffaOraria, new FormData("60%"));
+			//layoutCol3.add(txtfldTariffaOraria, new FormData("60%"));
 			layoutCol3.add(txtfldNumeroRisorse, new FormData("60%"));
 			layoutCol3.add(txtfldNumeroOre, new FormData("60%"));
 			layoutCol3.add(txtfldNumeroOreResidue, new FormData("60%"));			
+			layoutCol3.add(new CntpnlGridTariffeOrdine(),new FormData("85%"));
 			
 			RowData data = new RowData(.35, 1);
 			data.setMargins(new Margins(5));
@@ -563,8 +585,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			cp.add(layoutCol2, data);
 			cp.add(layoutCol3, data);
 			
-			add(cp);
-			
+			add(cp);			
 		}
 		
 		public void getClienti(){
@@ -589,6 +610,182 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 	}
 	
 	
+	private class CntpnlGridTariffeOrdine extends ContentPanel{
+		
+		private Button btnAddTariffa;
+		private Button btnDelTariffa;
+		private Button btnConferma;
+		private TextField<String> txtfldTariffa= new TextField<String>();
+		
+		private EditorGrid<TariffaOrdineModel> gridTariffa;
+		private CellSelectionModel<TariffaOrdineModel> cs;
+		private ListStore<TariffaOrdineModel> storeTariffe=new ListStore<TariffaOrdineModel>();
+		private ColumnModel cmTariffe;
+		
+		public CntpnlGridTariffeOrdine(){
+			setHeaderVisible(false);
+			setCollapsible(false);
+			setBorders(false);
+			setBodyBorder(false);
+			setScrollMode(Scroll.AUTO);	
+			setWidth(150);
+			setHeight(150);
+			setFrame(true);
+			setLayout(new FitLayout());
+			setItemId("cpTariffa");
+			
+			cs=new CellSelectionModel<TariffaOrdineModel>();
+		    cs.setSelectionMode(SelectionMode.SIMPLE);
+	   
+		    cmTariffe=new ColumnModel(createColumns());
+		    gridTariffa= new EditorGrid<TariffaOrdineModel>(storeTariffe, cmTariffe);
+		    gridTariffa.setBorders(false);
+		    gridTariffa.setItemId("grid");
+		    gridTariffa.setStripeRows(true); 
+		    gridTariffa.setColumnLines(true);
+		    gridTariffa.setSelectionModel(cs);
+		    TariffaOrdineModel tm=new TariffaOrdineModel();
+		    storeTariffe.insert(tm, 0);//inserisco una riga vuota pronta per l'inserimento
+		    gridTariffa.startEditing(storeTariffe.indexOf(tm), 0);
+		    		    
+		    btnAddTariffa= new Button();
+		    btnAddTariffa.setSize(26, 26);
+		    btnAddTariffa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.add()));
+		    btnAddTariffa.setIconAlign(IconAlign.BOTTOM);
+		    btnAddTariffa.addSelectionListener(new SelectionListener<ButtonEvent>() {
+				
+				@Override
+				public void componentSelected(ButtonEvent ce) {
+					TariffaOrdineModel tm=new TariffaOrdineModel();
+					gridTariffa.stopEditing();
+				    storeTariffe.insert(tm, 0);//inserisco una riga vuota per l'inserimento
+				    gridTariffa.startEditing(storeTariffe.indexOf(tm), 0);
+				}
+			});
+		    
+		    btnDelTariffa= new Button();
+		    btnDelTariffa.setSize(26, 26);
+		    btnDelTariffa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.respingi()));
+		    btnDelTariffa.setIconAlign(IconAlign.BOTTOM);
+		    btnDelTariffa.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+				@Override
+				public void componentSelected(ButtonEvent ce) {
+					TariffaOrdineModel trf=	cs.getSelectedItem();
+					storeTariffe.remove(trf);					
+				}
+			});
+		    
+		    		    						
+			ToolBar tlbGrid= new ToolBar();
+			tlbGrid.add(btnAddTariffa);
+			tlbGrid.add(new SeparatorToolItem());
+			tlbGrid.add(btnDelTariffa);
+			tlbGrid.add(new SeparatorToolItem());
+			//tlbGrid.add(btnConferma);	    
+			//tlbGrid.add(new SeparatorToolItem());
+			
+			setTopComponent(tlbGrid);
+			add(gridTariffa);		    
+		}
+		
+		
+		public void caricaTabella(int idRdo){
+			
+			AdministrationService.Util.getInstance().loadTariffePerOrdine(idRdo, new AsyncCallback<List<TariffaOrdineModel>>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					Window.alert("Errore di connessione on loadTariffePerOrdine()");			
+				}
+
+				@Override
+				public void onSuccess(List<TariffaOrdineModel> result) {
+					loadTable(result);					
+				}			
+			});		
+		}
+		
+		private void loadTable(List<TariffaOrdineModel> result) {
+			try {
+				storeTariffe.removeAll();
+				storeTariffe.add(result);
+				gridTariffa.reconfigure(storeTariffe, cmTariffe);	    		    	
+			} catch (NullPointerException e) {
+				Window.alert("error: Impossibile effettuare il caricamento dati nella tabella Tariffe.");
+					e.printStackTrace();
+			}
+		}		
+		
+		private List<ColumnConfig> createColumns() {
+			List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
+			ColumnConfig column;  
+			CellEditor editorTxt;
+			
+			column = new ColumnConfig();  
+		    column.setId("tariffaAttivita");  
+		    column.setHeader("Tariffa");  
+		    column.setWidth(60);  
+		    column.setRowHeader(true);
+		    column.setAlignment(HorizontalAlignment.RIGHT);
+		    
+		    txtfldTariffa.setRegex("[0-9]+[.]{1}[0-9]{2}|[0-9]");
+		    txtfldTariffa.getMessages().setRegexText("Deve essere un numero!");
+		    txtfldTariffa.setValue("0.00");
+		    txtfldTariffa.setAllowBlank(false);
+		    editorTxt= new CellEditor(txtfldTariffa){
+		    	@Override  
+		        public Object preProcessValue(Object value) {  
+		          if (value == null) {  
+		            return value;  
+		          }  
+		          return value.toString();  
+		        }  
+		    
+		        @Override  
+		        public Object postProcessValue(Object value) {  
+		          if (value == null) {  
+		            return value;  
+		          }  
+		          return value.toString();  
+		        }  
+		    };	    
+		    column.setEditor(editorTxt);
+		    configs.add(column);
+		    
+		    
+		    column = new ColumnConfig();  
+		    column.setId("descrizione");  
+		    column.setHeader("Descrizione Attiv.");  
+		    column.setWidth(180);  
+		    column.setRowHeader(true);
+		    column.setAlignment(HorizontalAlignment.RIGHT);
+		    TextField<String> txtfldDescrizione= new TextField<String>();
+		    editorTxt= new CellEditor(txtfldDescrizione){
+		    	@Override  
+		        public Object preProcessValue(Object value) {  
+		          if (value == null) {  
+		            return value;  
+		          }  
+		          return value.toString();  
+		        }  
+		    
+		        @Override  
+		        public Object postProcessValue(Object value) {  
+		          if (value == null) {  
+		            return value;  
+		          }  
+		          return value.toString();  
+		        }  
+		    };	    
+		    column.setEditor(editorTxt);
+		    configs.add(column);
+			
+		    return configs;
+		}	
+	}
+	
+	
 	private class CntpnlGridRdo extends ContentPanel{
 		
 		private Button btnChiudiOrdine;
@@ -601,7 +798,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			setBorders(false);
 			setBodyBorder(false);
 			setScrollMode(Scroll.NONE);	
-			setWidth(820);
+			setWidth(940);
 			setFrame(false);
 			setStyleAttribute("margin-top", "10px");
 		
@@ -683,6 +880,15 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 						txtfldNumeroOre.setValue(String.valueOf(be.getSelectedItem().getNumeroOre()));
 						txtfldNumeroOreResidue.setValue(String.valueOf(be.getSelectedItem().getNumeroOreResidue()));
 		               
+						VerticalPanel vp= new VerticalPanel();
+						vp=(VerticalPanel) getParent();
+						CntpnlFormRdo cpfrm=(CntpnlFormRdo) vp.getItemByItemId("cpfrm");
+						ContentPanel cp=(ContentPanel) cpfrm.getItemByItemId("cp");
+						LayoutContainer layout=(LayoutContainer) cp.getItemByItemId("layout");
+						CntpnlGridTariffeOrdine cpTariffa=(CntpnlGridTariffeOrdine) layout.getItemByItemId("cpTariffa");
+						
+						cpTariffa.caricaTabella(be.getSelectedItem().getIdRdo());
+												
 						if(statoOrdine.compareTo("C")==0){
 							disableField();
 						}else{
@@ -782,6 +988,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    tlbarSearchField.add(txtfldsearch);
 		    tlbarSearchField.add(btnSearch);
 		    //tlbarSearchField.add(btnChiudiOrdine);
+		    tlbarSearchField.add(new SeparatorToolItem());
 		    tlbarSearchField.add(btnAssociaCommessa);
 		    
 		    ContentPanel cntpnlGrid= new ContentPanel();
@@ -790,7 +997,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    cntpnlGrid.setFrame(true);
 		    cntpnlGrid.setLayout(new FitLayout());  
 		    cntpnlGrid.setHeaderVisible(false);
-		    cntpnlGrid.setWidth(820);
+		    cntpnlGrid.setWidth(920);
 		    cntpnlGrid.setHeight(560);
 		    cntpnlGrid.setScrollMode(Scroll.AUTOY);
 		    cntpnlGrid.add(gridRiepilogo);
@@ -894,13 +1101,13 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    configs.add(column); 
 		    
-		    column=new ColumnConfig();		
+		    /*column=new ColumnConfig();		
 		    column.setId("tariffaOraria");  
 		    column.setHeader("Tariffa");  
 		    column.setWidth(60);  
 		    column.setRowHeader(true);  
 		    column.setAlignment(HorizontalAlignment.RIGHT);
-		    configs.add(column);
+		    configs.add(column);*/
 		    
 		    column=new ColumnConfig();		
 		    column.setId("numeroRisorse");  

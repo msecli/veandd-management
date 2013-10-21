@@ -32,6 +32,7 @@ import gestione.pack.client.model.RiepilogoOreDipFatturazione;
 import gestione.pack.client.model.RiepilogoOreModel;
 import gestione.pack.client.model.RiepilogoOreTotaliCommesse;
 import gestione.pack.client.model.RiepilogoSALPCLModel;
+import gestione.pack.client.model.TariffaOrdineModel;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -106,18 +107,21 @@ public interface AdministrationServiceAsync {
 			Date dataOfferte, String importo, String numOrdine,
 			String descrizione, Date dataInizio, Date dataFine, String tariffa,
 			String numRisorse, String oreDisp, String oreRes,
-			AsyncCallback<Boolean> asyncCallback);
+			List<TariffaOrdineModel> listaTar, AsyncCallback<Boolean> asyncCallback);
 	
 	void editRdoCompleta(int idRdo, String numRdo, String cliente,
 			String numOfferta, Date dataOfferte, String importo,
 			String numOrdine, String descrizione, Date dataInizio,
 			Date dataFine, String tariffa, String numRisorse, String oreDisp,
-			String oreRes, AsyncCallback<Boolean> asyncCallback);
+			String oreRes, List<TariffaOrdineModel> listaTar, AsyncCallback<Boolean> asyncCallback);
 
 	void deleteRdoCompleta(int idRdo, AsyncCallback<Boolean> asyncCallback);
 	
 	void closeOrdine(String numeroOrdine, AsyncCallback<Boolean> asyncCallback);
 
+	void loadTariffePerOrdine(int idRdo,
+			AsyncCallback<List<TariffaOrdineModel>> asyncCallback);
+	
 /*	
 //--------------------------Offerta
 	void insertDataOfferta(String numOfferta, String numRda,
@@ -256,14 +260,14 @@ public interface AdministrationServiceAsync {
 	
 	void getRiepilogoOreDipFatturazione(String mese, String pm, AsyncCallback<List<RiepilogoOreDipFatturazione>> asyncCallback);
 
-	void getDatiFatturazionePerOrdine(String numeroCommessa, String string,
+	void getDatiFatturazionePerOrdine(String numeroCommessa, String data, int idAttivita,
 			AsyncCallback<FoglioFatturazioneModel> asyncCallback);
 
 	void insertDatiFoglioFatturazione(String oreEseguite, String salAttuale,
 			String pclAttuale, String oreFatturere, String variazioneSAL,
 			String variazionePCL, String meseCorrente,
 			String note, String statoElaborazione, String commessaSelezionata,  
-			String tariffaUtilizzata, String flagSal, AsyncCallback<Boolean> asyncCallback);
+			String tariffaUtilizzata, String flagSal, int idAttivita, AsyncCallback<Boolean> asyncCallback);
 
 	void getReportDatiFatturazioneMese(String mese,
 			AsyncCallback<List<DatiFatturazioneMeseModel>> asyncCallback);
@@ -378,7 +382,6 @@ public interface AdministrationServiceAsync {
 	void editStatoCosting(int idSelected, String operazione,
 			AsyncCallback<Boolean> asyncCallback);
 
-	
 
 	
 			

@@ -38,6 +38,8 @@ import net.sf.gilead.gwt.PersistentRemoteService;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import com.google.gwt.cell.client.EditTextCell;
+
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.model.ClienteModel;
@@ -69,12 +71,14 @@ import gestione.pack.client.model.RiepilogoOreModel;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 import gestione.pack.client.model.RiepilogoOreTotaliCommesse;
 import gestione.pack.client.model.RiepilogoSALPCLModel;
+import gestione.pack.client.model.TariffaOrdineModel;
 import gestione.pack.shared.AssociazionePtoA;
 import gestione.pack.shared.Attivita;
 import gestione.pack.shared.Cliente;
 import gestione.pack.shared.Commessa;
 //import gestione.pack.shared.DatiTimbratriceExt;
 import gestione.pack.shared.AssociazionePtohwsw;
+import gestione.pack.shared.AttivitaOrdine;
 import gestione.pack.shared.Commenti;
 import gestione.pack.shared.CostiHwSw;
 import gestione.pack.shared.Costing;
@@ -654,13 +658,13 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 	
 	
-	@Override
+	@Override//TODO 1 modifica per più tariffe
 	public boolean saveRdoCompleta(String numRdo, String cliente,
 			String numOfferta, Date dataOfferta, String importo,
 			String numOrdine, String descrizione, Date dataInizio,
 			Date dataFine, String tariffa, String numRisorse, String oreDisp,
-			String oreRes) throws IllegalArgumentException {
-		
+			String oreRes, List<TariffaOrdineModel>listaTar) throws IllegalArgumentException {
+		/*
 		Rda r=new Rda();
 		Cliente c= new Cliente();
 		
@@ -701,10 +705,89 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			return false;
 		}finally{
 			session.close();
-		}	
+		}	*/
+		
+		Rda r=new Rda();
+		Cliente c= new Cliente();
+		
+		int id;
+				
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;	
+		
+		try {
+			//non potendo fare riferimento al numero Rdo come identificatore univoco, prelevo l'ultimo id e 
+			tx=session.beginTransaction();
+			c = (Cliente)session.createQuery("from Cliente where ragioneSociale= :ragSociale").setParameter("ragSociale", cliente).uniqueResult();	
+			
+			//Per le query native usare i nomi reali delle tabelle
+			if(session.createSQLQuery("SELECT MAX(NUMERO_RDA) from rda ").uniqueResult()!=null)
+				id=(int)session.createSQLQuery("SELECT MAX(NUMERO_RDA) from rda ").uniqueResult();	
+			else id=1;
+			
+			r.setCliente(c);
+			r.setCodiceRDA(numRdo);
+			r.setNumeroRda(id+1);
+			
+			c.getRdas().add(r);
+			
+			session.save(c);
+			
+			tx.commit();
+			
+			insertDataOfferta(numOfferta, id+1, dataOfferta, descrizione, importo);
+			insertDataOrdine(numOrdine, id+1, dataInizio, dataFine, descrizione, "0.00", numRisorse, oreDisp, oreRes);
+			
+			for(TariffaOrdineModel trf:listaTar){
+				AttivitaOrdine att=new AttivitaOrdine();
+				att.setDescrizioneAttivita((String)trf.get("descrizione"));
+				att.setTariffaAttivita((String)trf.get("tariffaAttivita"));
+				
+				insertTariffeOrdine(numOrdine, att);
+			}
+		    
+			return true;
+			
+		} catch (Exception e) {
+			if (tx!=null)
+	    		tx.rollback();		    	
+			e.printStackTrace();		
+			return false;
+		}finally{
+			session.close();
+		}
 	}
 
 	
+	private void insertTariffeOrdine(String numOrdine,
+			AttivitaOrdine attivita) {
+		Ordine ordine= new Ordine();
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;	
+		
+		try {
+			
+			tx=session.beginTransaction();
+			ordine=(Ordine)session.createQuery("from Ordine where codiceOrdine=:nordine").setParameter("nordine", numOrdine).uniqueResult();
+			
+			attivita.setOrdine(ordine);
+			ordine.getAttivitaOrdines().add(attivita);
+			
+			session.save(ordine);
+			tx.commit();
+			
+		} catch (Exception e) {
+			if (tx!=null)
+	    		tx.rollback();		    	
+			e.printStackTrace();		
+			
+		}finally{
+			session.close();
+		}
+	}
+		
+
 	private void insertDataOrdine(String numOrdine, int id,
 			Date dataInizio, Date dataFine, String descrizione, String tariffa,
 			String numRisorse, String oreDisp, String oreRes) {
@@ -787,12 +870,15 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 	
 	
+	//TODO modifica 2 per più tariffe
 	@Override
 	public boolean editRdoCompleta(int idRdo, String numRdo, String cliente,
 			String numOfferta, Date dataOfferta, String importo,
 			String numOrdine, String descrizione, Date dataInizio,
 			Date dataFine, String tariffa, String numRisorse, String oreDisp,
-			String oreRes) throws IllegalArgumentException {
+			String oreRes, List<TariffaOrdineModel>listaTar) throws IllegalArgumentException {
+		
+		/*
 		Rda r=new Rda();
 				
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
@@ -810,6 +896,44 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 			editDataOfferta(numOfferta, idRdo, dataOfferta, descrizione, importo);
 			editDataOrdine(numOrdine, idRdo, dataInizio, dataFine, descrizione, tariffa, numRisorse, oreDisp, oreRes);
+			
+			
+			
+		    return true;
+			
+		} catch (Exception e) {
+			if (tx!=null)
+	    		tx.rollback();		    	
+			e.printStackTrace();		
+			return false;
+		}finally{
+			session.close();
+		}*/
+		
+		Rda r=new Rda();
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;	
+		
+		try {
+			
+			tx=session.beginTransaction();
+				
+			r=(Rda)session.createQuery("from Rda where numero_rda=:idrdo").setParameter("idrdo", idRdo).uniqueResult();
+			
+			r.setCodiceRDA(numRdo);
+			
+			tx.commit();
+			
+			editDataOfferta(numOfferta, idRdo, dataOfferta, descrizione, importo);
+			editDataOrdine(numOrdine, idRdo, dataInizio, dataFine, descrizione, tariffa, numRisorse, oreDisp, oreRes);
+			for(TariffaOrdineModel trf:listaTar){
+				AttivitaOrdine att=new AttivitaOrdine();
+				att.setDescrizioneAttivita((String)trf.get("descrizione"));
+				att.setTariffaAttivita((String)trf.get("tariffaAttivita"));
+				
+				insertTariffeOrdine(numOrdine, att);
+			}			
 			
 		    return true;
 			
@@ -829,7 +953,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			String numRisorse, String oreDisp, String oreRes) {
 	
 		Ordine o= new Ordine();
-	
+		AttivitaOrdine att;
 		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
 		Transaction tx= null;	
 	
@@ -846,6 +970,14 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			o.setOreBudget(oreDisp);
 			o.setOreResidueBudget(oreRes);
 	  
+			//TODO inserito modifica più tariffe
+			Iterator<AttivitaOrdine> itr =o.getAttivitaOrdines().iterator();
+			while(itr.hasNext()){
+				att=itr.next();	
+				session.delete(att);
+				itr.remove();
+			}			
+			
 			tx.commit();		  
 	    		
 		} catch (Exception e) {
@@ -914,6 +1046,48 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		    }finally{
 		    	session.close();
 		    }
+	}
+
+	
+	@Override
+	public List<TariffaOrdineModel> loadTariffePerOrdine(int idRdo)
+			throws IllegalArgumentException {
+		List<TariffaOrdineModel> listaTariffe= new ArrayList<TariffaOrdineModel>();
+		List<AttivitaOrdine> listaAtt=new ArrayList<AttivitaOrdine>();
+		Rda rda= new Rda();
+		Ordine ordine= new Ordine();
+		TariffaOrdineModel trf;
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+				
+		try {
+			  tx=session.beginTransaction();
+			  	 
+			  rda=(Rda)session.get(Rda.class, idRdo);
+			  if(rda!=null){
+				  
+				  ordine=rda.getOrdines().iterator().next();
+				  listaAtt.addAll(ordine.getAttivitaOrdines());
+				  
+			  }
+			  
+			  for(AttivitaOrdine a:listaAtt){
+				  trf=new TariffaOrdineModel(String.valueOf(a.getIdAttivitaOrdine()), a.getTariffaAttivita(), a.getDescrizioneAttivita());
+				  listaTariffe.add(trf);
+			  }
+			  tx.commit();	  
+			   
+		   } catch (Exception e) {
+		    	if (tx!=null)
+		    		tx.rollback();		    	
+		    		e.printStackTrace();
+		    		return null;
+		    }finally{
+		    	session.close();
+		    }
+		
+		return listaTariffe;
 	}
 
 
@@ -3691,6 +3865,560 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 	
 	
+	@Override
+	public List<CommentiModel> getAllCommenti(String utente) {
+		List<Commenti> listaC= new ArrayList<Commenti>();
+		List<CommentiModel> listaCommentiM= new ArrayList<CommentiModel>();
+		CommentiModel cm;
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+			
+		try {
+							
+			tx=session.beginTransaction();
+				
+			listaC=(List<Commenti>)session.createQuery("from Commenti where username=:username").setParameter("username", utente).list();
+				
+			tx.commit();
+			
+			for(Commenti c:listaC){
+				cm=new CommentiModel(c.getIdCommenti(),c.getUsername(), c.getDataRichiesta(), c.getTesto(), Boolean.valueOf(c.getEditated()));
+				listaCommentiM.add(cm);
+			}
+			
+			return listaCommentiM;
+				
+		} catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return null;
+		}finally{
+			session.close();
+		}		
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<CommentiModel> getAllCommenti() throws IllegalArgumentException{
+
+		List<Commenti> listaC= new ArrayList<Commenti>();
+		List<CommentiModel> listaCommentiM= new ArrayList<CommentiModel>();
+		CommentiModel cm;
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+			
+		try {
+							
+			tx=session.beginTransaction();
+				
+			listaC=(List<Commenti>)session.createQuery("from Commenti").list();
+				
+			tx.commit();
+			
+			for(Commenti c:listaC){
+				cm=new CommentiModel(c.getIdCommenti(),c.getUsername(), c.getDataRichiesta(), c.getTesto(), Boolean.valueOf(c.getEditated()));
+				listaCommentiM.add(cm);
+			}
+			
+			return listaCommentiM;
+				
+		} catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return null;
+		}finally{
+			session.close();
+		}			
+	}
+
+	@Override
+	public boolean deleteCommento(int id) {
+		Commenti c= new Commenti();
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+			
+		try {
+							
+			tx=session.beginTransaction();
+				
+			c=(Commenti)session.createQuery("from Commenti where id=:id").setParameter("id", id).uniqueResult();
+			
+			session.delete(c);
+			
+			tx.commit();
+			
+			return true;
+			
+		} catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return false;
+		}finally{
+			session.close();
+		}				
+	}
+	
+	
+	@Override
+	public boolean confermaEditCommenti(int i) throws IllegalArgumentException {
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		Commenti cm= new Commenti();
+		try {
+			
+			tx=session.beginTransaction();
+			
+			cm=(Commenti)session.createQuery("from Commenti where idCommenti=:id").setParameter("id", i).uniqueResult();
+			cm.setEditated("true");			
+			
+			tx.commit();
+			return true;
+			
+		} catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return false;
+		}finally{
+			session.close();
+		}	
+	}
+
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<RiepilogoMeseGiornalieroModel> getRiepilogoMensileDettagliatoHorizontalLayout(
+			String sede, String data) throws IllegalArgumentException{
+		
+		List<RiepilogoMeseGiornalieroModel> listaR= new ArrayList<RiepilogoMeseGiornalieroModel>();
+		List<Personale> listaP= new ArrayList<Personale>();
+		List<FoglioOreMese> listaF= new ArrayList<FoglioOreMese>();
+		List<DettaglioOreGiornaliere> listaG= new ArrayList<DettaglioOreGiornaliere>();
+		List<String> listaCodiciPerOgniGiorno;
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		String mese=data.substring(0,3);
+		String anno=data.substring(3,7);
+		String meseN;
+		String giornoR;
+		
+		
+		try {
+			tx=session.beginTransaction();
+			
+			listaP=(List<Personale>)session.createQuery("from Personale where sedeOperativa=:sede").setParameter("sede", sede).list();
+			
+			//ngiorni=ServerUtility.getGiorniMese(mese, anno);
+			meseN=ServerUtility.traduciMeseToNumber(mese.toLowerCase());
+			
+			for(Personale p:listaP){
+				
+				listaCodiciPerOgniGiorno= new ArrayList<String>();
+				
+				listaF.addAll(p.getFoglioOreMeses());
+				for(FoglioOreMese f: listaF)
+					if(f.getMeseRiferimento().compareTo(data)==0){
+						listaG.addAll(f.getDettaglioOreGiornalieres());
+						break;
+				}
+												
+				for(int i=1; i<=31; i++){
+					
+					String statoCompilazione="1";			
+					
+					String ngiorno=String.valueOf(i);
+					if (ngiorno.length()==1)
+						ngiorno="0"+ngiorno;
+							
+					giornoR=anno+"-"+meseN+"-"+ngiorno;
+								
+					statoCompilazione=ServerUtility.exsistGiorno(listaG, giornoR);
+					if(statoCompilazione.compareTo("0")==0)
+						listaCodiciPerOgniGiorno.add("0");
+					else
+						if(statoCompilazione.compareTo("2")==0)
+							listaCodiciPerOgniGiorno.add("2");	
+						else
+							listaCodiciPerOgniGiorno.add("1");
+				}
+				
+				
+				RiepilogoMeseGiornalieroModel riep= new RiepilogoMeseGiornalieroModel(p.getUsername(), p.getCognome()+" "+p.getNome(),
+						listaCodiciPerOgniGiorno.get(0), listaCodiciPerOgniGiorno.get(1), listaCodiciPerOgniGiorno.get(2), 
+						listaCodiciPerOgniGiorno.get(3), listaCodiciPerOgniGiorno.get(4), listaCodiciPerOgniGiorno.get(5), 
+						listaCodiciPerOgniGiorno.get(6), listaCodiciPerOgniGiorno.get(7), listaCodiciPerOgniGiorno.get(8), 
+						listaCodiciPerOgniGiorno.get(9), listaCodiciPerOgniGiorno.get(10), listaCodiciPerOgniGiorno.get(11), 
+						listaCodiciPerOgniGiorno.get(12), listaCodiciPerOgniGiorno.get(13), listaCodiciPerOgniGiorno.get(14), 
+						listaCodiciPerOgniGiorno.get(15), listaCodiciPerOgniGiorno.get(16), listaCodiciPerOgniGiorno.get(17), 
+						listaCodiciPerOgniGiorno.get(18), listaCodiciPerOgniGiorno.get(19), listaCodiciPerOgniGiorno.get(20), 
+						listaCodiciPerOgniGiorno.get(21), listaCodiciPerOgniGiorno.get(22), listaCodiciPerOgniGiorno.get(23), 
+						listaCodiciPerOgniGiorno.get(24), listaCodiciPerOgniGiorno.get(25), listaCodiciPerOgniGiorno.get(26), 
+						listaCodiciPerOgniGiorno.get(27), listaCodiciPerOgniGiorno.get(28), listaCodiciPerOgniGiorno.get(29), 
+						listaCodiciPerOgniGiorno.get(30));
+				
+				listaG.clear();
+				listaF.clear();
+				listaCodiciPerOgniGiorno.clear();
+				listaR.add(riep);
+			}			
+			tx.commit();
+			return listaR;
+		} catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return null;
+		}finally{
+			session.close();
+		}	
+			
+	}
+	
+	
+	//----------------------------------------------------------VARIE
+		@Override
+		public boolean invioCommenti(String testo, String username)
+				throws IllegalArgumentException {
+			
+			Commenti c= new Commenti();
+			Session session= MyHibernateUtil.getSessionFactory().openSession();
+			Transaction tx= null;
+			Date d= new Date();
+			
+			DateFormat formatter = new SimpleDateFormat("MMM-dd-yyyy") ; 
+			String data=formatter.format(d);
+			
+			try {
+				c.setTesto(testo);
+				c.setUsername(username);
+				c.setDataRichiesta(data);
+				c.setEditated("false");
+				tx=session.beginTransaction();
+				session.save(c);			
+				tx.commit();
+				return true;
+			} catch (Exception e) {
+				if (tx != null)
+					tx.rollback();
+				e.printStackTrace();
+				return false;
+			}finally{
+				session.close();
+			}
+			
+		}
+
+		//non usato----------
+		@Override
+		public boolean setRiepilogoOreOnSession(List<RiepilogoFoglioOreModel> lista) {
+			HttpSession httpSession = getThreadLocalRequest().getSession(true);  
+		    httpSession.setAttribute("listaRiepilogo", lista);
+			return true;
+		}
+		
+
+		@Override
+		public List<RiepilogoOreDipCommesseGiornaliero> getRiepilogoGiornalieroCommesse(
+				int idDip, String username, Date meseRiferimento) throws IllegalArgumentException {//a seconda del Layout che la richiama mi ritrovo username o idDip
+			
+			List<RiepilogoOreDipCommesseGiornaliero> listaG= new ArrayList<RiepilogoOreDipCommesseGiornaliero>();
+			List<FoglioOreMese> listaF= new ArrayList<FoglioOreMese>();
+			List<DettaglioOreGiornaliere> listaD= new ArrayList<DettaglioOreGiornaliere>();
+			List<DettaglioIntervalliCommesse> listaIntervalliC= new ArrayList<DettaglioIntervalliCommesse>();
+			//List<DettaglioIntervalliIU> listaIntervalliIU=new ArrayList<DettaglioIntervalliIU>();
+			
+			List<AssociazionePtoA> listaAssociazioniPA= new ArrayList<AssociazionePtoA>();
+			List<DettaglioIntervalliCommesse> listaCommesse= new ArrayList<DettaglioIntervalliCommesse>(); //verrà usata per considerare tutte le commesse con intervalli inseriti e non solo quelle associate al momento
+			
+			FoglioOreMese fM=new FoglioOreMese();
+			Personale p= new Personale();
+			//Commessa c= new Commessa();
+			
+			String totaleOreLavoroC= "0.00";
+			String totaleOreViaggioC= "0.00";
+			String totaleOreC= "0.00";
+			
+			//totali usati per il confronto ore totali intervalli IU e intervalli commesse
+			String totaleOreDaCommesse= "0.00";
+			String totaleOreDaIU="0.00";
+			
+			Date giorno= new Date();  
+			String dipendente= new String();
+			
+			DateFormat formatter = new SimpleDateFormat("yyyy") ; 
+			String anno=formatter.format(meseRiferimento);
+			formatter = new SimpleDateFormat("MMM",Locale.ITALIAN);
+			String mese=formatter.format(meseRiferimento);
+		    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
+			
+		    String data=mese+anno;
+		    
+			Session session= MyHibernateUtil.getSessionFactory().openSession();
+			Transaction tx= null;
+			
+			try {
+			
+				tx=session.beginTransaction();
+				
+				if(username.compareTo("")==0)
+					p=(Personale)session.createQuery("from Personale where ID_PERSONALE=:id").setParameter("id", idDip).uniqueResult();
+				else
+					p=(Personale)session.createQuery("from Personale where username=:username").setParameter("username", username).uniqueResult();
+				
+				dipendente= p.getCognome()+" "+p.getNome();
+				
+				listaF.addAll(p.getFoglioOreMeses());
+				listaAssociazioniPA.addAll(p.getAssociazionePtoas());
+				
+				for(FoglioOreMese f:listaF){//scorro i mesi per trovare il foglio ore desiderato
+					if(f.getMeseRiferimento().compareTo(data)==0){
+						fM=f;
+						break;
+					}
+				}
+				
+				if(fM!=null)
+					listaD.addAll(fM.getDettaglioOreGiornalieres()); //prendo tutti i giorni del mese
+						
+				for(DettaglioOreGiornaliere d: listaD ){//scorro i giorni del mese e calcolo il totale ore per ogni commessa selezionata
+						giorno= d.getGiornoRiferimento();
+						formatter = new SimpleDateFormat("dd-MMM-yyy",Locale.ITALIAN) ; 
+						String giornoF=formatter.format(giorno);
+						
+						if(!d.getDettaglioIntervalliCommesses().isEmpty()){
+							listaIntervalliC.addAll(d.getDettaglioIntervalliCommesses());	
+							for(DettaglioIntervalliCommesse dd: listaIntervalliC){
+								if(ServerUtility.isNotIncludedCommessa(listaCommesse, dd))							
+									listaCommesse.add(dd);
+							}					
+						}
+						
+						//calcolo il totale ore ricavato dagli intervalli IU della bollatrice
+						if(!d.getDettaglioIntervalliIUs().isEmpty()){
+							totaleOreDaIU=ServerUtility.aggiornaTotGenerale(totaleOreDaIU, d.getTotaleOreGiorno());
+							totaleOreDaIU=ServerUtility.aggiornaTotGenerale(totaleOreDaIU, d.getOreViaggio());					
+						}
+														
+						for(DettaglioIntervalliCommesse dett:listaIntervalliC){							
+							if(Float.valueOf(ServerUtility.aggiornaTotGenerale(dett.getOreLavorate(),  dett.getOreViaggio()))>0){
+															
+								RiepilogoOreDipCommesseGiornaliero riep= new RiepilogoOreDipCommesseGiornaliero(p.getUsername(),dett.getNumeroCommessa()+"."+dett.getEstensioneCommessa()
+									, dipendente, giornoF, Float.valueOf(dett.getOreLavorate()), Float.valueOf(dett.getOreViaggio()), Float.valueOf(ServerUtility.aggiornaTotGenerale(dett.getOreLavorate(),  dett.getOreViaggio())), "S");
+							
+								listaG.add(riep);																	
+							}
+						}					
+						listaIntervalliC.clear();							
+				}
+				
+				//elaboro un record per i totali per ogni commessa
+				//for(AssociazionePtoA ass:listaAssociazioniPA){
+				for(DettaglioIntervalliCommesse dc: listaCommesse){
+					String commessa= dc.getNumeroCommessa() +"."+ dc.getEstensioneCommessa();
+					
+					//precompilo la lista di giorni con tutti i giorni lavorativi del mese in modo tale da segnalare una eventuale mancata compilazione
+					for(int i=1; i<=ServerUtility.getGiorniMese(mese, anno);i++){
+						String g= new String();	
+						String dataCompLow=new String();
+						String meseApp= new String();
+						String c= new String();
+						//Date d= new Date();
+						boolean trovato= false;
+						
+						meseApp=(mese.substring(0,1).toLowerCase()+mese.substring(1,3));
+						
+						if(i<10)
+							g="0"+String.valueOf(i);
+						else
+							g=String.valueOf(i);
+						
+						dataCompLow=(g+"-"+meseApp+"-"+anno);
+						
+						formatter=new SimpleDateFormat("dd-MMM-yyyy",Locale.ITALIAN);
+						RiepilogoOreDipCommesseGiornaliero riep= new RiepilogoOreDipCommesseGiornaliero(p.getUsername(),
+								commessa,dipendente	, dataCompLow, Float.valueOf("0.00"), Float.valueOf("0.00"), 
+								Float.valueOf("0.00"), "N");	
+						
+						Iterator<RiepilogoOreDipCommesseGiornaliero> itr = listaG.iterator();
+						
+						//confronto il riep creato adesso con la lista di giorni che già possiedo
+						while(itr.hasNext()) {				
+							RiepilogoOreDipCommesseGiornaliero dg = itr.next(); //giorno preso dalla lista con i giorni compilati
+					         String dd=dg.get("giorno");
+					         c=dg.get("numeroCommessa");
+					         if(c.compareTo(commessa)==0)
+								if(dd.compareTo((String)riep.get("giorno"))==0){ 
+									trovato=true;
+									break;
+								}				
+								//else trovato=false;
+					    }		
+						if(!trovato){
+							listaG.add(riep);				
+						}		
+					}
+									
+					for(RiepilogoOreDipCommesseGiornaliero g:listaG){
+						if(g.getNumeroCommessa().compareTo(commessa)==0){
+							String oreLavoro=String.valueOf(g.getOreLavoro());
+							String oreViaggio=String.valueOf(g.getOreViaggio());
+							String oreTotali=String.valueOf(g.getTotOre());
+							
+							if(oreLavoro.substring(oreLavoro.indexOf(".")+1, oreLavoro.length()).length()==1)
+								oreLavoro=oreLavoro+"0";
+							if(oreViaggio.substring(oreViaggio.indexOf(".")+1, oreViaggio.length()).length()==1)
+								oreViaggio=oreViaggio+"0";
+							if(oreTotali.substring(oreTotali.indexOf(".")+1, oreTotali.length()).length()==1)
+								oreTotali=oreTotali+"0";
+							
+							totaleOreLavoroC= ServerUtility.aggiornaTotGenerale(totaleOreLavoroC, oreLavoro);
+							totaleOreViaggioC= ServerUtility.aggiornaTotGenerale(totaleOreViaggioC, oreViaggio);
+							totaleOreC=ServerUtility.aggiornaTotGenerale(totaleOreC, oreTotali);
+						}
+					}
+								
+					totaleOreDaCommesse=ServerUtility.aggiornaTotGenerale(totaleOreDaCommesse, totaleOreC);
+					RiepilogoOreDipCommesseGiornaliero riep= new RiepilogoOreDipCommesseGiornaliero(p.getUsername(), commessa
+							, dipendente, "Totale", Float.valueOf(totaleOreLavoroC), Float.valueOf(totaleOreViaggioC), Float.valueOf(totaleOreC), "S");
+					
+					listaG.add(riep);
+					totaleOreLavoroC= "0.00";
+					totaleOreViaggioC= "0.00";
+					totaleOreC= "0.00";
+				}
+				
+				RiepilogoOreDipCommesseGiornaliero riep= new RiepilogoOreDipCommesseGiornaliero("","",
+						 "", "",  Float.valueOf("0.00"), Float.valueOf(totaleOreDaIU),Float.valueOf(totaleOreDaCommesse), "S");
+				listaG.add(riep);
+				
+				tx.commit();
+				
+				return listaG;
+			} catch (Exception e) {
+				if (tx != null)
+					tx.rollback();
+				e.printStackTrace();
+				return null;
+			}finally{
+				session.close();
+			}
+		}
+
+		@Override
+		public boolean confermaGiorniDipendente(String username, Date data) throws IllegalArgumentException {
+		
+			List<FoglioOreMese> listaF= new ArrayList<FoglioOreMese>();
+			List<DettaglioOreGiornaliere> listaD=new ArrayList<DettaglioOreGiornaliere>();
+			Personale p= new Personale();
+			
+			DateFormat formatter = new SimpleDateFormat("yyyy") ; 
+			String anno=formatter.format(data);
+			formatter = new SimpleDateFormat("MMM",Locale.ITALIAN);
+			String mese=formatter.format(data);
+		    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
+			
+		    String periodo=mese+anno;
+		    
+		    Session session= MyHibernateUtil.getSessionFactory().openSession();
+			Transaction tx= null;
+			
+			try {
+							
+				tx=session.beginTransaction();
+				
+				p=(Personale)session.createQuery("from Personale where username=:username").setParameter("username", username).uniqueResult();
+				
+				listaF.addAll(p.getFoglioOreMeses());
+							
+				for(FoglioOreMese f:listaF){//scorro i mesi per trovare il foglio ore desiderato
+					if(f.getMeseRiferimento().compareTo(periodo)==0){
+						listaD.addAll(f.getDettaglioOreGiornalieres());
+						f.setStatoRevisioneMese("2");					
+						break;
+					}
+				}
+						
+				for(DettaglioOreGiornaliere d:listaD){
+					d.setStatoRevisione("2");
+				}
+				
+				tx.commit();
+				
+			} catch (Exception e) {
+				if (tx != null)
+					tx.rollback();
+				e.printStackTrace();
+				return false;
+			}finally{
+				session.close();
+			}
+			
+			return true;
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public boolean confermaGiorniTuttiDipendenti(String sede, Date data)  throws IllegalArgumentException{
+			List<FoglioOreMese> listaF= new ArrayList<FoglioOreMese>();
+			List<DettaglioOreGiornaliere> listaD=new ArrayList<DettaglioOreGiornaliere>();
+			List<Personale> listaP= new ArrayList<Personale>();
+			
+			DateFormat formatter = new SimpleDateFormat("yyyy") ; 
+			String anno=formatter.format(data);
+			formatter = new SimpleDateFormat("MMM",Locale.ITALIAN);
+			String mese=formatter.format(data);
+		    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
+			
+		    String periodo=mese+anno;
+		    
+		    Session session= MyHibernateUtil.getSessionFactory().openSession();
+			Transaction tx= null;
+			
+			try {
+							
+				tx=session.beginTransaction();
+				
+				listaP=(List<Personale>)session.createQuery("from Personale where sedeOperativa=:sede").setParameter("sede", sede).list();	
+										
+				for(Personale p:listaP){
+					listaF.addAll(p.getFoglioOreMeses());
+					
+					for(FoglioOreMese f:listaF){//scorro i mesi per trovare il foglio ore desiderato
+						if(f.getMeseRiferimento().compareTo(periodo)==0){
+							listaD.addAll(f.getDettaglioOreGiornalieres());
+							f.setStatoRevisioneMese("2");
+							break;
+						}
+					}
+					listaF.clear();				
+				}
+				
+				for(DettaglioOreGiornaliere d:listaD){
+					d.setStatoRevisione("2");
+				}
+				tx.commit();
+				
+			} catch (Exception e) {
+				if (tx != null)
+					tx.rollback();
+				e.printStackTrace();
+				return false;
+			}finally{
+				session.close();
+			}		
+			return true;
+		}
+	
+	
+	
 //RIEPILOGHI ORE COMMESSE DIPENDENTI--------------------------------------------------------------------------------------------------------
 	
 	@SuppressWarnings("unchecked")
@@ -4088,9 +4816,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 
 
+	//TODO modifiche per tariffe idAttivita
 	@SuppressWarnings({ "unchecked"})
 	@Override
-	public FoglioFatturazioneModel getDatiFatturazionePerOrdine(String numeroCommessa, String mese)throws IllegalArgumentException {
+	public FoglioFatturazioneModel getDatiFatturazionePerOrdine(String numeroCommessa, String mese ,int idAttivita)throws IllegalArgumentException {
 		
 		String commessa= new String();
 		String estensione= new String();
@@ -4142,7 +4871,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					listaFF.addAll(c1.getFoglioFatturaziones());			
 				
 				for(FoglioFatturazione f1:listaFF){ 
-					
+					//accumulo tutto il sal e pcl dei mesi successivi anche su tutte le eventuali attivita					
 					if(ServerUtility.isPrecedente(f1.getMeseCorrente(),mese)){
 						sommaVariazioniPcl=ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, f1.getVariazionePCL());
 						sommaVariazioniSal=ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f1.getVariazioneSAL());
@@ -4152,8 +4881,11 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				sommaVariazioniSal=ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, c_pa.getSalAttuale());
 				sommaVariazioniPcl=ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, c_pa.getPclAttuale());
 			
-				f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:id and meseCorrente=:mese").setParameter("id", codCommessa)
-						.setParameter("mese", mese).uniqueResult();
+				//TODO sostituito
+				/*f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:id and meseCorrente=:mese").setParameter("id", codCommessa)
+						.setParameter("mese", mese).uniqueResult();*/
+				f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:id and meseCorrente=:mese and attivitaOrdine=:attivitaOrdine").setParameter("id", codCommessa)
+						.setParameter("mese", mese).setParameter("attivitaOrdine", idAttivita).uniqueResult();
 			
 				tx.commit();
 				
@@ -4184,23 +4916,33 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					}
 					//---
 					
-					tariffaUtilizzata=o.getTariffaOraria();
+					//TODO sostituito
+					for(AttivitaOrdine a:o.getAttivitaOrdines())
+						if(a.getIdAttivitaOrdine()==idAttivita)
+							tariffaUtilizzata=a.getTariffaAttivita();					
+					//tariffaUtilizzata=o.getTariffaOraria();
+					
+					String numOrdine=o.getCodiceOrdine();
+					
 					if(f==null){																			//--
-						foglioModel= new FoglioFatturazioneModel(o.getCodiceOrdine(), o.getOreBudget(), oreResidueBudget, Float.valueOf(tariffaUtilizzata), "0.0",
+						foglioModel= new FoglioFatturazioneModel(numOrdine, o.getOreBudget(), oreResidueBudget, Float.valueOf(tariffaUtilizzata), "0.0",
 								sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.0", "0.0", "0.0", "", "0");
 					}
 					else{		
 						sommaVariazioniSal=ServerUtility.getDifference(sommaVariazioniSal, f.getVariazioneSAL());
 						sommaVariazioniPcl=ServerUtility.getDifference(sommaVariazioniPcl, f.getVariazionePCL());
-						foglioModel= new FoglioFatturazioneModel(o.getCodiceOrdine(), o.getOreBudget(), oreResidueBudget ,Float.valueOf(f.getTariffaUtilizzata()), f.getOreEseguite(),
+						foglioModel= new FoglioFatturazioneModel(numOrdine, o.getOreBudget(), oreResidueBudget ,Float.valueOf(f.getTariffaUtilizzata()), f.getOreEseguite(),
 								sommaVariazioniSal, sommaVariazioniPcl, f.getOreFatturare(), f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione());
 					}		
 				}	
 				
 			}else{ //Non esiste la Pa
 				
-				f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:id and meseCorrente=:mese").setParameter("id", codCommessa)
-						.setParameter("mese", mese).uniqueResult();
+				//TODO sostituito
+				/*f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:id and meseCorrente=:mese").setParameter("id", codCommessa)
+						.setParameter("mese", mese).uniqueResult();*/
+				f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:id and meseCorrente=:mese and attivitaOrdine=:attivitaOrdine").setParameter("id", codCommessa)
+						.setParameter("mese", mese).setParameter("attivitaOrdine", idAttivita).uniqueResult();
 			
 				listaFF.addAll(c.getFoglioFatturaziones());			
 				
@@ -4209,8 +4951,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				
 				//Considero tutti i FF compilati in mesi differenti da quello in esame
 				for(FoglioFatturazione f1:listaFF){
-					
-					
+									
 					if(ServerUtility.isPrecedente(f1.getMeseCorrente(),mese))
 						if(f1.getMeseCorrente().compareTo(mese)!=0){
 							sommaVariazioniPcl=ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, f1.getVariazionePCL());
@@ -4244,111 +4985,26 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							
 				}else{	
 					
-					tariffaUtilizzata=o.getTariffaOraria();
+					//TODO sostituito
+					for(AttivitaOrdine a:o.getAttivitaOrdines())
+						if(a.getIdAttivitaOrdine()==idAttivita)
+							tariffaUtilizzata=a.getTariffaAttivita();					
+					//tariffaUtilizzata=o.getTariffaOraria();
+					
+					String numOrdine=o.getCodiceOrdine();
+					
 					if(f==null){																																	//--
-						foglioModel= new FoglioFatturazioneModel(o.getCodiceOrdine(), o.getOreBudget(),oreResidueBudget, Float.valueOf(tariffaUtilizzata), "0.0",
+						foglioModel= new FoglioFatturazioneModel(numOrdine, o.getOreBudget(),oreResidueBudget, Float.valueOf(tariffaUtilizzata), "0.0",
 								sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.0", "0.0", "0.0", "", "0");
 					}
 					else{			
 						//tariffa utilizza prendo quella registrata al momento della registrazione del foglio fatturazione
-						foglioModel= new FoglioFatturazioneModel(o.getCodiceOrdine(), o.getOreBudget(), oreResidueBudget,Float.valueOf(f.getTariffaUtilizzata()), f.getOreEseguite(),
+						foglioModel= new FoglioFatturazioneModel(numOrdine, o.getOreBudget(), oreResidueBudget,Float.valueOf(f.getTariffaUtilizzata()), f.getOreEseguite(),
 								sommaVariazioniSal, sommaVariazioniPcl, f.getOreFatturare(), f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione());
 					}		
 				}						
 			}
-			/*
 			
-				o=(Ordine)session.createQuery("from Ordine where cod_commessa=:id").setParameter("id", codCommessa).uniqueResult();
-				
-				f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:id and meseCorrente=:mese").setParameter("id", codCommessa)
-						.setParameter("mese", mese).uniqueResult();
-			
-				tx.commit();		
-				
-				if(o==null){//se non c'è un ordine associato, permetto l'inserimento di eventuali sal pcl
-					tariffaUtilizzata=c.getTariffaSal();//prendo la tariffa della commessa
-					if(f==null){						
-						foglioModel= new FoglioFatturazioneModel("#", "0.0", "0.0", Float.valueOf(tariffaUtilizzata), "0.0", salAttuale, pclAttuale, "0.0", "0.0", "0.0", "0.0", "", "0");
-					}
-					else{			
-						foglioModel= new FoglioFatturazioneModel("#", "0.0", "0.0", Float.valueOf(tariffaUtilizzata), f.getOreEseguite(),
-								f.getSALattuale(), f.getPCLattuale(), f.getOreFatturare(), f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione());
-					}		
-							
-				}else{	
-					tariffaUtilizzata=o.getTariffaOraria();
-					if(f==null){					
-						
-						foglioModel= new FoglioFatturazioneModel(o.getCodiceOrdine(), o.getOreBudget(), o.getOreResidueBudget(), Float.valueOf(tariffaUtilizzata), "0.0",
-								salAttuale, pclAttuale, "0.0", "0.0", "0.0", "0.0", "", "0");
-					}
-					else{			
-						foglioModel= new FoglioFatturazioneModel(o.getCodiceOrdine(), o.getOreBudget(), o.getOreResidueBudget(),Float.valueOf(tariffaUtilizzata), f.getOreEseguite(),
-								f.getSALattuale(), f.getPCLattuale(), f.getOreFatturare(), f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione());
-					}		
-				}			
-			*/
-				/*	
-			//else
-			o=(Ordine)session.createQuery("from Ordine where cod_commessa=:id").setParameter("id", codCommessa).uniqueResult();
-			
-			f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:id and meseCorrente=:mese").setParameter("id", codCommessa)
-					.setParameter("mese", mese).uniqueResult();
-			
-			//c'è un controllo sul mese precedente e non su tutti gli eventuali precedenti
-			fPrec=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:id and meseCorrente=:mesePrecedente")
-					.setParameter("id", codCommessa).setParameter("mesePrecedente", mesePrecedente).uniqueResult();
-			
-			tx.commit();		
-			
-			if(o==null){//se non c'è un ordine associato, permetto l'inserimento di eventuali sal pcl
-				tariffaUtilizzata=c.getTariffaSal();//prendo la tariffa della commessa
-				if(f==null){						
-					if(fPrec!=null || esistePrecedentePa){
-										
-						//c'è il foglio fatturazione del mese precedente quindi ricavo le ore sal pcl attuali
-							pclAttuale=ServerUtility.aggiornaTotGenerale(fPrec.getPCLattuale(), fPrec.getVariazionePCL());
-							salAttuale=ServerUtility.aggiornaTotGenerale(fPrec.getSALattuale(), fPrec.getVariazioneSAL());
-						
-					}else{
-						//se non c'è foglio fatturazione e neanche precedente allora prendo sal e pcl iniziali sulla commessa(eventualmente la .PA)					
-						
-							pclAttuale=c.getPclAttuale();
-							salAttuale=c.getSalAttuale();
-										
-					}
-					foglioModel= new FoglioFatturazioneModel("#", "0.0", "0.0", Float.valueOf(tariffaUtilizzata), "0.0", salAttuale, pclAttuale, "0.0", "0.0", "0.0", "0.0", "", "0");
-				}
-				else{			
-					foglioModel= new FoglioFatturazioneModel("#", "0.0", "0.0", Float.valueOf(tariffaUtilizzata), f.getOreEseguite(),
-							f.getSALattuale(), f.getPCLattuale(), f.getOreFatturare(), f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione());
-				}		
-						
-			}else{	
-				tariffaUtilizzata=o.getTariffaOraria();
-				if(f==null){					
-					if(fPrec!=null){
-					//c'è il foglio fatturazione del mese precedente quindi ricavo le ore sal pcl attuali
-						pclAttuale=ServerUtility.aggiornaTotGenerale(fPrec.getPCLattuale(), fPrec.getVariazionePCL());
-						salAttuale=ServerUtility.aggiornaTotGenerale(fPrec.getSALattuale(), fPrec.getVariazioneSAL());									
-					}else{
-						//se non c'è foglio fatturazione e neanche precedente allora prendo sal e pcl iniziali
-						if(esistePa){
-							pclAttuale=c_pa.getPclAttuale();
-							salAttuale=c_pa.getSalAttuale();
-						}else{
-							pclAttuale=c.getPclAttuale();
-							salAttuale=c.getSalAttuale();
-						}	
-					}
-					foglioModel= new FoglioFatturazioneModel(o.getCodiceOrdine(), o.getOreBudget(), o.getOreResidueBudget(), Float.valueOf(tariffaUtilizzata), "0.0",
-							salAttuale, pclAttuale, "0.0", "0.0", "0.0", "0.0", "", "0");
-				}
-				else{			
-					foglioModel= new FoglioFatturazioneModel(o.getCodiceOrdine(), o.getOreBudget(), o.getOreResidueBudget(),Float.valueOf(tariffaUtilizzata), f.getOreEseguite(),
-							f.getSALattuale(), f.getPCLattuale(), f.getOreFatturare(), f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione());
-				}		
-			}*/
 			return foglioModel;
 		}
 		catch (Exception e) {
@@ -4362,11 +5018,12 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 
 
+	//TODO idAttività per più tariffe
 	@Override
 	public boolean insertDatiFoglioFatturazione(String oreEseguite,
 			String salIniziale, String pclIniziale, String oreFatturare,
 			String variazioneSAL, String variazionePCL, String meseCorrente, String note,
-			String statoElaborazione, String commessa, String tariffaUtilizzata, String flagSal)
+			String statoElaborazione, String commessa, String tariffaUtilizzata, String flagSal, int idAttivita)
 			throws IllegalArgumentException {
 	
 		Commessa c= new Commessa();
@@ -4402,8 +5059,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			}
 			else o=null;
 							
-			f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:id and meseCorrente=:mese")
-					.setParameter("id", idCommessa).setParameter("mese", meseCorrente).uniqueResult();
+			//TODO inserito condizione idAttivita
+			f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:idCommessa and meseCorrente=:mese and attivitaOrdine=:idAttivita")
+					.setParameter("idAttivita", idAttivita).setParameter("idCommessa", idCommessa).setParameter("mese", meseCorrente).uniqueResult();
 			
 			if(f==null){
 				//insert new
@@ -4421,6 +5079,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				f.setStatoElaborazione(statoElaborazione);
 				f.setTariffaUtilizzata(tariffaUtilizzata);
 				f.setFlagSalDaButtare(flagSal);
+				
+				
+				f.setAttivitaOrdine(idAttivita);
+				
 			
 				c.getFoglioFatturaziones().add(f);
 												
@@ -4439,7 +5101,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				f.setNote(note);
 				f.setStatoElaborazione(statoElaborazione);
 				f.setTariffaUtilizzata(tariffaUtilizzata);
-				f.setFlagSalDaButtare(flagSal);			
+				f.setFlagSalDaButtare(flagSal);	
+				
+				f.setAttivitaOrdine(idAttivita);
 				
 				tx.commit();
 				return true;
@@ -4457,6 +5121,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 
 
+	//TODO modifiche per tariffe
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<DatiFatturazioneMeseModel> getReportDatiFatturazioneMese(String mese) {
@@ -4466,8 +5131,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		List<String> matricolePM= new ArrayList<String>();
 		DatiFatturazioneMeseModel datiModel;
 		Ordine o;
-		float importo;
-		float margine;
+		float importo=0;
+		float margine=0;
 		String oreMargine= new String();
 		String oreScaricate= new String();
 		String totOreEseguite="0.00";
@@ -4481,6 +5146,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Float totImportoPcl= (float) 0;
 		String totOreScaricate="0.00";
 		String totOreMargine="0.00";
+		String attivitaOrdine="";
 		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
@@ -4504,12 +5170,18 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					oreScaricate=oreMargine;					
 					oreMargine=ServerUtility.getDifference(oreMargine, String.valueOf(f.getOreEseguite()));
 					margine=Float.valueOf(oreMargine);
-					importo=ServerUtility.calcolaImporto(o.getTariffaOraria(),f.getOreFatturare());
-					importoSal=ServerUtility.calcolaImporto(o.getTariffaOraria(),f.getVariazioneSAL());
-					importoPcl=ServerUtility.calcolaImporto(o.getTariffaOraria(),f.getVariazionePCL());
 					
+					
+					//TODO aggiunto for if per attivitaordine
+					for(AttivitaOrdine a:o.getAttivitaOrdines())
+						if(a.getIdAttivitaOrdine()==f.getAttivitaOrdine()){
+							importo=ServerUtility.calcolaImporto(a.getTariffaAttivita(),f.getOreFatturare());
+							importoSal=ServerUtility.calcolaImporto(a.getTariffaAttivita(),f.getVariazioneSAL());
+							importoPcl=ServerUtility.calcolaImporto(a.getTariffaAttivita(),f.getVariazionePCL());
+							attivitaOrdine=a.getDescrizioneAttivita();
+						}
 					datiModel=new DatiFatturazioneMeseModel(f.getCommessa().getMatricolaPM(), f.getCommessa().getNumeroCommessa()+"."+f.getCommessa().getEstensione(), o.getRda().getCliente().getRagioneSociale(),
-							o.getCommessa().getDenominazioneAttivita(), Float.valueOf(f.getOreEseguite()), Float.valueOf(f.getOreFatturare()), Float.valueOf(f.getTariffaUtilizzata()),
+							o.getCommessa().getDenominazioneAttivita(),attivitaOrdine , Float.valueOf(f.getOreEseguite()), Float.valueOf(f.getOreFatturare()), Float.valueOf(f.getTariffaUtilizzata()),
 							importo, Float.valueOf(f.getVariazioneSAL()), importoSal, Float.valueOf(f.getVariazionePCL()), importoPcl, Float.valueOf(oreScaricate), margine, f.getNote());
 				}
 				else{
@@ -4522,7 +5194,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					importoPcl=ServerUtility.calcolaImporto(f.getTariffaUtilizzata(),f.getVariazionePCL());
 					
 					datiModel=new DatiFatturazioneMeseModel(f.getCommessa().getMatricolaPM(), f.getCommessa().getNumeroCommessa()+"."+f.getCommessa().getEstensione(), "#",
-							f.getCommessa().getDenominazioneAttivita(), Float.valueOf(f.getOreEseguite()), Float.valueOf(f.getOreFatturare()),
+							f.getCommessa().getDenominazioneAttivita(),attivitaOrdine, Float.valueOf(f.getOreEseguite()), Float.valueOf(f.getOreFatturare()),
 							Float.valueOf(f.getTariffaUtilizzata()), (float) 0.0, Float.valueOf(f.getVariazioneSAL()), importoSal, Float.valueOf(f.getVariazionePCL()), importoPcl, Float.valueOf(oreScaricate),margine, f.getNote());	
 				}
 				listaDati.add(datiModel);
@@ -4544,11 +5216,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						totOreScaricate=ServerUtility.aggiornaTotGenerale(totOreScaricate, d.format(df.get("oreScaricate")));
 						totOreMargine=ServerUtility.aggiornaTotGenerale(totOreMargine, d.format(df.getMargine()));
 						totImportoSal=totImportoSal+Float.valueOf(df.getVariazioneSal())*df.getTariffaOraria();
-						totImportoPcl=totImportoPcl+Float.valueOf(df.getVariazionePcl())*df.getTariffaOraria();
-												
+						totImportoPcl=totImportoPcl+Float.valueOf(df.getVariazionePcl())*df.getTariffaOraria();											
 					}				
 				}	
-				datiModel=new DatiFatturazioneMeseModel(pm, "TOTALE", "", "", Float.valueOf(totOreEseguite), Float.valueOf(totOreFatturate), 
+				datiModel=new DatiFatturazioneMeseModel(pm, "TOTALE", "", "", "",Float.valueOf(totOreEseguite), Float.valueOf(totOreFatturate), 
 						Float.valueOf("0"),totImport, Float.valueOf(totVarSal), totImportoSal, Float.valueOf(totVarPcl), totImportoPcl, 
 						Float.valueOf(totOreScaricate), Float.valueOf(totOreMargine), "");
 				
@@ -4620,6 +5291,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 
 
+	//TODO modifiche per tariffe
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<DatiFatturazioneCommessaModel> getRiepilogoDatiFatturazioneCommessa(String commessaSelected) throws IllegalArgumentException {
@@ -4641,7 +5313,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String oreMargine= new String();
 		String nCommessa=commessaSelected.substring(0, commessaSelected.indexOf("."));
 		String nEstensione=commessaSelected.substring(commessaSelected.indexOf(".")+1, commessaSelected.length());		
-		String tariffa;
+		String tariffa="0.00";
 		String oreOrdineIniziali="0.00";
 		String salIniziale="0.00";
 		String pclIniziale="0.00";
@@ -4684,7 +5356,13 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						
 						if(!c.getOrdines().isEmpty()){
 							o=c.getOrdines().iterator().next();
-							tariffa=o.getTariffaOraria();
+							
+							//TODO selezione tariffa da attivitaordine
+							for(AttivitaOrdine a:o.getAttivitaOrdines())
+								if(a.getIdAttivitaOrdine()==f.getAttivitaOrdine())
+									tariffa=a.getTariffaAttivita();
+								
+							//tariffa=o.getTariffaOraria();
 													
 							if(f.getMeseCorrente().compareTo("Mag2013")==0)//se è stato compilato il mese di maggio2013 aggiungo le ore fatturate in quel mese
 								oreOrdineIniziali=ServerUtility.aggiornaTotGenerale(oreOrdineIniziali, f.getOreFatturare());
@@ -4738,7 +5416,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}
 	}
 	
-	
+	//TODO modifica per tariffe
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<RiepilogoOreTotaliCommesse> getElencoCommesseSuFoglioFatturazione(String numCommessa,
@@ -4750,6 +5428,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		List<RiepilogoOreTotaliCommesse> listaRiep= new ArrayList<RiepilogoOreTotaliCommesse>();
 		RiepilogoOreTotaliCommesse riep;
 		List<FoglioFatturazione> listaFF=new ArrayList<FoglioFatturazione>();
+		
+		Ordine ordine=new Ordine(); 
+		List<AttivitaOrdine> listaAttOrdine= new ArrayList<AttivitaOrdine>();
 		
 		String salDaButtare= new String();
 		String flagCompilato= new String();
@@ -4771,8 +5452,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		//prendere il foglio fatturazione del mese indicato, se c'è, e prendere le eventuali ore eseguite
 		
 		try {
-			tx = session.beginTransaction();		
-			//prendere tutte le commesse con numero uguale a quella .pa
+			tx = session.beginTransaction();	
 			if(numEstensione.compareTo("pa")==0){
 				listaC=(List<Commessa>)session.createQuery("from Commessa where numeroCommessa=:numeroCommessa and statoCommessa=:stato").
 						setParameter("numeroCommessa", numCommessa).setParameter("stato", "Aperta").list();
@@ -4781,6 +5461,194 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					if(comm.getEstensione().toLowerCase().compareTo("pa")!=0){	//se non è la .pa la inserisco in lista
 						if(comm.getOrdines().size()>0){
 							numeroOrdine=comm.getOrdines().iterator().next().getCodiceOrdine();
+						
+							ordine=comm.getOrdines().iterator().next();
+							listaAttOrdine.addAll(ordine.getAttivitaOrdines());
+							
+							//TODO aggiunta ricerca attivita giusta
+							for(AttivitaOrdine att:listaAttOrdine){
+							
+								listaFF.addAll(comm.getFoglioFatturaziones());
+								if(listaFF.isEmpty())
+									flagCompilato="No";
+								else
+									for(FoglioFatturazione ff:listaFF){
+										
+									  if(ff.getAttivitaOrdine()==att.getIdAttivitaOrdine())
+										if(ff.getMeseCorrente().compareTo(data)==0){
+											flagCompilato="Si";
+											oreEseguite=ff.getOreEseguite();
+											sal=Float.valueOf(ff.getVariazioneSAL());
+											pcl=Float.valueOf(ff.getVariazionePCL());
+											salDaButtare=ff.getFlagSalDaButtare();
+											break;
+										}else{
+											flagCompilato="No";
+											sal=Float.valueOf("0.00");
+											pcl=Float.valueOf("0.00");
+											salDaButtare="N";
+										}							
+									}
+								
+								riep= new RiepilogoOreTotaliCommesse(comm.getNumeroCommessa(), comm.getEstensione(),sal, salDaButtare, pcl, numeroOrdine, 
+										att.getDescrizioneAttivita(), att.getIdAttivitaOrdine(), oreEseguite, Float.valueOf("0.00"), flagCompilato);
+							   	listaRiep.add(riep);
+							    oreEseguite="0.00";
+							    sal=Float.valueOf("0.00");
+								pcl=Float.valueOf("0.00");
+							    flagCompilato="No";						   
+							   
+							    listaFF.clear();							
+							}	
+							numeroOrdine="#";	
+							listaAttOrdine.clear();
+						
+						}
+						else {
+							
+							numeroOrdine="#";
+							listaFF.addAll(comm.getFoglioFatturaziones());
+							if(listaFF.isEmpty())
+								flagCompilato="No";
+							else
+								for(FoglioFatturazione ff:listaFF){						
+									if(ff.getMeseCorrente().compareTo(data)==0){
+										flagCompilato="Si";
+										oreEseguite=ff.getOreEseguite();
+										sal=Float.valueOf(ff.getVariazioneSAL());
+										pcl=Float.valueOf(ff.getVariazionePCL());
+										salDaButtare=ff.getFlagSalDaButtare();
+										break;
+									}else{
+										flagCompilato="No";
+										sal=Float.valueOf("0.00");
+										pcl=Float.valueOf("0.00");
+										salDaButtare="N";
+									}							
+								}
+							
+							riep= new RiepilogoOreTotaliCommesse(comm.getNumeroCommessa(), comm.getEstensione(),sal, salDaButtare, pcl, numeroOrdine,"#", 
+									0,oreEseguite, Float.valueOf("0.00"), flagCompilato);
+							listaRiep.add(riep);
+							oreEseguite="0.00";
+							sal=Float.valueOf("0.00");
+							pcl=Float.valueOf("0.00");
+							flagCompilato="No";
+					   
+							numeroOrdine="#";	
+							listaFF.clear();						
+							
+						}					
+					}
+				}
+			}
+			
+			//viene considerata solo la commessa selezionata
+			else{
+				
+			    c=(Commessa)session.createQuery("from Commessa where numeroCommessa=:numCommessa and estensione=:numEstensione").
+						setParameter("numCommessa", numCommessa).setParameter("numEstensione", numEstensione).uniqueResult();
+				
+			    if(!c.getOrdines().isEmpty()){
+					numeroOrdine=c.getOrdines().iterator().next().getCodiceOrdine();
+					
+					ordine=c.getOrdines().iterator().next();
+					listaAttOrdine.addAll(ordine.getAttivitaOrdines());
+					
+					for(AttivitaOrdine att:listaAttOrdine){
+						listaFF.addAll(c.getFoglioFatturaziones());
+						if(listaFF.isEmpty())
+							flagCompilato="No";
+						else
+						for(FoglioFatturazione ff:listaFF){
+							
+							//controllo per beccare l'attività giusta
+						  if(ff.getAttivitaOrdine()==att.getIdAttivitaOrdine())
+							if(ff.getMeseCorrente().compareTo(data)==0)
+							{
+								flagCompilato="Si";
+								oreEseguite=ff.getOreEseguite();
+								sal=Float.valueOf(ff.getVariazioneSAL());
+								pcl=Float.valueOf(ff.getVariazionePCL());
+								salDaButtare=ff.getFlagSalDaButtare();
+								break;
+							}else{
+								flagCompilato="No";
+								sal=Float.valueOf("0.00");
+								pcl=Float.valueOf("0.00");
+								salDaButtare="N";
+							}
+						}			
+						riep= new RiepilogoOreTotaliCommesse(numCommessa, numEstensione,sal, salDaButtare, pcl, numeroOrdine, att.getDescrizioneAttivita(), att.getIdAttivitaOrdine(), 
+								oreEseguite, Float.valueOf("0.00"), flagCompilato);
+						listaRiep.add(riep);					
+					}
+					listaAttOrdine.clear();
+					
+				}
+				else {
+					numeroOrdine="#";
+					listaFF.addAll(c.getFoglioFatturaziones());
+					if(listaFF.isEmpty())
+						flagCompilato="No";
+					else
+					for(FoglioFatturazione ff:listaFF){
+						
+						if(ff.getMeseCorrente().compareTo(data)==0)
+						{
+							flagCompilato="Si";
+							oreEseguite=ff.getOreEseguite();
+							sal=Float.valueOf(ff.getVariazioneSAL());
+							pcl=Float.valueOf(ff.getVariazionePCL());
+							salDaButtare=ff.getFlagSalDaButtare();
+							break;
+						}else{
+							flagCompilato="No";
+							sal=Float.valueOf("0.00");
+							pcl=Float.valueOf("0.00");
+							salDaButtare="N";
+						}
+					}			
+					riep= new RiepilogoOreTotaliCommesse(numCommessa, numEstensione,sal, salDaButtare, pcl, numeroOrdine, "" , 
+							0,oreEseguite, Float.valueOf("0.00"), flagCompilato);
+					listaRiep.add(riep);			
+				}					
+			}
+								
+			tx.commit();
+			
+			oreEseguite="0.00";
+			String salTotale="0.00";
+			String pclTotale="0.00";
+			
+			for(RiepilogoOreTotaliCommesse r: listaRiep){
+				String salF=d.format(r.get("sal"));
+				String pclF=d.format(r.get("pcl"));
+				oreEseguite=ServerUtility.aggiornaTotGenerale(oreEseguite, r.getOreOrdine());	
+				salTotale=ServerUtility.aggiornaTotGenerale(salTotale, salF);
+				pclTotale=ServerUtility.aggiornaTotGenerale(pclTotale, pclF);
+			}
+			riep= new RiepilogoOreTotaliCommesse("TOTALE", "", Float.valueOf(salTotale),"N", Float.valueOf(pclTotale), "", "", 
+					0, oreEseguite , Float.valueOf("0.00"), "");
+			listaRiep.add(riep);
+			
+			
+			//prendere tutte le commesse con numero uguale a quella .pa
+		
+			/*
+			if(numEstensione.compareTo("pa")==0){
+				listaC=(List<Commessa>)session.createQuery("from Commessa where numeroCommessa=:numeroCommessa and statoCommessa=:stato").
+						setParameter("numeroCommessa", numCommessa).setParameter("stato", "Aperta").list();
+				
+				for(Commessa comm:listaC){
+					if(comm.getEstensione().toLowerCase().compareTo("pa")!=0){	//se non è la .pa la inserisco in lista
+						if(comm.getOrdines().size()>0){
+							numeroOrdine=comm.getOrdines().iterator().next().getCodiceOrdine();
+						
+							ordine=comm.getOrdines().iterator().next();
+							listaAttOrdine.addAll(ordine.getAttivitaOrdines());
+							
+						
 						}
 						else {
 							numeroOrdine="#";
@@ -4792,8 +5660,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							flagCompilato="No";
 						else
 							for(FoglioFatturazione ff:listaFF){						
-								if(ff.getMeseCorrente().compareTo(data)==0)
-								{
+								if(ff.getMeseCorrente().compareTo(data)==0){
 									flagCompilato="Si";
 									oreEseguite=ff.getOreEseguite();
 									sal=Float.valueOf(ff.getVariazioneSAL());
@@ -4808,7 +5675,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 								}							
 							}
 							  
-				   	riep= new RiepilogoOreTotaliCommesse(comm.getNumeroCommessa(), comm.getEstensione(),sal, salDaButtare, pcl, numeroOrdine, oreEseguite, Float.valueOf("0.00"), flagCompilato);
+				   	riep= new RiepilogoOreTotaliCommesse(comm.getNumeroCommessa(), comm.getEstensione(),sal, salDaButtare, pcl, numeroOrdine," ", oreEseguite, Float.valueOf("0.00"), flagCompilato);
 				   	listaRiep.add(riep);
 				    oreEseguite="0.00";
 				    sal=Float.valueOf("0.00");
@@ -4855,7 +5722,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						salDaButtare="N";
 					}
 				}			
-				riep= new RiepilogoOreTotaliCommesse(numCommessa, numEstensione,sal, salDaButtare, pcl, numeroOrdine, oreEseguite, Float.valueOf("0.00"), flagCompilato);
+				riep= new RiepilogoOreTotaliCommesse(numCommessa, numEstensione,sal, salDaButtare, pcl, numeroOrdine, "" , oreEseguite, Float.valueOf("0.00"), flagCompilato);
 				listaRiep.add(riep);		
 			}
 								
@@ -4872,8 +5739,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				salTotale=ServerUtility.aggiornaTotGenerale(salTotale, salF);
 				pclTotale=ServerUtility.aggiornaTotGenerale(pclTotale, pclF);
 			}
-			riep= new RiepilogoOreTotaliCommesse("TOTALE", "", Float.valueOf(salTotale),"N", Float.valueOf(pclTotale), "", oreEseguite , Float.valueOf("0.00"), "");
+			riep= new RiepilogoOreTotaliCommesse("TOTALE", "", Float.valueOf(salTotale),"N", Float.valueOf(pclTotale), "", "",oreEseguite , Float.valueOf("0.00"), "");
 			listaRiep.add(riep);
+			*/
+			
 			
 			return listaRiep;
 			
@@ -4890,442 +5759,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			return listaRiep;
 	}
 
+
+
 	
-//----------------------------------------------------------VARIE
-	@Override
-	public boolean invioCommenti(String testo, String username)
-			throws IllegalArgumentException {
-		
-		Commenti c= new Commenti();
-		Session session= MyHibernateUtil.getSessionFactory().openSession();
-		Transaction tx= null;
-		Date d= new Date();
-		
-		DateFormat formatter = new SimpleDateFormat("MMM-dd-yyyy") ; 
-		String data=formatter.format(d);
-		
-		try {
-			c.setTesto(testo);
-			c.setUsername(username);
-			c.setDataRichiesta(data);
-			c.setEditated("false");
-			tx=session.beginTransaction();
-			session.save(c);			
-			tx.commit();
-			return true;
-		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
-			e.printStackTrace();
-			return false;
-		}finally{
-			session.close();
-		}
-		
-	}
-
-	//non usato----------
-	@Override
-	public boolean setRiepilogoOreOnSession(List<RiepilogoFoglioOreModel> lista) {
-		HttpSession httpSession = getThreadLocalRequest().getSession(true);  
-	    httpSession.setAttribute("listaRiepilogo", lista);
-		return true;
-	}
-	
-
-	@Override
-	public List<RiepilogoOreDipCommesseGiornaliero> getRiepilogoGiornalieroCommesse(
-			int idDip, String username, Date meseRiferimento) throws IllegalArgumentException {//a seconda del Layout che la richiama mi ritrovo username o idDip
-		
-		List<RiepilogoOreDipCommesseGiornaliero> listaG= new ArrayList<RiepilogoOreDipCommesseGiornaliero>();
-		List<FoglioOreMese> listaF= new ArrayList<FoglioOreMese>();
-		List<DettaglioOreGiornaliere> listaD= new ArrayList<DettaglioOreGiornaliere>();
-		List<DettaglioIntervalliCommesse> listaIntervalliC= new ArrayList<DettaglioIntervalliCommesse>();
-		//List<DettaglioIntervalliIU> listaIntervalliIU=new ArrayList<DettaglioIntervalliIU>();
-		
-		List<AssociazionePtoA> listaAssociazioniPA= new ArrayList<AssociazionePtoA>();
-		List<DettaglioIntervalliCommesse> listaCommesse= new ArrayList<DettaglioIntervalliCommesse>(); //verrà usata per considerare tutte le commesse con intervalli inseriti e non solo quelle associate al momento
-		
-		FoglioOreMese fM=new FoglioOreMese();
-		Personale p= new Personale();
-		//Commessa c= new Commessa();
-		
-		String totaleOreLavoroC= "0.00";
-		String totaleOreViaggioC= "0.00";
-		String totaleOreC= "0.00";
-		
-		//totali usati per il confronto ore totali intervalli IU e intervalli commesse
-		String totaleOreDaCommesse= "0.00";
-		String totaleOreDaIU="0.00";
-		
-		Date giorno= new Date();  
-		String dipendente= new String();
-		
-		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
-		String anno=formatter.format(meseRiferimento);
-		formatter = new SimpleDateFormat("MMM",Locale.ITALIAN);
-		String mese=formatter.format(meseRiferimento);
-	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
-		
-	    String data=mese+anno;
-	    
-		Session session= MyHibernateUtil.getSessionFactory().openSession();
-		Transaction tx= null;
-		
-		try {
-		
-			tx=session.beginTransaction();
-			
-			if(username.compareTo("")==0)
-				p=(Personale)session.createQuery("from Personale where ID_PERSONALE=:id").setParameter("id", idDip).uniqueResult();
-			else
-				p=(Personale)session.createQuery("from Personale where username=:username").setParameter("username", username).uniqueResult();
-			
-			dipendente= p.getCognome()+" "+p.getNome();
-			
-			listaF.addAll(p.getFoglioOreMeses());
-			listaAssociazioniPA.addAll(p.getAssociazionePtoas());
-			
-			for(FoglioOreMese f:listaF){//scorro i mesi per trovare il foglio ore desiderato
-				if(f.getMeseRiferimento().compareTo(data)==0){
-					fM=f;
-					break;
-				}
-			}
-			
-			if(fM!=null)
-				listaD.addAll(fM.getDettaglioOreGiornalieres()); //prendo tutti i giorni del mese
-					
-			for(DettaglioOreGiornaliere d: listaD ){//scorro i giorni del mese e calcolo il totale ore per ogni commessa selezionata
-					giorno= d.getGiornoRiferimento();
-					formatter = new SimpleDateFormat("dd-MMM-yyy",Locale.ITALIAN) ; 
-					String giornoF=formatter.format(giorno);
-					
-					if(!d.getDettaglioIntervalliCommesses().isEmpty()){
-						listaIntervalliC.addAll(d.getDettaglioIntervalliCommesses());	
-						for(DettaglioIntervalliCommesse dd: listaIntervalliC){
-							if(ServerUtility.isNotIncludedCommessa(listaCommesse, dd))							
-								listaCommesse.add(dd);
-						}					
-					}
-					
-					//calcolo il totale ore ricavato dagli intervalli IU della bollatrice
-					if(!d.getDettaglioIntervalliIUs().isEmpty()){
-						totaleOreDaIU=ServerUtility.aggiornaTotGenerale(totaleOreDaIU, d.getTotaleOreGiorno());
-						totaleOreDaIU=ServerUtility.aggiornaTotGenerale(totaleOreDaIU, d.getOreViaggio());					
-					}
-													
-					for(DettaglioIntervalliCommesse dett:listaIntervalliC){							
-						if(Float.valueOf(ServerUtility.aggiornaTotGenerale(dett.getOreLavorate(),  dett.getOreViaggio()))>0){
-														
-							RiepilogoOreDipCommesseGiornaliero riep= new RiepilogoOreDipCommesseGiornaliero(p.getUsername(),dett.getNumeroCommessa()+"."+dett.getEstensioneCommessa()
-								, dipendente, giornoF, Float.valueOf(dett.getOreLavorate()), Float.valueOf(dett.getOreViaggio()), Float.valueOf(ServerUtility.aggiornaTotGenerale(dett.getOreLavorate(),  dett.getOreViaggio())), "S");
-						
-							listaG.add(riep);																	
-						}
-					}					
-					listaIntervalliC.clear();							
-			}
-			
-			//elaboro un record per i totali per ogni commessa
-			//for(AssociazionePtoA ass:listaAssociazioniPA){
-			for(DettaglioIntervalliCommesse dc: listaCommesse){
-				String commessa= dc.getNumeroCommessa() +"."+ dc.getEstensioneCommessa();
-				
-				//precompilo la lista di giorni con tutti i giorni lavorativi del mese in modo tale da segnalare una eventuale mancata compilazione
-				for(int i=1; i<=ServerUtility.getGiorniMese(mese, anno);i++){
-					String g= new String();	
-					String dataCompLow=new String();
-					String meseApp= new String();
-					String c= new String();
-					//Date d= new Date();
-					boolean trovato= false;
-					
-					meseApp=(mese.substring(0,1).toLowerCase()+mese.substring(1,3));
-					
-					if(i<10)
-						g="0"+String.valueOf(i);
-					else
-						g=String.valueOf(i);
-					
-					dataCompLow=(g+"-"+meseApp+"-"+anno);
-					
-					formatter=new SimpleDateFormat("dd-MMM-yyyy",Locale.ITALIAN);
-					RiepilogoOreDipCommesseGiornaliero riep= new RiepilogoOreDipCommesseGiornaliero(p.getUsername(),
-							commessa,dipendente	, dataCompLow, Float.valueOf("0.00"), Float.valueOf("0.00"), 
-							Float.valueOf("0.00"), "N");	
-					
-					Iterator<RiepilogoOreDipCommesseGiornaliero> itr = listaG.iterator();
-					
-					//confronto il riep creato adesso con la lista di giorni che già possiedo
-					while(itr.hasNext()) {				
-						RiepilogoOreDipCommesseGiornaliero dg = itr.next(); //giorno preso dalla lista con i giorni compilati
-				         String dd=dg.get("giorno");
-				         c=dg.get("numeroCommessa");
-				         if(c.compareTo(commessa)==0)
-							if(dd.compareTo((String)riep.get("giorno"))==0){ 
-								trovato=true;
-								break;
-							}				
-							//else trovato=false;
-				    }		
-					if(!trovato){
-						listaG.add(riep);				
-					}		
-				}
-								
-				for(RiepilogoOreDipCommesseGiornaliero g:listaG){
-					if(g.getNumeroCommessa().compareTo(commessa)==0){
-						String oreLavoro=String.valueOf(g.getOreLavoro());
-						String oreViaggio=String.valueOf(g.getOreViaggio());
-						String oreTotali=String.valueOf(g.getTotOre());
-						
-						if(oreLavoro.substring(oreLavoro.indexOf(".")+1, oreLavoro.length()).length()==1)
-							oreLavoro=oreLavoro+"0";
-						if(oreViaggio.substring(oreViaggio.indexOf(".")+1, oreViaggio.length()).length()==1)
-							oreViaggio=oreViaggio+"0";
-						if(oreTotali.substring(oreTotali.indexOf(".")+1, oreTotali.length()).length()==1)
-							oreTotali=oreTotali+"0";
-						
-						totaleOreLavoroC= ServerUtility.aggiornaTotGenerale(totaleOreLavoroC, oreLavoro);
-						totaleOreViaggioC= ServerUtility.aggiornaTotGenerale(totaleOreViaggioC, oreViaggio);
-						totaleOreC=ServerUtility.aggiornaTotGenerale(totaleOreC, oreTotali);
-					}
-				}
-							
-				totaleOreDaCommesse=ServerUtility.aggiornaTotGenerale(totaleOreDaCommesse, totaleOreC);
-				RiepilogoOreDipCommesseGiornaliero riep= new RiepilogoOreDipCommesseGiornaliero(p.getUsername(), commessa
-						, dipendente, "Totale", Float.valueOf(totaleOreLavoroC), Float.valueOf(totaleOreViaggioC), Float.valueOf(totaleOreC), "S");
-				
-				listaG.add(riep);
-				totaleOreLavoroC= "0.00";
-				totaleOreViaggioC= "0.00";
-				totaleOreC= "0.00";
-			}
-			
-			RiepilogoOreDipCommesseGiornaliero riep= new RiepilogoOreDipCommesseGiornaliero("","",
-					 "", "",  Float.valueOf("0.00"), Float.valueOf(totaleOreDaIU),Float.valueOf(totaleOreDaCommesse), "S");
-			listaG.add(riep);
-			
-			tx.commit();
-			
-			return listaG;
-		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
-			e.printStackTrace();
-			return null;
-		}finally{
-			session.close();
-		}
-	}
-
-	@Override
-	public boolean confermaGiorniDipendente(String username, Date data) throws IllegalArgumentException {
-	
-		List<FoglioOreMese> listaF= new ArrayList<FoglioOreMese>();
-		List<DettaglioOreGiornaliere> listaD=new ArrayList<DettaglioOreGiornaliere>();
-		Personale p= new Personale();
-		
-		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
-		String anno=formatter.format(data);
-		formatter = new SimpleDateFormat("MMM",Locale.ITALIAN);
-		String mese=formatter.format(data);
-	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
-		
-	    String periodo=mese+anno;
-	    
-	    Session session= MyHibernateUtil.getSessionFactory().openSession();
-		Transaction tx= null;
-		
-		try {
-						
-			tx=session.beginTransaction();
-			
-			p=(Personale)session.createQuery("from Personale where username=:username").setParameter("username", username).uniqueResult();
-			
-			listaF.addAll(p.getFoglioOreMeses());
-						
-			for(FoglioOreMese f:listaF){//scorro i mesi per trovare il foglio ore desiderato
-				if(f.getMeseRiferimento().compareTo(periodo)==0){
-					listaD.addAll(f.getDettaglioOreGiornalieres());
-					f.setStatoRevisioneMese("2");					
-					break;
-				}
-			}
-					
-			for(DettaglioOreGiornaliere d:listaD){
-				d.setStatoRevisione("2");
-			}
-			
-			tx.commit();
-			
-		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
-			e.printStackTrace();
-			return false;
-		}finally{
-			session.close();
-		}
-		
-		return true;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public boolean confermaGiorniTuttiDipendenti(String sede, Date data)  throws IllegalArgumentException{
-		List<FoglioOreMese> listaF= new ArrayList<FoglioOreMese>();
-		List<DettaglioOreGiornaliere> listaD=new ArrayList<DettaglioOreGiornaliere>();
-		List<Personale> listaP= new ArrayList<Personale>();
-		
-		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
-		String anno=formatter.format(data);
-		formatter = new SimpleDateFormat("MMM",Locale.ITALIAN);
-		String mese=formatter.format(data);
-	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
-		
-	    String periodo=mese+anno;
-	    
-	    Session session= MyHibernateUtil.getSessionFactory().openSession();
-		Transaction tx= null;
-		
-		try {
-						
-			tx=session.beginTransaction();
-			
-			listaP=(List<Personale>)session.createQuery("from Personale where sedeOperativa=:sede").setParameter("sede", sede).list();	
-									
-			for(Personale p:listaP){
-				listaF.addAll(p.getFoglioOreMeses());
-				
-				for(FoglioOreMese f:listaF){//scorro i mesi per trovare il foglio ore desiderato
-					if(f.getMeseRiferimento().compareTo(periodo)==0){
-						listaD.addAll(f.getDettaglioOreGiornalieres());
-						f.setStatoRevisioneMese("2");
-						break;
-					}
-				}
-				listaF.clear();				
-			}
-			
-			for(DettaglioOreGiornaliere d:listaD){
-				d.setStatoRevisione("2");
-			}
-			tx.commit();
-			
-		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
-			e.printStackTrace();
-			return false;
-		}finally{
-			session.close();
-		}		
-		return true;
-	}
-	
-	
-	@Override
-	public List<CommentiModel> getAllCommenti(String utente) {
-		List<Commenti> listaC= new ArrayList<Commenti>();
-		List<CommentiModel> listaCommentiM= new ArrayList<CommentiModel>();
-		CommentiModel cm;
-		
-		Session session= MyHibernateUtil.getSessionFactory().openSession();
-		Transaction tx= null;
-			
-		try {
-							
-			tx=session.beginTransaction();
-				
-			listaC=(List<Commenti>)session.createQuery("from Commenti where username=:username").setParameter("username", utente).list();
-				
-			tx.commit();
-			
-			for(Commenti c:listaC){
-				cm=new CommentiModel(c.getIdCommenti(),c.getUsername(), c.getDataRichiesta(), c.getTesto(), Boolean.valueOf(c.getEditated()));
-				listaCommentiM.add(cm);
-			}
-			
-			return listaCommentiM;
-				
-		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
-			e.printStackTrace();
-			return null;
-		}finally{
-			session.close();
-		}		
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<CommentiModel> getAllCommenti() throws IllegalArgumentException{
-
-		List<Commenti> listaC= new ArrayList<Commenti>();
-		List<CommentiModel> listaCommentiM= new ArrayList<CommentiModel>();
-		CommentiModel cm;
-		
-		Session session= MyHibernateUtil.getSessionFactory().openSession();
-		Transaction tx= null;
-			
-		try {
-							
-			tx=session.beginTransaction();
-				
-			listaC=(List<Commenti>)session.createQuery("from Commenti").list();
-				
-			tx.commit();
-			
-			for(Commenti c:listaC){
-				cm=new CommentiModel(c.getIdCommenti(),c.getUsername(), c.getDataRichiesta(), c.getTesto(), Boolean.valueOf(c.getEditated()));
-				listaCommentiM.add(cm);
-			}
-			
-			return listaCommentiM;
-				
-		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
-			e.printStackTrace();
-			return null;
-		}finally{
-			session.close();
-		}			
-	}
-
-	@Override
-	public boolean deleteCommento(int id) {
-		Commenti c= new Commenti();
-		
-		Session session= MyHibernateUtil.getSessionFactory().openSession();
-		Transaction tx= null;
-			
-		try {
-							
-			tx=session.beginTransaction();
-				
-			c=(Commenti)session.createQuery("from Commenti where id=:id").setParameter("id", id).uniqueResult();
-			
-			session.delete(c);
-			
-			tx.commit();
-			
-			return true;
-			
-		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
-			e.printStackTrace();
-			return false;
-		}finally{
-			session.close();
-		}		
-		
-	}
-
+	//TODO modifiche per tariffe su tariffa utilizzata
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<RiepilogoSALPCLModel> getRiepilogoSalPcl(String data,
@@ -5377,6 +5814,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						esistePa=true;
 							
 				if(esistePa){		
+					
+					//TODO se esiste la Pa devo ciclare sulle attivita ordine perchè potrebbero essercene più di una altrimenti basta prendere la prima sotto l'ordine
 				 
 					listaC=(List<Commessa>)session.createQuery("from Commessa where numeroCommessa=:commessa and estensione<>:estensione and statoCommessa<>:stato").setParameter("commessa", commessa)
 							.setParameter("estensione", "pa").setParameter("stato", "Chiusa").list();
@@ -5394,16 +5833,17 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					sommaVariazioniSal=ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, c_pa.getSalAttuale());
 					sommaVariazioniPcl=ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, c_pa.getPclAttuale());
 				
-					f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:id and meseCorrente=:mese").setParameter("id", codCommessa)
-							.setParameter("mese", data).uniqueResult();
+									
+					/*f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:id and meseCorrente=:mese").setParameter("id", codCommessa)
+							.setParameter("mese", data).uniqueResult();*/
 				
 					//tx.commit();
 					
-					if(o==null)//se non c'è un ordine associato, permetto l'inserimento di eventuali sal pcl
-						tariffaUtilizzata=c.getTariffaSal();//prendo la tariffa della commessa
-					else
-						tariffaUtilizzata=o.getTariffaOraria();
-										
+					if(o==null){
+						tariffaUtilizzata=c.getTariffaSal();
+						f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:id and meseCorrente=:mese").setParameter("id", codCommessa)
+								.setParameter("mese", data).uniqueResult();
+						
 						if(f==null){//non c'è foglio di fatturazione quindi non ci sarà variazione nel mese
 							
 							if(tabSelected.compareTo("pcl")==0){
@@ -5440,10 +5880,61 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 										Float.valueOf(ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f.getVariazioneSAL())), tariffaUtilizzata, 
 										importo , Float.valueOf(f.getOreEseguite()), Float.valueOf("0.00"), importoMese);
 							}
-						}		
+						}	
+						listaM.add(riepM);
+						
+					}else{
+						
+						for(AttivitaOrdine att:o.getAttivitaOrdines()){
+						
+							tariffaUtilizzata=att.getTariffaAttivita();
+								
+							f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:id and meseCorrente=:mese and attivitaOrdine=:idAttivita")
+									.setParameter("id", codCommessa).setParameter("attivitaOrdine", att.getIdAttivitaOrdine()).setParameter("mese", data).uniqueResult();
 							
+							if(f==null){//non c'è foglio di fatturazione quindi non ci sarà variazione nel mese
+							
+								if(tabSelected.compareTo("pcl")==0){
+									importo=ServerUtility.calcolaImporto(tariffaUtilizzata, sommaVariazioniPcl);
+									riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
+											"#", c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniPcl),Float.valueOf("0.00"), 
+											Float.valueOf(sommaVariazioniPcl), tariffaUtilizzata,importo , Float.valueOf("0.00"), Float.valueOf("0.00"), Float.valueOf("0.00"));
+								}
+								else{
+									importo=ServerUtility.calcolaImporto(tariffaUtilizzata, sommaVariazioniSal);
+									riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
+										"#", c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniSal),Float.valueOf("0.00"), 
+										Float.valueOf(sommaVariazioniSal), tariffaUtilizzata,importo , Float.valueOf("0.00"), Float.valueOf("0.00"), Float.valueOf("0.00"));
+								}
+							}
+							else{	
+								//il foglio fatturazione era già stato compilato quindi tolgo alla sommavariazioni quella in esame
+								sommaVariazioniSal=ServerUtility.getDifference(sommaVariazioniSal, f.getVariazioneSAL());
+								sommaVariazioniPcl=ServerUtility.getDifference(sommaVariazioniPcl, f.getVariazionePCL());
+							
+								if(tabSelected.compareTo("pcl")==0){
+									importo=ServerUtility.calcolaImporto(tariffaUtilizzata, ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, f.getVariazionePCL()));
+									importoMese=ServerUtility.calcolaImporto(tariffaUtilizzata, f.getVariazionePCL());
+									riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
+											"#", c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniPcl), Float.valueOf(f.getVariazionePCL()), 
+											Float.valueOf(ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, f.getVariazionePCL())), tariffaUtilizzata, 
+											importo , Float.valueOf(f.getOreEseguite()), Float.valueOf("0.00"), importoMese);
+								}
+								else{
+									importo=ServerUtility.calcolaImporto(tariffaUtilizzata, ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f.getVariazioneSAL()));
+									importoMese=ServerUtility.calcolaImporto(tariffaUtilizzata, f.getVariazioneSAL());
+									riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
+										"#", c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniSal),Float.valueOf(f.getVariazioneSAL()), 
+										Float.valueOf(ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f.getVariazioneSAL())), tariffaUtilizzata, 
+										importo , Float.valueOf(f.getOreEseguite()), Float.valueOf("0.00"), importoMese);
+								}
+							}
+							
+							listaM.add(riepM);
+						}
+					}	
 				}else
-				{ //Non esiste la Pa
+				{ //Non esiste la Pa e quindi non potranno esserci ordini con più tariffe
 					
 					f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:id and meseCorrente=:mese").setParameter("id", codCommessa)
 							.setParameter("mese", data).uniqueResult();
@@ -5467,7 +5958,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					if(o==null)//se non c'è un ordine associato, permetto l'inserimento di eventuali sal pcl
 						tariffaUtilizzata=c.getTariffaSal();//prendo la tariffa della commessa
 					else
-						tariffaUtilizzata=o.getTariffaOraria();
+						tariffaUtilizzata=o.getAttivitaOrdines().iterator().next().getTariffaAttivita();
 					
 					if(f==null){						
 						if(tabSelected.compareTo("pcl")==0){
@@ -5482,6 +5973,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 									"#", c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniSal),Float.valueOf("0.00"), 
 									Float.valueOf(sommaVariazioniSal), tariffaUtilizzata, importo , Float.valueOf("0.00"), Float.valueOf("0.00"), Float.valueOf("0.00"));
 						}
+						
+						listaM.add(riepM);
 					}
 					else{	
 							//sommaVariazioniSal=ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f.getVariazioneSAL());
@@ -5502,11 +5995,11 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 									Float.valueOf(ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f.getVariazioneSAL())), tariffaUtilizzata, 
 									importo , Float.valueOf(f.getOreEseguite()), Float.valueOf("0.00"), importoMese);
 						}
-					}		
-													
+						listaM.add(riepM);
+					}														
 				}
 				
-				listaM.add(riepM);
+				//listaM.add(riepM);
 				listaFF.clear();
 				listaC.clear();
 				sommaVariazioniPcl="0.00";
@@ -5524,9 +6017,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			return null;
 		}finally{
 			session.close();
-		}			
+		}
 	}
-
+	
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<RiepilogoSALPCLModel> getRiepilogoSalPclRiassunto(String data,
@@ -5661,122 +6155,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 
 	
-	@Override
-	public boolean confermaEditCommenti(int i) throws IllegalArgumentException {
-		Session session= MyHibernateUtil.getSessionFactory().openSession();
-		Transaction tx= null;
-		Commenti cm= new Commenti();
-		try {
-			
-			tx=session.beginTransaction();
-			
-			cm=(Commenti)session.createQuery("from Commenti where idCommenti=:id").setParameter("id", i).uniqueResult();
-			cm.setEditated("true");			
-			
-			tx.commit();
-			return true;
-			
-		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
-			e.printStackTrace();
-			return false;
-		}finally{
-			session.close();
-		}	
-	}
-
 	
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<RiepilogoMeseGiornalieroModel> getRiepilogoMensileDettagliatoHorizontalLayout(
-			String sede, String data) throws IllegalArgumentException{
-		
-		List<RiepilogoMeseGiornalieroModel> listaR= new ArrayList<RiepilogoMeseGiornalieroModel>();
-		List<Personale> listaP= new ArrayList<Personale>();
-		List<FoglioOreMese> listaF= new ArrayList<FoglioOreMese>();
-		List<DettaglioOreGiornaliere> listaG= new ArrayList<DettaglioOreGiornaliere>();
-		List<String> listaCodiciPerOgniGiorno;
-		
-		Session session= MyHibernateUtil.getSessionFactory().openSession();
-		Transaction tx= null;
-		
-		String mese=data.substring(0,3);
-		String anno=data.substring(3,7);
-		String meseN;
-		String giornoR;
-		
-		
-		try {
-			tx=session.beginTransaction();
-			
-			listaP=(List<Personale>)session.createQuery("from Personale where sedeOperativa=:sede").setParameter("sede", sede).list();
-			
-			//ngiorni=ServerUtility.getGiorniMese(mese, anno);
-			meseN=ServerUtility.traduciMeseToNumber(mese.toLowerCase());
-			
-			for(Personale p:listaP){
-				
-				listaCodiciPerOgniGiorno= new ArrayList<String>();
-				
-				listaF.addAll(p.getFoglioOreMeses());
-				for(FoglioOreMese f: listaF)
-					if(f.getMeseRiferimento().compareTo(data)==0){
-						listaG.addAll(f.getDettaglioOreGiornalieres());
-						break;
-				}
-												
-				for(int i=1; i<=31; i++){
-					
-					String statoCompilazione="1";			
-					
-					String ngiorno=String.valueOf(i);
-					if (ngiorno.length()==1)
-						ngiorno="0"+ngiorno;
-							
-					giornoR=anno+"-"+meseN+"-"+ngiorno;
-								
-					statoCompilazione=ServerUtility.exsistGiorno(listaG, giornoR);
-					if(statoCompilazione.compareTo("0")==0)
-						listaCodiciPerOgniGiorno.add("0");
-					else
-						if(statoCompilazione.compareTo("2")==0)
-							listaCodiciPerOgniGiorno.add("2");	
-						else
-							listaCodiciPerOgniGiorno.add("1");
-				}
-				
-				
-				RiepilogoMeseGiornalieroModel riep= new RiepilogoMeseGiornalieroModel(p.getUsername(), p.getCognome()+" "+p.getNome(),
-						listaCodiciPerOgniGiorno.get(0), listaCodiciPerOgniGiorno.get(1), listaCodiciPerOgniGiorno.get(2), 
-						listaCodiciPerOgniGiorno.get(3), listaCodiciPerOgniGiorno.get(4), listaCodiciPerOgniGiorno.get(5), 
-						listaCodiciPerOgniGiorno.get(6), listaCodiciPerOgniGiorno.get(7), listaCodiciPerOgniGiorno.get(8), 
-						listaCodiciPerOgniGiorno.get(9), listaCodiciPerOgniGiorno.get(10), listaCodiciPerOgniGiorno.get(11), 
-						listaCodiciPerOgniGiorno.get(12), listaCodiciPerOgniGiorno.get(13), listaCodiciPerOgniGiorno.get(14), 
-						listaCodiciPerOgniGiorno.get(15), listaCodiciPerOgniGiorno.get(16), listaCodiciPerOgniGiorno.get(17), 
-						listaCodiciPerOgniGiorno.get(18), listaCodiciPerOgniGiorno.get(19), listaCodiciPerOgniGiorno.get(20), 
-						listaCodiciPerOgniGiorno.get(21), listaCodiciPerOgniGiorno.get(22), listaCodiciPerOgniGiorno.get(23), 
-						listaCodiciPerOgniGiorno.get(24), listaCodiciPerOgniGiorno.get(25), listaCodiciPerOgniGiorno.get(26), 
-						listaCodiciPerOgniGiorno.get(27), listaCodiciPerOgniGiorno.get(28), listaCodiciPerOgniGiorno.get(29), 
-						listaCodiciPerOgniGiorno.get(30));
-				
-				listaG.clear();
-				listaF.clear();
-				listaCodiciPerOgniGiorno.clear();
-				listaR.add(riep);
-			}			
-			tx.commit();
-			return listaR;
-		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
-			e.printStackTrace();
-			return null;
-		}finally{
-			session.close();
-		}	
-			
-	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -7348,5 +7727,5 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}				
 	}
 
-	
+		
 }

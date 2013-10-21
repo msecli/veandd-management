@@ -166,7 +166,8 @@ public class PanelRiepilogoMeseGiornalieroHorizontal extends LayoutContainer{
 					String meseRif=ClientUtility.traduciMeseToNumber(ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString()).toLowerCase());
 					String anno= smplcmbxAnno.getRawValue().toString();
 					indiceColonna=cm.getSelectCell().cell;
-					dipendente=cm.getSelectedItem().get("idRisorsa");
+					//dipendente=cm.getSelectedItem().get("idRisorsa");
+					dipendente=cm.getSelectedItem().get("username");
 					
 					Date retVal = null;
 				      try
@@ -181,13 +182,13 @@ public class PanelRiepilogoMeseGiornalieroHorizontal extends LayoutContainer{
 					
 					Dialog d =new  DialogRilevazionePresenze(retVal,dipendente);
 					d.show();
-					/*			
+								
 					d.addListener(Events.Hide, new Listener<ComponentEvent>() {			     
 						@Override
 						public void handleEvent(ComponentEvent be) {
 								
 						}
-					});	*/
+					});	
 				}
 			}
 		});

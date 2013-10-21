@@ -82,6 +82,7 @@ public CenterLayout_FoglioFatturazione(){}
 	private boolean trovato=true;
 	private String numCommessa= "";
 	private String numEstensione= "";
+	private int idAttivita;
 		
 	protected void onRender(Element target, int index) {  
 	    super.onRender(target, index);
@@ -708,7 +709,7 @@ public CenterLayout_FoglioFatturazione(){}
 						String tariffaUtilizzata=txtfldCostoOrario.getValue().toString();
 						String salDaButtare= new String();
 						boolean salButtato= chbxSalButtare.getValue();
-												
+																		
 						String meseCorrente=new String();
 						String anno=new String();
 						String data= new String();
@@ -727,8 +728,9 @@ public CenterLayout_FoglioFatturazione(){}
 						anno=smplcmbxAnno.getRawValue().toString();
 						meseCorrente=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
 						data=meseCorrente+anno;
+						//TODO aggiunto idAttivita per tariffe
 						AdministrationService.Util.getInstance().insertDatiFoglioFatturazione(oreEseguite,salIniziale,pclIniziale, oreFatturare,variazioneSAL,
-								variazionePCL, data, note, statoElaborazione, commessaSelezionata, tariffaUtilizzata, salDaButtare, new AsyncCallback<Boolean>() {
+								variazionePCL, data, note, statoElaborazione, commessaSelezionata, tariffaUtilizzata, salDaButtare, idAttivita, new AsyncCallback<Boolean>() {
 
 									@Override
 									public void onFailure(Throwable caught) {
@@ -772,10 +774,12 @@ public CenterLayout_FoglioFatturazione(){}
 		            	if(be.getSelectedItem().getNumeroCommessa().compareTo("TOTALE")!=0){
 		            		String numeroC= new String();
 		            		String estensione=new String();
+		            		idAttivita=be.getSelectedItem().get("idAttivita");
 		            		numeroC=be.getSelectedItem().getNumeroCommessa();
 		            		estensione=be.getSelectedItem().getEstensione();
 		            		try{
-		            			caricaDatiFatturazioneOrdine(numeroC+"."+estensione);
+		            			
+		            			caricaDatiFatturazioneOrdine(numeroC+"."+estensione, idAttivita);
 		            		}catch (Exception e) {
 		            			e.printStackTrace();
 		        				System.out.println("errore carica dati fatturazione");
@@ -1474,6 +1478,13 @@ public CenterLayout_FoglioFatturazione(){}
 		    configs.add(column);
 		    
 		    column=new ColumnConfig();		
+		    column.setId("descrizioneAttivita");  
+		    column.setHeader("Attivita");  
+		    column.setWidth(80);  
+		    column.setRowHeader(true);  
+		    configs.add(column); 
+		    
+		    column=new ColumnConfig();		
 		    column.setId("sal");  
 		    column.setHeader("Var.SAL");  
 		    column.setWidth(60);  
@@ -1537,12 +1548,25 @@ public CenterLayout_FoglioFatturazione(){}
 			});
 		    configs.add(column); 
 		    
-			 column=new ColumnConfig();		
+			column=new ColumnConfig();		
 		    column.setId("numeroOrdine");  
 		    column.setHeader("Ordine");  
 		    column.setWidth(80);  
 		    column.setRowHeader(true);  
-		    configs.add(column);  
+		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
+
+				@Override
+				public Object render(RiepilogoOreTotaliCommesse model,
+						String property, ColumnData config, int rowIndex,
+						int colIndex,
+						ListStore<RiepilogoOreTotaliCommesse> store,
+						Grid<RiepilogoOreTotaliCommesse> grid) {
+					
+					return model.get(property);
+				}
+			});
+		    configs.add(column); 
+		     
 		    
 		    column=new ColumnConfig();		
 		    column.setId("oreOrdine");
@@ -1584,7 +1608,7 @@ public CenterLayout_FoglioFatturazione(){}
 		}
 		
 		
-		private void caricaDatiFatturazioneOrdine(String numeroCommessa) {	
+		private void caricaDatiFatturazioneOrdine(String numeroCommessa, int idAttivita) {	
 			String meseR= new String();
 			String anno= new String();
 			String data= new String();
@@ -1595,7 +1619,10 @@ public CenterLayout_FoglioFatturazione(){}
 				anno=smplcmbxAnno.getRawValue().toString();
 				meseR=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
 				data=meseR+anno;
-				AdministrationService.Util.getInstance().getDatiFatturazionePerOrdine(commessa, data, new AsyncCallback<FoglioFatturazioneModel>() {
+				
+				//TODO aggiunta idAttivita per più tariffe			
+				
+				AdministrationService.Util.getInstance().getDatiFatturazionePerOrdine(commessa, data, idAttivita, new AsyncCallback<FoglioFatturazioneModel>() {
 					@Override
 					public void onSuccess(FoglioFatturazioneModel result) {
 						if(result==null)

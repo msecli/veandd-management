@@ -6,6 +6,7 @@ import java.util.List;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
+import gestione.pack.client.UtilityService;
 import gestione.pack.client.layout.panel.PanelEditPasswordUtenti;
 import gestione.pack.client.layout.panel.PanelGestioneCostiDipendenti;
 import gestione.pack.client.layout.panel.PanelGestioneCosting;
@@ -410,7 +411,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
             	center.removeAll();
-	        	center.add(new CenterLayout_GestioneRdoCommesseAll());
+	        	center.add(new CenterLayout_GestioneRdoCompletaDup());
 	        	center.layout(true);               
             }
         });
@@ -423,7 +424,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    btnGestioneRdo.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	          center.removeAll();
-	        	center.add(new CenterLayout_GestioneRdoCompleta());
+	        	center.add(new CenterLayout_GestioneRdoCompletaDup());
 	        	center.layout(true);}
 	        
 	      });
@@ -641,7 +642,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    status.setAutoWidth(true);
 	    
 	    Button btnGestioneHwSw = new Button();
-	    btnGestioneHwSw.setToolTip("Gestione HW/SW");
+	    btnGestioneHwSw.setToolTip("Check I/U I commesse");
 	    btnGestioneHwSw.setHeight(65);
 	    btnGestioneHwSw.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.gestHwSw()));
 	    btnGestioneHwSw.setIconAlign(IconAlign.BOTTOM);
@@ -662,7 +663,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    	    d.add(cp);
 	    	    d.show();
 	    	    
-	        	AdministrationService.Util.getInstance().checkIntervallicommesse(new AsyncCallback<List<String>>() {
+	    	    AdministrationService.Util.getInstance().checkIntervallicommesse(new AsyncCallback<List<String>>() {
 
 					@Override
 					public void onFailure(Throwable caught) {
@@ -686,6 +687,62 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    });
 	    btnGestioneHwSw.setWidth("100%");
 	    cp.add(btnGestioneHwSw);
+	    
+	    
+	    Button btnTmp = new Button();
+	    btnTmp.setToolTip("Generare tariffe Ordine");
+	    btnTmp.setHeight(65);
+	    btnTmp.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.gestHwSw()));
+	    btnTmp.setIconAlign(IconAlign.BOTTOM);
+	    btnTmp.setWidth("100%");
+	    btnTmp.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	
+	        	status.setBusy("Please wait...");
+	    	    status.show();
+	    	    Dialog d= new Dialog();
+	    	    d.setSize(500, 500);
+	    	    ContentPanel cp= new ContentPanel();
+	    	    cp.setLayout(new FitLayout());
+	    	    cp.setHeading("Check su valori giornalieri duplicati.");
+	    	    cp.setSize(485, 450);
+	    	    cp.setTopComponent(status);
+	    	    cp.add(txtCheck);
+	    	    d.add(cp);
+	    	    d.show();
+	    	    
+	    	    UtilityService.Util.getInstance().generateAttivitaOrdine(new AsyncCallback<Void>() {
+					
+					@Override
+					public void onSuccess(Void result) {
+							
+							
+						 UtilityService.Util.getInstance().insertIdAttivitaOrdineInFoglioFatturazione(new AsyncCallback<Void>() {
+
+				    	    	@Override
+								public void onFailure(Throwable caught) {
+									Window.alert("Errore di connessione on insertIdAttivitaOrdineInFoglioFatturazione();");	
+														
+								}
+
+								@Override
+								public void onSuccess(Void result) {
+									Window.alert("OK");	
+									
+								} 	    		
+				    	    });
+					}
+					
+					@Override
+					public void onFailure(Throwable caught) {
+						
+						Window.alert("Errore di connessione on generateAttivitaOrdine();");
+					}
+				});	    	            	
+	        ;}        	
+	    });
+	    btnTmp.setWidth("100%");
+	    cp.add(btnTmp);
 	    	        
 	    panel.add(cp);
 	    	    
@@ -695,7 +752,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        
 //----------------------------------------------------------------------------------------------
 	    
-	   center.add(new PanelGestioneCosting()); 
+	   center.add(new CenterLayout_GestioneRdoCompletaDup()); 
 	  // center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb());   
 	   container.add(north, northData);
 	   container.add(west, westData);

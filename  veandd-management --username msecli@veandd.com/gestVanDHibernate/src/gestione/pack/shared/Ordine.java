@@ -1,12 +1,17 @@
 package gestione.pack.shared;
 
+
 import javax.persistence.*;
+
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import net.sf.gilead.pojo.gwt.LightEntity;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import java.util.Date;
+import java.util.Set;
 
 
 /**
@@ -70,6 +75,11 @@ public class Ordine extends LightEntity implements IsSerializable {
 	@ManyToOne
 	@JoinColumn(name="COD_COMMESSA")
 	private Commessa commessa;
+	
+	//bi-directional many-to-one association to AttivitaOrdine
+	@OneToMany(mappedBy="ordine", fetch=FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.DELETE_ORPHAN})
+	private Set<AttivitaOrdine> attivitaOrdines;
 
     public Ordine() {
     }
@@ -224,6 +234,14 @@ public class Ordine extends LightEntity implements IsSerializable {
 
 	public void setCommessa(Commessa commessa) {
 		this.commessa = commessa;
+	}
+
+	public Set<AttivitaOrdine> getAttivitaOrdines() {
+		return attivitaOrdines;
+	}
+
+	public void setAttivitaOrdines(Set<AttivitaOrdine> attivitaOrdines) {
+		this.attivitaOrdines = attivitaOrdines;
 	}
 	
 }

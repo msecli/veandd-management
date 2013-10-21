@@ -46,6 +46,7 @@ import gestione.pack.client.model.RiepilogoOreDipFatturazione;
 import gestione.pack.client.model.RiepilogoOreModel;
 import gestione.pack.client.model.RiepilogoOreTotaliCommesse;
 import gestione.pack.client.model.RiepilogoSALPCLModel;
+import gestione.pack.client.model.TariffaOrdineModel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -131,18 +132,20 @@ public interface AdministrationService extends RemoteService {
 	boolean saveRdoCompleta(String numRdo, String cliente, String numOfferta,
 			Date dataOfferte, String importo, String numOrdine,
 			String descrizione, Date dataInizio, Date dataFine, String tariffa,
-			String numRisorse, String oreDisp, String oreRes) throws IllegalArgumentException;
+			String numRisorse, String oreDisp, String oreRes,
+			List<TariffaOrdineModel> listaTar);
 	
 	boolean editRdoCompleta(int idRdo, String numRdo, String cliente,
 			String numOfferta, Date dataOfferte, String importo,
 			String numOrdine, String descrizione, Date dataInizio,
 			Date dataFine, String tariffa, String numRisorse, String oreDisp,
-			String oreRes)  throws IllegalArgumentException;
+			String oreRes, List<TariffaOrdineModel> listaTar);
 	
 	boolean deleteRdoCompleta(int idRdo) throws IllegalArgumentException;
 
 	boolean closeOrdine(String numeroOrdine) throws IllegalArgumentException;
 
+	List<TariffaOrdineModel> loadTariffePerOrdine(int idRdo)throws IllegalArgumentException;
 	
 	//----------------------OFFERTA
 /*
@@ -275,13 +278,13 @@ public interface AdministrationService extends RemoteService {
 			String mese, String pm)throws IllegalArgumentException;
 
 	FoglioFatturazioneModel getDatiFatturazionePerOrdine(
-			String numeroCommessa, String string)throws IllegalArgumentException;
+			String numeroCommessa, String data, int idAttivita)throws IllegalArgumentException;
 
 	boolean insertDatiFoglioFatturazione(String oreEseguite, String salAttuale,
 			String pclAttuale, String oreFatturere, String variazioneSAL,
 			String variazionePCL, String meseCorrente, String note,
 			String statoElaborazione, String commessaSelezionata,
-			String tariffaUtilizzata, String flagSal);
+			String tariffaUtilizzata, String flagSal, int idAttivita);
 
 	List<DatiFatturazioneMeseModel> getReportDatiFatturazioneMese(String mese)throws IllegalArgumentException;
 
@@ -375,7 +378,5 @@ public interface AdministrationService extends RemoteService {
 
 	boolean editStatoCosting(int idSelected, String operazione)throws IllegalArgumentException;
 
-
-	
 	
 }
