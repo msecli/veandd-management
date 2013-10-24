@@ -30,6 +30,7 @@ import org.hibernate.Transaction;
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
+import gestione.pack.client.model.RiepilogoSALPCLModel;
 import gestione.pack.shared.Personale;
 
 
@@ -276,6 +277,24 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 		   	   
 		   	 httpSession.setAttribute("data", data);
 		   	 httpSession.setAttribute("sede", sede);
+		     
+			 return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+
+	@Override
+	public boolean setDatiReportSalPcl(String operazione,
+			List<RiepilogoSALPCLModel> lista) {
+		try {
+			 HttpServletRequest request = this.getThreadLocalRequest();
+		   	 HttpSession httpSession = request.getSession();
+		   	   
+		   	 httpSession.setAttribute("operazione", operazione);
+		   	 httpSession.setAttribute("lista", lista);
 		     
 			 return true;
 		} catch (Exception e) {

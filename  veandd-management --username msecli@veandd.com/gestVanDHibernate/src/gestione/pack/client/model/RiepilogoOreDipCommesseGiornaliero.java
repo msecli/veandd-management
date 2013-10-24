@@ -12,11 +12,12 @@ public class RiepilogoOreDipCommesseGiornaliero extends BaseModel implements IsS
 
 	public RiepilogoOreDipCommesseGiornaliero(){}
 	
-	public RiepilogoOreDipCommesseGiornaliero(String username, String numeroCommessa, String dipendente, String giorno, Float oreLavoro, Float oreViaggio, Float totOre, String compilato){
+	public RiepilogoOreDipCommesseGiornaliero(String username, String numeroCommessa, String dipendente, String giorno, String letteraGiorno, Float oreLavoro, Float oreViaggio, Float totOre, String compilato){
 		set("username", username);
 		set("numeroCommessa", numeroCommessa);
 		set("dipendente", dipendente);
 		set("giorno", giorno);
+		set("letteraGiorno", letteraGiorno);
 		set("oreLavoro",oreLavoro);
 		set("oreViaggio", oreViaggio);		
 		set("totOre", totOre);

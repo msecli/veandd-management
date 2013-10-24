@@ -2,6 +2,7 @@ package gestione.pack.client;
 
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
+import gestione.pack.client.model.RiepilogoSALPCLModel;
 
 import java.util.List;
 
@@ -41,6 +42,9 @@ public interface SessionManagementServiceAsync {
 			AsyncCallback<Boolean> callback);
 
 	void setDataFileTmbInSession(String data, String sede,
+			AsyncCallback<Boolean> asyncCallback);
+
+	void setDatiReportSalPcl(String string, List<RiepilogoSALPCLModel> models,
 			AsyncCallback<Boolean> asyncCallback);
 	
 

@@ -168,7 +168,7 @@ public class CenterLayout_GestioneRdoCompletaDup extends LayoutContainer{
 				CntpnlGridTariffeOrdine cpTariffa=(CntpnlGridTariffeOrdine) layout.getItemByItemId("cpTariffa");
 				List<TariffaOrdineModel> listaTar= (List<TariffaOrdineModel>) cpTariffa.storeTariffe.getModels();
 				
-				if(formIsValid()&&!arePresent()){
+				if(formIsValid()&&!arePresent()&&areValid(listaTar)){
 				
 					cliente=smplcmbxCliente.getRawValue().toString();
 					if(!txtfldNumeroRda.getRawValue().isEmpty())numRdo=txtfldNumeroRda.getValue().toString();
@@ -208,9 +208,10 @@ public class CenterLayout_GestioneRdoCompletaDup extends LayoutContainer{
 						}
 					}); //AsyncCallback	   
 				}else{
-					Window.alert("Controllare i campi inseriti!");
+					Window.alert("Controllare i campi inseriti ed eliminare eventuali record vuoti nella tabella Tariffe.");
 				}
 			}
+
 		});
 		
 		
@@ -238,9 +239,10 @@ public class CenterLayout_GestioneRdoCompletaDup extends LayoutContainer{
 				ContentPanel cp=(ContentPanel) cpfrm.getItemByItemId("cp");
 				LayoutContainer layout=(LayoutContainer) cp.getItemByItemId("layout");
 				CntpnlGridTariffeOrdine cpTariffa=(CntpnlGridTariffeOrdine) layout.getItemByItemId("cpTariffa");
-				List<TariffaOrdineModel> listaTar= (List<TariffaOrdineModel>) cpTariffa.storeTariffe.getModels();
-				
-				if(formIsValid()){
+				//List<TariffaOrdineModel> listaTar= elaboroStoreTariffe((List<TariffaOrdineModel>) cpTariffa.storeTariffe.getModels());
+				List<TariffaOrdineModel> listaTar=(List<TariffaOrdineModel>) cpTariffa.storeTariffe.getModels();
+			
+				if(formIsValid()&&areValid(listaTar)){
 					idRdo=Integer.valueOf(txtfldIdRda.getValue());
 					cliente=smplcmbxCliente.getRawValue().toString();
 					if(!txtfldNumeroRda.getRawValue().isEmpty())numRdo=txtfldNumeroRda.getValue().toString();
@@ -281,9 +283,36 @@ public class CenterLayout_GestioneRdoCompletaDup extends LayoutContainer{
 						}
 					}); //AsyncCallback	   
 				}else{
-					Window.alert("Controllare i campi inseriti!");
+					Window.alert("Controllare i campi inseriti ed eliminare eventuali record vuoti nella tabella Tariffe.");
 				}
 			}
+/*
+			private List<TariffaOrdineModel> elaboroStoreTariffe(List<TariffaOrdineModel> models) {
+				
+				List<TariffaOrdineModel> listaT= new ArrayList<TariffaOrdineModel>();
+				TariffaOrdineModel tar=new TariffaOrdineModel();
+				
+				Integer id;
+				String tariffa;
+				String descrizione;
+				
+				for(TariffaOrdineModel t:models){
+					
+					id=t.get("idAttivitaOrdine");
+					tariffa=t.get("tariffaAttivita");
+					descrizione=t.get("descrizione");
+					
+					if(id==null)
+						id=0;
+					
+					tar=new TariffaOrdineModel(String.valueOf(id), tariffa, descrizione);
+					
+				}
+				
+				return listaT;
+			}
+			
+			*/
 		});
 		
 		
@@ -345,6 +374,17 @@ public class CenterLayout_GestioneRdoCompletaDup extends LayoutContainer{
 		add(layoutContainer);		
 	}
 	
+	private boolean areValid(List<TariffaOrdineModel> listaTar) {
+		String tariffa;
+		for(TariffaOrdineModel t:listaTar){
+			
+			tariffa=(String)t.get("tariffaAttivita");			
+			if(tariffa==null)
+				return false;
+		}
+		
+		return true;
+	}
 	
 	
 	private class CntpnlFormRdo extends ContentPanel{
@@ -361,7 +401,7 @@ public class CenterLayout_GestioneRdoCompletaDup extends LayoutContainer{
 			setFrame(false);
 			setStyleAttribute("margin-top", "0px");
 			setItemId("cpfrm");
-			
+						
 			ContentPanel cp= new ContentPanel();
 			cp.setHeaderVisible(false);
 			cp.setSize(920, 330);
@@ -614,8 +654,8 @@ public class CenterLayout_GestioneRdoCompletaDup extends LayoutContainer{
 		
 		private Button btnAddTariffa;
 		private Button btnDelTariffa;
-		private Button btnConferma;
-		private TextField<String> txtfldTariffa= new TextField<String>();
+		//private Button btnConferma;
+		private TextField<String> txtfldTariffa;
 		
 		private EditorGrid<TariffaOrdineModel> gridTariffa;
 		private CellSelectionModel<TariffaOrdineModel> cs;
@@ -623,6 +663,7 @@ public class CenterLayout_GestioneRdoCompletaDup extends LayoutContainer{
 		private ColumnModel cmTariffe;
 		
 		public CntpnlGridTariffeOrdine(){
+			
 			setHeaderVisible(false);
 			setCollapsible(false);
 			setBorders(false);
@@ -644,9 +685,9 @@ public class CenterLayout_GestioneRdoCompletaDup extends LayoutContainer{
 		    gridTariffa.setStripeRows(true); 
 		    gridTariffa.setColumnLines(true);
 		    gridTariffa.setSelectionModel(cs);
-		    TariffaOrdineModel tm=new TariffaOrdineModel();
-		    storeTariffe.insert(tm, 0);//inserisco una riga vuota pronta per l'inserimento
-		    gridTariffa.startEditing(storeTariffe.indexOf(tm), 0);
+		    //TariffaOrdineModel tm=new TariffaOrdineModel();
+		    //storeTariffe.insert(tm, 0);//inserisco una riga vuota pronta per l'inserimento
+		    //gridTariffa.startEditing(storeTariffe.indexOf(tm), 0);
 		    		    
 		    btnAddTariffa= new Button();
 		    btnAddTariffa.setSize(26, 26);
@@ -676,7 +717,7 @@ public class CenterLayout_GestioneRdoCompletaDup extends LayoutContainer{
 				}
 			});
 		    
-		    		    						
+		    		    				
 			ToolBar tlbGrid= new ToolBar();
 			tlbGrid.add(btnAddTariffa);
 			tlbGrid.add(new SeparatorToolItem());
@@ -693,7 +734,6 @@ public class CenterLayout_GestioneRdoCompletaDup extends LayoutContainer{
 		public void caricaTabella(int idRdo){
 			
 			AdministrationService.Util.getInstance().loadTariffePerOrdine(idRdo, new AsyncCallback<List<TariffaOrdineModel>>() {
-
 				@Override
 				public void onFailure(Throwable caught) {
 					Window.alert("Errore di connessione on loadTariffePerOrdine()");			
@@ -719,20 +759,19 @@ public class CenterLayout_GestioneRdoCompletaDup extends LayoutContainer{
 		
 		private List<ColumnConfig> createColumns() {
 			List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
-			ColumnConfig column;  
 			CellEditor editorTxt;
 			
-			column = new ColumnConfig();  
+			ColumnConfig column = new ColumnConfig();  
 		    column.setId("tariffaAttivita");  
 		    column.setHeader("Tariffa");  
 		    column.setWidth(60);  
 		    column.setRowHeader(true);
-		    column.setAlignment(HorizontalAlignment.RIGHT);
-		    
-		    txtfldTariffa.setRegex("[0-9]+[.]{1}[0-9]{2}|[0-9]");
+		    column.setAlignment(HorizontalAlignment.RIGHT);	    
+		    txtfldTariffa= new TextField<String>();
+		    txtfldTariffa.setRegex("^([0-9]{1}|[0-9][0-9]).(0|00|[0-9]{2})$");
 		    txtfldTariffa.getMessages().setRegexText("Deve essere un numero!");
 		    txtfldTariffa.setValue("0.00");
-		    txtfldTariffa.setAllowBlank(false);
+		    txtfldTariffa.setAllowBlank(false);		    
 		    editorTxt= new CellEditor(txtfldTariffa){
 		    	@Override  
 		        public Object preProcessValue(Object value) {  

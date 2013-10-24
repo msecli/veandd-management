@@ -11,6 +11,8 @@ import gestione.pack.client.model.RiepilogoMensileDatiIntervalliCommesseJavaBean
 import gestione.pack.client.model.RiepilogoOreDipFatturazione;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliJavaBean;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
+import gestione.pack.client.model.RiepilogoSALPCLJavaBean;
+import gestione.pack.client.model.RiepilogoSALPCLModel;
 import gestione.pack.shared.AssociazionePtoA;
 import gestione.pack.shared.Commessa;
 import gestione.pack.shared.CostingRisorsa;
@@ -31,6 +33,7 @@ import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -1646,6 +1649,24 @@ public class ServerUtility {
 	}
 	
 	
+	public static List<RiepilogoSALPCLJavaBean> traduciSALPCLModelToBean(
+			List<RiepilogoSALPCLModel> lista) {
+		
+		List<RiepilogoSALPCLJavaBean> listaB= new ArrayList<RiepilogoSALPCLJavaBean>();
+		RiepilogoSALPCLJavaBean rB;
+		
+		for(RiepilogoSALPCLModel r:lista){
+			
+			rB= new RiepilogoSALPCLJavaBean((String)r.get("pm"), (String)r.get("numeroCommessa"), (String)r.get("estensione"), (String)r.get("cliente"), 
+					(String)r.get("attivita"), (Float)r.get("precedente"), (Float)r.get("variazione"), (Float)r.get("attuale"), 
+					(String)r.get("tariffa"), (Float)r.get("importoComplessivo"), (Float)r.get("oreEseguite"), (Float)r.get("margine"), (Float)r.get("importoMese"));
+			listaB.add(rB);
+		}
+		
+		return listaB;
+	}	
+		
+	
 	public static int getOreAnno() {//TODO passare anno
 		String data=new String();
 		String mese=new String();
@@ -1875,7 +1896,8 @@ public class ServerUtility {
 		}
 		
 		return null;
-	}	
-		
+	}
+
+	
 }
 
