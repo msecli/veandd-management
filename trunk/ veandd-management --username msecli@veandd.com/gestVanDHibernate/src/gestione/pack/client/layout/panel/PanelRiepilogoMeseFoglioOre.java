@@ -269,6 +269,15 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 		});  
 	    configs.add(column); 
 	    
+	    column=new SummaryColumnConfig<Double>();		
+	    column.setId("letteraGiorno");  
+	    column.setHeader("");  
+	    column.setWidth(15);  
+	    column.setRowHeader(true);  
+	    column.setRenderer(renderer);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    configs.add(column);
+	    
 	    SummaryColumnConfig<Double> columnOreTimbrature=new SummaryColumnConfig<Double>();		
 	    columnOreTimbrature.setId("oreTimbrature");  
 	    columnOreTimbrature.setHeader("Timbrature");  

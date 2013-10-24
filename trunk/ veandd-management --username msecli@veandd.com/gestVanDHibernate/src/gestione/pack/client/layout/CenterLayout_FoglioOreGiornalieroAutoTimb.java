@@ -531,9 +531,11 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		
 			if(txtSede.getText().compareTo("F")!=0){  //Controllo,nel caso in cui ci siano 2 bollature e l'uscita ha un valore superiore alle 14:00
 				 //che se inseriscono delle ore sulle commesse, queste devono essere uguali alle generali al netto della pausa pranzo per poter essere confermate
-				String oreI=campoI1.substring(0,campoI1.indexOf(":"));
-				String ore=campoU1.substring(0,campoU1.indexOf(":"));
-				if(contaOrari==2){					
+				
+				if(contaOrari==2){	
+					String oreI=campoI1.substring(0,campoI1.indexOf(":"));
+					String ore=campoU1.substring(0,campoU1.indexOf(":"));
+					
 					String minuti= campoU1.substring(campoU1.indexOf(":")+1, campoU1.length());
 					boolean maggiore=((Integer.valueOf(ore)>14) || (Integer.valueOf(minuti)>0)&&(Integer.valueOf(ore)==14) );
 

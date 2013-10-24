@@ -370,23 +370,33 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	    column.setId("numeroCommessa");  
 	    column.setHeader("Commessa");  
 	    column.setWidth(85);  
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    column.setRowHeader(true);  
 	    configs.add(column); 
 	    
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("giorno");  
 	    column.setHeader("Giorno");  
-	    column.setWidth(85);  
+	    column.setWidth(70);  
 	    column.setRowHeader(true);  
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    //column.setRenderer(renderer);
 	    configs.add(column); 
+	    
+	    column=new SummaryColumnConfig<Double>();		
+	    column.setId("letteraGiorno");  
+	    column.setHeader("");  
+	    column.setWidth(15);  
+	    column.setRowHeader(true);  
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    configs.add(column);
 	       	    	    
 	    SummaryColumnConfig<Double> columnOreLavoro=new SummaryColumnConfig<Double>();		
 	    columnOreLavoro.setId("oreLavoro");  
 	    columnOreLavoro.setHeader("Ore Lavoro");  
 	    columnOreLavoro.setWidth(60);    
 	    columnOreLavoro.setRowHeader(true);  
-	    columnOreLavoro.setAlignment(HorizontalAlignment.LEFT);  	
+	    columnOreLavoro.setAlignment(HorizontalAlignment.RIGHT);  	
 	    columnOreLavoro.setRenderer(new GridCellRenderer<RiepilogoOreDipCommesseGiornaliero>() {
 			@Override
 			public Object render(RiepilogoOreDipCommesseGiornaliero model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreDipCommesseGiornaliero> store,
@@ -403,7 +413,7 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	    columnOreViaggio.setHeader("Ore Viaggio");  
 	    columnOreViaggio.setWidth(60);    
 	    columnOreViaggio.setRowHeader(true);  
-	    columnOreViaggio.setAlignment(HorizontalAlignment.LEFT);    
+	    columnOreViaggio.setAlignment(HorizontalAlignment.RIGHT);    
 	    columnOreViaggio.setRenderer(new GridCellRenderer<RiepilogoOreDipCommesseGiornaliero>() {
 			@Override
 			public Object render(RiepilogoOreDipCommesseGiornaliero model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreDipCommesseGiornaliero> store,
@@ -420,7 +430,7 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 	    columnOreTotali.setHeader("Totale");  
 	    columnOreTotali.setWidth(60);    
 	    columnOreTotali.setRowHeader(true);   
-	    columnOreTotali.setAlignment(HorizontalAlignment.LEFT);   
+	    columnOreTotali.setAlignment(HorizontalAlignment.RIGHT);   
 	    columnOreTotali.setStyle("color:#e71d2b;");
 	    columnOreTotali.setRenderer(new GridCellRenderer<RiepilogoOreDipCommesseGiornaliero>() {
 			@Override

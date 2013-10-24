@@ -74,7 +74,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	private TextField<String> txtfldOreIndirette;
 	private TextField<String> txtfldPermessi;
 	private TextField<String> txtfldFerie;
-	private TextField<String> txtfldExt;
+	//private TextField<String> txtfldExt;
 	private TextField<String> txtfldOreRecupero;
 	private FormPanel frmpnlAnagrPersonale;
 	private PagingToolBar toolBar = new PagingToolBar(30);
@@ -296,7 +296,8 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    			if(txtfldOreIndirette.getRawValue().isEmpty()){ oreIndirette="";}else{oreIndirette=txtfldOreIndirette.getValue().toString();}
 	    			if(txtfldPermessi.getRawValue().isEmpty()){ permessi="";}else{permessi=txtfldPermessi.getValue().toString();}
 	    			if(txtfldFerie.getRawValue().isEmpty()){ ferie="";}else{ferie=txtfldFerie.getValue().toString();}
-	    			if(txtfldExt.getRawValue().isEmpty()){ ext="";}else{ext=txtfldExt.getValue().toString();}
+	    			//if(txtfldExt.getRawValue().isEmpty()){ ext="";}else{ext=txtfldExt.getValue().toString();}
+	    			ext="";
 	    			if(txtfldOreRecupero.getRawValue().isEmpty()){ oreRecupero="";}else{oreRecupero=txtfldOreRecupero.getValue().toString();}
 	    			 
 	    			//Al momento dell'inserimento la password sarà uguale all'username
@@ -819,7 +820,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 		});
 	    txtfldOreIndirette.setFieldLabel("Ore Indirette");
 	    
-	    txtfldExt = new TextField<String>();
+	   /* txtfldExt = new TextField<String>();
 	    txtfldExt.setMaxLength(10);
 	    txtfldExt.setName("ext");
 	    txtfldExt.setValue("0");
@@ -855,7 +856,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 						}						
 					}
 			 }
-		});
+		});*/
 	    
 	    LayoutContainer right = new LayoutContainer();  
 	    right.setStyleAttribute("padding-left", "10px");  

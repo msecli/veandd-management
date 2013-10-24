@@ -33,6 +33,7 @@ import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
@@ -353,13 +354,13 @@ public CenterLayout_FoglioFatturazione(){}
 						
 							@Override
 							public void onSuccess(List<RiepilogoOreDipCommesseGiornaliero> result) {
-								// TODO Auto-generated method stub
+								
 							
 							}
 						
 							@Override
 							public void onFailure(Throwable caught) {
-								// TODO Auto-generated method stub
+								
 							
 							}
 						});
@@ -699,6 +700,8 @@ public CenterLayout_FoglioFatturazione(){}
 					//hp=hpLayout;
 					
 					//cp=(CntpnlDatiFatturazioneOrdine) hp.getItemByItemId("panelDatiFatturazione");
+					
+					
 					if(txtfldOreDaFatturare.isValid()&&txtfldVariazioneSAL.isValid()&&txtfldVariazionePCL.isValid()){
 						String oreEseguite= txtfldOreEseguiteRegistrate.getValue().toString();		
 						String salIniziale= txtfldSALIniziale.getValue().toString();
@@ -729,7 +732,11 @@ public CenterLayout_FoglioFatturazione(){}
 						meseCorrente=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
 						data=meseCorrente+anno;
 						//TODO aggiunto idAttivita per tariffe
-						AdministrationService.Util.getInstance().insertDatiFoglioFatturazione(oreEseguite,salIniziale,pclIniziale, oreFatturare,variazioneSAL,
+											
+						if(nuovo&&(Float.valueOf(oreFatturare)>Float.valueOf(txtfldOreResiduoOrdine.getValue().toString())))
+							Window.alert("E' stato indicato un numero di ore da fatturare maggiore del numero di ore residue sull'ordine!");
+						else
+							AdministrationService.Util.getInstance().insertDatiFoglioFatturazione(oreEseguite,salIniziale,pclIniziale, oreFatturare,variazioneSAL,
 								variazionePCL, data, note, statoElaborazione, commessaSelezionata, tariffaUtilizzata, salDaButtare, idAttivita, new AsyncCallback<Boolean>() {
 
 									@Override
@@ -748,7 +755,9 @@ public CenterLayout_FoglioFatturazione(){}
 											Window.alert("error: Impossibile inserire i dati del foglio fatturazione!");
 										}
 									}
-						});				
+							});	
+						//else
+							//Window.alert("E' stato inserito un numero di ore da fatturare maggiori delle ore residue sull'ordine!");
 					}			
 				}
 			});		    
@@ -952,7 +961,12 @@ public CenterLayout_FoglioFatturazione(){}
 											valore=valore+"00";
 									}
 								txtfldOreEseguiteRegistrate.setValue(valore);
-							}						
+							}
+							
+							if(hasValue(txtfldOreEseguiteRegistrate)&& 
+									(Float.valueOf(txtfldOreEseguiteRegistrate.getValue().toString())<=Float.valueOf(txtfldOreResiduoOrdine.getValue().toString())))
+								txtfldOreDaFatturare.setValue(txtfldOreEseguiteRegistrate.getValue().toString());
+								
 						}
 				 }
 			});
@@ -1339,7 +1353,7 @@ public CenterLayout_FoglioFatturazione(){}
 			
 			RowData data1 = new RowData(.20, 1);
 			data.setMargins(new Margins(5));
-			
+						
 			LayoutContainer layoutColumn=new LayoutContainer();
 			layout= new FormLayout();
 			layout.setLabelWidth(80);
@@ -1476,13 +1490,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    column.setWidth(50);  
 		    column.setRowHeader(true);  
 		    configs.add(column);
-		    
-		    column=new ColumnConfig();		
-		    column.setId("descrizioneAttivita");  
-		    column.setHeader("Attivita");  
-		    column.setWidth(80);  
-		    column.setRowHeader(true);  
-		    configs.add(column); 
+		   
 		    
 		    column=new ColumnConfig();		
 		    column.setId("sal");  
@@ -1567,6 +1575,12 @@ public CenterLayout_FoglioFatturazione(){}
 			});
 		    configs.add(column); 
 		     
+		    column=new ColumnConfig();		
+		    column.setId("descrizioneAttivita");  
+		    column.setHeader("Attivita");  
+		    column.setWidth(80);  
+		    column.setRowHeader(true);  
+		    configs.add(column); 
 		    
 		    column=new ColumnConfig();		
 		    column.setId("oreOrdine");
@@ -1741,6 +1755,8 @@ public CenterLayout_FoglioFatturazione(){}
 	    	  		else
 	    	  			chbxSalButtare.setValue(false);
 	    	  		
+	    	  		if(Float.valueOf(result.getResiduoOre())<0)
+	    	  			Window.alert("Il numero di ore residue sull'ordine è negativo! Effettuare le modifiche opportune!");
 					
 				}else{
 									

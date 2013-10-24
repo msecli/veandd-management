@@ -16,6 +16,7 @@ package gestione.pack.client;
 
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
+import gestione.pack.client.model.RiepilogoSALPCLModel;
 
 import java.util.List;
 
@@ -69,6 +70,8 @@ public interface SessionManagementService extends RemoteService {
 			List<RiepilogoCostiDipendentiModel> models)throws IllegalArgumentException;
 
 	boolean setDataFileTmbInSession(String data, String sede)throws IllegalArgumentException;
+
+	boolean setDatiReportSalPcl(String string, List<RiepilogoSALPCLModel> models);
 	
 	
 }
