@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version last-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReportRiepilogoSalPcl" pageWidth="1260" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3e64915b-4396-4ec2-987d-f00025c0c0f8">
+	<import value="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<field name="pm" class="java.lang.String"/>
+	<field name="numeroCommessa" class="java.lang.String"/>
+	<field name="estensione" class="java.lang.String"/>
+	<field name="cliente" class="java.lang.String"/>
+	<field name="attivita" class="java.lang.String"/>
+	<field name="precedente" class="java.lang.Float"/>
+	<field name="variazione" class="java.lang.Float"/>
+	<field name="attuale" class="java.lang.Float"/>
+	<field name="tariffa" class="java.lang.String"/>
+	<field name="importoComplessivo" class="java.lang.Float"/>
+	<field name="margine" class="java.lang.Float"/>
+	<field name="oreEseguite" class="java.lang.Float"/>
+	<field name="importoMese" class="java.lang.Float"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="26" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="3613eb35-f3d6-47a1-8da9-b39f2e1154c2" x="1" y="1" width="104" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Project Manager]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0bbe56d9-c047-4fe0-b1f6-0a67893b1607" x="107" y="1" width="123" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Numero Commessa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d32e6375-3ab4-4687-98cd-82a7376f4900" x="232" y="1" width="31" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Est.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="92b2d56a-84ac-4cb0-a643-a2fac7465b0f" x="265" y="1" width="167" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cliente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="77f8da92-9835-4b1e-a04f-7491f2bf1410" x="434" y="1" width="123" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Attivita]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="767a9c39-bdc5-4169-a318-766d7798f7c5" x="559" y="1" width="77" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Precedente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="addd2201-1de6-495b-926d-0bd088da0b66" x="638" y="1" width="77" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Variazione]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="52185db4-878c-472f-9f10-3ba3f8a6e067" x="717" y="1" width="77" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Attuale]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1a19cacd-bf43-4867-bde1-cdcb50820093" x="796" y="1" width="52" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tariffa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e2ab04ca-d099-4f77-8a40-ed90661b9f61" x="850" y="1" width="96" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Importo Compl.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e296f648-824b-434b-bd61-ca6c00836bb1" x="947" y="1" width="88" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ore Eseguite]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="708ad897-c40c-454d-b439-4633ac9fdfdc" x="1036" y="1" width="65" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Margine]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="163920a5-03fb-4661-a8b0-c0cef620c245" x="1103" y="1" width="105" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Importo Mese]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="23" splitType="Stretch">
+			<textField>
+				<reportElement uuid="0853e9e9-e2e7-499d-948f-b18c12f3cfff" isPrintRepeatedValues="false" x="1" y="0" width="104" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{pm}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="30eb176b-fac4-425e-ba32-5e1b1786ed34" x="107" y="0" width="123" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{numeroCommessa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="335c70b6-ce4d-4608-95e8-d3c183f81e79" x="232" y="0" width="31" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{estensione}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="23567c25-b122-46be-9642-b31874b2b114" x="265" y="0" width="167" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cliente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a8f41555-c5bf-4c34-bad7-364ab4a0faf7" x="434" y="0" width="123" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{attivita}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="20411850-7065-468d-8bee-a6d499de0b54" x="559" y="0" width="77" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{precedente}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="acf85cc6-7a18-4a2c-ade1-2fa22b53eec4" x="638" y="0" width="77" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{variazione}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="b2cff332-6527-43dd-ae2f-275a729daadc" x="717" y="0" width="77" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{attuale}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e874fbb5-dcdc-4729-9600-29ff208201c6" x="796" y="0" width="52" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{tariffa}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="08580c46-a0b0-4f88-a286-a5771e35f18d" x="850" y="0" width="96" height="20" forecolor="#FF0000"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{importoComplessivo}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="f2408693-8bd1-4998-82f1-dfcca4570d9a" x="947" y="0" width="88" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{oreEseguite}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="64ffe78d-3ec7-4dbc-b1dd-09d896a30fe3" x="1036" y="0" width="65" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{margine}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="1099dd18-7f49-42ec-9a14-674b4d0d735e" x="1103" y="0" width="105" height="20" forecolor="#FF0033"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{importoMese}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
