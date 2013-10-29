@@ -638,5 +638,43 @@ public class ClientUtility {
 		
 		return listaMesi;
 	}
+
+
+	public static String elaboraCodiceGiustificativo(String oreStraordinario, String oreAssRecupero, String oreFerie,
+			String orePermesso) {
+		
+		String codiceGiustificativo="";
+		int contaG=0;
+		
+		if(Float.valueOf(oreStraordinario)!=0)
+			contaG++;
+		if(Float.valueOf(oreAssRecupero)!=0)
+			contaG++;
+		if(Float.valueOf(oreFerie)!=0)
+			contaG++;
+		if(Float.valueOf(orePermesso)!=0)
+			contaG++;
+					
+		if(contaG==1){
+			
+			//if(Float.valueOf(oreStraordinario)!=0)
+				//codiceGiustificativo="02"; ce ne sono troppi
+			if(Float.valueOf(oreAssRecupero)!=0)
+				if(Float.valueOf(oreAssRecupero)<0)
+					codiceGiustificativo="09";
+				else
+					codiceGiustificativo="27";
+			if(Float.valueOf(oreFerie)!=0)
+				codiceGiustificativo="01";
+			if(Float.valueOf(orePermesso)!=0)
+				codiceGiustificativo="02";
+				
+		}
+		else codiceGiustificativo="00";
+		
+		return codiceGiustificativo;
+		
+		
+	}
 	
 }

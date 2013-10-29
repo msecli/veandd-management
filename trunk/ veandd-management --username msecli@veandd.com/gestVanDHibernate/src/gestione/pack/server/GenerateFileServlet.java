@@ -54,6 +54,8 @@ public class GenerateFileServlet  extends HttpServlet{
 		String giornoRiferimento;
 		String movimento;
 		String orario;
+		String giustificativo;
+		String nGiustificativi;
 		Date data= new Date();
 		SimpleDateFormat formatter =new SimpleDateFormat("dd/MM/yy",Locale.ITALIAN);
 		
@@ -66,7 +68,7 @@ public class GenerateFileServlet  extends HttpServlet{
 				
 			session.createSQLQuery("truncate dati_timbratrice_ext").executeUpdate();
 			
-			listaDT=session.createSQLQuery("select p.numeroBadge, iu.movimento, iu.orario, dg.giornoRiferimento	" +
+			listaDT=session.createSQLQuery("select p.numeroBadge, iu.movimento, iu.orario, dg.giornoRiferimento, dg.giustificativo " +
 					"	from gestionaledb.dettaglio_intervalli_i_u as iu, gestionaledb.dettaglio_ore_giornaliere as dg, " +
 					"		gestionaledb.foglio_ore_mese as f, gestionaledb.personale as p " +
 					"	where iu.ID_DETT_ORE_GIORNO=dg.ID_DETTAGLIO_ORE_GIORNALIERE " +
@@ -83,15 +85,30 @@ public class GenerateFileServlet  extends HttpServlet{
 				 numeroBadge=(String) row[0];
 				 data=(Date) row[3];
 				 movimento=(String) row[1];
-				 orario=(String) row[2];						 
-						 
+				 orario=(String) row[2];			
+				 giustificativo=(String) row[4];
+				 
+				 //TODO vedo il numero alla fine della stringa e se è maggiore di uno assegno "00"
+				 
+				 /*if(giustificativo.length()>2){
+					 nGiustificativi=giustificativo.substring(giustificativo.length()-1);
+					 giustificativo=giustificativo.substring(0, giustificativo.length()-1);
+					 
+					 if(Float.valueOf(nGiustificativi)==2)
+						 giustificativo="00"; //sono presenti più di un giustificativo e quindi nel file che genero non ne faccio comparire
+					 else
+						 giustificativo=getCodiceGiustificativo(giustificativo);
+				 }
+				 	else*/
+				 		giustificativo=getCodiceGiustificativo(giustificativo);		 
+							 
 				 if(orario.length()==4)
 					 orario="0"+orario;
 				 
 				 giornoRiferimento=formatter.format(data);
 				 movimento=movimento.substring(0,1).toUpperCase();
 			
-				 createEntryTmbExt(numeroBadge, giornoRiferimento, movimento, orario);
+				 createEntryTmbExt(numeroBadge, giornoRiferimento, movimento, orario, giustificativo);
 	        }		
 					
 			File f=new File(fileAmazon);			
@@ -130,6 +147,92 @@ public class GenerateFileServlet  extends HttpServlet{
 		}			
 	}
 	
+
+	private String getCodiceGiustificativo(String codice) {
+		
+		switch (codice) {
+		
+		case "09":
+			return"09";
+			
+		case "27":
+			return"27";
+			
+		case "01":
+			return"01";
+			
+		case "02":
+			return"02";
+		
+		case "05.Permesso non Retrib.":
+			return "05";
+			
+		case "06.Malattia":
+			return "10";
+			
+		case "07.Infortunio":
+			return "13";
+			
+		case "08.Maternita' Obblig.":
+			return "15";
+			
+		case "09.Maternita' Facolt.":
+			return "16";
+			
+		case "09.1.Maternita' Antic.":
+			return "19";
+			
+		case "10.Aspettativa":
+			return "17";
+			
+		case "11.Permesso Elettor.":
+			return "20";
+			
+		case "12.Permesso Sindac.":
+			return "21";
+			
+		case "13.Donazione Sangue":
+			return "22";
+			
+		case "14.Congedo Matrim.":
+			return "23";
+			
+		case "15.Allattamento":
+			return "25";
+			
+		case "16.Presente":
+			return "34";
+			
+		case "18.Sciopero":
+			return "48";
+			
+		case "22.Permesso Lutto":
+			return "55";
+			
+		/*case "23.Abbuono":
+			return "82";*/
+			
+		case "24.Cassa Integrazione":
+			return "85";
+			
+		case "25.Permesso Legge 104":
+			return "88";
+			
+		case "26.Assenza Studio":
+			return "99";
+			
+		case "27.Ore Viaggio":
+			return "70";
+			
+		case "28.Santo Patrono":
+			return "31";		
+
+		default:
+			return "00";
+		}
+		
+	}
+
 
 	private void exportDataToFile() {
 				
@@ -199,11 +302,13 @@ public class GenerateFileServlet  extends HttpServlet{
 	}
 
 
-	private void createEntryTmbExt(String numeroBadge, String giornoRiferimento, String movimento, String orario) {
+	private void createEntryTmbExt(String numeroBadge, String giornoRiferimento, String movimento, String orario, String giustificativo) {
 		
 		DatiTimbratriceExt datoTmbExt;
+				
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
+		
 		try{
 				
 			tx=session.beginTransaction();
@@ -215,7 +320,7 @@ public class GenerateFileServlet  extends HttpServlet{
 			datoTmbExt.setMovimento(movimento);
 			datoTmbExt.setOrario(orario);
 			datoTmbExt.setCodice1("0003");
-			datoTmbExt.setCodice2("00");
+			datoTmbExt.setCodice2(giustificativo); //giustificativo
 			datoTmbExt.setCodice3("P");	
 			
 			session.save(datoTmbExt);		

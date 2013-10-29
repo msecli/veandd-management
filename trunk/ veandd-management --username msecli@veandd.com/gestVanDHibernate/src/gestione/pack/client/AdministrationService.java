@@ -70,7 +70,7 @@ public interface AdministrationService extends RemoteService {
 	
 	//--------------------PERSONALE
 	
-	void insertDataPersonale(String nome, String cognome, String username,
+	boolean insertDataPersonale(String nome, String cognome, String username,
 			String password, String nBadge, String ruolo, String tipoOrario,
 			String tipoLavoratore, String gruppoLavoro, String costoOrario,
 			String costoStruttura, String sede, String oreDirette,

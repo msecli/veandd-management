@@ -302,7 +302,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    			 
 	    			//Al momento dell'inserimento la password sarà uguale all'username
 	    			AdministrationService.Util.getInstance().insertDataPersonale(nome, cognome, username, username, badge, ruolo, tipoO, tipoL, gruppoL, costoO,  costoS, 
-	    						sede, sedeOperativa, oreDirette, oreIndirette, permessi, ferie, ext, oreRecupero, new AsyncCallback<Void>() {
+	    						sede, sedeOperativa, oreDirette, oreIndirette, permessi, ferie, ext, oreRecupero, new AsyncCallback<Boolean>() {
 
 							@Override
 							public void onFailure(
@@ -313,10 +313,14 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 							}
 
 							@Override
-							public void onSuccess(Void result) {
-								Window.alert("OK Inserimento Corretto.");
-								caricaTabellaDati();
+							public void onSuccess(Boolean result) {
+								if(result){
+									//Window.alert("OK Inserimento Corretto.");
+									caricaTabellaDati();									
+								}else{
 									
+									Window.alert("Errore: Probabile valore gia' presente per Username o Numero Badge!");
+								}								
 							}
 							
 						}); //insert data

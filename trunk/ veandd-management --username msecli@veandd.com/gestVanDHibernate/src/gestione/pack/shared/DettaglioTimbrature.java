@@ -24,6 +24,8 @@ public class DettaglioTimbrature extends LightEntity implements IsSerializable {
 	private String movimento;
 
 	private String orario;
+	
+	private String giustificativo;
 
     public DettaglioTimbrature() {
     }
@@ -66,6 +68,14 @@ public class DettaglioTimbrature extends LightEntity implements IsSerializable {
 
 	public void setGiorno(String giorno) {
 		this.giorno = giorno;
+	}
+
+	public String getGiustificativo() {
+		return giustificativo;
+	}
+
+	public void setGiustificativo(String giustificativo) {
+		this.giustificativo = giustificativo;
 	}
 
 }

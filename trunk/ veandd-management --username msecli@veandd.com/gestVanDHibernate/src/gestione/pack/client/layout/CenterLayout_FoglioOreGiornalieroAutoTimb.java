@@ -397,20 +397,29 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					String oreRecuperoTot= txtfldRecuperoTotale.getValue().toString();
 					String giustificativo=new String();
 					
-										
-					if(!smplcmbxGiustificativo.getRawValue().isEmpty())
+					//TODO
+					//generare un numero che mi dica quanti giustificativi ci sono e inserirlo nella stringa "giustificativo"
+					//fare attenzione a quando lo prelevo su come elaborarlo					
+					if(!smplcmbxGiustificativo.getRawValue().isEmpty()){
 						giustificativo=smplcmbxGiustificativo.getRawValue().toString();
-					else giustificativo="";
+						
+						/*if(Float.valueOf(oreStraordinario)!=0 || Float.valueOf(oreAssRecupero)!=0 || Float.valueOf(oreFerie)!=0 || Float.valueOf(oreStraordinario)!=0)
+							giustificativo=giustificativo+"2";
+						else
+							giustificativo=giustificativo+"1";*/
+						
+					}
+					else 
+						giustificativo= ClientUtility.elaboraCodiceGiustificativo(oreStraordinario, oreAssRecupero, oreFerie, orePermesso);
 					if(!txtrNote.getRawValue().isEmpty())
 						noteAggiuntive=txtrNote.getValue().toString();
-					
+										
 					try {
 						controlloDati=checkCoerenzaDatiInput(fldSetGiustificativi, fldSetIntervalliC ,fldSetIntervalliIU);
 					} catch (Exception e) {
 						e.printStackTrace();
 						controlloDati="error: Impossibile effettuare i controlli di correttezza sui dati inseriti.";
-					}
-					
+					}					
 					
 					if(fldSetIntervalliIU.numeroInseriti()%2==0){ //controllo su intervalli compilati che siano in numero pari
 						if(controlloDati.compareTo("OK")==0){

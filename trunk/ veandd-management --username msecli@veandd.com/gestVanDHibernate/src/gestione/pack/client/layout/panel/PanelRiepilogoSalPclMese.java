@@ -254,8 +254,7 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 				return number.format(value);
    			}  
       });  
-	    configs.add(columnImporto); 
-	    
+	    configs.add(columnImporto);     
 		return configs;
 	}
 
@@ -303,8 +302,9 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
             	else
             		config.style = config.style + ";background-color:#FFFFFF;" +"font-weight:normal;" ;
             	
-            	Float n=model.get(property);
-				return number.format(n);			
+            	final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
+				Float n=model.get(property);
+				return num.format(n);			
             }};
 		
 		SummaryColumnConfig<Double> column=new SummaryColumnConfig<Double>();		
@@ -381,8 +381,7 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT); 
 	    column.setRenderer(renderer);
-	    configs.add(column);
-	    
+	    configs.add(column);	    
 	    
 	    SummaryColumnConfig<Double> columnImporto=new SummaryColumnConfig<Double>();		
 	    columnImporto.setId("importoComplessivo");  
@@ -410,13 +409,11 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	    columnImportoMese.setWidth(80);    
 	    columnImportoMese.setRowHeader(true); 
 	    columnImportoMese.setAlignment(HorizontalAlignment.RIGHT);
-	    columnImportoMese.setStyle("color:#e71d2b;");
-	    
+	    columnImportoMese.setStyle("color:#e71d2b;");  
 	    columnImportoMese.setRenderer(rendererSum);  
 	    configs.add(columnImportoMese); 
 	  	    	    
-	   
-	 /*   
+	    /*   
 	    SummaryColumnConfig<Double> margine=new SummaryColumnConfig<Double>();		
 	    margine.setId("margine");  
 	    margine.setHeader("Margine");  

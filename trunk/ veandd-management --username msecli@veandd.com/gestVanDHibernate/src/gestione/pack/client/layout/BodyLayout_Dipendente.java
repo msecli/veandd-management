@@ -209,19 +209,18 @@ public class BodyLayout_Dipendente extends LayoutContainer {
 	            	center.removeAll();
 	            	center.add(new CenterLayout_FoglioOreGiornaliero_Collaboratori());
 	            	center.layout(true);
-	            }
-	         
-	        	
+	            }      	
 	        }
 	      });
 	    btnGestionePresenze.setWidth("100%");
 	    
 	    
 	    cp.add(btnGestionePresenze);    
-	    if(txtfldUsername.getValue().toString().compareTo("enzo.cardano")==0){
+	   
+	    /*if(txtfldUsername.getValue().toString().compareTo("enzo.cardano")==0){
 			Image loadingImage = new Image(MyImages.INSTANCE.porter());
 			cp.add(loadingImage);
-		}
+		}*/
 	    panel.add(cp);
 	        
 	    panel.setSize(180,Window.getClientHeight()-70);
