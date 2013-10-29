@@ -57,7 +57,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	public PanelRiepilogoMeseFoglioOre(String user, Date dataRiferimento, String tipoLavoratore){
 		username=user;
 		data=dataRiferimento;
-//		tLavoratore=tipoLavoratore;
+		//tLavoratore=tipoLavoratore;
 	}
 			
 	protected void onRender(Element target, int index) {  
@@ -210,8 +210,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 				e.printStackTrace();
 		}
 	}
-
-		
+	
 	
 	private List<ColumnConfig> createColumns() {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
@@ -258,7 +257,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 		SummaryColumnConfig<Double> column=new SummaryColumnConfig<Double>();		
 	    column.setId("giorno");  
 	    column.setHeader("Giorno");  
-	    column.setWidth(70);  
+	    column.setWidth(65);  
 	    column.setRowHeader(true);  
 	    column.setRenderer(renderer);
 	    column.setSummaryRenderer(new SummaryRenderer() {
@@ -504,7 +503,33 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	    column.setWidth(70);  
 	    column.setRowHeader(true);  
 	    column.setAlignment(HorizontalAlignment.RIGHT);
-	    column.setRenderer(renderer);
+	    column.setRenderer(new GridCellRenderer<RiepilogoFoglioOreModel>() {
+
+			@Override
+			public Object render(RiepilogoFoglioOreModel model, String property,
+					ColumnData config, int rowIndex, int colIndex,
+					ListStore<RiepilogoFoglioOreModel> store, Grid<RiepilogoFoglioOreModel> grid) {
+				
+				String g= model.get(property);
+				if(g.length()==2)
+					return "";
+				else
+					if (model != null) {	    
+		            	String stato= new String();
+		            	stato= model.get("compilato");
+		            	String giustificativo=model.get(property);
+		            	//elimino dalla stringa giustificativo, l'ultima lettera che rappresenta il numero di giustificativi registrati
+		                if (stato.compareTo("1")==0) 
+		                    return "<span style='font-weight:bold; color:#f10000'>" + giustificativo + "</span>";              
+		                else if (model.get("compilato").toString().compareTo("2")==0) 
+		                	return "<span style='font-weight:bold; color:grey'>" + giustificativo + "</span>";
+		                else
+		                	return "<span style='font-weight:bold; color:#139213'>" + giustificativo + "</span>";         
+		                
+		            }else
+		            	return "";		
+			}
+		});
 	    configs.add(column); 
 	    
 	    column=new SummaryColumnConfig<Double>();		

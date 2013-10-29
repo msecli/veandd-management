@@ -162,6 +162,7 @@ public class DatiComboBox {
 		listaR.add("25.Permesso Legge 104");
 		listaR.add("26.Assenza Studio");
 		listaR.add("27.Ore Viaggio");
+		listaR.add("28.Santo Patrono");
 							
 		return listaR;
 	}
@@ -187,6 +188,7 @@ public class DatiComboBox {
 		return listaR;
 	}
 
+	
 	public static List<String> getAnno() {
 		List <String> listaR=new ArrayList<String>();
 		

@@ -1480,15 +1480,17 @@ public CenterLayout_FoglioFatturazione(){}
 			ColumnConfig column=new ColumnConfig();		
 		    column.setId("numeroCommessa");  
 		    column.setHeader("Commessa");  
-		    column.setWidth(75);  
+		    column.setWidth(70);  
 		    column.setRowHeader(true); 
+		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    configs.add(column); 
 		    
 		    column=new ColumnConfig();		
 		    column.setId("estensione");  
-		    column.setHeader("Estens.");  
-		    column.setWidth(50);  
-		    column.setRowHeader(true);  
+		    column.setHeader("Est.");  
+		    column.setWidth(35);  
+		    column.setRowHeader(true);
+		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    configs.add(column);
 		   
 		    
@@ -1497,6 +1499,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    column.setHeader("Var.SAL");  
 		    column.setWidth(60);  
 		    column.setRowHeader(true); 
+		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
 				@Override
 				public Object render(RiepilogoOreTotaliCommesse model, String property,
@@ -1515,6 +1518,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    column.setToolTip("Se verde indica Sal buttato/scartato");
 		    column.setWidth(20);  
 		    column.setRowHeader(true);  
+		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
 				@Override
 				public Object render(RiepilogoOreTotaliCommesse model, String property,
@@ -1543,6 +1547,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    column.setHeader("Var.PCL");  
 		    column.setWidth(60);  
 		    column.setRowHeader(true); 
+		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
 
 				@Override
@@ -1561,6 +1566,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    column.setHeader("Ordine");  
 		    column.setWidth(80);  
 		    column.setRowHeader(true);  
+		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
 
 				@Override
@@ -1576,10 +1582,19 @@ public CenterLayout_FoglioFatturazione(){}
 		    configs.add(column); 
 		     
 		    column=new ColumnConfig();		
+		    column.setId("oggettoOrdine");  
+		    column.setHeader("Oggetto");  
+		    column.setWidth(80);  
+		    column.setRowHeader(true);  
+		    column.setAlignment(HorizontalAlignment.RIGHT);
+		    configs.add(column); 
+		    
+		    column=new ColumnConfig();		
 		    column.setId("descrizioneAttivita");  
 		    column.setHeader("Attivita");  
 		    column.setWidth(80);  
 		    column.setRowHeader(true);  
+		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    configs.add(column); 
 		    
 		    column=new ColumnConfig();		
@@ -1587,6 +1602,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    column.setHeader("Ore Eseg.");  
 		    column.setWidth(65);  
 		    column.setRowHeader(true);  
+		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    configs.add(column);
 		    
 		    column=new ColumnConfig();		

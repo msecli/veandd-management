@@ -7,6 +7,7 @@ import java.util.Map;
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
+import gestione.pack.client.model.RiepilogoSALPCLModel;
 import gestione.pack.client.utility.MyImages;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -23,6 +24,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Status;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
@@ -37,6 +39,7 @@ import com.extjs.gxt.ui.client.widget.grid.SummaryColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.SummaryRenderer;
 import com.extjs.gxt.ui.client.widget.grid.SummaryType;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
@@ -151,6 +154,9 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 			}
 		});
 		
+		Text txtGroup= new Text();
+		txtGroup.setText("Group By: ");
+		
 		fp.setMethod(FormPanel.METHOD_POST);
 		fp.setAction(url);
 		fp.addSubmitCompleteHandler(new FormSubmitCompleteHandler());  
@@ -160,7 +166,9 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 		cp.add(fp);
 		
 		ToolBar tlBar= new ToolBar();
+		tlBar.add(txtGroup);
 		tlBar.add(smplcmbxOrderBy);
+		tlBar.add(new SeparatorToolItem());
 		tlBar.add(cp);
 		tlBar.add(status);
 		
@@ -222,6 +230,15 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 	private List<ColumnConfig> createColumnsRiassunto() {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 		final NumberFormat number= NumberFormat.getFormat("0.00");
+		
+		GridCellRenderer<RiepilogoOreNonFatturabiliModel> renderer = new GridCellRenderer<RiepilogoOreNonFatturabiliModel>() {
+            public String render(RiepilogoOreNonFatturabiliModel model, String property, ColumnData config, int rowIndex,
+                    int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store, Grid<RiepilogoOreNonFatturabiliModel> grid) {
+				    	
+            	config.style = config.style + ";background-color:#FFFF99;" +"font-weight:bold;" ;  	
+				return model.get(property);				
+        }};
+		
 		SummaryColumnConfig<Double> column=new SummaryColumnConfig<Double>();		
 	    column.setId("sede");  
 	    column.setHeader("Sede");  
@@ -231,7 +248,7 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 	    
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("gruppolavoro");  
-	    column.setHeader("Gruppo di Lavoro");  
+	    column.setHeader("Gruppo di Lavoro/PM");  
 	    column.setWidth(140);  
 	    column.setRowHeader(true);  
 	    configs.add(column); 
@@ -245,7 +262,7 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 	    
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("risorsa");  
-	    column.setHeader("Risorsa");  
+	    column.setHeader("Risorsa/Commessa");  
 	    column.setWidth(140);  
 	    column.setRowHeader(true);  
 	    configs.add(column);
@@ -529,7 +546,7 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("totOre");  
 	    column.setHeader("Totale Ore");  
-	    column.setWidth(100);  
+	    column.setWidth(80);  
 	    column.setRowHeader(true);  
 	    column.setSummaryType(SummaryType.SUM);  
 	    column.setAlignment(HorizontalAlignment.RIGHT);
@@ -538,6 +555,7 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 			public Object render(RiepilogoOreNonFatturabiliModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store,
 					Grid<RiepilogoOreNonFatturabiliModel> grid) {
 				Float n=model.get(property);
+				config.style = config.style + ";background-color:#FFFF99;" +"font-weight:bold;" ;  
 				return number.format(n);
 			}  	
 		});
@@ -552,9 +570,10 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("costoOrario");  
 	    column.setHeader("Costo/h");  
-	    column.setWidth(100);  
+	    column.setWidth(55);  
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    //column.setRenderer(renderer);
 	    configs.add(column);
 	    
 	    column=new SummaryColumnConfig<Double>();		
@@ -569,6 +588,7 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 			public Object render(RiepilogoOreNonFatturabiliModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store,
 					Grid<RiepilogoOreNonFatturabiliModel> grid) {
 				Float n=model.get(property);
+				config.style = config.style + ";background-color:#FFFF99;" +"font-weight:bold;" ;  
 				return number.format(n);
 			}  	
 		});
@@ -576,7 +596,6 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
    			@Override
    			public String render(Number value, Map<String, Number> data) {
    					//GroupingStore<RiepilogoOreNonFatturabiliModel>store1 = new GroupingStore<RiepilogoOreNonFatturabiliModel>();
-   				  				
    					return number.format(value);
    			}  
       	});  
@@ -591,8 +610,7 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 		raggruppamento=smplcmbxOrderBy.getRawValue().toString().toLowerCase();*/
 			
 		try {
-			store.removeAll();
-			
+			store.removeAll();			
 			store.add(result);
 			//store.groupBy(raggruppamento);
 			gridRiepilogo.reconfigure(store, cmRiepilogo);	    		    	

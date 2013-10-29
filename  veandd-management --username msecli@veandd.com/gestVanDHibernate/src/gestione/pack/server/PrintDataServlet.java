@@ -16,7 +16,6 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -411,7 +410,7 @@ public class PrintDataServlet extends HttpServlet  {
 
 					try {
 
-						fis = new FileInputStream(/*Constanti.PATHAmazon+*/"JasperReport/ReportRiepilogoSalPcl.jasper");
+						fis = new FileInputStream(Constanti.PATHAmazon+"JasperReport/ReportRiepilogoSalPcl.jasper");
 												
 						bufferedInputStream = new BufferedInputStream(fis);
 
@@ -427,10 +426,10 @@ public class PrintDataServlet extends HttpServlet  {
 						exporterXLS.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
 						exporterXLS.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
 						exporterXLS.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
-						exporterXLS.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, /*Constanti.PATHAmazon+*/"FileStorage/ReportRiepilogoSalPcl.xls");
+						exporterXLS.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, Constanti.PATHAmazon+"FileStorage/ReportRiepilogoSalPcl.xls");
 						exporterXLS.exportReport();
 							
-						File f=new File(/*Constanti.PATHAmazon+*/"FileStorage/ReportRiepilogoSalPcl.xls");
+						File f=new File(Constanti.PATHAmazon+"FileStorage/ReportRiepilogoSalPcl.xls");
 						FileInputStream fin = new FileInputStream(f);
 						ServletOutputStream outStream = response.getOutputStream();
 						// SET THE MIME TYPE.
@@ -469,7 +468,7 @@ public class PrintDataServlet extends HttpServlet  {
 
 			try {
 
-				fis = new FileInputStream(Constanti.PATHAmazon+"JasperReport/ReportRiepilogoOre.jasper");
+				fis = new FileInputStream(/*Constanti.PATHAmazon+*/"JasperReport/ReportRiepilogoOre.jasper");
 									
 				bufferedInputStream = new BufferedInputStream(fis);
 
@@ -479,7 +478,7 @@ public class PrintDataServlet extends HttpServlet  {
 				jasperPrint = JasperFillManager.fillReport(jasperReport,
 							parameters, getDataSourceRiepMensile(listaJB));
 					
-				JasperExportManager.exportReportToPdfFile(jasperPrint,Constanti.PATHAmazon+"FileStorage/RiepilogoOre_"+username+".pdf");
+				JasperExportManager.exportReportToPdfFile(jasperPrint,/*Constanti.PATHAmazon+*/"FileStorage/RiepilogoOre_"+username+".pdf");
 
 			} catch (JRException e) {
 
