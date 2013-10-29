@@ -5,47 +5,25 @@
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
-	<!--queryString language="hql">
-		<![CDATA[from DatiOreMese]]>
-	</queryString-->
-	<field name="username" class="java.lang.String">
-		
-	</field>
-	<field name="giorno" class="java.lang.String">
-			</field>
-	<field name="totGiorno" class="java.lang.String">
-		
-	</field>
-	<field name="oreRecupero" class="java.lang.String">
-		
-	</field>
-	<field name="oreViaggio" class="java.lang.String">
-		
-	</field>
-	<field name="deltaOreViaggio" class="java.lang.String">
-		
-	</field>
-	<field name="oreTotali" class="java.lang.String">
-		
-	</field>
-	<field name="oreFerie" class="java.lang.String">
-		
-	</field>
-	<field name="orePermesso" class="java.lang.String">
-		
-	</field>
-	<field name="oreStraordinario" class="java.lang.String">
-		
-	</field>
-	<field name="deltaGiornaliero" class="java.lang.String">
-		
-	</field>
-	<field name="giustificativo" class="java.lang.String">
-		
-	</field>
-	<field name="noteAggiuntive" class="java.lang.String">
-		
-	</field>
+	<style name="style1" forecolor="#000000" isUnderline="false">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[(!$F{oreRecupero}.startsWith( "0.00" ) || !$F{oreFerie}.startsWith( "0.00" ) || !$F{orePermesso}.startsWith( "0.00" ) )&& $F{giustificativo}.length()>2]]></conditionExpression>
+			<style forecolor="#FF0066" isItalic="false" isUnderline="true"/>
+		</conditionalStyle>
+	</style>
+	<field name="username" class="java.lang.String"/>
+	<field name="giorno" class="java.lang.String"/>
+	<field name="totGiorno" class="java.lang.String"/>
+	<field name="oreRecupero" class="java.lang.String"/>
+	<field name="oreViaggio" class="java.lang.String"/>
+	<field name="deltaOreViaggio" class="java.lang.String"/>
+	<field name="oreTotali" class="java.lang.String"/>
+	<field name="oreFerie" class="java.lang.String"/>
+	<field name="orePermesso" class="java.lang.String"/>
+	<field name="oreStraordinario" class="java.lang.String"/>
+	<field name="deltaGiornaliero" class="java.lang.String"/>
+	<field name="giustificativo" class="java.lang.String"/>
+	<field name="noteAggiuntive" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -196,27 +174,27 @@
 				<textFieldExpression><![CDATA[$F{oreTotali}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="8d42a0ab-38f3-4cbe-9aac-3f7ef8ea5566" x="540" y="3" width="47" height="16"/>
+				<reportElement uuid="8d42a0ab-38f3-4cbe-9aac-3f7ef8ea5566" style="style1" x="540" y="3" width="47" height="16"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{oreFerie}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="e0365264-8dbd-4100-973f-51dc7ab7d766" x="595" y="3" width="47" height="16"/>
+				<reportElement uuid="e0365264-8dbd-4100-973f-51dc7ab7d766" style="style1" x="595" y="3" width="47" height="16"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{orePermesso}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="963c56d2-5169-45b8-ac33-de2d96add4d7" x="650" y="3" width="47" height="16"/>
+				<reportElement uuid="963c56d2-5169-45b8-ac33-de2d96add4d7" style="style1" x="650" y="3" width="47" height="16"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{oreStraordinario}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="10a42516-eb2e-44a0-b66f-6f3c7461bd43" x="770" y="2" width="110" height="16"/>
+				<reportElement uuid="10a42516-eb2e-44a0-b66f-6f3c7461bd43" style="style1" x="770" y="2" width="110" height="16"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{giustificativo}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="407b25d4-a98f-44de-8a7c-d3f237554b75" x="250" y="3" width="62" height="16"/>
+				<reportElement uuid="407b25d4-a98f-44de-8a7c-d3f237554b75" style="style1" x="250" y="3" width="62" height="16"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{oreRecupero}]]></textFieldExpression>
 			</textField>

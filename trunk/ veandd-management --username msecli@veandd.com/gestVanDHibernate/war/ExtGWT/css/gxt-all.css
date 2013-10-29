@@ -3438,6 +3438,7 @@ a.x-grid3-hd-btn:hover {
 
 .x-treegrid .x-treegrid-column .x-grid3-cell-inner {
 	padding: 0px !important;
+	
 }
 
 .x-tree3 {
@@ -7489,16 +7490,27 @@ body.x-body-masked .x-window-plain .x-window-mc {
 .red-row
 {
 color:#f10000;
+
+}
+
+.red-background
+{
+	padding:0;
+	margin:0;
+	background-color:#f10000;
+	height: 25px;
 }
 
 .grey-row
 {
 color:grey;
+font:bold;
 }
 
 .green-row
 {
 color:#139213;
+font:bold;
 }
 
 .red-text
