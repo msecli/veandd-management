@@ -6,6 +6,7 @@ import java.util.List;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
+import gestione.pack.client.layout.panel.PanelRiepilogoDatiPerFatturazione;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.DatiComboBox;
@@ -22,6 +23,7 @@ import com.extjs.gxt.ui.client.fx.Resizable;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
@@ -36,6 +38,7 @@ import com.extjs.gxt.ui.client.widget.grid.GroupSummaryView;
 import com.extjs.gxt.ui.client.widget.grid.SummaryColumnConfig;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -80,6 +83,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		
 		private Button btnSelect;
 		private Button btnPrint;
+		private Button btnRiepDatiFatt;
 		
 		CntpnlRiepilogoMese(){
 			
@@ -185,6 +189,23 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 				}
 			});
 			
+			btnRiepDatiFatt= new Button();
+			btnRiepDatiFatt.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.datiTimb()));
+			//btnRiepDatiFatt.setToolTip("Load");
+			btnRiepDatiFatt.setIconAlign(IconAlign.TOP);
+			btnRiepDatiFatt.setSize(26, 26);
+			btnRiepDatiFatt.addSelectionListener(new SelectionListener<ButtonEvent>() {		
+				@Override
+				public void componentSelected(ButtonEvent ce) {		
+					Dialog d= new Dialog();
+					//d.setHeaderVisible(false);
+					d.setSize(1050, 800);
+					d.setButtons("");
+					d.add(new PanelRiepilogoDatiPerFatturazione(store.getModels()));
+					d.show();
+				}
+			});
+			
 			fp.setMethod(FormPanel.METHOD_POST);
 			fp.setAction(url);
 			fp.addSubmitCompleteHandler(new FormSubmitCompleteHandler());  
@@ -197,7 +218,10 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			tlbOperazioni.add(smplcmbxAnno);
 			tlbOperazioni.add(smplcmbxMese);
 			tlbOperazioni.add(btnSelect);
+			tlbOperazioni.add(new SeparatorToolItem());
 			tlbOperazioni.add(cp);
+			tlbOperazioni.add(new SeparatorToolItem());
+			tlbOperazioni.add(btnRiepDatiFatt);
 			setTopComponent(tlbOperazioni);
 			
 		    try {

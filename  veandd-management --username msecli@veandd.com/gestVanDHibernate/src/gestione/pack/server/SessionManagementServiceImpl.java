@@ -28,6 +28,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import gestione.pack.client.SessionManagementService;
+import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 import gestione.pack.client.model.RiepilogoSALPCLModel;
@@ -113,7 +114,7 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 		   HttpServletRequest request = this.getThreadLocalRequest();
 	   	   HttpSession httpSession = request.getSession();	   
 	   	   
-	   	   httpSession.setMaxInactiveInterval(16*60);
+	   	   httpSession.setMaxInactiveInterval(25*60);
 	   	   
 	   	   if(!httpSession.isNew()){ 
 	   		   
@@ -295,6 +296,42 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 		   	   
 		   	 httpSession.setAttribute("operazione", operazione);
 		   	 httpSession.setAttribute("lista", lista);
+		     
+			 return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+
+	@Override
+	public boolean setDatiReportSalPclRiassunto(String operazione,
+			List<RiepilogoSALPCLModel> models) {
+		try {
+			 HttpServletRequest request = this.getThreadLocalRequest();
+		   	 HttpSession httpSession = request.getSession();
+		   	   
+		   	 httpSession.setAttribute("operazione", operazione);
+		   	 httpSession.setAttribute("lista", models);
+		     
+			 return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+
+	@Override
+	public boolean setDataReportDatiFatturazioneInSession(String operazione,
+			List<DatiFatturazioneMeseModel> listaDati) {
+		try {
+			 HttpServletRequest request = this.getThreadLocalRequest();
+		   	 HttpSession httpSession = request.getSession();
+		   	   
+		   	 httpSession.setAttribute("operazione", operazione);
+		   	 httpSession.setAttribute("lista", listaDati);
 		     
 			 return true;
 		} catch (Exception e) {

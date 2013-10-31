@@ -1,6 +1,7 @@
 package gestione.pack.server;
 
 import gestione.pack.client.model.DatiFatturazioneMeseJavaBean;
+import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.RiepilogoAnnualeJavaBean;
 import gestione.pack.client.model.RiepilogoCostiDipendentiBean;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
@@ -228,6 +229,7 @@ public class PrintDataServlet extends HttpServlet  {
 
 						fis = new FileInputStream(Constanti.PATHAmazon+"JasperReport/RiepilogoDatiFatturazione.jasper");
 												
+						
 						bufferedInputStream = new BufferedInputStream(fis);
 
 						JasperReport jasperReport = (JasperReport) JRLoader
@@ -269,7 +271,67 @@ public class PrintDataServlet extends HttpServlet  {
 							e.printStackTrace();
 					}					
 				}
-		
+				else
+					if(operazione.compareTo("RIEPDATIFATT")==0){
+						List<DatiFatturazioneMeseModel> lista= new ArrayList<DatiFatturazioneMeseModel>();
+						List<DatiFatturazioneMeseJavaBean> listaR= new ArrayList<DatiFatturazioneMeseJavaBean>();
+						
+						lista= (List<DatiFatturazioneMeseModel>) httpSession.getAttribute("lista");
+						
+						listaR.addAll(ServerUtility.traduciDatiFatturazioneModelToBean(lista));
+						
+						Map parameters = new HashMap();
+												
+						JasperPrint jasperPrint;
+						FileInputStream fis;
+						BufferedInputStream bufferedInputStream;
+
+						try {
+
+							fis = new FileInputStream(Constanti.PATHAmazon+"JasperReport/RiepilogoDatiFatturazioneRidotto.jasper");
+													
+							bufferedInputStream = new BufferedInputStream(fis);
+
+							JasperReport jasperReport = (JasperReport) JRLoader
+										.loadObject(bufferedInputStream);
+
+							jasperPrint = JasperFillManager.fillReport(jasperReport,
+										parameters, getDataSourceFattMese(listaR));
+							
+							JRXlsExporter exporterXLS = new JRXlsExporter();
+							exporterXLS.setParameter(JRXlsExporterParameter.JASPER_PRINT, jasperPrint);
+							exporterXLS.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
+							exporterXLS.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
+							exporterXLS.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+							exporterXLS.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
+							exporterXLS.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, Constanti.PATHAmazon+"FileStorage/DatiFatturazione.xls");
+							exporterXLS.exportReport();
+								
+							File f=new File(Constanti.PATHAmazon+"FileStorage/DatiFatturazione.xls");
+							FileInputStream fin = new FileInputStream(f);
+							ServletOutputStream outStream = response.getOutputStream();
+							// SET THE MIME TYPE.
+							response.setContentType("application/vnd.ms-excel");
+							// set content dispostion to attachment in with file name.
+							// case the open/save dialog needs to appear.
+							response.setHeader("Content-Disposition", "attachment;filename=DatiFatturazione.xls");
+
+							byte[] buffer = new byte[1024];
+							int n = 0;
+							while ((n = fin.read(buffer)) != -1) {
+							outStream.write(buffer, 0, n);
+							System.out.println(buffer);
+							}
+							
+							outStream.flush();
+							fin.close();
+							outStream.close();
+							
+						} catch (JRException e) {
+								e.printStackTrace();
+						}								
+					}
+					
 			else
 				if(operazione.compareTo("RIEP.NON.FATT")==0){
 					List<RiepilogoOreNonFatturabiliModel> lista= new ArrayList<RiepilogoOreNonFatturabiliModel>();
@@ -453,6 +515,66 @@ public class PrintDataServlet extends HttpServlet  {
 							e.printStackTrace();
 					}								
 				}
+		else
+		if(operazione.compareTo("RIEP.SALPCLRIASS")==0){
+			List<RiepilogoSALPCLModel> lista= new ArrayList<RiepilogoSALPCLModel>();
+			List<RiepilogoSALPCLJavaBean> listaR= new ArrayList<RiepilogoSALPCLJavaBean>();
+			
+			lista= (List<RiepilogoSALPCLModel>) httpSession.getAttribute("lista");
+			
+			listaR.addAll(ServerUtility.traduciSALPCLModelToBean(lista));
+			
+			Map parameters = new HashMap();
+									
+			JasperPrint jasperPrint;
+			FileInputStream fis;
+			BufferedInputStream bufferedInputStream;
+
+			try {
+
+				fis = new FileInputStream(Constanti.PATHAmazon+"JasperReport/ReportRiepilogoSalPclRiassunto.jasper");
+										
+				bufferedInputStream = new BufferedInputStream(fis);
+
+				JasperReport jasperReport = (JasperReport) JRLoader
+							.loadObject(bufferedInputStream);
+
+				jasperPrint = JasperFillManager.fillReport(jasperReport,
+							parameters, getDataSourceSalPcl(listaR));
+				
+				JRXlsExporter exporterXLS = new JRXlsExporter();
+				exporterXLS.setParameter(JRXlsExporterParameter.JASPER_PRINT, jasperPrint);
+				exporterXLS.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
+				exporterXLS.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
+				exporterXLS.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+				exporterXLS.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
+				exporterXLS.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, Constanti.PATHAmazon+"FileStorage/ReportRiepilogoSalPclRiassunto.xls");
+				exporterXLS.exportReport();
+					
+				File f=new File(Constanti.PATHAmazon+"FileStorage/ReportRiepilogoSalPclRiassunto.xls");
+				FileInputStream fin = new FileInputStream(f);
+				ServletOutputStream outStream = response.getOutputStream();
+				// SET THE MIME TYPE.
+				response.setContentType("application/vnd.ms-excel");
+				// set content dispostion to attachment in with file name.
+				// case the open/save dialog needs to appear.
+				response.setHeader("Content-Disposition", "attachment;filename=ReportRiepilogoSalPclRiassunto.xls");
+
+				byte[] buffer = new byte[1024];
+				int n = 0;
+				while ((n = fin.read(buffer)) != -1) {
+				outStream.write(buffer, 0, n);
+				System.out.println(buffer);
+				}
+				
+				outStream.flush();
+				fin.close();
+				outStream.close();
+				
+			} catch (JRException e) {
+					e.printStackTrace();
+			}								
+		}
 			else
 			{
 			//operazione ONE
@@ -468,7 +590,7 @@ public class PrintDataServlet extends HttpServlet  {
 
 			try {
 
-				fis = new FileInputStream(/*Constanti.PATHAmazon+*/"JasperReport/ReportRiepilogoOre.jasper");
+				fis = new FileInputStream(Constanti.PATHAmazon+"JasperReport/ReportRiepilogoOre.jasper");
 									
 				bufferedInputStream = new BufferedInputStream(fis);
 
@@ -478,7 +600,7 @@ public class PrintDataServlet extends HttpServlet  {
 				jasperPrint = JasperFillManager.fillReport(jasperReport,
 							parameters, getDataSourceRiepMensile(listaJB));
 					
-				JasperExportManager.exportReportToPdfFile(jasperPrint,/*Constanti.PATHAmazon+*/"FileStorage/RiepilogoOre_"+username+".pdf");
+				JasperExportManager.exportReportToPdfFile(jasperPrint,Constanti.PATHAmazon+"FileStorage/RiepilogoOre_"+username+".pdf");
 
 			} catch (JRException e) {
 

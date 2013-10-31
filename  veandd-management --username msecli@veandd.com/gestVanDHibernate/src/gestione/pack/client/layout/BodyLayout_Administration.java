@@ -742,7 +742,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        ;}        	
 	    });
 	    btnTmp.setWidth("100%");
-	    cp.add(btnTmp);
+	   // cp.add(btnTmp);
 	    	        
 	    panel.add(cp);
 	    	    
