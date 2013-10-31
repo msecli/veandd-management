@@ -14,6 +14,7 @@
  *******************************************************************************/
 package gestione.pack.client;
 
+import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 import gestione.pack.client.model.RiepilogoSALPCLModel;
@@ -72,6 +73,12 @@ public interface SessionManagementService extends RemoteService {
 	boolean setDataFileTmbInSession(String data, String sede)throws IllegalArgumentException;
 
 	boolean setDatiReportSalPcl(String string, List<RiepilogoSALPCLModel> models);
+
+	boolean setDatiReportSalPclRiassunto(String string,
+			List<RiepilogoSALPCLModel> models);
+
+	boolean setDataReportDatiFatturazioneInSession(String string,
+			List<DatiFatturazioneMeseModel> listaDati);
 	
 	
 }

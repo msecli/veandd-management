@@ -2,6 +2,7 @@ package gestione.pack.server;
 
 import gestione.pack.client.model.CostingRisorsaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseJavaBean;
+import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.RiepilogoAnnualeJavaBean;
 import gestione.pack.client.model.RiepilogoCostiDipendentiBean;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
@@ -1366,16 +1367,14 @@ public class ServerUtility {
 							oreLegge104=ServerUtility.aggiornaTotGenerale(oreLegge104, d.getDeltaOreGiorno());
 						else if(d.getGiustificativo().compareTo("08.Maternita' Obblig.")==0 || d.getGiustificativo().compareTo("09.Maternita' Facolt.")==0
 								|| d.getGiustificativo().compareTo("09.1.Maternita' Antic.")==0)
-							oreMaternita=ServerUtility.aggiornaTotGenerale(oreMaternita, d.getDeltaOreGiorno());
-					
+							oreMaternita=ServerUtility.aggiornaTotGenerale(oreMaternita, d.getDeltaOreGiorno());		
 								
 					oreViaggio=ServerUtility.aggiornaTotGenerale(oreViaggio, d.getDeltaOreViaggio());
 					oreFerie=ServerUtility.aggiornaTotGenerale(oreFerie, d.getOreFerie());
 					orePermessoROL=ServerUtility.aggiornaTotGenerale(orePermessoROL, d.getOrePermesso());
 					oreStraOrdinarie=ServerUtility.aggiornaTotGenerale(oreStraOrdinarie, d.getOreStraordinario());
 					oreRecupero=ServerUtility.aggiornaTotGenerale(oreRecupero, d.getOreAssenzeRecupero());
-					oreOrdinarie=ServerUtility.aggiornaTotGenerale(oreOrdinarie, d.getTotaleOreGiorno());
-												
+					oreOrdinarie=ServerUtility.aggiornaTotGenerale(oreOrdinarie, d.getTotaleOreGiorno());												
 				}
 				
 				if(Float.valueOf(oreRecupero)>0)
@@ -1431,7 +1430,7 @@ public class ServerUtility {
 	}
 	
 	
-	//TODO modifiche per tariffe
+	//TODO modifiche per tariffe ordine
 	@SuppressWarnings("unchecked")
 	public static List<DatiFatturazioneMeseJavaBean> PrintRiepilogoDatiFatturazione(
 			String anno, String mese) {
@@ -1647,6 +1646,23 @@ public class ServerUtility {
 		return listaB;
 		
 	}
+	
+	public static List<DatiFatturazioneMeseJavaBean> traduciDatiFatturazioneModelToBean(
+			List<DatiFatturazioneMeseModel> lista) {
+		List<DatiFatturazioneMeseJavaBean> listaB= new ArrayList<DatiFatturazioneMeseJavaBean>();
+		DatiFatturazioneMeseJavaBean rB;
+		
+		for(DatiFatturazioneMeseModel r:lista){
+			
+			rB= new DatiFatturazioneMeseJavaBean(r.getPM(), (String)r.get("numeroCommessa"), (String)r.get("cliente"), (String)r.get("oggettoAttivita"), 
+					(Float)r.get("oreEseguite"), (Float)r.get("oreFatturate"), (Float)r.get("tariffaOraria"), (Float)r.get("importo"), (float)0, (float)0, (float)0, (float)0, (float)0, (float)0, "");
+			listaB.add(rB);
+		}
+		
+		return listaB;
+	}
+
+	
 	
 	
 	public static List<RiepilogoSALPCLJavaBean> traduciSALPCLModelToBean(

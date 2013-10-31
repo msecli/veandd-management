@@ -5,19 +5,25 @@ import java.util.List;
 import java.util.Map;
 
 import gestione.pack.client.AdministrationService;
+import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.model.RiepilogoSALPCLModel;
+import gestione.pack.client.utility.MyImages;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -36,6 +42,8 @@ import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.FormPanel;
 
 public class PanelRiepilogoSalPclRiassunto  extends LayoutContainer{
 
@@ -51,6 +59,10 @@ public class PanelRiepilogoSalPclRiassunto  extends LayoutContainer{
 	
 	private int h=Window.getClientHeight();
 	private int w=Window.getClientWidth();
+	
+	private Button btnPrint;
+	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
+	private static String url= "/gestvandhibernate/PrintDataServlet";
 	
 	public PanelRiepilogoSalPclRiassunto(String tabSelected, String data){
 		this.tabSelected=tabSelected;
@@ -112,10 +124,47 @@ public class PanelRiepilogoSalPclRiassunto  extends LayoutContainer{
 			}		
 		});
 		
-			
 		ToolBar tlBar= new ToolBar();
 		//tlBar.add(smplcmbxScelta);
 		tlBar.add(smplcmbxOrderBy);
+	
+		btnPrint= new Button();
+		btnPrint.setEnabled(true);
+		btnPrint.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.print24()));
+		btnPrint.setIconAlign(IconAlign.TOP);
+		btnPrint.setToolTip("Stampa");
+		btnPrint.setSize(26, 26);
+		btnPrint.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				SessionManagementService.Util.getInstance().setDatiReportSalPclRiassunto("RIEP.SALPCLRIASS", store.getModels(),
+						new AsyncCallback<Boolean>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Window.alert("Error on setNomeReport()");					
+					}
+
+					@Override
+					public void onSuccess(Boolean result) {
+						if(result)
+							fp.submit();
+						else
+							Window.alert("Problemi durante il settaggio dei parametri in Sessione (http)");
+					}
+				});	
+			}		
+		});
+		
+		
+		fp.setMethod(FormPanel.METHOD_POST);
+		fp.setAction(url);
+		//fp.addSubmitCompleteHandler(new FormSubmitCompleteHandler());  
+		fp.add(btnPrint);
+		ContentPanel cp= new ContentPanel();
+		cp.setHeaderVisible(false);
+		cp.add(fp);
+		tlBar.add(cp);	
 		
 		cpGrid.setTopComponent(tlBar);
 				
@@ -138,8 +187,6 @@ public class PanelRiepilogoSalPclRiassunto  extends LayoutContainer{
 	}
 
 	private void caricaTabellaRiass() {
-		
-		//String selezione="riassunto";		
 				
 		AdministrationService.Util.getInstance().getRiepilogoSalPclRiassunto(data, "", new AsyncCallback<List<RiepilogoSALPCLModel>>() {
 			@Override
