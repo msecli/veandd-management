@@ -7,7 +7,6 @@ import java.util.Map;
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
-import gestione.pack.client.model.RiepilogoSALPCLModel;
 import gestione.pack.client.utility.MyImages;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -221,7 +220,10 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 			public void onSuccess(List<RiepilogoOreNonFatturabiliModel> result) {
 				status.hide();
 				btnPrint.setEnabled(true);
-				loadTableRiass(result);		
+				if(result.size()>0)
+					loadTableRiass(result);
+				else
+					Window.alert("Nessun dato trovato!");
 			}
 		 });		
 	}

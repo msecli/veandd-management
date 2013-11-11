@@ -569,12 +569,14 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 				
 				@Override
 				public void onSuccess(List<IntervalliIUModel> result) {
+					String compilato=result.get(0).getOrario();
 					if(result.equals(null))
 						Window.alert("error: Impossibile accedere ai dati sugli orari.");
 					else
-					if(result.size()==1)
+					if(compilato.compareTo("s")!=0)
 						load("new",result);
-						else load("old",result);
+					else 
+						load("old",result);
 				}
 
 				@Override

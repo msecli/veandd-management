@@ -92,7 +92,7 @@ public class GenerateFileServlet  extends HttpServlet{
 				 
 				 /*if(giustificativo.length()>2){
 					 nGiustificativi=giustificativo.substring(giustificativo.length()-1);
-					 giustificativo=giustificativo.substring(0, giustificativo.length()-1);
+					 giustificativo=giustificativo.substring(0, ..length()-1);
 					 
 					 if(Float.valueOf(nGiustificativi)==2)
 						 giustificativo="00"; //sono presenti più di un giustificativo e quindi nel file che genero non ne faccio comparire
@@ -100,7 +100,8 @@ public class GenerateFileServlet  extends HttpServlet{
 						 giustificativo=getCodiceGiustificativo(giustificativo);
 				 }
 				 	else*/
-				 		giustificativo=getCodiceGiustificativo(giustificativo);		 
+				 
+				 //		giustificativo=getCodiceGiustificativo(giustificativo);		 
 							 
 				 if(orario.length()==4)
 					 orario="0"+orario;
@@ -108,7 +109,8 @@ public class GenerateFileServlet  extends HttpServlet{
 				 giornoRiferimento=formatter.format(data);
 				 movimento=movimento.substring(0,1).toUpperCase();
 			
-				 createEntryTmbExt(numeroBadge, giornoRiferimento, movimento, orario, giustificativo);
+				 if(numeroBadge.length()>0)
+					 createEntryTmbExt(numeroBadge, giornoRiferimento, movimento, orario, "00");//cambiare in caso con giustificativo
 	        }		
 					
 			File f=new File(fileAmazon);			

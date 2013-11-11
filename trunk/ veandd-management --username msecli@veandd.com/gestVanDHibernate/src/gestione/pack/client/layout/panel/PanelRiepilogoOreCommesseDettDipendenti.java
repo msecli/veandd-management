@@ -1,14 +1,15 @@
 package gestione.pack.client.layout.panel;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.model.RiepilogoOreDipFatturazione;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.DatiComboBox;
 import gestione.pack.client.utility.MyImages;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.IconAlign;
@@ -36,6 +37,8 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GroupSummaryView;
 import com.extjs.gxt.ui.client.widget.grid.SummaryColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.SummaryRenderer;
+import com.extjs.gxt.ui.client.widget.grid.SummaryType;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
@@ -47,7 +50,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
-public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
+public class PanelRiepilogoOreCommesseDettDipendenti extends LayoutContainer{
 
 	private GroupingStore<RiepilogoOreDipFatturazione>store = new GroupingStore<RiepilogoOreDipFatturazione>();
 	private Grid<RiepilogoOreDipFatturazione> gridRiepilogo;
@@ -56,7 +59,6 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 	private SimpleComboBox<String> smplcmbxMese;
 	private SimpleComboBox<String> smplcmbxAnno;
 	private SimpleComboBox<String> smplcmbxSede;
-	
 	private Button btnSelect;
 	private Button btnShowDettaglioOre;
 	private int idDip;
@@ -64,7 +66,7 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 	private int h=Window.getClientHeight();
 	private int w=Window.getClientWidth();
 	
-	public PanelRiepilogoOreDipendentiPerCommesse(){
+	public PanelRiepilogoOreCommesseDettDipendenti(){
 		
 	}
 	
@@ -130,9 +132,7 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 		smplcmbxSede.setTriggerAction(TriggerAction.ALL);
 		smplcmbxSede.setSimpleValue("T");	
 		smplcmbxSede.setWidth(70);
-		
-		
-		
+			
 		btnSelect= new Button();
 		btnSelect.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.reload()));
 		btnSelect.setToolTip("Load");
@@ -161,7 +161,7 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 				Window.alert("error: Problema createColumns().");			
 		}	
 
-		store.groupBy("dipendente");
+		store.groupBy("numeroCommessa");
 			    
 		GroupSummaryView summary = new GroupSummaryView();  
 		summary.setForceFit(true);  
@@ -260,7 +260,7 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 	    columnOreLavoro.setWidth(63);    
 	    columnOreLavoro.setRowHeader(true); 
 	    columnOreLavoro.setAlignment(HorizontalAlignment.LEFT);
-	    //columnOreLavoro.setSummaryType(SummaryType.SUM); 
+	    columnOreLavoro.setSummaryType(SummaryType.SUM); 
 	    columnOreLavoro.setRenderer(new GridCellRenderer<RiepilogoOreDipFatturazione>() {
 			@Override
 			public Object render(RiepilogoOreDipFatturazione model,
@@ -272,13 +272,12 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 				return number.format(n);
 			} 	
 		});
-	    /*columnOreLavoro.setSummaryRenderer(new SummaryRenderer() {  
+	    columnOreLavoro.setSummaryRenderer(new SummaryRenderer() {  
    			@Override
-   			public String render(Number value, Map<String, Number> data) {
-   				
+			public String render(Number value, Map<String, Number> data) {
 				return number.format(value);
-   			}  
-	    });*/  
+			}  
+	    });  
 	    configs.add(columnOreLavoro); 	
 	    
 	    SummaryColumnConfig<Double> columnOreViaggio=new SummaryColumnConfig<Double>();		
@@ -286,7 +285,8 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 	    columnOreViaggio.setHeader("Ore Viaggio");  
 	    columnOreViaggio.setWidth(63);    
 	    columnOreViaggio.setRowHeader(true); 
-	    columnOreViaggio.setAlignment(HorizontalAlignment.LEFT);   
+	    columnOreViaggio.setAlignment(HorizontalAlignment.LEFT);
+	    columnOreViaggio.setSummaryType(SummaryType.SUM); 
 	    columnOreViaggio.setRenderer(new GridCellRenderer<RiepilogoOreDipFatturazione>() {
 			@Override
 			public Object render(RiepilogoOreDipFatturazione model,
@@ -298,6 +298,12 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 				return number.format(n);
 			}			
 		});   
+	    columnOreViaggio.setSummaryRenderer(new SummaryRenderer() {  
+   			@Override
+			public String render(Number value, Map<String, Number> data) {
+				return number.format(value);
+			}  
+	    });  
 	    configs.add(columnOreViaggio); 
 	    
 	    SummaryColumnConfig<Double> columnOreTotali=new SummaryColumnConfig<Double>();		
@@ -305,7 +311,8 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 	    columnOreTotali.setHeader("Totale Commesse");  
 	    columnOreTotali.setWidth(63);    
 	    columnOreTotali.setRowHeader(true); 
-	    columnOreTotali.setAlignment(HorizontalAlignment.LEFT);    
+	    columnOreTotali.setAlignment(HorizontalAlignment.LEFT);  
+	    columnOreTotali.setSummaryType(SummaryType.SUM); 
 	    columnOreTotali.setRenderer(new GridCellRenderer<RiepilogoOreDipFatturazione>() {
 			@Override
 			public Object render(RiepilogoOreDipFatturazione model,
@@ -317,14 +324,21 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 				return number.format(n);
 			}			
 		});    
+	    columnOreTotali.setSummaryRenderer(new SummaryRenderer() {  
+   			@Override
+			public String render(Number value, Map<String, Number> data) {
+				return number.format(value);
+			}  
+	    });  
 	    configs.add(columnOreTotali); 
-	    
+	    /*
 	    SummaryColumnConfig<Double> columnOreTotaliIU=new SummaryColumnConfig<Double>();		
 	    columnOreTotaliIU.setId("oreTotaliIU");  
 	    columnOreTotaliIU.setHeader("Totale Intervalli I/U");  
 	    columnOreTotaliIU.setWidth(63);    
 	    columnOreTotaliIU.setRowHeader(true); 
-	    columnOreTotaliIU.setAlignment(HorizontalAlignment.LEFT);    
+	    columnOreTotaliIU.setAlignment(HorizontalAlignment.LEFT);  
+	    columnOreTotaliIU.setSummaryType(SummaryType.SUM); 
 	    columnOreTotaliIU.setRenderer(new GridCellRenderer<RiepilogoOreDipFatturazione>() {
 			@Override
 			public Object render(RiepilogoOreDipFatturazione model,
@@ -336,40 +350,21 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 				return number.format(n);
 			}			
 		});    
-	    configs.add(columnOreTotaliIU);
+	    columnOreTotaliIU.setSummaryRenderer(new SummaryRenderer() {  
+   			@Override
+			public String render(Number value, Map<String, Number> data) {
+				return number.format(value);
+			}  
+	    });  
+	    configs.add(columnOreTotaliIU);*/
 	    
-	    column=new SummaryColumnConfig<Double>();		
-	    column.setId("checkOre");  
-		column.setHeader("Check");  
-		column.setWidth(50);  
-		column.setRowHeader(true); 
-		column.setRenderer(new GridCellRenderer<RiepilogoOreDipFatturazione>() {
-
-				@Override
-				public Object render(RiepilogoOreDipFatturazione model, String property,
-						ColumnData config, int rowIndex, int colIndex,
-						ListStore<RiepilogoOreDipFatturazione> store, Grid<RiepilogoOreDipFatturazione> grid) {
-					
-					String t= model.getNumeroCommessa();
-					if(t.compareTo(".TOTALE")==0){						
-						Boolean check=model.get("checkOre");
-						if(check)
-							config.style = config.style + ";background-color:" + "#90EE90" + ";";									
-						else
-							config.style = config.style + ";background-color:" + "#F08080" + ";";
-					}else 
-						config.style = config.style + ";background-color:" + "#FFFFFF" + ";";
-					return "";
-				}
-			});
-	    configs.add(column);     
 		return configs;
 	}
 
 	
 	private void caricaTabellaDati(String data, String sede) {
 			
-		AdministrationService.Util.getInstance().getRiepilogoTotCommessePerDipendenti(data, sede, new AsyncCallback<List<RiepilogoOreDipFatturazione>>() {	
+		AdministrationService.Util.getInstance().getRiepilogoOreCommesseDettDipendenti(data, sede, new AsyncCallback<List<RiepilogoOreDipFatturazione>>() {	
 			@Override
 			public void onSuccess(List<RiepilogoOreDipFatturazione> result) {
 				if(result==null)
@@ -395,7 +390,7 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 			btnShowDettaglioOre.enable();
 			store.removeAll();
 			store.add(result);
-			store.groupBy("dipendente");
+			store.groupBy("numeroCommessa");
 			gridRiepilogo.reconfigure(store, cm);				
 		} catch (NullPointerException e) {
 			Window.alert("error: Impossibile effettuare il caricamento dati in tabella.");
@@ -404,3 +399,4 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 	}
 	
 }
+

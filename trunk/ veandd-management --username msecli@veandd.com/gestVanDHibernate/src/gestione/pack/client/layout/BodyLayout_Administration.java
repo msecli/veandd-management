@@ -14,6 +14,7 @@ import gestione.pack.client.layout.panel.PanelPrintAll;
 import gestione.pack.client.layout.panel.PanelRiepilogoAnnualeOreDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoCostiDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
+import gestione.pack.client.layout.panel.PanelRiepilogoOreCommesseDettDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoSituazioneMensileOreDipendenti;
 import gestione.pack.client.utility.ClientUtility;
@@ -566,6 +567,20 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    btnRiepilogoAnnuale.setWidth("100%");
 	    cp.add(btnRiepilogoAnnuale);
 	    
+	    Button btnRiepilogoMesePerCommessa = new Button();
+	    btnRiepilogoMesePerCommessa.setToolTip("Riepilogo dei dati ore mensili per commessa con dettaglio dipendenti");
+	    btnRiepilogoMesePerCommessa.setHeight(65);
+	    btnRiepilogoMesePerCommessa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnRiepilogoMesePerCommessa.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoMesePerCommessa.setWidth("100%");
+	    btnRiepilogoMesePerCommessa.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelRiepilogoOreCommesseDettDipendenti());
+	        	center.layout(true);}      
+	      });
+	    cp.add(btnRiepilogoMesePerCommessa);
+	    
 	    panel.add(cp);
 	    
 	    cp = new ContentPanel();
@@ -752,7 +767,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        
 //----------------------------------------------------------------------------------------------
 	    
-	   center.add(new CenterLayout_GestioneRdoCompletaDup()); 
+	   center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb()); 
 	  // center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb());   
 	   container.add(north, northData);
 	   container.add(west, westData);

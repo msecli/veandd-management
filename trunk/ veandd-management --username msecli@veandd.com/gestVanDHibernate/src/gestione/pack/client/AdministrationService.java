@@ -341,6 +341,8 @@ public interface AdministrationService extends RemoteService {
 	List<RiepilogoOreDipFatturazione> getRiepilogoTotCommessePerDipendenti(
 			String mese, String sede)throws IllegalArgumentException;
 
+	List<RiepilogoOreDipFatturazione> getRiepilogoOreCommesseDettDipendenti(
+			String data, String sede)throws IllegalArgumentException;
 	
 //---------------------------------------------COSTI
 	List<GestioneCostiDipendentiModel> getDatiCostiPersonale(int idPersonale) throws IllegalArgumentException;
@@ -377,6 +379,8 @@ public interface AdministrationService extends RemoteService {
 	boolean saveNewVersionCosting(int idSelected)throws IllegalArgumentException;
 
 	boolean editStatoCosting(int idSelected, String operazione)throws IllegalArgumentException;
+
+	
 
 	
 }

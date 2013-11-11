@@ -336,6 +336,9 @@ public interface AdministrationServiceAsync {
 	void getRiepilogoTotCommessePerDipendenti(String mese, String sede,
 			AsyncCallback<List<RiepilogoOreDipFatturazione>> callback);
 
+	void getRiepilogoOreCommesseDettDipendenti(String data, String sede,
+			AsyncCallback<List<RiepilogoOreDipFatturazione>> asyncCallback);
+	
 //-------------------------------------------------COSTI---------------------------------
 	
 	void getDatiCostiPersonale(int idPersonale,
@@ -381,6 +384,8 @@ public interface AdministrationServiceAsync {
 
 	void editStatoCosting(int idSelected, String operazione,
 			AsyncCallback<Boolean> asyncCallback);
+
+	
 
 
 	
