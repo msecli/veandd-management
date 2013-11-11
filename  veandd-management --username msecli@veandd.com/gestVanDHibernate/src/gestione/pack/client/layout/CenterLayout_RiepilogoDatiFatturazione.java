@@ -3,6 +3,7 @@ package gestione.pack.client.layout;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
@@ -17,7 +18,10 @@ import com.google.gwt.user.client.Window;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.fx.Resizable;
 import com.extjs.gxt.ui.client.store.GroupingStore;
@@ -25,6 +29,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
@@ -36,6 +41,8 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GroupSummaryView;
 import com.extjs.gxt.ui.client.widget.grid.SummaryColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.SummaryRenderer;
+import com.extjs.gxt.ui.client.widget.grid.SummaryType;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
@@ -76,6 +83,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		
 		private SimpleComboBox<String> smplcmbxMese= new SimpleComboBox<String>();
 		private SimpleComboBox<String> smplcmbxAnno;
+		private SimpleComboBox<String> smplcmbxOrderBy;
 		//private SimpleComboBox<String> smplcmbxPM;
 		private GroupingStore<DatiFatturazioneMeseModel>store = new GroupingStore<DatiFatturazioneMeseModel>();
 		private EditorGrid<DatiFatturazioneMeseModel> gridRiepilogo;
@@ -136,6 +144,35 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			smplcmbxPM.setAllowBlank(false);
 			getNomePM();	
 			*/
+			
+			smplcmbxOrderBy= new SimpleComboBox<String>();
+			smplcmbxOrderBy.setFieldLabel("Group By");
+			smplcmbxOrderBy.setEmptyText("Selezionare..");
+			smplcmbxOrderBy.setAllowBlank(false);
+			smplcmbxOrderBy.add("PM");
+			smplcmbxOrderBy.add("Tutti");
+			smplcmbxOrderBy.add("Sede");
+			smplcmbxOrderBy.add("Cliente");
+			smplcmbxOrderBy.setWidth(110);
+			smplcmbxOrderBy.setTriggerAction(TriggerAction.ALL);
+			smplcmbxOrderBy.setSimpleValue("PM");
+			smplcmbxOrderBy.addListener(Events.Select, new Listener<BaseEvent>(){
+				@Override
+				public void handleEvent(BaseEvent be) {
+					String raggruppamento=smplcmbxOrderBy.getRawValue().toString().toLowerCase();
+					if(raggruppamento.compareTo("Tutti")==0){
+						//store.groupBy("",true);
+						gridRiepilogo.reconfigure(store, cm);
+					}
+					else{
+						store.groupBy(raggruppamento,true);
+						gridRiepilogo.reconfigure(store, cm);
+					}
+				}		
+			});
+			
+			Text txtGroup= new Text();
+			txtGroup.setText("Group By: ");
 			
 			btnSelect= new Button();
 			btnSelect.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.reload()));
@@ -222,6 +259,9 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			tlbOperazioni.add(cp);
 			tlbOperazioni.add(new SeparatorToolItem());
 			tlbOperazioni.add(btnRiepDatiFatt);
+			tlbOperazioni.add(new SeparatorToolItem());
+			tlbOperazioni.add(txtGroup);
+			tlbOperazioni.add(smplcmbxOrderBy);
 			setTopComponent(tlbOperazioni);
 			
 		    try {
@@ -303,6 +343,13 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					return model.get(property);
 				}  	
 			});
+		    column.setSummaryRenderer(new SummaryRenderer() {
+				
+				@Override
+				public String render(Number value, Map<String, Number> data) {
+					return "TOTALE";
+				}
+			});
 		    configs.add(column); 
 		    
 		    column=new SummaryColumnConfig<Double>();		
@@ -347,7 +394,8 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		    columnOreLavoro.setHeader("Ore Eseguite");  
 		    columnOreLavoro.setWidth(75);    
 		    columnOreLavoro.setRowHeader(true); 
-		    columnOreLavoro.setAlignment(HorizontalAlignment.RIGHT);  	
+		    columnOreLavoro.setAlignment(HorizontalAlignment.RIGHT);
+		    columnOreLavoro.setSummaryType(SummaryType.SUM);  
 		    columnOreLavoro.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
 				@Override
 				public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
@@ -356,6 +404,13 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					return number.format(n);
 				}  	
 			}); 
+		    columnOreLavoro.setSummaryRenderer(new SummaryRenderer() {
+				
+				@Override
+				public String render(Number value, Map<String, Number> data) {
+					return number.format(value);
+				}
+			});
 		    configs.add(columnOreLavoro); 	
 		    
 		    SummaryColumnConfig<Double> columnOreFatturate=new SummaryColumnConfig<Double>();		
@@ -364,6 +419,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		    columnOreFatturate.setWidth(75);    
 		    columnOreFatturate.setRowHeader(true);   
 		    columnOreFatturate.setAlignment(HorizontalAlignment.RIGHT);    
+		    columnOreFatturate.setSummaryType(SummaryType.SUM);  
 		    columnOreFatturate.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
 				@Override
 				public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
@@ -372,7 +428,14 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					return number.format(n);
 				}  	
 			});     
-		    configs.add(columnOreFatturate); 	
+		    columnOreFatturate.setSummaryRenderer(new SummaryRenderer() {
+				
+				@Override
+				public String render(Number value, Map<String, Number> data) {
+					return number.format(value);
+				}
+			});
+		     configs.add(columnOreFatturate); 	
 		      
 		    SummaryColumnConfig<Double> columnImporto=new SummaryColumnConfig<Double>();		
 		    columnImporto.setId("importo");  
@@ -381,6 +444,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		    columnImporto.setRowHeader(true); 
 		    columnImporto.setAlignment(HorizontalAlignment.RIGHT);
 		    columnImporto.setStyle("color:#e71d2b;");
+		    columnImporto.setSummaryType(SummaryType.SUM);  
 		    columnImporto.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
 				@Override
 				public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
@@ -390,14 +454,22 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					return num.format(n);
 				}  	
 			});  
-		    configs.add(columnImporto); 	
+		    columnImporto.setSummaryRenderer(new SummaryRenderer() {
+				
+				@Override
+				public String render(Number value, Map<String, Number> data) {
+					return number.format(value);
+				}
+			});
+		     configs.add(columnImporto); 	
 		    	    
 		    SummaryColumnConfig<Double> variazioneSal=new SummaryColumnConfig<Double>();		
 		    variazioneSal.setId("variazioneSal");  
 		    variazioneSal.setHeader("Var. SAL");  
 		    variazioneSal.setWidth(80);    
 		    variazioneSal.setRowHeader(true); 
-		    variazioneSal.setAlignment(HorizontalAlignment.RIGHT);  	
+		    variazioneSal.setAlignment(HorizontalAlignment.RIGHT);  
+		    variazioneSal.setSummaryType(SummaryType.SUM);  
 		    variazioneSal.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
 				@Override
 				public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
@@ -405,6 +477,13 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					Float n=model.get(property);
 					return number.format(n);
 				}  	
+			});
+		    variazioneSal.setSummaryRenderer(new SummaryRenderer() {
+				
+				@Override
+				public String render(Number value, Map<String, Number> data) {
+					return number.format(value);
+				}
 			});
 		    configs.add(variazioneSal); 	
 		    
@@ -415,6 +494,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		    columnImportoSal.setRowHeader(true); 
 		    columnImportoSal.setAlignment(HorizontalAlignment.RIGHT);
 		    columnImportoSal.setStyle("color:#e71d2b;");
+		    columnImportoSal.setSummaryType(SummaryType.SUM);  
 		    columnImportoSal.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
 				@Override
 				public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
@@ -424,6 +504,13 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					return num.format(n);
 				}  	
 			});  
+		    columnImportoSal.setSummaryRenderer(new SummaryRenderer() {
+				
+				@Override
+				public String render(Number value, Map<String, Number> data) {
+					return number.format(value);
+				}
+			});
 		    configs.add(columnImportoSal);
 		    
 		    SummaryColumnConfig<Double> variazionePcl=new SummaryColumnConfig<Double>();		
@@ -431,7 +518,8 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		    variazionePcl.setHeader("Var. PCL");  
 		    variazionePcl.setWidth(80);    
 		    variazionePcl.setRowHeader(true); 
-		    variazionePcl.setAlignment(HorizontalAlignment.RIGHT);  	
+		    variazionePcl.setAlignment(HorizontalAlignment.RIGHT);  
+		    variazionePcl.setSummaryType(SummaryType.SUM);  
 		    variazionePcl.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
 				@Override
 				public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
@@ -439,6 +527,13 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					Float n=model.get(property);
 					return number.format(n);
 				}  	
+			});
+		    variazionePcl.setSummaryRenderer(new SummaryRenderer() {
+				
+				@Override
+				public String render(Number value, Map<String, Number> data) {
+					return number.format(value);
+				}
 			});
 		    configs.add(variazionePcl);     
 		    
@@ -449,6 +544,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		    columnImportoPcl.setRowHeader(true); 
 		    columnImportoPcl.setAlignment(HorizontalAlignment.RIGHT);
 		    columnImportoPcl.setStyle("color:#e71d2b;");
+		    columnImportoPcl.setSummaryType(SummaryType.SUM);  
 		    columnImportoPcl.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
 				@Override
 				public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
@@ -458,6 +554,13 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					return num.format(n);
 				}  	
 			});  
+		    columnImportoPcl.setSummaryRenderer(new SummaryRenderer() {
+				
+				@Override
+				public String render(Number value, Map<String, Number> data) {
+					return number.format(value);
+				}
+			});
 		    configs.add(columnImportoPcl);
 		    
 		    SummaryColumnConfig<Double> oreScaricate=new SummaryColumnConfig<Double>();		
@@ -466,6 +569,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		    oreScaricate.setWidth(80);    
 		    oreScaricate.setRowHeader(true); 
 		    oreScaricate.setAlignment(HorizontalAlignment.RIGHT);  	
+		    oreScaricate.setSummaryType(SummaryType.SUM);  
 		    oreScaricate.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
 				@Override
 				public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
@@ -474,7 +578,14 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					return number.format(n);
 				}  	
 			});
-		   configs.add(oreScaricate);
+		    oreScaricate.setSummaryRenderer(new SummaryRenderer() {
+				
+				@Override
+				public String render(Number value, Map<String, Number> data) {
+					return number.format(value);
+				}
+			});
+		    configs.add(oreScaricate);
 		    
 		    
 		    SummaryColumnConfig<Double> margine=new SummaryColumnConfig<Double>();		
@@ -483,6 +594,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		    margine.setWidth(80);    
 		    margine.setRowHeader(true);  
 		    margine.setAlignment(HorizontalAlignment.RIGHT);  	
+		    margine.setSummaryType(SummaryType.SUM);  
 		    margine.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
 				@Override
 				public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
@@ -491,7 +603,14 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					return number.format(n);
 				}  	
 			});
-		   configs.add(margine);	
+		    margine.setSummaryRenderer(new SummaryRenderer() {
+				
+				@Override
+				public String render(Number value, Map<String, Number> data) {
+					return number.format(value);
+				}
+			});
+		    configs.add(margine);	
 		   
 		   SummaryColumnConfig<Double> note=new SummaryColumnConfig<Double>();		
 		   note.setId("note");  

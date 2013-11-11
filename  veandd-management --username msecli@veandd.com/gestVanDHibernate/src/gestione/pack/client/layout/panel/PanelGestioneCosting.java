@@ -574,7 +574,8 @@ public class PanelGestioneCosting extends LayoutContainer{
             	String ncommessa=model.get("commessa");
             	if(ncommessa!=null)           	
             		if((property.compareTo("risorsa")==0 || property.compareTo("orePianificate")==0 || property.compareTo("lc")==0 || property.compareTo("costoConsulenza")==0
-            			|| property.compareTo("efficienza")==0 || property.compareTo("tariffa")==0 || property.compareTo("costoTrasferta")==0) && ncommessa.compareTo("TOTALE")!=0){
+            			|| property.compareTo("efficienza")==0 || property.compareTo("tariffa")==0 || property.compareTo("costoTrasferta")==0 || property.compareTo("costoHw")==0 ||
+            			property.compareTo("costoSw")==0) && ncommessa.compareTo("TOTALE")!=0){
             		config.style = config.style + ";background-color:#d2f5af;";//verde
             	 	return model.get(property);
             		}else
@@ -587,7 +588,8 @@ public class PanelGestioneCosting extends LayoutContainer{
             	          	return model.get(property);
             	else
             		if((property.compareTo("risorsa")==0 || property.compareTo("orePianificate")==0 || property.compareTo("lc")==0 || property.compareTo("costoConsulenza")==0
-        				|| property.compareTo("efficienza")==0 || property.compareTo("tariffa")==0) || property.compareTo("costoTrasferta")==0){
+        				|| property.compareTo("efficienza")==0 || property.compareTo("tariffa")==0) || property.compareTo("costoTrasferta")==0 || property.compareTo("costoHw")==0 ||
+            			property.compareTo("costoSw")==0){
             			config.style = config.style + ";background-color:#d2f5af;";//verde
             			return model.get(property);
             		}
@@ -724,7 +726,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    column = new ColumnConfig();  
 	    column.setId("costoOrario");  
 	    column.setHeader("Costo Orario");  
-	    column.setWidth(80);  
+	    column.setWidth(95);  
 	    column.setRenderer(renderer);
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
@@ -734,7 +736,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    column = new ColumnConfig();  
 	    column.setId("orePianificate");  
 	    column.setHeader("Ore Pianificate");  
-	    column.setWidth(80);  
+	    column.setWidth(95);  
 	    column.setRenderer(renderer);
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
@@ -793,18 +795,16 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    column.setEditor(editorTxt);
 	    configs.add(column);	    
 	    
-	    
 	    column = new ColumnConfig();  
 	    column.setId("oreCorrette");  
 	    column.setHeader("Ore Corrette");  
-	    column.setWidth(80);  
+	    column.setWidth(95);  
 	    column.setRenderer(renderer);
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
-	    configs.add(column);    
+	    configs.add(column);    	    
 	    
-	    
-	    column = new ColumnConfig();  
+	    /*column = new ColumnConfig();  
 	    column.setId("costoRisorsa");  
 	    column.setHeader("Costo Risorsa");  
 	    column.setWidth(80);  
@@ -812,16 +812,48 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
-	    
+	    */
 	    column = new ColumnConfig();  
 	    column.setId("costoOrarioStruttura");  
 	    column.setHeader("Costo Struttura (h)");  
-	    column.setWidth(80);  
+	    column.setWidth(95);  
 	    column.setRenderer(renderer);
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
 	    
+	    column = new ColumnConfig();  
+	    column.setId("costoTrasferta");  
+	    column.setHeader("Costo Trasferta");  
+	    column.setWidth(95);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    TextField<String> txtfldCostoTrasferta= new TextField<String>();
+	    txtfldCostoTrasferta.setRegex("[0-9]+[.]{1}[0-9]{2}|[0-9]");
+	    txtfldCostoTrasferta.getMessages().setRegexText("Deve essere un numero!");
+	    txtfldCostoTrasferta.setValue("0.00");
+	    editorTxt= new CellEditor(txtfldCostoTrasferta){
+	    	@Override  
+	        public Object preProcessValue(Object value) {  
+	          if (value == null) {  
+	            return value;  
+	          }  
+	          return value.toString();  
+	        }  
+	    
+	        @Override  
+	        public Object postProcessValue(Object value) {  
+	          if (value == null) {  
+	            return value;  
+	          }  
+	          return value.toString();  
+	        }  
+	    };	    
+	    column.setEditor(editorTxt);
+	    configs.add(column);
+	    
+	    /*
 	    column = new ColumnConfig();  
 	    column.setId("costoRisorsaStruttura");  
 	    column.setHeader("Costo Struttura Risorsa");  
@@ -830,6 +862,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
+	    */
 	    
 	    column = new ColumnConfig();  
 	    column.setId("costoTotaleAzienda");  
@@ -837,6 +870,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    column.setWidth(80);  
 	    column.setRenderer(renderer);
 	    column.setRowHeader(true);
+	    column.setToolTip("Somma costo risorsa, struttura, trasferta.");
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
 	    
@@ -850,12 +884,65 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    configs.add(column);
 	 
 		column = new ColumnConfig();  
-	    column.setId("costoHwSw");  
-	    column.setHeader("Somma Costi Hw/Sw");  
-	    column.setWidth(80);  
+	    column.setId("costoHw");  
+	    column.setHeader("Costi Hw");  
+	    column.setWidth(75);  
 	    column.setRenderer(renderer);
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    TextField<String> txtfldCostoHw= new TextField<String>();
+	    //txtfldCostoConsulenza.setRegex("[0-9]+[.]{1}[0-9]{2}|[0-9]");
+	    //txtfldCostoHw.getMessages().setRegexText("Deve essere un numero!");
+	    txtfldCostoHw.setValue("0.00");
+	    editorTxt= new CellEditor(txtfldCostoHw){
+	    	@Override  
+	        public Object preProcessValue(Object value) {  
+	          if (value == null) {  
+	            return value;  
+	          }  
+	          return value.toString();  
+	        }  
+	    
+	        @Override  
+	        public Object postProcessValue(Object value) {  
+	          if (value == null) {  
+	            return value;  
+	          }  
+	          return value.toString();  
+	        }  
+	    };	    
+	    column.setEditor(editorTxt);
+	    configs.add(column);
+	    
+	    column = new ColumnConfig();  
+	    column.setId("costoSw");  
+	    column.setHeader("Costi Sw");  
+	    column.setWidth(75);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    TextField<String> txtfldCostoSw= new TextField<String>();
+	    //txtfldCostoConsulenza.setRegex("[0-9]+[.]{1}[0-9]{2}|[0-9]");
+	    //txtfldCostoHw.getMessages().setRegexText("Deve essere un numero!");
+	    txtfldCostoSw.setValue("0.00");
+	    editorTxt= new CellEditor(txtfldCostoSw){
+	    	@Override  
+	        public Object preProcessValue(Object value) {  
+	          if (value == null) {  
+	            return value;  
+	          }  
+	          return value.toString();  
+	        }  
+	    
+	        @Override  
+	        public Object postProcessValue(Object value) {  
+	          if (value == null) {  
+	            return value;  
+	          }  
+	          return value.toString();  
+	        }  
+	    };	    
+	    column.setEditor(editorTxt);
 	    configs.add(column);
 	  		
 	    column = new ColumnConfig();  
@@ -869,7 +956,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    
 	    column = new ColumnConfig();  
 	    column.setId("costoSommaHwSwOneri");  
-	    column.setHeader("Totale Costi");  
+	    column.setHeader("Totale Costi(h)");  
 	    column.setWidth(80);  
 	    column.setRenderer(renderer);
 	    column.setRowHeader(true);
@@ -878,7 +965,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    
 	    column = new ColumnConfig();  
 	    column.setId("costoRisorsaSommaHwSwOneri");  
-	    column.setHeader("Costo Risorsa");
+	    column.setHeader("Totale Costi");
 	    column.setToolTip("Somma costi Hw/Sw/Oneri");
 	    column.setWidth(80);  
 	    column.setRenderer(renderer);
@@ -925,38 +1012,6 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    };	    
 	    column.setEditor(editorTxt);
 	    configs.add(column);
-	    
-	    column = new ColumnConfig();  
-	    column.setId("costoTrasferta");  
-	    column.setHeader("Costo Trasferta");  
-	    column.setWidth(80);  
-	    column.setRenderer(renderer);
-	    column.setRowHeader(true);
-	    column.setAlignment(HorizontalAlignment.RIGHT);
-	    TextField<String> txtfldCostoTrasferta= new TextField<String>();
-	    txtfldCostoTrasferta.setRegex("[0-9]+[.]{1}[0-9]{2}|[0-9]");
-	    txtfldCostoTrasferta.getMessages().setRegexText("Deve essere un numero!");
-	    txtfldCostoTrasferta.setValue("0.00");
-	    editorTxt= new CellEditor(txtfldCostoTrasferta){
-	    	@Override  
-	        public Object preProcessValue(Object value) {  
-	          if (value == null) {  
-	            return value;  
-	          }  
-	          return value.toString();  
-	        }  
-	    
-	        @Override  
-	        public Object postProcessValue(Object value) {  
-	          if (value == null) {  
-	            return value;  
-	          }  
-	          return value.toString();  
-	        }  
-	    };	    
-	    column.setEditor(editorTxt);
-	    configs.add(column);
-	    
 	    
 	    column = new ColumnConfig();  
 	    column.setId("costoTotale");  

@@ -83,7 +83,7 @@ public class PanelGestioneCostiDipendenti extends LayoutContainer{
 		cpGrid.setHeading("Lista Dipendenti.");
 		cpGrid.setBorders(false);
 		cpGrid.setFrame(true);
-		cpGrid.setHeight((h-55)/2+80);
+		cpGrid.setHeight((h-55));
 		cpGrid.setWidth(w-250);
 		cpGrid.setScrollMode(Scroll.AUTO);
 		cpGrid.setLayout(new FitLayout());
@@ -215,7 +215,7 @@ public class PanelGestioneCostiDipendenti extends LayoutContainer{
 	    cpGridHwSw.setTopComponent(tlbCostiHwSw);
 	    
 	    vp.add(cpGrid);
-	    vp.add(cpGridHwSw);
+	   // vp.add(cpGridHwSw);
 	   
 	    layoutContainer.add(vp, new FitData(0, 3, 3, 0));
 				

@@ -1,5 +1,5 @@
 package gestione.pack.shared;
-import java.io.Serializable;
+
 import javax.persistence.*;
 
 import net.sf.gilead.pojo.gwt.LightEntity;
@@ -23,7 +23,9 @@ public class CostingRisorsa extends LightEntity implements IsSerializable {
 
 	private String costoConsulenza;
 
-	private String costoHwSw;
+	private String costoHw;
+	
+	private String costoSw;
 
 	private String costoOneri;
 
@@ -72,12 +74,22 @@ public class CostingRisorsa extends LightEntity implements IsSerializable {
 		this.costoConsulenza = costoConsulenza;
 	}
 
-	public String getCostoHwSw() {
-		return this.costoHwSw;
+	
+
+	public String getCostoHw() {
+		return costoHw;
 	}
 
-	public void setCostoHwSw(String costoHwSw) {
-		this.costoHwSw = costoHwSw;
+	public void setCostoHw(String costoHw) {
+		this.costoHw = costoHw;
+	}
+
+	public String getCostoSw() {
+		return costoSw;
+	}
+
+	public void setCostoSw(String costoSw) {
+		this.costoSw = costoSw;
 	}
 
 	public String getCostoOneri() {
