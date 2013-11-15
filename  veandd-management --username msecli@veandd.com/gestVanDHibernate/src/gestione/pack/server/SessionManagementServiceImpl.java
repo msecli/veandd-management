@@ -30,6 +30,7 @@ import org.hibernate.Transaction;
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
+import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 import gestione.pack.client.model.RiepilogoSALPCLModel;
 import gestione.pack.shared.Personale;
@@ -334,6 +335,30 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 		   	 httpSession.setAttribute("lista", listaDati);
 		     
 			 return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+
+	@Override
+	public boolean setDataRiepilogoCommesseInSession(String dataR,
+			String usernameR, String operazione, String totOreCommesse,
+			String totOreIU, List<RiepilogoMeseGiornalieroModel> models) {
+		
+		try {
+			 HttpServletRequest request = this.getThreadLocalRequest();
+		   	 HttpSession httpSession = request.getSession();
+		   	   
+		   	 httpSession.setAttribute("mese", dataR);
+		   	 httpSession.setAttribute("username", usernameR);
+		     httpSession.setAttribute("operazione", operazione);
+		     httpSession.setAttribute("totOreCommesse", totOreCommesse);
+		     httpSession.setAttribute("totOreIU", totOreIU);
+		     httpSession.setAttribute("listaM", models);
+		   	 
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;

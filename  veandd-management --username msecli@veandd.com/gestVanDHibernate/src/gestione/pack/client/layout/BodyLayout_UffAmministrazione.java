@@ -245,7 +245,7 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
             	center.removeAll();
-	        	center.add(new CenterLayout_GestioneRdoCompletaDup());
+	        	center.add(new CenterLayout_GestioneRdoCompleta());
 	        	center.layout(true);               
             }
         });
@@ -258,7 +258,7 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 	    btnGestioneRdo.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	          center.removeAll();
-	        	center.add(new CenterLayout_GestioneRdoCompletaDup());
+	        	center.add(new CenterLayout_GestioneRdoCompleta());
 	        	center.layout(true);}
 	        
 	      });

@@ -14,14 +14,15 @@ public class RiepilogoMeseGiornalieroModel extends BaseModel implements IsSerial
 		
 	}
 	
-	public RiepilogoMeseGiornalieroModel(String username,  String dipendente,
+	public RiepilogoMeseGiornalieroModel(String username,  String dipendente, String commessa,
 			String giorno1, String giorno2, String giorno3,String giorno4,String giorno5,String giorno6,String giorno7,String giorno8,
 			String giorno9,String giorno10,String giorno11,String giorno12,String giorno13,String giorno14,String giorno15,String giorno16,String giorno17,String giorno18,String giorno19,String giorno20,
-			String giorno21,String giorno22,String giorno23,String giorno24,String giorno25,String giorno26,String giorno27,String giorno28,String giorno29,String giorno30,String giorno31){
+			String giorno21,String giorno22,String giorno23,String giorno24,String giorno25,String giorno26,String giorno27,String giorno28,String giorno29,String giorno30,String giorno31, String totale){
 	
 		set("username",username);
 		set("dipendente", dipendente);
-		set("giorno1", giorno1); //in ogni giorno indico un flag colorato che indichi lo stato compilazione
+		set("commessa", commessa);
+		set("giorno1", giorno1); 
 		set("giorno2", giorno2);
 		set("giorno3",giorno3);
 		set("giorno4",giorno4);
@@ -52,6 +53,7 @@ public class RiepilogoMeseGiornalieroModel extends BaseModel implements IsSerial
 		set("giorno29",giorno29);
 		set("giorno30",giorno30);
 		set("giorno31",giorno31);
+		set("totale",totale);
 		
 	}
 }

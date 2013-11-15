@@ -2,6 +2,7 @@ package gestione.pack.client;
 
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
+import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 import gestione.pack.client.model.RiepilogoSALPCLModel;
 
@@ -54,6 +55,11 @@ public interface SessionManagementServiceAsync {
 
 	void setDataReportDatiFatturazioneInSession(String string,
 			List<DatiFatturazioneMeseModel> listaDati,
+			AsyncCallback<Boolean> asyncCallback);
+
+	void setDataRiepilogoCommesseInSession(String dataR, String usernameR,
+			String string, String totOreCommesse, String totOreIU,
+			List<RiepilogoMeseGiornalieroModel> models,
 			AsyncCallback<Boolean> asyncCallback);
 	
 

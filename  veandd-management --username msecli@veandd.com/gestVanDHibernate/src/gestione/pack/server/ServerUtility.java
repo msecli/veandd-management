@@ -3,12 +3,15 @@ package gestione.pack.server;
 import gestione.pack.client.model.CostingRisorsaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseJavaBean;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
+import gestione.pack.client.model.IntervalliCommesseModel;
 import gestione.pack.client.model.RiepilogoAnnualeJavaBean;
 import gestione.pack.client.model.RiepilogoCostiDipendentiBean;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoDatiOreMeseJavaBean;
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
 import gestione.pack.client.model.RiepilogoMensileDatiIntervalliCommesseJavaBean;
+import gestione.pack.client.model.RiepilogoMeseGiornalieroJavaBean;
+import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoOreDipFatturazione;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliJavaBean;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
@@ -1682,6 +1685,26 @@ public class ServerUtility {
 		return listaB;
 	}	
 		
+	public static List<RiepilogoMeseGiornalieroJavaBean> traduciDatiRiepilogoCommesseGiornalieri(
+			List<RiepilogoMeseGiornalieroModel> listaM) {
+		List<RiepilogoMeseGiornalieroJavaBean> listaJB=new ArrayList<RiepilogoMeseGiornalieroJavaBean>();
+		RiepilogoMeseGiornalieroJavaBean rB;
+		
+		for(RiepilogoMeseGiornalieroModel r:listaM){
+			rB=new RiepilogoMeseGiornalieroJavaBean((String)r.get("username"), (String)r.get("dipendente"), (String)r.get("commessa"), 
+					(String)r.get("giorno1"), (String)r.get("giorno2"), (String)r.get("giorno3"), (String)r.get("giorno4"), (String)r.get("giorno5"), 
+					(String)r.get("giorno6"), (String)r.get("giorno7"), (String)r.get("giorno8"), (String)r.get("giorno9"), (String)r.get("giorno10"), 
+					(String)r.get("giorno11"), (String)r.get("giorno12"), (String)r.get("giorno13"),(String)r.get("giorno14"), (String)r.get("giorno15"), 
+					(String)r.get("giorno16"), (String)r.get("giorno17"), (String)r.get("giorno18"), (String)r.get("giorno19"), (String)r.get("giorno20"), 
+					(String)r.get("giorno21"), (String)r.get("giorno22"), (String)r.get("giorno23"), (String)r.get("giorno24"), (String)r.get("giorno25"),
+					(String)r.get("giorno26"), (String)r.get("giorno27"), (String)r.get("giorno28"), (String)r.get("giorno29"), (String)r.get("giorno30"), 
+					(String)r.get("giorno31"), (String)r.get("totale"));	
+			listaJB.add(rB);
+		}
+		
+		return listaJB;
+	}
+	
 	
 	public static int getOreAnno() {//TODO passare anno
 		String data=new String();
@@ -1918,6 +1941,96 @@ public class ServerUtility {
 		
 		return null;
 	}
+
+	
+
+	public static IntervalliCommesseModel checkDatiGiornoCommessa(
+			List<DettaglioOreGiornaliere> listaG, String giornoR,
+			String commessa) {
+		
+		IntervalliCommesseModel ic=new IntervalliCommesseModel();
+		
+		String giorno= new String();
+		String numerocommessa;
+		String giustificativo="";
+		Boolean existDay=false;
+		
+		for(DettaglioOreGiornaliere d:listaG){
+			
+			DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd") ; 
+			giorno=formatter.format(d.getGiornoRiferimento());
+			if(giorno.compareTo(giornoR)==0){
+				existDay=true;						
+				
+				for(DettaglioIntervalliCommesse dt:d.getDettaglioIntervalliCommesses()){
+					
+					numerocommessa=dt.getNumeroCommessa()+"."+dt.getEstensioneCommessa();
+					if(numerocommessa.compareTo(commessa)==0){
+						ic=new IntervalliCommesseModel("", dt.getOreLavorate(), dt.getOreViaggio(), "", "", "");
+						break;
+					}					
+				}	
+				
+				if(Float.valueOf(d.getOreFerie())!=0)
+					giustificativo=giustificativo+"; "+"FERIE";
+				if(Float.valueOf(d.getOrePermesso())!=0)
+					giustificativo=giustificativo+"; "+"ROL";
+				if(Float.valueOf(d.getOreStraordinario())!=0)
+					giustificativo=giustificativo+"; "+"STRAO";
+					
+				giustificativo=giustificativo+"; "+d.getGiustificativo();
+				ic.set("descrizione", giustificativo);
+				break;
+				
+			}										
+		}
+		
+		if(!existDay)
+			ic=new IntervalliCommesseModel("", "0.00", "0.00", "", "", giustificativo);				
+		
+		return ic;
+	}
+
+	public static String checkGiustificativiGiornoCommessa(
+			List<DettaglioOreGiornaliere> listaG, String giornoR) {
+		
+		String giorno= new String();
+		
+		String giustificativo="";
+		Boolean existDay=false;
+				
+		for(DettaglioOreGiornaliere d:listaG){
+			
+			DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd") ; 
+			giorno=formatter.format(d.getGiornoRiferimento());
+			if(giorno.compareTo(giornoR)==0){
+				existDay=true;						
+								
+				
+				if(Float.valueOf(d.getOreFerie())!=0)
+					giustificativo=giustificativo+";"+"FERIE:"+d.getOreFerie();
+				if(Float.valueOf(d.getOrePermesso())!=0)
+					giustificativo=giustificativo+";"+"ROL:"+d.getOrePermesso();
+				if(Float.valueOf(d.getOreStraordinario())!=0)
+					giustificativo=giustificativo+";"+"STRAO:"+d.getOreStraordinario();
+				if(Float.valueOf(d.getOreAssenzeRecupero())!=0)
+					giustificativo=giustificativo+";"+"RECUP:"+d.getOreAssenzeRecupero();
+					
+				if(d.getGiustificativo().length()>2)
+					giustificativo=giustificativo+"; "+d.getGiustificativo();
+				
+				break;
+				
+			}										
+		}
+		
+		if(!existDay)
+			return "";				
+		else
+			return giustificativo;
+	}
+
+	
 
 	
 }

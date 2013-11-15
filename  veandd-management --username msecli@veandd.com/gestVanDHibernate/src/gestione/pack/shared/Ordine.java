@@ -65,6 +65,10 @@ public class Ordine extends LightEntity implements IsSerializable {
 	private String statoOrdine;
 
 	private String tariffaOraria;
+	
+	private String importo;
+	
+	private String importoResiduo;
 
 	//bi-directional many-to-one association to Rda
 	@ManyToOne
@@ -243,5 +247,23 @@ public class Ordine extends LightEntity implements IsSerializable {
 	public void setAttivitaOrdines(Set<AttivitaOrdine> attivitaOrdines) {
 		this.attivitaOrdines = attivitaOrdines;
 	}
+
+	public String getImporto() {
+		return importo;
+	}
+
+	public void setImporto(String importo) {
+		this.importo = importo;
+	}
+
+	public String getImportoResiduo() {
+		return importoResiduo;
+	}
+
+	public void setImportoResiduo(String importoResiduo) {
+		this.importoResiduo = importoResiduo;
+	}
+	
+	
 	
 }

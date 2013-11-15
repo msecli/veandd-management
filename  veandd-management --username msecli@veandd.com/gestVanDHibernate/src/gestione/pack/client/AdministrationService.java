@@ -133,13 +133,15 @@ public interface AdministrationService extends RemoteService {
 			Date dataOfferte, String importo, String numOrdine,
 			String descrizione, Date dataInizio, Date dataFine, String tariffa,
 			String numRisorse, String oreDisp, String oreRes,
-			List<TariffaOrdineModel> listaTar);
+			List<TariffaOrdineModel> listaTar, String importoOrdine,
+			String importoResiduoOrdine);
 	
 	boolean editRdoCompleta(int idRdo, String numRdo, String cliente,
 			String numOfferta, Date dataOfferte, String importo,
 			String numOrdine, String descrizione, Date dataInizio,
 			Date dataFine, String tariffa, String numRisorse, String oreDisp,
-			String oreRes, List<TariffaOrdineModel> listaTar);
+			String oreRes, List<TariffaOrdineModel> listaTar,
+			String importoOrdine, String importoResiduoOrdine);
 	
 	boolean deleteRdoCompleta(int idRdo) throws IllegalArgumentException;
 
@@ -263,15 +265,17 @@ public interface AdministrationService extends RemoteService {
 			String pm)throws IllegalArgumentException;
 
 	List<RiepilogoOreTotaliCommesse> getRiepilogoOreTotCommesse(String pm,
-			String data);
+			String data)throws IllegalArgumentException;
 	
 	List<RiepilogoFoglioOreModel> getRiepilogoMeseFoglioOre(String username,
-			Date data);
+			Date data)throws IllegalArgumentException;
 
-	List<String> loadIntervalliToolTip(String username, Date giorno);
+	List<String> loadIntervalliToolTip(String username, Date giorno)throws IllegalArgumentException;
 	
 	Boolean checkOreIntervalliIUOreCommesse(
-			String username, Date data);
+			String username, Date data)throws IllegalArgumentException;
+	
+	boolean eliminaDatiGiorno(String username, Date giorno)throws IllegalArgumentException;
 
 //----------------------------------FATTURAZIONE-------------------------------------------------------------------
 	List<RiepilogoOreDipFatturazione> getRiepilogoOreDipFatturazione(
@@ -281,9 +285,9 @@ public interface AdministrationService extends RemoteService {
 			String numeroCommessa, String data, int idAttivita)throws IllegalArgumentException;
 
 	boolean insertDatiFoglioFatturazione(String oreEseguite, String salAttuale,
-			String pclAttuale, String oreFatturere, String variazioneSAL,
-			String variazionePCL, String meseCorrente, String note,
-			String statoElaborazione, String commessaSelezionata,
+			String pclAttuale, String oreFatturere, String importoFatturare,
+			String variazioneSAL, String variazionePCL, String meseCorrente,
+			String note, String statoElaborazione, String commessaSelezionata,
 			String tariffaUtilizzata, String flagSal, int idAttivita);
 
 	List<DatiFatturazioneMeseModel> getReportDatiFatturazioneMese(String mese)throws IllegalArgumentException;
@@ -344,6 +348,9 @@ public interface AdministrationService extends RemoteService {
 	List<RiepilogoOreDipFatturazione> getRiepilogoOreCommesseDettDipendenti(
 			String data, String sede)throws IllegalArgumentException;
 	
+	List<RiepilogoMeseGiornalieroModel> getRiepilogoMensileDettagliatoCommesseHorizontalLayout(
+			String dipendente, String data)throws IllegalArgumentException;
+	
 //---------------------------------------------COSTI
 	List<GestioneCostiDipendentiModel> getDatiCostiPersonale(int idPersonale) throws IllegalArgumentException;
 
@@ -379,8 +386,6 @@ public interface AdministrationService extends RemoteService {
 	boolean saveNewVersionCosting(int idSelected)throws IllegalArgumentException;
 
 	boolean editStatoCosting(int idSelected, String operazione)throws IllegalArgumentException;
-
-	
 
 	
 }

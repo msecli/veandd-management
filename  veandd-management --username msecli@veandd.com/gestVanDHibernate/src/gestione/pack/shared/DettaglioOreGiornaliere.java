@@ -55,12 +55,12 @@ public class DettaglioOreGiornaliere extends LightEntity implements IsSerializab
 
 	//bi-directional many-to-one association to DettaglioIntervalliCommesse
 	@OneToMany(mappedBy="dettaglioOreGiornaliere", fetch=FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.DELETE_ORPHAN})
 	private Set<DettaglioIntervalliCommesse> dettaglioIntervalliCommesses;
 
 	//bi-directional many-to-one association to DettaglioIntervalliIU
 	@OneToMany(mappedBy="dettaglioOreGiornaliere", fetch=FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.DELETE_ORPHAN})
 	private Set<DettaglioIntervalliIU> dettaglioIntervalliIUs;
 
 	//bi-directional many-to-one association to FoglioOreMese

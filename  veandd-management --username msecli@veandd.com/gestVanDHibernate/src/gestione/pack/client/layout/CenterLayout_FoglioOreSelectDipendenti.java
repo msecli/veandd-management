@@ -83,6 +83,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 	
 	private Button btnConferma= new Button();		
 	private Button btnMostraIntervalli= new Button();
+	private Button btnEliminaGiorno=new Button();
 	private Button btnInviaCommenti= new Button();
 	//private Button btnPrint= new Button();
 	public DateField dtfldGiorno= new DateField(); //settato al momento della creazione del form sul valore del datefield interno
@@ -276,7 +277,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			btnBarOperazioni.add(btnMostraIntervalli);
 			btnBarOperazioni.add(btnInviaCommenti);
 			btnBarOperazioni.add(btnConferma);
-			//btnBarOperazioni.add(frmSubmit);
+			btnBarOperazioni.add(btnEliminaGiorno);
 			
 			left.add(btnBarOperazioni);
 			left.add(buttonBarTop);
@@ -300,6 +301,51 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 				}
 			});		
 
+			
+			btnEliminaGiorno.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.respingi()));
+			btnEliminaGiorno.setIconAlign(IconAlign.TOP);
+			btnEliminaGiorno.setToolTip("Elimina Dati Giorno");
+			btnEliminaGiorno.setSize(26, 26);
+			btnEliminaGiorno.addSelectionListener(new SelectionListener<ButtonEvent>() {
+				
+				@Override
+				public void componentSelected(ButtonEvent ce) {
+					String username= new String();
+					Date giorno=new Date();
+					DateField dtfld= new DateField();
+					ButtonBar bttnBar= new ButtonBar();
+					LayoutContainer lc=new LayoutContainer();
+					
+					lc=(LayoutContainer) frm.getItemByItemId("main");
+					//Intervalli IU
+					lc=(LayoutContainer) lc.getItemByItemId("left");
+					bttnBar=(ButtonBar) lc.getItemByItemId("buttonBar");
+					dtfld=(DateField) bttnBar.getItemByItemId("data");
+					giorno=dtfld.getValue();
+										
+					username=cmbxDipendente.getValue().get("username");
+					
+					 AdministrationService.Util.getInstance().eliminaDatiGiorno(username, giorno, new AsyncCallback<Boolean>() {
+
+						@Override
+						public void onFailure(Throwable caught) {
+							Window.alert("Errore di connessione on eliminaDatiGiorno();");
+						}
+
+						@Override
+						public void onSuccess(Boolean result) {
+							if(result){
+								reloadFoglioOre();
+							}else{
+								Window.alert("error: Impossibile eliminare i dati!");
+							}
+						}
+					});
+					
+				}
+			});
+			
+			
 			//btnConferma.setSize(46, 46);
 			btnConferma.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.saveLittle()));
 			btnConferma.setIconAlign(IconAlign.TOP);
@@ -482,6 +528,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			btnBarOperazioni.add(btnMostraIntervalli);
 			btnBarOperazioni.add(btnInviaCommenti);
 			btnBarOperazioni.add(btnConferma);
+			btnBarOperazioni.add(btnEliminaGiorno);
 			
 			left.removeAll();
 			right.removeAll();

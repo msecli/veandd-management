@@ -107,13 +107,13 @@ public interface AdministrationServiceAsync {
 			Date dataOfferte, String importo, String numOrdine,
 			String descrizione, Date dataInizio, Date dataFine, String tariffa,
 			String numRisorse, String oreDisp, String oreRes,
-			List<TariffaOrdineModel> listaTar, AsyncCallback<Boolean> asyncCallback);
+			List<TariffaOrdineModel> listaTar, String importoOrdine, String importoResiduoOrdine, AsyncCallback<Boolean> asyncCallback);
 	
 	void editRdoCompleta(int idRdo, String numRdo, String cliente,
 			String numOfferta, Date dataOfferte, String importo,
 			String numOrdine, String descrizione, Date dataInizio,
 			Date dataFine, String tariffa, String numRisorse, String oreDisp,
-			String oreRes, List<TariffaOrdineModel> listaTar, AsyncCallback<Boolean> asyncCallback);
+			String oreRes, List<TariffaOrdineModel> listaTar, String importoOrdine, String importoResiduoOrdine, AsyncCallback<Boolean> asyncCallback);
 
 	void deleteRdoCompleta(int idRdo, AsyncCallback<Boolean> asyncCallback);
 	
@@ -256,6 +256,12 @@ public interface AdministrationServiceAsync {
 
 	void checkOreIntervalliIUOreCommesse(String username, Date data, AsyncCallback<Boolean> asyncCallback);
 	
+	void eliminaDatiGiorno(String username, Date giorno,
+			AsyncCallback<Boolean> asyncCallback);
+	
+	void getRiepilogoMensileDettagliatoCommesseHorizontalLayout(
+			String dipendente, String data,
+			AsyncCallback<List<RiepilogoMeseGiornalieroModel>> asyncCallback);
 //----------------------------------------------FATTURAZIONE
 	
 	void getRiepilogoOreDipFatturazione(String mese, String pm, AsyncCallback<List<RiepilogoOreDipFatturazione>> asyncCallback);
@@ -264,7 +270,7 @@ public interface AdministrationServiceAsync {
 			AsyncCallback<FoglioFatturazioneModel> asyncCallback);
 
 	void insertDatiFoglioFatturazione(String oreEseguite, String salAttuale,
-			String pclAttuale, String oreFatturere, String variazioneSAL,
+			String pclAttuale, String oreFatturere, String importoFatturare, String variazioneSAL,
 			String variazionePCL, String meseCorrente,
 			String note, String statoElaborazione, String commessaSelezionata,  
 			String tariffaUtilizzata, String flagSal, int idAttivita, AsyncCallback<Boolean> asyncCallback);
@@ -385,9 +391,5 @@ public interface AdministrationServiceAsync {
 	void editStatoCosting(int idSelected, String operazione,
 			AsyncCallback<Boolean> asyncCallback);
 
-	
-
-
-	
-			
+				
 }

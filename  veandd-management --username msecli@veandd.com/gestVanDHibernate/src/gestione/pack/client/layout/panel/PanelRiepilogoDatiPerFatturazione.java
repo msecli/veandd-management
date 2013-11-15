@@ -6,6 +6,7 @@ import gestione.pack.client.utility.MyImages;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.IconAlign;
@@ -26,6 +27,8 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GroupSummaryView;
 import com.extjs.gxt.ui.client.widget.grid.SummaryColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.SummaryRenderer;
+import com.extjs.gxt.ui.client.widget.grid.SummaryType;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.i18n.client.NumberFormat;
@@ -162,6 +165,13 @@ public class PanelRiepilogoDatiPerFatturazione extends LayoutContainer{
 				return model.get(property);
 			}  	
 		});
+	    column.setSummaryRenderer(new SummaryRenderer() {
+			
+			@Override
+			public String render(Number value, Map<String, Number> data) {
+				return "TOTALE";
+			}
+		});
 	    configs.add(column); 
 	    
 	    column=new SummaryColumnConfig<Double>();		
@@ -207,6 +217,7 @@ public class PanelRiepilogoDatiPerFatturazione extends LayoutContainer{
 	    columnOreLavoro.setWidth(75);    
 	    columnOreLavoro.setRowHeader(true); 
 	    columnOreLavoro.setAlignment(HorizontalAlignment.RIGHT);  	
+	    columnOreLavoro.setSummaryType(SummaryType.SUM);  
 	    columnOreLavoro.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
 			@Override
 			public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
@@ -215,6 +226,13 @@ public class PanelRiepilogoDatiPerFatturazione extends LayoutContainer{
 				return number.format(n);
 			}  	
 		}); 
+	    columnOreLavoro.setSummaryRenderer(new SummaryRenderer() {
+			
+			@Override
+			public String render(Number value, Map<String, Number> data) {
+				return number.format(value);
+			}
+		});
 	    configs.add(columnOreLavoro); 	
 	    
 	    SummaryColumnConfig<Double> columnOreFatturate=new SummaryColumnConfig<Double>();		
@@ -222,7 +240,8 @@ public class PanelRiepilogoDatiPerFatturazione extends LayoutContainer{
 	    columnOreFatturate.setHeader("Ore Fatturate");  
 	    columnOreFatturate.setWidth(75);    
 	    columnOreFatturate.setRowHeader(true);   
-	    columnOreFatturate.setAlignment(HorizontalAlignment.RIGHT);    
+	    columnOreFatturate.setAlignment(HorizontalAlignment.RIGHT);  
+	    columnOreFatturate.setSummaryType(SummaryType.SUM);  
 	    columnOreFatturate.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
 			@Override
 			public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
@@ -231,6 +250,13 @@ public class PanelRiepilogoDatiPerFatturazione extends LayoutContainer{
 				return number.format(n);
 			}  	
 		});     
+	    columnOreFatturate.setSummaryRenderer(new SummaryRenderer() {
+			
+			@Override
+			public String render(Number value, Map<String, Number> data) {
+				return number.format(value);
+			}
+		});
 	    configs.add(columnOreFatturate); 	
 	      
 	    SummaryColumnConfig<Double> columnImporto=new SummaryColumnConfig<Double>();		
@@ -240,6 +266,7 @@ public class PanelRiepilogoDatiPerFatturazione extends LayoutContainer{
 	    columnImporto.setRowHeader(true); 
 	    columnImporto.setAlignment(HorizontalAlignment.RIGHT);
 	    columnImporto.setStyle("color:#e71d2b;");
+	    columnImporto.setSummaryType(SummaryType.SUM);
 	    columnImporto.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
 			@Override
 			public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
@@ -249,7 +276,44 @@ public class PanelRiepilogoDatiPerFatturazione extends LayoutContainer{
 				return num.format(n);
 			}  	
 		});  
+	    columnImporto.setSummaryRenderer(new SummaryRenderer() {
+			
+			@Override
+			public String render(Number value, Map<String, Number> data) {
+				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
+				//Float n=value;
+				return num.format(value);
+			}
+		});
 	    configs.add(columnImporto); 	
+	    
+	    SummaryColumnConfig<Double> columnImportoEffettivo=new SummaryColumnConfig<Double>();		
+	     columnImportoEffettivo.setId("importoEffettivo");  
+	     columnImportoEffettivo.setHeader("Importo Effettivo");  
+	     columnImportoEffettivo.setWidth(100);    
+	     columnImportoEffettivo.setRowHeader(true); 
+	     columnImportoEffettivo.setAlignment(HorizontalAlignment.RIGHT);
+	     columnImportoEffettivo.setStyle("color:#e71d2b; background-color:#d2f5af;");
+	     columnImportoEffettivo.setSummaryType(SummaryType.SUM);  
+	     columnImportoEffettivo.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
+				@Override
+				public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
+						Grid<DatiFatturazioneMeseModel> grid) {				
+					final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
+					Float n=model.get(property);
+					return num.format(n);
+				}  	
+			});  
+	     columnImportoEffettivo.setSummaryRenderer(new SummaryRenderer() {
+				
+				@Override
+				public String render(Number value, Map<String, Number> data) {
+					final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
+					//Float n=value;
+					return num.format(value);
+				}
+			});
+		configs.add(columnImportoEffettivo); 
 	    
 	    return configs;
 	}

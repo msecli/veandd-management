@@ -7,6 +7,8 @@ import gestione.pack.client.model.RiepilogoCostiDipendentiBean;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoDatiOreMeseJavaBean;
 import gestione.pack.client.model.RiepilogoMensileDatiIntervalliCommesseJavaBean;
+import gestione.pack.client.model.RiepilogoMeseGiornalieroJavaBean;
+import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliJavaBean;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 import gestione.pack.client.model.RiepilogoSALPCLJavaBean;
@@ -97,7 +99,8 @@ public class PrintDataServlet extends HttpServlet  {
 		
 		if(operazione.compareTo("COMM")==0){
 			
-			List<RiepilogoMensileDatiIntervalliCommesseJavaBean> listaJB=new ArrayList<RiepilogoMensileDatiIntervalliCommesseJavaBean>();
+			List<RiepilogoMeseGiornalieroJavaBean> listaJB=new ArrayList<RiepilogoMeseGiornalieroJavaBean>();
+			List<RiepilogoMeseGiornalieroModel> listaM=new ArrayList<RiepilogoMeseGiornalieroModel>();
 			
 			String nome=username.substring(0, username.indexOf("."));
 			nome=nome.substring(0, 1).toUpperCase()+nome.substring(1,nome.length());
@@ -110,9 +113,9 @@ public class PrintDataServlet extends HttpServlet  {
 			String totOreCommesse=(String) httpSession.getAttribute("totOreCommesse");
 			String totOreIU=(String) httpSession.getAttribute("totOreIU");
 			
+			listaM= (List<RiepilogoMeseGiornalieroModel>) httpSession.getAttribute("listaM");
+			listaJB.addAll(ServerUtility.traduciDatiRiepilogoCommesseGiornalieri(listaM));
 			
-			listaJB= ServerUtility.getRiepilogoGiornalieroCommesse(username, dataRif);
-
 			try {
 				
 				Map parameters = new HashMap();
@@ -136,7 +139,39 @@ public class PrintDataServlet extends HttpServlet  {
 
 				jasperPrint = JasperFillManager.fillReport(jasperReport,parameters,	
 						getDataSourceRiepilogoCommesse(listaJB));
+				
 				JasperExportManager.exportReportToPdfFile(jasperPrint, Constanti.PATHAmazon+"FileStorage/RiepiloghiCommesse/"+nomeFile);
+				
+			/*	JRXlsExporter exporterXLS = new JRXlsExporter();
+				exporterXLS.setParameter(JRXlsExporterParameter.JASPER_PRINT, jasperPrint);
+				exporterXLS.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
+				exporterXLS.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
+				exporterXLS.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+				exporterXLS.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
+				exporterXLS.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, Constanti.PATHAmazon+"FileStorage/RiepiloghiCommesse/"+nomeFile);
+				exporterXLS.exportReport();
+				*/
+				
+				File f=new File(Constanti.PATHAmazon+"FileStorage/RiepiloghiCommesse/"+nomeFile);
+				FileInputStream fin = new FileInputStream(f);
+				ServletOutputStream outStream = response.getOutputStream();
+				// SET THE MIME TYPE.
+				response.setContentType("application/pdf ");
+				//response.setContentType("application/vnd.ms-excel");
+				// set content dispostion to attachment in with file name.
+				// case the open/save dialog needs to appear.
+				response.setHeader("Content-Disposition", "attachment;filename="+nomeFile);
+
+				byte[] buffer = new byte[1024];
+				int n = 0;
+				while ((n = fin.read(buffer)) != -1) {
+				outStream.write(buffer, 0, n);
+				System.out.println(buffer);
+				}
+				
+				outStream.flush();
+				fin.close();
+				outStream.close();
 				
 				} catch (JRException e) {
 					e.printStackTrace();
@@ -627,9 +662,9 @@ public class PrintDataServlet extends HttpServlet  {
 	}
 
 
-	private static JRDataSource getDataSourceRiepilogoCommesse(List<RiepilogoMensileDatiIntervalliCommesseJavaBean> listaD) {
-		Collection<RiepilogoMensileDatiIntervalliCommesseJavaBean> riep= new ArrayList<RiepilogoMensileDatiIntervalliCommesseJavaBean>();
-		for(RiepilogoMensileDatiIntervalliCommesseJavaBean r: listaD)
+	private static JRDataSource getDataSourceRiepilogoCommesse(List<RiepilogoMeseGiornalieroJavaBean> listaD) {
+		Collection<RiepilogoMeseGiornalieroJavaBean> riep= new ArrayList<RiepilogoMeseGiornalieroJavaBean>();
+		for(RiepilogoMeseGiornalieroJavaBean r: listaD)
 			riep.add(r);
 		
 		return new JRBeanCollectionDataSource(riep);

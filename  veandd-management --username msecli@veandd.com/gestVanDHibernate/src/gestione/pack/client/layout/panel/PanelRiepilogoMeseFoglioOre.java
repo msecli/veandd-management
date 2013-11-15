@@ -97,8 +97,8 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 				Dialog d= new Dialog();
 				d.setHeaderVisible(true);
 				d.setHeading("Riepilogo dettagliato (Commesse).");
-				d.setSize(545, 795);
-				d.add(new PanelRiepilogoGiornalieroCommesse(username, data));
+				d.setSize(1500, 650);
+				d.add(new PanelRiepilogoMeseGiornalieroCommesseHorizontal(username, data));
 				d.setButtons("");
 				d.show();			
 			}
@@ -291,8 +291,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	   				GroupingStore<RiepilogoFoglioOreModel>store1 = new GroupingStore<RiepilogoFoglioOreModel>();
 	   				String tot="0.00";
 	   				store1.add(store.getModels());
-	   				for(RiepilogoFoglioOreModel riep: store1.getModels()){
-	   					
+	   				for(RiepilogoFoglioOreModel riep: store1.getModels()){	   					
 	   					//CALCOLO IL TOTALE
 	   					tot=ClientUtility.aggiornaTotGenerale(tot, number.format(riep.getOreTimbrature()));
 	   				}
