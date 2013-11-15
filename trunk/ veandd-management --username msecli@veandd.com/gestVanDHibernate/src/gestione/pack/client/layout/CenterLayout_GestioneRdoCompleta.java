@@ -6,7 +6,9 @@ import java.util.List;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.layout.panel.DialogAssociaCommessaToOrdine;
+import gestione.pack.client.model.CostingRisorsaModel;
 import gestione.pack.client.model.RdoCompletaModel;
+import gestione.pack.client.model.RiepilogoSALPCLModel;
 import gestione.pack.client.model.TariffaOrdineModel;
 import gestione.pack.client.utility.MyImages;
 
@@ -24,9 +26,11 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.GroupingStore;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -35,8 +39,11 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.grid.CellEditor;
+import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridGroupRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GroupColumnData;
@@ -48,8 +55,10 @@ import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -72,6 +81,8 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 	private TextField<String> txtfldNumeroRisorse;
 	private TextField<String> txtfldNumeroOre;
 	private TextField<String> txtfldNumeroOreResidue;
+	private TextField<String> txtfldImportoOrdine;
+	private TextField<String> txtfldImportoResiduoOrdine;
 	private SimpleComboBox<String> smplcmbxCliente = new SimpleComboBox<String>();
 	
 	private VerticalPanel hpLayout;
@@ -119,8 +130,8 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		cntpnlLayout.setHeaderVisible(false);
 		cntpnlLayout.setCollapsible(false);
 		cntpnlLayout.setBorders(false);
-		cntpnlLayout.setWidth(860);
-		cntpnlLayout.setHeight(850);
+		cntpnlLayout.setWidth(970);
+		cntpnlLayout.setHeight(1000);
 		cntpnlLayout.setFrame(true);
 		cntpnlLayout.setButtonAlign(HorizontalAlignment.CENTER);
 		//cntpnlLayout.setStyleAttribute("padding-left", "7px");
@@ -152,12 +163,18 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 				String numRisorse="0";
 				String oreDisp="0.0";
 				String oreRes="0.0";
+				String importoOrdine="0.00";
+				String importoResiduoOrdine="0.00";
 				
-				if(formIsValid()&&!arePresent()){
 				
-					List<TariffaOrdineModel> listaTar = null;
-					
-					
+				CntpnlFormRdo cpfrm=(CntpnlFormRdo) hpLayout.getItemByItemId("cpfrm");
+				ContentPanel cp=(ContentPanel) cpfrm.getItemByItemId("cp");
+				LayoutContainer layout=(LayoutContainer) cp.getItemByItemId("layout");
+				CntpnlGridTariffeOrdine cpTariffa=(CntpnlGridTariffeOrdine) layout.getItemByItemId("cpTariffa");
+				List<TariffaOrdineModel> listaTar= (List<TariffaOrdineModel>) cpTariffa.storeTariffe.getModels();
+				
+				if(formIsValid()&&!arePresent()&&areValid(listaTar)){
+				
 					cliente=smplcmbxCliente.getRawValue().toString();
 					if(!txtfldNumeroRda.getRawValue().isEmpty())numRdo=txtfldNumeroRda.getValue().toString();
 					
@@ -173,9 +190,11 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 					if(!txtfldNumeroRisorse.getRawValue().isEmpty())numRisorse=txtfldNumeroRisorse.getValue().toString();
 					if(!txtfldNumeroOre.getRawValue().isEmpty())oreDisp=txtfldNumeroOre.getValue().toString();
 					if(!txtfldNumeroOreResidue.getRawValue().isEmpty())oreRes=txtfldNumeroOreResidue.getValue().toString();
-									
+					if(!txtfldImportoOrdine.getRawValue().isEmpty())importoOrdine=txtfldImportoOrdine.getValue().toString();
+					if(!txtfldImportoResiduoOrdine.getRawValue().isEmpty())importoResiduoOrdine=txtfldImportoResiduoOrdine.getValue().toString();
+					
 					AdministrationService.Util.getInstance().saveRdoCompleta(numRdo, cliente, numOfferta, dataOfferte, importo, numOrdine, descrizione
-							, dataInizio, dataFine, tariffa, numRisorse, oreDisp, oreRes, listaTar, new AsyncCallback<Boolean>() {
+							, dataInizio, dataFine, tariffa, numRisorse, oreDisp, oreRes, listaTar, importoOrdine, importoResiduoOrdine, new AsyncCallback<Boolean>() {
 					
 						@Override
 						public void onSuccess(Boolean result) {
@@ -196,9 +215,10 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 						}
 					}); //AsyncCallback	   
 				}else{
-					Window.alert("Controllare i campi inseriti!");
+					Window.alert("Controllare i campi inseriti ed eliminare eventuali record vuoti nella tabella Tariffe.");
 				}
 			}
+
 		});
 		
 		
@@ -221,10 +241,17 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 				String numRisorse="0";
 				String oreDisp="0.0";
 				String oreRes="0.0";
+				String importoOrdine="0.00";
+				String importoResiduoOrdine="0.00";
 				
-				List<TariffaOrdineModel> listaTar = null;
-				
-				if(formIsValid()){
+				CntpnlFormRdo cpfrm=(CntpnlFormRdo) hpLayout.getItemByItemId("cpfrm");
+				ContentPanel cp=(ContentPanel) cpfrm.getItemByItemId("cp");
+				LayoutContainer layout=(LayoutContainer) cp.getItemByItemId("layout");
+				CntpnlGridTariffeOrdine cpTariffa=(CntpnlGridTariffeOrdine) layout.getItemByItemId("cpTariffa");
+				//List<TariffaOrdineModel> listaTar= elaboroStoreTariffe((List<TariffaOrdineModel>) cpTariffa.storeTariffe.getModels());
+				List<TariffaOrdineModel> listaTar=(List<TariffaOrdineModel>) cpTariffa.storeTariffe.getModels();
+			
+				if(formIsValid()&&areValid(listaTar)){
 					idRdo=Integer.valueOf(txtfldIdRda.getValue());
 					cliente=smplcmbxCliente.getRawValue().toString();
 					if(!txtfldNumeroRda.getRawValue().isEmpty())numRdo=txtfldNumeroRda.getValue().toString();
@@ -241,9 +268,11 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 					if(!txtfldNumeroRisorse.getRawValue().isEmpty())numRisorse=txtfldNumeroRisorse.getValue().toString();
 					if(!txtfldNumeroOre.getRawValue().isEmpty())oreDisp=txtfldNumeroOre.getValue().toString();
 					if(!txtfldNumeroOreResidue.getRawValue().isEmpty())oreRes=txtfldNumeroOreResidue.getValue().toString();
+					if(!txtfldImportoOrdine.getRawValue().isEmpty())importoOrdine=txtfldImportoOrdine.getValue().toString();
+					if(!txtfldImportoResiduoOrdine.getRawValue().isEmpty())importoResiduoOrdine=txtfldImportoResiduoOrdine.getValue().toString();
 									
 					AdministrationService.Util.getInstance().editRdoCompleta(idRdo, numRdo, cliente, numOfferta, dataOfferte, importo, numOrdine, descrizione
-							, dataInizio, dataFine, tariffa, numRisorse, oreDisp, oreRes, listaTar, new AsyncCallback<Boolean>() {
+							, dataInizio, dataFine, tariffa, numRisorse, oreDisp, oreRes, listaTar, importoOrdine, importoResiduoOrdine, new AsyncCallback<Boolean>() {
 					
 						@Override
 						public void onSuccess(Boolean result) {
@@ -265,9 +294,36 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 						}
 					}); //AsyncCallback	   
 				}else{
-					Window.alert("Controllare i campi inseriti!");
+					Window.alert("Controllare i campi inseriti ed eliminare eventuali record vuoti nella tabella Tariffe.");
 				}
 			}
+/*
+			private List<TariffaOrdineModel> elaboroStoreTariffe(List<TariffaOrdineModel> models) {
+				
+				List<TariffaOrdineModel> listaT= new ArrayList<TariffaOrdineModel>();
+				TariffaOrdineModel tar=new TariffaOrdineModel();
+				
+				Integer id;
+				String tariffa;
+				String descrizione;
+				
+				for(TariffaOrdineModel t:models){
+					
+					id=t.get("idAttivitaOrdine");
+					tariffa=t.get("tariffaAttivita");
+					descrizione=t.get("descrizione");
+					
+					if(id==null)
+						id=0;
+					
+					tar=new TariffaOrdineModel(String.valueOf(id), tariffa, descrizione);
+					
+				}
+				
+				return listaT;
+			}
+			
+			*/
 		});
 		
 		
@@ -329,6 +385,19 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		add(layoutContainer);		
 	}
 	
+	private boolean areValid(List<TariffaOrdineModel> listaTar) {
+		String tariffa;
+		for(TariffaOrdineModel t:listaTar){
+			
+			tariffa=(String)t.get("tariffaAttivita");			
+			if(tariffa==null)
+				return false;
+		}
+		
+		return true;
+	}
+	
+	
 	private class CntpnlFormRdo extends ContentPanel{
 		
 		public CntpnlFormRdo() {
@@ -338,21 +407,24 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			setBorders(false);
 			setBodyBorder(false);
 			setScrollMode(Scroll.NONE);	
-			setWidth(800);
-			setHeight(200);
+			setWidth(940);
+			setHeight(315);
 			setFrame(false);
 			setStyleAttribute("margin-top", "0px");
-			
+			setItemId("cpfrm");
+						
 			ContentPanel cp= new ContentPanel();
 			cp.setHeaderVisible(false);
-			cp.setSize(790, 200);
+			cp.setSize(920, 330);
 			cp.setBorders(false);
 			cp.setBodyBorder(false);
 			cp.setFrame(false);
 			cp.setLayout(new RowLayout(Orientation.HORIZONTAL));
+			cp.setItemId("cp");
 						
 			layoutCol2.setStyleAttribute("padding-left", "20px");
 			
+			layoutCol3.setItemId("layout");
 			layoutCol3.setStyleAttribute("padding-left", "5px");
 			
 			FormLayout layout= new FormLayout();
@@ -472,10 +544,11 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			txtfldNumeroRisorse.getMessages().setRegexText("Deve essere un numero");
 			
 			txtfldNumeroOre=new TextField<String>();
-			txtfldNumeroOre.setToolTip("Usare il TAB per assegnare automaticamente le ore residue.");
-			txtfldNumeroOre.setFieldLabel("Num. Ore");
+			txtfldNumeroOre.setWidth(120);
+			txtfldNumeroOre.setToolTip("Numero Ore");
+			txtfldNumeroOre.setEmptyText("Ore...");
 			txtfldNumeroOre.setName("numeroOre");
-			txtfldNumeroOre.setRegex("[0-9]+[.]{1}[0-9]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
+			txtfldNumeroOre.setRegex("[0-9]+[.][0-5]{1}[0-9]{1}|0.00|0.0");
 			txtfldNumeroOre.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
 			txtfldNumeroOre.addKeyListener(new KeyListener(){
 				
@@ -514,9 +587,12 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			});
 			
 			txtfldNumeroOreResidue=new TextField<String>();
-			txtfldNumeroOreResidue.setFieldLabel("Ore Residue");
+			txtfldNumeroOreResidue.setWidth(120);
+			txtfldNumeroOreResidue.setStyleAttribute("padding-left", "5px");
+			txtfldNumeroOreResidue.setEmptyText("Ore Residue...");
 			txtfldNumeroOreResidue.setName("numeroOreResidue");
-			txtfldNumeroOreResidue.setRegex("[0-9]+[.]{1}[0-9]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
+			txtfldNumeroOreResidue.setToolTip("Ore Residue");
+			txtfldNumeroOreResidue.setRegex("[0-9]+[.][0-5]{1}[0-9]{1}|0.00|0.0");
 			txtfldNumeroOreResidue.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
 			txtfldNumeroOreResidue.addKeyListener(new KeyListener(){
 				 public void componentKeyDown(ComponentEvent event) { 	  
@@ -548,13 +624,98 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 				 }
 			});
 			
+			txtfldImportoOrdine= new TextField<String>();
+			txtfldImportoOrdine.setWidth(120);
+			txtfldImportoOrdine.setEmptyText("Importo...");
+			txtfldImportoOrdine.setToolTip("Importo Ordine");
+			txtfldImportoOrdine.setRegex("[0-9]+[.][0-9]{1}[0-9]{1}|0.00|0.0");
+			//txtfldImportoOrdine.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+			txtfldImportoOrdine.addKeyListener(new KeyListener(){
+				
+					 public void componentKeyDown(ComponentEvent event) { 	  
+					    	int keyCode=event.getKeyCode();
+							if(keyCode==9){			
+								
+								if(txtfldImportoOrdine.getValue()==null)
+									txtfldImportoOrdine.setValue("0.00");
+								else{
+									String valore= txtfldImportoOrdine.getValue().toString();
+															
+									if(valore.compareTo("")==0)
+										valore ="0.00";
+									else
+										if(valore.indexOf(".")==-1)
+											valore=valore+".00";
+										else{
+											int index=valore.indexOf(".");
+											int length=valore.length();
+											
+											if(valore.substring(index+1, length).length()==1)
+												valore=valore+"0";		
+											else if(valore.substring(index+1, length).length()==0)
+												valore=valore+"00";
+										}
+									txtfldImportoOrdine.setValue(valore);
+									txtfldImportoResiduoOrdine.setValue(valore);
+								}						
+							}
+					 }
+				});
+			
+			txtfldImportoResiduoOrdine=new TextField<String>();
+			txtfldImportoResiduoOrdine.setWidth(120);
+			txtfldImportoResiduoOrdine.setEmptyText("Importo Residuo...");
+			txtfldImportoResiduoOrdine.setStyleAttribute("padding-left", "5px");
+			txtfldImportoResiduoOrdine.setToolTip("Importo Residuo");
+			txtfldImportoResiduoOrdine.setRegex("[0-9]+[.][0-9]{1}[0-9]{1}|0.00|0.0");
+			txtfldImportoResiduoOrdine.addKeyListener(new KeyListener(){
+				 public void componentKeyDown(ComponentEvent event) { 	  
+				    	int keyCode=event.getKeyCode();
+						if(keyCode==9){			
+							
+							if(txtfldImportoResiduoOrdine.getValue()==null)
+								txtfldImportoResiduoOrdine.setValue("0.00");
+							else{
+								String valore= txtfldImportoResiduoOrdine.getValue().toString();
+														
+								if(valore.compareTo("")==0)
+									valore ="0.00";
+								else
+									if(valore.indexOf(".")==-1)
+										valore=valore+".00";
+									else{
+										int index=valore.indexOf(".");
+										int length=valore.length();
+										
+										if(valore.substring(index+1, length).length()==1)
+											valore=valore+"0";		
+										else if(valore.substring(index+1, length).length()==0)
+											valore=valore+"00";
+									}
+								txtfldImportoResiduoOrdine.setValue(valore);
+							}						
+						}
+				 }
+			});
+			
+			HorizontalPanel hp1= new HorizontalPanel();
+			hp1.setSpacing(2);
+			hp1.add(txtfldImportoOrdine);
+			hp1.add(txtfldImportoResiduoOrdine);
+			
+			HorizontalPanel hp2=new HorizontalPanel();
+			hp2.setSpacing(2);
+			hp2.add(txtfldNumeroOre);
+			hp2.add(txtfldNumeroOreResidue);
+			
 			layoutCol3.add(txtfldNumeroOrdine,new FormData("85%"));
 			layoutCol3.add(dtfldDataInizioOrdine,new FormData("85%"));
 			layoutCol3.add(dtfldDataFineOrdine, new FormData("85%"));
-			layoutCol3.add(txtfldTariffaOraria, new FormData("60%"));
+			//layoutCol3.add(txtfldTariffaOraria, new FormData("60%"));
 			layoutCol3.add(txtfldNumeroRisorse, new FormData("60%"));
-			layoutCol3.add(txtfldNumeroOre, new FormData("60%"));
-			layoutCol3.add(txtfldNumeroOreResidue, new FormData("60%"));			
+			layoutCol3.add(hp2);
+			layoutCol3.add(hp1);			
+			layoutCol3.add(new CntpnlGridTariffeOrdine(),new FormData("85%"));
 			
 			RowData data = new RowData(.35, 1);
 			data.setMargins(new Margins(5));
@@ -563,8 +724,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			cp.add(layoutCol2, data);
 			cp.add(layoutCol3, data);
 			
-			add(cp);
-			
+			add(cp);			
 		}
 		
 		public void getClienti(){
@@ -589,6 +749,182 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 	}
 	
 	
+	private class CntpnlGridTariffeOrdine extends ContentPanel{
+		
+		private Button btnAddTariffa;
+		private Button btnDelTariffa;
+		//private Button btnConferma;
+		private TextField<String> txtfldTariffa;
+		
+		private EditorGrid<TariffaOrdineModel> gridTariffa;
+		private CellSelectionModel<TariffaOrdineModel> cs;
+		private ListStore<TariffaOrdineModel> storeTariffe=new ListStore<TariffaOrdineModel>();
+		private ColumnModel cmTariffe;
+		
+		public CntpnlGridTariffeOrdine(){
+			
+			setHeaderVisible(false);
+			setCollapsible(false);
+			setBorders(false);
+			setBodyBorder(false);
+			setScrollMode(Scroll.AUTO);	
+			setWidth(150);
+			setHeight(150);
+			setFrame(true);
+			setLayout(new FitLayout());
+			setItemId("cpTariffa");
+			setStyleAttribute("padding-top", "8px");
+			
+			cs=new CellSelectionModel<TariffaOrdineModel>();
+		    cs.setSelectionMode(SelectionMode.SIMPLE);
+	   
+		    cmTariffe=new ColumnModel(createColumns());
+		    gridTariffa= new EditorGrid<TariffaOrdineModel>(storeTariffe, cmTariffe);
+		    gridTariffa.setBorders(false);
+		    gridTariffa.setItemId("grid");
+		    gridTariffa.setStripeRows(true); 
+		    gridTariffa.setColumnLines(true);
+		    gridTariffa.setSelectionModel(cs);
+		    //TariffaOrdineModel tm=new TariffaOrdineModel();
+		    //storeTariffe.insert(tm, 0);//inserisco una riga vuota pronta per l'inserimento
+		    //gridTariffa.startEditing(storeTariffe.indexOf(tm), 0);
+		    		    
+		    btnAddTariffa= new Button();
+		    btnAddTariffa.setSize(26, 26);
+		    btnAddTariffa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.add()));
+		    btnAddTariffa.setIconAlign(IconAlign.BOTTOM);
+		    btnAddTariffa.addSelectionListener(new SelectionListener<ButtonEvent>() {
+				
+				@Override
+				public void componentSelected(ButtonEvent ce) {
+					TariffaOrdineModel tm=new TariffaOrdineModel();
+					gridTariffa.stopEditing();
+				    storeTariffe.insert(tm, 0);//inserisco una riga vuota per l'inserimento
+				    gridTariffa.startEditing(storeTariffe.indexOf(tm), 0);
+				}
+			});
+		    
+		    btnDelTariffa= new Button();
+		    btnDelTariffa.setSize(26, 26);
+		    btnDelTariffa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.respingi()));
+		    btnDelTariffa.setIconAlign(IconAlign.BOTTOM);
+		    btnDelTariffa.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+				@Override
+				public void componentSelected(ButtonEvent ce) {
+					TariffaOrdineModel trf=	cs.getSelectedItem();
+					storeTariffe.remove(trf);					
+				}
+			});
+		    
+		    		    				
+			ToolBar tlbGrid= new ToolBar();
+			tlbGrid.add(btnAddTariffa);
+			tlbGrid.add(new SeparatorToolItem());
+			tlbGrid.add(btnDelTariffa);
+			tlbGrid.add(new SeparatorToolItem());
+			//tlbGrid.add(btnConferma);	    
+			//tlbGrid.add(new SeparatorToolItem());
+			
+			setTopComponent(tlbGrid);
+			add(gridTariffa);		    
+		}
+		
+		
+		public void caricaTabella(int idRdo){
+			
+			AdministrationService.Util.getInstance().loadTariffePerOrdine(idRdo, new AsyncCallback<List<TariffaOrdineModel>>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					Window.alert("Errore di connessione on loadTariffePerOrdine()");			
+				}
+
+				@Override
+				public void onSuccess(List<TariffaOrdineModel> result) {
+					loadTable(result);					
+				}			
+			});		
+		}
+		
+		private void loadTable(List<TariffaOrdineModel> result) {
+			try {
+				storeTariffe.removeAll();
+				storeTariffe.add(result);
+				gridTariffa.reconfigure(storeTariffe, cmTariffe);	    		    	
+			} catch (NullPointerException e) {
+				Window.alert("error: Impossibile effettuare il caricamento dati nella tabella Tariffe.");
+					e.printStackTrace();
+			}
+		}		
+		
+		private List<ColumnConfig> createColumns() {
+			List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
+			CellEditor editorTxt;
+			
+			ColumnConfig column = new ColumnConfig();  
+		    column.setId("tariffaAttivita");  
+		    column.setHeader("Tariffa");  
+		    column.setWidth(60);  
+		    column.setRowHeader(true);
+		    column.setAlignment(HorizontalAlignment.RIGHT);	    
+		    txtfldTariffa= new TextField<String>();
+		    txtfldTariffa.setRegex("^([0-9]{1}|[0-9][0-9]).(0|00|[0-9]{2})$");
+		    txtfldTariffa.getMessages().setRegexText("Deve essere un numero!");
+		    txtfldTariffa.setValue("0.00");
+		    txtfldTariffa.setAllowBlank(false);		    
+		    editorTxt= new CellEditor(txtfldTariffa){
+		    	@Override  
+		        public Object preProcessValue(Object value) {  
+		          if (value == null) {  
+		            return value;  
+		          }  
+		          return value.toString();  
+		        }  
+		    
+		        @Override  
+		        public Object postProcessValue(Object value) {  
+		          if (value == null) {  
+		            return value;  
+		          }  
+		          return value.toString();  
+		        }  
+		    };	    
+		    column.setEditor(editorTxt);
+		    configs.add(column);
+		    
+		    
+		    column = new ColumnConfig();  
+		    column.setId("descrizione");  
+		    column.setHeader("Descrizione Attiv.");  
+		    column.setWidth(180);  
+		    column.setRowHeader(true);
+		    column.setAlignment(HorizontalAlignment.RIGHT);
+		    TextField<String> txtfldDescrizione= new TextField<String>();
+		    editorTxt= new CellEditor(txtfldDescrizione){
+		    	@Override  
+		        public Object preProcessValue(Object value) {  
+		          if (value == null) {  
+		            return value;  
+		          }  
+		          return value.toString();  
+		        }  
+		    
+		        @Override  
+		        public Object postProcessValue(Object value) {  
+		          if (value == null) {  
+		            return value;  
+		          }  
+		          return value.toString();  
+		        }  
+		    };	    
+		    column.setEditor(editorTxt);
+		    configs.add(column);
+			
+		    return configs;
+		}	
+	}
+	
+	
 	private class CntpnlGridRdo extends ContentPanel{
 		
 		private Button btnChiudiOrdine;
@@ -601,7 +937,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			setBorders(false);
 			setBodyBorder(false);
 			setScrollMode(Scroll.NONE);	
-			setWidth(820);
+			setWidth(940);
 			setFrame(false);
 			setStyleAttribute("margin-top", "10px");
 		
@@ -682,7 +1018,19 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 						txtfldNumeroRisorse.setValue(String.valueOf(be.getSelectedItem().getNumeroRisorse()));
 						txtfldNumeroOre.setValue(String.valueOf(be.getSelectedItem().getNumeroOre()));
 						txtfldNumeroOreResidue.setValue(String.valueOf(be.getSelectedItem().getNumeroOreResidue()));
+						
+						txtfldImportoOrdine.setValue((String)be.getSelectedItem().get("importoOrdine"));
+						txtfldImportoResiduoOrdine.setValue((String)be.getSelectedItem().get("importoResiduo"));
 		               
+						VerticalPanel vp= new VerticalPanel();
+						vp=(VerticalPanel) getParent();
+						CntpnlFormRdo cpfrm=(CntpnlFormRdo) vp.getItemByItemId("cpfrm");
+						ContentPanel cp=(ContentPanel) cpfrm.getItemByItemId("cp");
+						LayoutContainer layout=(LayoutContainer) cp.getItemByItemId("layout");
+						CntpnlGridTariffeOrdine cpTariffa=(CntpnlGridTariffeOrdine) layout.getItemByItemId("cpTariffa");
+						
+						cpTariffa.caricaTabella(be.getSelectedItem().getIdRdo());
+												
 						if(statoOrdine.compareTo("C")==0){
 							disableField();
 						}else{
@@ -782,6 +1130,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    tlbarSearchField.add(txtfldsearch);
 		    tlbarSearchField.add(btnSearch);
 		    //tlbarSearchField.add(btnChiudiOrdine);
+		    tlbarSearchField.add(new SeparatorToolItem());
 		    tlbarSearchField.add(btnAssociaCommessa);
 		    
 		    ContentPanel cntpnlGrid= new ContentPanel();
@@ -790,7 +1139,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    cntpnlGrid.setFrame(true);
 		    cntpnlGrid.setLayout(new FitLayout());  
 		    cntpnlGrid.setHeaderVisible(false);
-		    cntpnlGrid.setWidth(820);
+		    cntpnlGrid.setWidth(920);
 		    cntpnlGrid.setHeight(560);
 		    cntpnlGrid.setScrollMode(Scroll.AUTOY);
 		    cntpnlGrid.add(gridRiepilogo);
@@ -894,13 +1243,13 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    configs.add(column); 
 		    
-		    column=new ColumnConfig();		
+		    /*column=new ColumnConfig();		
 		    column.setId("tariffaOraria");  
 		    column.setHeader("Tariffa");  
 		    column.setWidth(60);  
 		    column.setRowHeader(true);  
 		    column.setAlignment(HorizontalAlignment.RIGHT);
-		    configs.add(column);
+		    configs.add(column);*/
 		    
 		    column=new ColumnConfig();		
 		    column.setId("numeroRisorse");  
