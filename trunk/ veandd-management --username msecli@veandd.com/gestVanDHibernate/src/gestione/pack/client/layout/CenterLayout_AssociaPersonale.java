@@ -551,7 +551,8 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 			});
 		
 		if(ruolo.compareTo("PM")==0	)
-		AdministrationService.Util.getInstance().getAssociazioniPersonaleCommessaByPM(cognomeApp, new AsyncCallback<List<PersonaleAssociatoModel>>() {
+		
+			AdministrationService.Util.getInstance().getAssociazioniPersonaleCommessaByPM(cognomeApp, new AsyncCallback<List<PersonaleAssociatoModel>>() {
 			
 			@Override
 			public void onSuccess(List<PersonaleAssociatoModel> result) {

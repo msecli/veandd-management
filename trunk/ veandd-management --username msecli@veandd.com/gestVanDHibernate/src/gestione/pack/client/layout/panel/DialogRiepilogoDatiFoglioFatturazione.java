@@ -185,7 +185,38 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 					return number.format(n);
 			}  
 	      });      
-	    configs.add(columnOreFatturate); 	
+	    configs.add(columnOreFatturate);
+	    
+	    SummaryColumnConfig<Double> columnImportoFatturare=new SummaryColumnConfig<Double>();		
+	    columnImportoFatturare.setId("importoFatturare");  
+	    columnImportoFatturare.setHeader("Importo da Fatturare");  
+	    columnImportoFatturare.setWidth(140);    
+	    columnImportoFatturare.setRowHeader(true); 
+	    columnImportoFatturare.setSummaryType(SummaryType.SUM);  
+	    columnImportoFatturare.setAlignment(HorizontalAlignment.RIGHT);    
+	    columnImportoFatturare.setRenderer(new GridCellRenderer<DatiFatturazioneCommessaModel>() {
+			@Override
+			public Object render(DatiFatturazioneCommessaModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneCommessaModel> store,
+					Grid<DatiFatturazioneCommessaModel> grid) {
+				Float n=model.get(property);
+				return number.format(n);
+			}  	
+		});
+	    columnImportoFatturare.setSummaryRenderer(new SummaryRenderer() {  
+	   			@Override
+			public String render(Number value, Map<String, Number> data) {
+	   				GroupingStore<DatiFatturazioneCommessaModel>store1 = new GroupingStore<DatiFatturazioneCommessaModel>();
+	   				String tot="0.00";
+	   				store1.add(store.getModels());
+	   				for(DatiFatturazioneCommessaModel riep: store1.getModels()){
+	   					tot=ClientUtility.aggiornaTotGenerale(tot, number.format((Float)riep.get("importoFatturare")));
+	   				}
+	   				
+	   				Float n=Float.valueOf(tot);
+					return number.format(n);
+			}  
+	      });      
+	    configs.add(columnImportoFatturare); 		
 	      
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("numeroOrdine");  

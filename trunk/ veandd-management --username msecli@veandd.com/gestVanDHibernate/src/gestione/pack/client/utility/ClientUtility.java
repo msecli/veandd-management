@@ -466,6 +466,56 @@ public class ClientUtility {
 	}
 	
 	
+	public static int getGiorniMese(String mese, String anno){
+		int giorni=0;
+		int a=Integer.valueOf(anno);
+		boolean bisestile=false;
+
+		if((a%4) == 0 && (a % 100 != 0 || a % 400 == 0))
+			bisestile=true;
+
+		if(mese.compareTo("Gen")==0)
+			giorni = 31;
+		else
+			if(mese.compareTo("Feb")==0){
+				if(!bisestile)
+        			giorni = 28;
+        		else giorni=29;
+			}
+		else
+			if(mese.compareTo("Mar")==0)
+				giorni = 31;
+		else
+			if(mese.compareTo("Apr")==0)
+				giorni = 30;
+			else
+				if(mese.compareTo("Mag")==0)
+					giorni = 31;
+				else
+					if(mese.compareTo("Giu")==0)
+						giorni = 30;
+					else
+						if(mese.compareTo("Lug")==0)
+							giorni = 31;
+						else
+							if(mese.compareTo("Ago")==0)
+								giorni = 31;
+							else
+								if(mese.compareTo("Set")==0)
+									giorni = 30;
+								else
+									if(mese.compareTo("Ott")==0)
+										giorni = 31;
+									else
+										if(mese.compareTo("Nov")==0)
+											giorni = 30;
+										else
+											if(mese.compareTo("Dic")==0)
+												giorni = 31;
+				
+		return giorni;
+	}
+	
 	public static String arrotondaIntervallo(String intervallo, String movimento){
 		String arrotondato=new String();
 		String minuti=intervallo.substring(intervallo.indexOf(":")+1, intervallo.length());

@@ -13,8 +13,8 @@ public class DatiFatturazioneCommessaModel extends BaseModel implements IsSerial
 	public DatiFatturazioneCommessaModel(){}
 	
 	public DatiFatturazioneCommessaModel(String numeroCommessa, String estensione, String numeroOrdine, String numeroMese, String mese, String tariffa, 
-			Float oreEseguite, Float oreFatturate, Float importo, Float variazioneSal, Float variazionePcl, Float margine){
-		
+			Float oreEseguite, Float oreFatturate, Float importoFatturare, Float importo, Float variazioneSal, Float variazionePcl, Float margine){
+		 
 		set("numeroCommessa", numeroCommessa);	
 		set("estensione", estensione);
 		set("numeroOrdine", numeroOrdine);
@@ -22,6 +22,7 @@ public class DatiFatturazioneCommessaModel extends BaseModel implements IsSerial
 		set("mese",mese);
 		set("oreEseguite", oreEseguite);
 		set("oreFatturate", oreFatturate);
+		set("importoFatturare", importoFatturare);
 		set("variazioneSal",variazioneSal);
 		set("variazionePcl",variazionePcl);
 		set("importo",importo);

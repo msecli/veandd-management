@@ -458,10 +458,40 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 				
 				@Override
 				public String render(Number value, Map<String, Number> data) {
-					return number.format(value);
+					final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
+					
+					return num.format(value);
 				}
 			});
-		     configs.add(columnImporto); 	
+		     configs.add(columnImporto); 
+		     
+		     SummaryColumnConfig<Double> columnImportoEffettivo=new SummaryColumnConfig<Double>();		
+		     columnImportoEffettivo.setId("importoEffettivo");  
+		     columnImportoEffettivo.setHeader("Importo Effettivo");  
+		     columnImportoEffettivo.setWidth(100);    
+		     columnImportoEffettivo.setRowHeader(true); 
+		     columnImportoEffettivo.setAlignment(HorizontalAlignment.RIGHT);
+		     columnImportoEffettivo.setStyle("color:#e71d2b; background-color:#d2f5af;");
+		     columnImportoEffettivo.setSummaryType(SummaryType.SUM);  
+		     columnImportoEffettivo.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
+					@Override
+					public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
+							Grid<DatiFatturazioneMeseModel> grid) {				
+						final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
+						Float n=model.get(property);
+						return num.format(n);
+					}  	
+				});  
+		     columnImportoEffettivo.setSummaryRenderer(new SummaryRenderer() {
+					
+					@Override
+					public String render(Number value, Map<String, Number> data) {
+						final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
+						
+						return num.format(value);
+					}
+				});
+			configs.add(columnImportoEffettivo); 
 		    	    
 		    SummaryColumnConfig<Double> variazioneSal=new SummaryColumnConfig<Double>();		
 		    variazioneSal.setId("variazioneSal");  

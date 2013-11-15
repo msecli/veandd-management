@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import gestione.pack.client.AdministrationService;
+import gestione.pack.client.layout.CenterLayout_FoglioOreGiornalieroAutoTimb.FldsetGiustificativi;
 import gestione.pack.client.layout.panel.DialogRiepilogoDatiFoglioFatturazione;
 import gestione.pack.client.layout.panel.PanelRiepilogoGiornalieroCommesse;
 import gestione.pack.client.model.RiepilogoOreDipFatturazione;
@@ -628,6 +629,7 @@ public CenterLayout_FoglioFatturazione(){}
 		private TextField<String> txtfldOreResiduoOrdine= new TextField<String>();
 		private TextField<String> txtfldCostoOrario= new TextField<String>();		
 		private TextField<String> txtfldOreDaFatturare= new TextField<String>();
+		private TextField<String> txtfldImportoDaFatturare= new TextField<String>();
 		private TextField<String> txtfldVariazioneSAL= new TextField<String>();
 		private TextField<String> txtfldVariazionePCL= new TextField<String>();
 		private TextField<String> txtfldOreScaricate= new TextField<String>();
@@ -636,6 +638,8 @@ public CenterLayout_FoglioFatturazione(){}
 		private TextField<String> txtfldOreEseguiteRegistrate= new TextField<String>();
 		private TextField<String> txtSalTotale= new TextField<String>();
 		private TextField<String> txtPclTotale= new TextField<String>();
+		private TextField<String> txtfldImportoOrdine= new TextField<String>();
+		private TextField<String> txtfldImportoResiduo= new TextField<String>();
 		private CheckBox chbxSalButtare;
 		
 		private Text txtOreDaFatturare= new Text();
@@ -647,6 +651,7 @@ public CenterLayout_FoglioFatturazione(){}
 		
 		private TextArea txtaNote=new TextArea();
 		private Button btnRiep= new Button();
+		private Button btnAssegnaImporto;
 		
 		private ColumnModel cmOrdine;
 		private Grid<RiepilogoOreTotaliCommesse> gridOrdine; 
@@ -695,14 +700,22 @@ public CenterLayout_FoglioFatturazione(){}
 		    btnSalva.addSelectionListener(new SelectionListener<ButtonEvent>() {
 				@Override
 				public void componentSelected(ButtonEvent ce) {
-					//CntpnlDatiFatturazioneOrdine cp= new CntpnlDatiFatturazioneOrdine();
-					//HorizontalPanel hp= new HorizontalPanel();
-					//hp=hpLayout;
-					
-					//cp=(CntpnlDatiFatturazioneOrdine) hp.getItemByItemId("panelDatiFatturazione");
-					
-					
-					if(txtfldOreDaFatturare.isValid()&&txtfldVariazioneSAL.isValid()&&txtfldVariazionePCL.isValid()){
+					float i=Float.valueOf(txtfldImportoDaFatturare.getValue().toString());
+					float a=Float.valueOf(txtfldImportoResiduo.getValue().toString());
+				
+					/*if(!checkOreImportoOrdine())
+						Window.alert("I valori di ore residue e importo residuo sull'ordine sono discordanti! Effettuare eventuali modifiche se necessario.");
+					else*/					
+					if(i>a)
+						Window.alert("L'importo da fatturare non puo' essere maggiore dell' importo residuo!");
+					else
+					if(Float.valueOf(txtfldOreDaFatturare.getValue().toString())!=0 && Float.valueOf(txtfldImportoDaFatturare.getValue().toString())==0
+							&& Float.valueOf(txtfldImportoOrdine.getValue().toString())!=0)
+						Window.alert("L'importo da fatturare non puo' essere 0!");
+					else
+					if(txtfldOreDaFatturare.isValid()&&txtfldVariazioneSAL.isValid()&&txtfldVariazionePCL.isValid()
+							&&txtfldImportoDaFatturare.isValid()){
+						
 						String oreEseguite= txtfldOreEseguiteRegistrate.getValue().toString();		
 						String salIniziale= txtfldSALIniziale.getValue().toString();
 						String pclIniziale= txtfldPCLIniziale.getValue().toString();
@@ -710,6 +723,7 @@ public CenterLayout_FoglioFatturazione(){}
 						String variazioneSAL= txtfldVariazioneSAL.getValue().toString();
 						String variazionePCL= txtfldVariazionePCL.getValue().toString();
 						String tariffaUtilizzata=txtfldCostoOrario.getValue().toString();
+						String importoDaFatturare=txtfldImportoDaFatturare.getValue().toString();
 						String salDaButtare= new String();
 						boolean salButtato= chbxSalButtare.getValue();
 																		
@@ -736,7 +750,7 @@ public CenterLayout_FoglioFatturazione(){}
 						if(nuovo&&(Float.valueOf(oreFatturare)>Float.valueOf(txtfldOreResiduoOrdine.getValue().toString())))
 							Window.alert("E' stato indicato un numero di ore da fatturare maggiore del numero di ore residue sull'ordine!");
 						else
-							AdministrationService.Util.getInstance().insertDatiFoglioFatturazione(oreEseguite,salIniziale,pclIniziale, oreFatturare,variazioneSAL,
+							AdministrationService.Util.getInstance().insertDatiFoglioFatturazione(oreEseguite,salIniziale,pclIniziale, oreFatturare, importoDaFatturare, variazioneSAL,
 								variazionePCL, data, note, statoElaborazione, commessaSelezionata, tariffaUtilizzata, salDaButtare, idAttivita, new AsyncCallback<Boolean>() {
 
 									@Override
@@ -760,6 +774,17 @@ public CenterLayout_FoglioFatturazione(){}
 							//Window.alert("E' stato inserito un numero di ore da fatturare maggiori delle ore residue sull'ordine!");
 					}			
 				}
+
+				private boolean checkOreImportoOrdine() {
+					
+					float oreRes=Float.valueOf(txtfldOreResiduoOrdine.getValue().toString()) - Float.valueOf(txtfldOreDaFatturare.getValue().toString());
+					float importoRes=Float.valueOf(txtfldImportoResiduo.getValue().toString()) - Float.valueOf(txtfldImportoDaFatturare.getValue().toString());
+					
+					if(((oreRes!=0 && importoRes==0)||(oreRes==0 && importoRes!=0)) && Float.valueOf(txtfldImportoOrdine.getValue().toString())!=0)					
+						return false;
+					else return true;
+				}
+
 			});		    
 		    
 		    btnRiep.setEnabled(false);
@@ -864,13 +889,19 @@ public CenterLayout_FoglioFatturazione(){}
 			txtfldOreOrdine.setFieldLabel("Ore Ordine");
 			txtfldOreOrdine.setEnabled(false);
 			
-			txtfldOreResiduoOrdine.setFieldLabel("Residuo Ore");
+			txtfldOreResiduoOrdine.setFieldLabel("Ore Residue");
 			txtfldOreResiduoOrdine.setEnabled(false);
 			
+			txtfldImportoOrdine.setFieldLabel("Importo Ord.");
+			txtfldImportoOrdine.setEnabled(false);
+			
+			txtfldImportoResiduo.setFieldLabel("Importo Res.");
+			txtfldImportoResiduo.setEnabled(false);
+			
 			txtfldCostoOrario.setFieldLabel("Tariffa Oraria");
-			txtfldCostoOrario.setEnabled(true);
+			txtfldCostoOrario.setEnabled(false);
 			txtfldCostoOrario.setAllowBlank(false);
-			txtfldCostoOrario.setRegex("[1-9]{1}[0-9]+[.]{1}[0-9]+|[1-9]{1}[.]{1}[0-9]+");
+			//txtfldCostoOrario.setRegex("[1-9]{1}[0-9]+[.]{1}[0-9]+|[1-9]{1}[.]{1}[0-9]+");
 			txtfldCostoOrario.setValue("0.00");
 			txtfldCostoOrario.addKeyListener(new KeyListener(){
 				public void componentKeyDown(ComponentEvent event) { 	  
@@ -971,14 +1002,16 @@ public CenterLayout_FoglioFatturazione(){}
 				 }
 			});
 								
-			layoutCol1.add(txtfldSALIniziale, new FormData("95%"));
-			layoutCol1.add(txtfldPCLIniziale, new FormData("95%"));
+			layoutCol1.add(txtfldImportoOrdine, new FormData("95%"));
+			layoutCol1.add(txtfldImportoResiduo, new FormData("95%"));
 						
 			layoutCol2.add(txtfldOreOrdine, new FormData("95%"));
 			layoutCol2.add(txtfldOreResiduoOrdine, new FormData("95%"));
 			layoutCol2.add(txtfldCostoOrario, new FormData("95%"));
 			layoutCol2.add(txtfldOreEseguiteRegistrate, new FormData("95%"));		
 			
+			layoutCol3.add(txtfldSALIniziale, new FormData("95%"));
+			layoutCol3.add(txtfldPCLIniziale, new FormData("95%"));
 			layoutCol3.add(txtSalTotale, new FormData("95%"));
 			layoutCol3.add(txtPclTotale, new FormData("95%"));
 			
@@ -1017,6 +1050,13 @@ public CenterLayout_FoglioFatturazione(){}
 			txtPclTotale.setValue("0.00");
 			txtPclTotale.setFieldLabel("Pcl Totale");
 			txtPclTotale.setEnabled(false);
+			
+			txtfldImportoDaFatturare.setAllowBlank(false);
+			txtfldImportoDaFatturare.setRegex("[0-9]+[.]{1}[0-9]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
+			//txtfldImportoDaFatturare.setValue("0.00");
+			txtfldImportoDaFatturare.setFieldLabel("Importo da Fatturare");
+			txtfldImportoDaFatturare.setEmptyText("Importo da Fatturare...");
+			txtfldImportoDaFatturare.setWidth(140);
 			
 			txtfldOreDaFatturare.setFieldLabel("Ore da Fatturare");
 			txtfldOreDaFatturare.setEnabled(true);
@@ -1350,6 +1390,23 @@ public CenterLayout_FoglioFatturazione(){}
 				}
 			});
 			
+			btnAssegnaImporto= new Button();
+			btnAssegnaImporto.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.arrowdown()));
+			btnAssegnaImporto.setToolTip("Assegna Totale Importo");
+			btnAssegnaImporto.setStyleAttribute("padding-left", "3px");
+			btnAssegnaImporto.setIconAlign(IconAlign.TOP);
+			btnAssegnaImporto.setSize(25, 15);
+			btnAssegnaImporto.addSelectionListener(new SelectionListener<ButtonEvent>() {
+					
+					@Override
+					public void componentSelected(ButtonEvent ce) {
+						
+						String importo=new String();
+						if(!txtfldTotFatturato.getRawValue().isEmpty()) importo=txtfldTotFatturato.getValue().toString();
+						else importo="0.00";
+						txtfldImportoDaFatturare.setValue(importo);						
+					}
+				});
 			
 			RowData data1 = new RowData(.20, 1);
 			data.setMargins(new Margins(5));
@@ -1421,14 +1478,19 @@ public CenterLayout_FoglioFatturazione(){}
 			layoutColumnTxtArea.add(txtaNote, new FormData("90%"));
 			cp2.add(layoutColumnTxtArea, data2);
 			
-						
+				
 			LayoutContainer layoutColumn5=new LayoutContainer();
 			layout= new FormLayout();
 			layout.setLabelWidth(110);
 			layout.setLabelAlign(LabelAlign.TOP);
 			layoutColumn5.setLayout(layout);
 			layoutColumn5.add(chbxSalButtare, new FormData("20%"));
-			layoutColumn5.add(txtfldTotFatturato, new FormData("65%"));
+			layoutColumn5.add(txtfldTotFatturato, new FormData("85%"));
+			HorizontalPanel hp= new HorizontalPanel();
+			hp.setSpacing(2);
+			hp.add(txtfldImportoDaFatturare);
+			hp.add(btnAssegnaImporto);
+			layoutColumn5.add(hp, new FormData("85%"));
 			cp2.add(layoutColumn5, data1);						
 			
 			fldsetFattura.add(cp2);
@@ -1737,6 +1799,10 @@ public CenterLayout_FoglioFatturazione(){}
 					txtfldVariazioneSAL.setValue(result.getVariazioneSal());
 					txtfldVariazionePCL.setValue(result.getVariazionePcl());
 					txtaNote.setValue(result.getNote());
+					txtfldImportoOrdine.setValue((String)result.get("importo"));
+					txtfldImportoResiduo.setValue((String)result.get("importoResiduo"));
+					txtfldImportoDaFatturare.setValue((String)result.get("importoDaFatturare"));
+							
 						
 					txtfldOreEseguiteRegistrate.setValue(result.getOreEseguiteRegistrate());
 					
@@ -1781,6 +1847,8 @@ public CenterLayout_FoglioFatturazione(){}
 					
 					txtfldOreOrdine.setValue(result.getOreOrdine());
 					txtfldOreResiduoOrdine.setValue(result.getResiduoOre());
+					txtfldImportoOrdine.setValue((String)result.get("importo"));
+					txtfldImportoResiduo.setValue((String)result.get("importoResiduo"));
 					txtfldCostoOrario.setValue(number.format(result.getTariffaOraria()));
 					txtfldSALIniziale.setValue(result.getsalAttuale());
 					txtfldPCLIniziale.setValue(result.getPclAttuale());
@@ -1796,6 +1864,7 @@ public CenterLayout_FoglioFatturazione(){}
 					txtfldDiffScaricateEseguite.setValue("0.00");
 					txtfldOreScaricate.setValue("0.00");
 					txtfldOreDaFatturare.setValue("0.00");
+					txtfldImportoDaFatturare.setValue("0.00");					
 					
 					totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldOreDaFatturare.getValue().toString()));
 	    	  		txtOreDaFatturare.setText("("+totaleEuro+")");
@@ -1817,11 +1886,18 @@ public CenterLayout_FoglioFatturazione(){}
 				
 				String r=txtRuolo.getText();
 				
+				float oreRes=Float.valueOf(txtfldOreResiduoOrdine.getValue().toString());
+				float importoRes=Float.valueOf(txtfldImportoResiduo.getValue().toString());
+				
+				if(((oreRes!=0 && importoRes==0)||(oreRes==0 && importoRes!=0)) && Float.valueOf(txtfldImportoOrdine.getValue().toString())!=0)					
+					Window.alert("I valori di ore residue e importo residuo sull'ordine sono incoerenti. Effettuare eventuali modifiche.");
+				
 				if(txtfldOreResiduoOrdine.getValue().toString().compareTo("0.00")==0 && r.compareTo("PM")==0)
 					txtfldOreDaFatturare.setEnabled(false);
 				else
 					txtfldOreDaFatturare.setEnabled(true);	
-			
+							
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println("errore load FormFatturazione.");

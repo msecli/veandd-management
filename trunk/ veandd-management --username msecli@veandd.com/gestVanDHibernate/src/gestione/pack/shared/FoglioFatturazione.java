@@ -46,6 +46,8 @@ public class FoglioFatturazione  extends LightEntity implements IsSerializable{
 	private String flagSalDaButtare;
 	
 	private int attivitaOrdine;
+	
+	private String importoRealeFatturato;
 
 	//bi-directional many-to-one association to Commessa
     @ManyToOne
@@ -173,5 +175,13 @@ public class FoglioFatturazione  extends LightEntity implements IsSerializable{
 
 	public void setAttivitaOrdine(int attivitaOrdine) {
 		this.attivitaOrdine = attivitaOrdine;
+	}
+
+	public String getImportoRealeFatturato() {
+		return importoRealeFatturato;
+	}
+
+	public void setImportoRealeFatturato(String importoRealeFatturato) {
+		this.importoRealeFatturato = importoRealeFatturato;
 	}
 }

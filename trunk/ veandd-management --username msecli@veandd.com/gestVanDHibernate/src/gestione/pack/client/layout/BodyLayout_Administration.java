@@ -13,6 +13,7 @@ import gestione.pack.client.layout.panel.PanelGestioneCosting;
 import gestione.pack.client.layout.panel.PanelPrintAll;
 import gestione.pack.client.layout.panel.PanelRiepilogoAnnualeOreDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoCostiDipendenti;
+import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroCommesseHorizontal;
 import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
 import gestione.pack.client.layout.panel.PanelRiepilogoOreCommesseDettDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
@@ -412,7 +413,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
             	center.removeAll();
-	        	center.add(new CenterLayout_GestioneRdoCompletaDup());
+	        	center.add(new CenterLayout_GestioneRdoCompleta());
 	        	center.layout(true);               
             }
         });
@@ -425,7 +426,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    btnGestioneRdo.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	          center.removeAll();
-	        	center.add(new CenterLayout_GestioneRdoCompletaDup());
+	        	center.add(new CenterLayout_GestioneRdoCompleta());
 	        	center.layout(true);}
 	        
 	      });
