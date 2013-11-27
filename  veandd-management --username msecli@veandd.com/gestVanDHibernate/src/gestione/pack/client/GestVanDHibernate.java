@@ -6,6 +6,7 @@ import gestione.pack.client.layout.BodyLayout_Direzione;
 import gestione.pack.client.layout.BodyLayout_PersonalManager;
 import gestione.pack.client.layout.BodyLayout_UffAmministrazione;
 import gestione.pack.client.layout.BodyLayout_GestionePersonale;
+import gestione.pack.client.layout.panel.PanelFormInserimentoDatiFattura;
 import gestione.pack.client.utility.ConstantiMSG;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -35,6 +36,13 @@ public class GestVanDHibernate implements EntryPoint {
 	public void onModuleLoad() {		
 		LoginDialog d = new LoginDialog();
 		d.show();		
+		
+		
+		//Dialog d= new Dialog();
+	//	//d.setSize(630, 520);
+	//	d.setButtons("");
+	//.add(new PanelFormInserimentoDatiFattura("", 0, null));
+	//	d.show();
 		}
 	}
 	
@@ -123,7 +131,6 @@ public class GestVanDHibernate implements EntryPoint {
 	        userName.focus();
 	        status.hide();
 	      }
-
 	    });
 
 	    login = new Button("Login");

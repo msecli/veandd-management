@@ -1,7 +1,9 @@
 package gestione.pack.client.layout.panel;
 
 import gestione.pack.client.SessionManagementService;
+import gestione.pack.client.model.CostingModel;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
+import gestione.pack.client.model.RdoCompletaModel;
 import gestione.pack.client.utility.MyImages;
 
 import java.util.ArrayList;
@@ -11,20 +13,30 @@ import java.util.Map;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.GridEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.fx.Resizable;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.BoxComponent;
+import com.extjs.gxt.ui.client.widget.ComponentPlugin;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
+import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.GroupSummaryView;
 import com.extjs.gxt.ui.client.widget.grid.SummaryColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.SummaryRenderer;
@@ -42,9 +54,11 @@ public class PanelRiepilogoDatiPerFatturazione extends LayoutContainer{
 
 	private GroupingStore<DatiFatturazioneMeseModel>store = new GroupingStore<DatiFatturazioneMeseModel>();
 	private EditorGrid<DatiFatturazioneMeseModel> gridRiepilogo;
+	private GridSelectionModel<DatiFatturazioneMeseModel> sm = new CheckBoxSelectionModel<DatiFatturazioneMeseModel>();
 	private ColumnModel cm;
 	
 	private Button btnPrint;
+	
 	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
 	private static String url= "/gestvandhibernate/PrintDataServlet";
 	
@@ -79,9 +93,9 @@ public class PanelRiepilogoDatiPerFatturazione extends LayoutContainer{
 		cpGrid.setFrame(true);
 		cpGrid.setScrollMode(Scroll.AUTO);
 		cpGrid.setLayout(new FitLayout());
-		cpGrid.setSize(1000, 750);
-		
-		
+		cpGrid.setSize(1350, 1060);		
+		Resizable r=new Resizable(cpGrid);
+						
 		btnPrint = new Button();
 		btnPrint.setSize("55px","25px");	   
 		btnPrint.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.print24()));
@@ -134,8 +148,8 @@ public class PanelRiepilogoDatiPerFatturazione extends LayoutContainer{
 		gridRiepilogo.setBorders(false); 
 		gridRiepilogo.setColumnLines(true);
 		gridRiepilogo.setStripeRows(true);
-		gridRiepilogo.setView(summary);  
-		gridRiepilogo.getView().setShowDirtyCells(false);
+		gridRiepilogo.addPlugin((ComponentPlugin) sm);
+		
 		
 		cpGrid.add(gridRiepilogo);
 		layoutContainer.add(cpGrid);
@@ -145,7 +159,7 @@ public class PanelRiepilogoDatiPerFatturazione extends LayoutContainer{
 	private List<ColumnConfig> createColumns() {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 		final NumberFormat number= NumberFormat.getFormat("0.00");
-		
+			
 		SummaryColumnConfig<Double> column=new SummaryColumnConfig<Double>();		
 	    column.setId("pm");  
 	    column.setHeader("Project Manager");  
@@ -180,6 +194,13 @@ public class PanelRiepilogoDatiPerFatturazione extends LayoutContainer{
 		column.setWidth(150);  
 		column.setRowHeader(true); 
 	    configs.add(column); 
+	    
+	    column=new SummaryColumnConfig<Double>();		
+	    column.setId("numeroOrdine");  
+		column.setHeader("Ordine");  
+		column.setWidth(80);  
+		column.setRowHeader(true);
+		configs.add(column);
 	    
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("oggettoAttivita");  
@@ -314,7 +335,7 @@ public class PanelRiepilogoDatiPerFatturazione extends LayoutContainer{
 				}
 			});
 		configs.add(columnImportoEffettivo); 
-	    
+		
 	    return configs;
 	}
 	

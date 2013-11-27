@@ -1,6 +1,5 @@
 package gestione.pack.shared;
 
-
 import javax.persistence.*;
 
 import org.hibernate.annotations.Cascade;
@@ -69,6 +68,14 @@ public class Ordine extends LightEntity implements IsSerializable {
 	private String importo;
 	
 	private String importoResiduo;
+	
+	private String elementoWbs;
+	
+	private String conto;
+	
+	private String prCenter;
+	
+	private String bem;	
 
 	//bi-directional many-to-one association to Rda
 	@ManyToOne
@@ -84,6 +91,11 @@ public class Ordine extends LightEntity implements IsSerializable {
 	@OneToMany(mappedBy="ordine", fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.DELETE_ORPHAN})
 	private Set<AttivitaOrdine> attivitaOrdines;
+	
+	//bi-directional many-to-one association to Fattura
+	@OneToMany(mappedBy="ordine", fetch=FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	private Set<Fattura> fatturas;
 
     public Ordine() {
     }
@@ -262,6 +274,46 @@ public class Ordine extends LightEntity implements IsSerializable {
 
 	public void setImportoResiduo(String importoResiduo) {
 		this.importoResiduo = importoResiduo;
+	}
+
+	public String getElementoWbs() {
+		return elementoWbs;
+	}
+
+	public void setElementoWbs(String elementoWbs) {
+		this.elementoWbs = elementoWbs;
+	}
+
+	public String getConto() {
+		return conto;
+	}
+
+	public void setConto(String conto) {
+		this.conto = conto;
+	}
+
+	public String getPrCenter() {
+		return prCenter;
+	}
+
+	public void setPrCenter(String prCenter) {
+		this.prCenter = prCenter;
+	}
+
+	public String getBem() {
+		return bem;
+	}
+
+	public void setBem(String bem) {
+		this.bem = bem;
+	}
+
+	public Set<Fattura> getFatturas() {
+		return fatturas;
+	}
+
+	public void setFatturas(Set<Fattura> fatturas) {
+		this.fatturas = fatturas;
 	}
 	
 	

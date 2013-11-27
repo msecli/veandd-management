@@ -37,6 +37,8 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 
 
@@ -47,6 +49,7 @@ public class CenterLayout_AnagraficaClienti extends LayoutContainer {
 	private Button btnDelete;
 	private Button btnReset;
 	private TextField<String> txtfldCodRaggr;
+	private TextField<String> txtfldCodFornitore;
 	private TextField<String> txtfldEmail;
 	private TextField<String> txtfldTelefono;
 	private TextField<String> txtfldIndirizzo;
@@ -159,7 +162,7 @@ public class CenterLayout_AnagraficaClienti extends LayoutContainer {
 		ButtonBar buttonBar = new ButtonBar();
 		buttonBar.setStyleAttribute("padding-top", "0px");
 		
-		btnSend = new Button("Insert");
+		btnSend = new Button("Save");
 	    btnSend.setWidth("65px");
 	    btnSend.setEnabled(true);
 	    buttonBar.add(btnSend);
@@ -177,7 +180,7 @@ public class CenterLayout_AnagraficaClienti extends LayoutContainer {
 	    btnReset = new Button("X");
 	    btnReset.setEnabled(true);
 	    buttonBar.add(btnReset);
-	    btnReset.setWidth("35px");
+	    btnReset.setWidth("25px");
 			
 		ContentPanel cntntpnlParent = new ContentPanel();
 		cntntpnlParent.setCollapsible(false);
@@ -201,11 +204,24 @@ public class CenterLayout_AnagraficaClienti extends LayoutContainer {
 		cpLayout.setWidth(1050);
 		cpLayout.setHeight(850);
 		
-		cpLayout.setButtonAlign(HorizontalAlignment.CENTER);
+		/*cpLayout.setButtonAlign(HorizontalAlignment.CENTER);
 		cpLayout.addButton(btnSend);
 		cpLayout.addButton(btnEdit);
 		cpLayout.addButton(btnDelete);
-		cpLayout.addButton(btnReset);
+		cpLayout.addButton(btnReset);*/
+		
+		ToolBar tlbr= new ToolBar();
+		tlbr.setAlignment(HorizontalAlignment.RIGHT);
+		tlbr.add(new SeparatorToolItem());
+		tlbr.add(btnSend);
+		tlbr.add(new SeparatorToolItem());
+		tlbr.add(btnEdit);
+		tlbr.add(new SeparatorToolItem());
+		tlbr.add(btnDelete);
+		tlbr.add(new SeparatorToolItem());
+		tlbr.add(btnReset);
+		tlbr.add(new SeparatorToolItem());
+		cpLayout.setTopComponent(tlbr);
 		
 		//cntpnlDati.add(buttonBar);
 		cntpnlDati.add(cntpnlGrid);
@@ -230,6 +246,7 @@ public class CenterLayout_AnagraficaClienti extends LayoutContainer {
 	    		String codFiscale=new String();
 	    		String partitaIVA=new String();
 	    		String codRaggr=new String();
+	    		String codFornitore="";
 	    		String comune=new String();
 	    		String provincia=new String();
 	    		String stato=new String();
@@ -245,6 +262,7 @@ public class CenterLayout_AnagraficaClienti extends LayoutContainer {
 	    			if(txtfldCodiceFiscale.getRawValue().isEmpty()){  codFiscale = "";}else{codFiscale=txtfldCodiceFiscale.getValue().toString();};
 	    			if(txtfldPartitaIva.getRawValue().isEmpty()){  partitaIVA = "";}else{partitaIVA=txtfldPartitaIva.getValue().toString();};
 	    			if(txtfldCodRaggr.getRawValue().isEmpty()){  codRaggr = "";}else{codRaggr=txtfldCodRaggr.getValue().toString();};
+	    			if(txtfldCodFornitore.getRawValue().isEmpty()){  codFornitore = "";}else{codFornitore=txtfldCodFornitore.getValue().toString();};
 	    			if(txtfldComune.getRawValue().isEmpty()){  comune = "";}else{comune=txtfldComune.getRawValue().toString();};
 	    			if(txtfldProvincia.getRawValue().isEmpty()){  provincia = "";}else{provincia=txtfldProvincia.getRawValue().toString();};
 	    			if(txtfldStato.getRawValue().isEmpty()){  stato = "";}else{stato=txtfldStato.getRawValue().toString();};
@@ -255,7 +273,8 @@ public class CenterLayout_AnagraficaClienti extends LayoutContainer {
 	    			if(txtfldEmail.getRawValue().isEmpty()){  email = "";}else{ email=txtfldEmail.getValue().toString();};
 	    	
 	    	
-	    			AdministrationService.Util.getInstance().insertDataCliente(codCliente, ragSociale, codFiscale, partitaIVA, codRaggr, comune, provincia, stato, indirizzo, 
+	    			AdministrationService.Util.getInstance().insertDataCliente(codCliente, ragSociale, codFiscale, partitaIVA, codRaggr, codFornitore, 
+	    					comune, provincia, stato, indirizzo, 
 	    						cap,  telefono, fax, email, new AsyncCallback<Void>() {
 
 							@Override
@@ -293,6 +312,7 @@ public class CenterLayout_AnagraficaClienti extends LayoutContainer {
 	    		String codFiscale=new String();
 	    		String partitaIVA=new String();
 	    		String codRaggr=new String();
+	    		String codFornitore="";
 	    		String comune=new String();
 	    		String provincia=new String();
 	    		String stato=new String();
@@ -308,6 +328,7 @@ public class CenterLayout_AnagraficaClienti extends LayoutContainer {
 		    			if(txtfldCodiceFiscale.getRawValue().isEmpty()){  codFiscale = "";}else{codFiscale=txtfldCodiceFiscale.getValue().toString();};
 		    			if(txtfldPartitaIva.getRawValue().isEmpty()){  partitaIVA = "";}else{partitaIVA=txtfldPartitaIva.getValue().toString();};
 		    			if(txtfldCodRaggr.getRawValue().isEmpty()){  codRaggr = "";}else{codRaggr=txtfldCodRaggr.getValue().toString();};
+		    			if(txtfldCodFornitore.getRawValue().isEmpty()){  codFornitore = "";}else{codFornitore=txtfldCodFornitore.getValue().toString();};
 		    			if(txtfldComune.getRawValue().isEmpty()){  comune = "";}else{comune=txtfldComune.getRawValue().toString();};
 		    			if(txtfldProvincia.getRawValue().isEmpty()){  provincia = "";}else{provincia=txtfldProvincia.getRawValue().toString();};
 		    			if(txtfldStato.getRawValue().isEmpty()){  stato = "";}else{stato=txtfldStato.getRawValue().toString();};
@@ -318,7 +339,8 @@ public class CenterLayout_AnagraficaClienti extends LayoutContainer {
 		    			if(txtfldEmail.getRawValue().isEmpty()){  email = "";}else{ email=txtfldEmail.getValue().toString();};
 		    		    //da aggiungere la domiciliazione bancaria
 		    			
-		    			AdministrationService.Util.getInstance().editDataCliente(codCliente, ragSociale, codFiscale, partitaIVA, codRaggr, comune, provincia, stato, indirizzo, 
+		    			AdministrationService.Util.getInstance().editDataCliente(codCliente, ragSociale, codFiscale, partitaIVA, codRaggr, codFornitore,  
+		    					comune, provincia, stato, indirizzo, 
 	    						cap,  telefono, fax, email, new AsyncCallback<Void>() {
 
 								@Override
@@ -506,6 +528,14 @@ private List<ColumnConfig> createColumns() {
 		frmpnlAnagraficaClienti.add(txtfldCodRaggr, fd_txtfldCodRaggr);
 		txtfldCodRaggr.setFieldLabel("Cod. Raggr.");
 		txtfldCodRaggr.setName("codRaggr");
+		
+		txtfldCodFornitore = new TextField<String>();
+		txtfldCodFornitore.setMaxLength(25);
+		FormData fd_txtfldCodFornitore = new FormData("90%");
+		fd_txtfldCodFornitore.setMargins(new Margins(0, 0, 5, 0));
+		frmpnlAnagraficaClienti.add(txtfldCodFornitore, fd_txtfldCodFornitore);
+		txtfldCodFornitore.setFieldLabel("Cod. Fornitore");
+		txtfldCodFornitore.setName("codFornitore");
 		
 		fldstIndirizzo = new FieldSet();
 		

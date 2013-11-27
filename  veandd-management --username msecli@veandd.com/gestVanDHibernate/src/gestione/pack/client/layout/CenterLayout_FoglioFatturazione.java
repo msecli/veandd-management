@@ -126,7 +126,7 @@ public CenterLayout_FoglioFatturazione(){}
 		cntpnlFoglioFatturazione.setHeaderVisible(false);
 		cntpnlFoglioFatturazione.setCollapsible(false);
 		cntpnlFoglioFatturazione.setBorders(false);
-		cntpnlFoglioFatturazione.setWidth(1090);
+		cntpnlFoglioFatturazione.setWidth(1170);
 		cntpnlFoglioFatturazione.setHeight(860);
 		cntpnlFoglioFatturazione.setFrame(true);
 		cntpnlFoglioFatturazione.setButtonAlign(HorizontalAlignment.CENTER);
@@ -473,7 +473,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    SummaryColumnConfig<Double> columnOreLavoro=new SummaryColumnConfig<Double>();		
 		    columnOreLavoro.setId("oreLavoro");  
 		    columnOreLavoro.setHeader("Ore Lavoro");  
-		    columnOreLavoro.setWidth(63);    
+		    columnOreLavoro.setWidth(60);    
 		    columnOreLavoro.setRowHeader(true); 
 		    columnOreLavoro.setAlignment(HorizontalAlignment.LEFT);  
 		    columnOreLavoro.setRenderer(new GridCellRenderer<RiepilogoOreDipFatturazione>() {
@@ -492,7 +492,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    SummaryColumnConfig<Double> columnOreViaggio=new SummaryColumnConfig<Double>();		
 		    columnOreViaggio.setId("oreViaggio");  
 		    columnOreViaggio.setHeader("Ore Viaggio");  
-		    columnOreViaggio.setWidth(63);    
+		    columnOreViaggio.setWidth(60);    
 		    columnOreViaggio.setRowHeader(true); 
 		    columnOreViaggio.setAlignment(HorizontalAlignment.LEFT);    
 		    columnOreViaggio.setRenderer(new GridCellRenderer<RiepilogoOreDipFatturazione>() {
@@ -511,7 +511,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    SummaryColumnConfig<Double> columnOreTotali=new SummaryColumnConfig<Double>();		
 		    columnOreTotali.setId("oreTotali");  
 		    columnOreTotali.setHeader("Totale C.");  
-		    columnOreTotali.setWidth(63);    
+		    columnOreTotali.setWidth(60);    
 		    columnOreTotali.setRowHeader(true); 
 		    columnOreTotali.setAlignment(HorizontalAlignment.LEFT);    
 		    columnOreTotali.setRenderer(new GridCellRenderer<RiepilogoOreDipFatturazione>() {
@@ -549,7 +549,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    column=new SummaryColumnConfig<Double>();		
 		    column.setId("checkOre");  
 			column.setHeader("Check");  
-			column.setWidth(20);  
+			column.setWidth(30);  
 			column.setRowHeader(true); 
 			column.setRenderer(new GridCellRenderer<RiepilogoOreDipFatturazione>() {
 
@@ -663,7 +663,7 @@ public CenterLayout_FoglioFatturazione(){}
 			setBorders(false);
 			setBodyBorder(false);
 			setScrollMode(Scroll.NONE);	
-			setWidth(655);
+			setWidth(700);
 			setHeight(780);
 			setFrame(false);
 			setItemId("panelDatiFatturazione");
@@ -685,7 +685,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    cntpnlGrid.setButtonAlign(HorizontalAlignment.CENTER);  
 		    cntpnlGrid.setLayout(new FitLayout());  
 		    cntpnlGrid.setHeaderVisible(false);
-		    cntpnlGrid.setWidth(575);
+		    cntpnlGrid.setWidth(660);
 		    cntpnlGrid.setHeight(220);
 		    cntpnlGrid.setScrollMode(Scroll.AUTO);
 		
@@ -1668,11 +1668,19 @@ public CenterLayout_FoglioFatturazione(){}
 		    configs.add(column);
 		    
 		    column=new ColumnConfig();		
+		    column.setId("importoFatturato");
+		    column.setHeader("Importo");  
+		    column.setWidth(65);  
+		    column.setRowHeader(true);  
+		    column.setAlignment(HorizontalAlignment.RIGHT);
+		    configs.add(column);
+		    
+		    column=new ColumnConfig();		
 		    column.setId("compilato");//flag per indicare se è già presente il foglio ore del mese  
 		    column.setHeader("C.");  
 		    column.setWidth(20);  
 		    column.setRowHeader(true);
-		    column.setToolTip("Se verde indica che il foglio del mese e' stato compilato.");
+		    column.setToolTip("Se verde indica che i dati del mese sono stati confermati.");
 		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
 
 				@Override

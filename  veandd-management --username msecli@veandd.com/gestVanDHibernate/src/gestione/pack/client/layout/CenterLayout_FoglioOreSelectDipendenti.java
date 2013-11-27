@@ -4035,7 +4035,7 @@ String movimento= new String();
 			oreL=txtfldOreLavoro.getValue().toString();
 			//if(oreV.compareTo("0.00")!=0 || oreL.compareTo("0.00")!=0){
 				intervallo= new IntervalliCommesseModel(txtfldNumCommessa.getValue().toString(), txtfldOreLavoro.getValue().toString(), txtfldOreViaggio.getValue().toString()
-					,"","", txtDescrizione.toString());
+					,"","", txtDescrizione.toString(), "");
 				intervalliC.add(intervallo);
 			//}
 		}

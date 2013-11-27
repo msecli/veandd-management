@@ -4,6 +4,7 @@ import java.util.List;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.model.ClienteModel;
+import gestione.pack.client.model.PersonaleModel;
 import gestione.pack.client.utility.DatiComboBox;
 import gestione.pack.client.utility.MyImages;
 
@@ -40,16 +41,16 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 public class DialogNewCosting extends Dialog{
 
 	private ComboBox<ClienteModel> cmbxCliente;
+	private ComboBox<PersonaleModel> cmbxPM;
 	private SimpleComboBox<String> smplcmbxCommessa;
 	private SimpleComboBox<String> smplcmbxArea;
+	private SimpleComboBox<String> smplcmbxPM;
 	private TextArea txtaDescrizione;
 	private Button btnHelp;
 	private Button btnSave;
 	private Label lblCommessa;
 	private String username;
 		
-	
-	
 	public DialogNewCosting(String u){
 		this.username=u;
 		
@@ -88,6 +89,38 @@ public class DialogNewCosting extends Dialog{
 		
 		ToolBar tlbTop= new ToolBar();
 		tlbTop.setBorders(false);
+		/*
+		ListStore<PersonaleModel> storeP= new ListStore<PersonaleModel>();
+		cmbxPM= new ComboBox<PersonaleModel>();
+		cmbxPM.setEmptyText("Selezionare il cliente..");
+		cmbxPM.setAllowBlank(false);
+		cmbxPM.setStore(storeP);
+		cmbxPM.setEnabled(true);
+		cmbxPM.setEditable(true);
+		cmbxPM.setVisible(true);
+		cmbxPM.setTriggerAction(TriggerAction.ALL);
+		cmbxPM.setDisplayField("nomeCompleto");
+		cmbxPM.addListener(Events.OnClick, new Listener<BaseEvent>(){
+			@Override
+			public void handleEvent(BaseEvent be) {					
+					getNomePm();					
+			}
+
+		});*/
+		
+		
+		smplcmbxPM = new SimpleComboBox<String>();
+		smplcmbxPM.setEmptyText("Project Manager...");
+		smplcmbxPM.setName("pm");
+		smplcmbxPM.setAllowBlank(false);
+		smplcmbxPM.setTriggerAction(TriggerAction.ALL);
+		smplcmbxPM.addListener(Events.OnClick, new Listener<BaseEvent>(){
+			@Override
+			public void handleEvent(BaseEvent be) {					
+				getNomePm();				
+			}	
+		});
+				
 		
 		ListStore<ClienteModel> store=new ListStore<ClienteModel>();
 		cmbxCliente= new ComboBox<ClienteModel>();
@@ -147,14 +180,16 @@ public class DialogNewCosting extends Dialog{
 			@Override
 			public void componentSelected(ButtonEvent ce) {							
 								
-				if(smplcmbxCommessa.isValid()&&cmbxCliente.isValid()&&txtaDescrizione.isValid()&&smplcmbxArea.isValid()){
+				if(smplcmbxCommessa.isValid()&&cmbxCliente.isValid()&&txtaDescrizione.isValid()
+						&&smplcmbxArea.isValid() && smplcmbxPM.isValid()){
 					
 					String commessa=smplcmbxCommessa.getRawValue().toString();
 					int idCliente=cmbxCliente.getValue().get("idCliente");
 					String descrizione=txtaDescrizione.getValue().toString();
 					String area=smplcmbxArea.getRawValue().toString();
+					String pm=smplcmbxPM.getRawValue().toString();
 					
-					AdministrationService.Util.getInstance().insertDataCosting(commessa, area, idCliente, descrizione, username, new AsyncCallback<Boolean>() {
+					AdministrationService.Util.getInstance().insertDataCosting(commessa, area, idCliente, descrizione, pm, new AsyncCallback<Boolean>() {
 
 						@Override
 						public void onFailure(Throwable caught) {
@@ -178,6 +213,7 @@ public class DialogNewCosting extends Dialog{
 		
 		vp.add(btnHelp);
 		
+		layout1.add(smplcmbxPM, new FormData("80%"));
 		layout1.add(cmbxCliente,new FormData("80%"));
 		layout1.add(smplcmbxArea, new FormData("80%"));
 		layout1.add(vp,new FormData("70%"));
@@ -190,6 +226,28 @@ public class DialogNewCosting extends Dialog{
 		add(bodyContainer);	
 	}	
 	
+	private void getNomePm() {
+		AdministrationService.Util.getInstance().getNomePM(new AsyncCallback<List<String>>() { //Viene restituito nella forma Cognome Nome
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("Errore connessione on getNomePM();");
+				caught.printStackTrace();
+			}
+
+			@Override
+			public void onSuccess(List<String> result) {
+				if(result!=null){
+					
+					smplcmbxPM.removeAll();
+					smplcmbxPM.add(result);
+					smplcmbxPM.recalculate();
+					//smplcmbxPM.add("Tutti");
+				}else Window.alert("error: Errore durante l'accesso ai dati PM.");			
+			}
+		});	
+		
+	}	
 	
 	private void getAllClienti() {
 		AdministrationService.Util.getInstance().getListaClientiModel(new AsyncCallback<List<ClienteModel>>() {

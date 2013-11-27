@@ -15,7 +15,7 @@ public class IntervalliCommesseModel  extends BaseModel implements IsSerializabl
 	}
 	
 	public IntervalliCommesseModel( String numeroCommessa, String oreLavoro, String oreViaggio, 
-			String totOreLavoro, String totOreViaggio, String descrizione){	
+			String totOreLavoro, String totOreViaggio, String descrizione, String giustificativo){	
 		
 		//set("idAssociazionePtoC", idAssociazione);
 		set("numeroCommessa", numeroCommessa);
@@ -24,6 +24,7 @@ public class IntervalliCommesseModel  extends BaseModel implements IsSerializabl
 		set("totOreLavoro", totOreLavoro);
 		set("totOreViaggio", totOreViaggio);
 		set("descrizione", descrizione);
+		set("giustificativo", giustificativo);
 	}
 	
 	public String getNumeroCommessa(){

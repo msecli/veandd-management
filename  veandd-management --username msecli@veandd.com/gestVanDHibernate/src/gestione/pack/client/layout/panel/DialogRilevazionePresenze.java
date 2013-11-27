@@ -3949,7 +3949,7 @@ public class DialogRilevazionePresenze extends Dialog {
 			txtfldOreViaggio=frm.txtfldOreViaggio;
 			txtDescrizione=frm.txtDescrizione;
 			intervallo= new IntervalliCommesseModel(txtfldNumCommessa.getValue().toString(), txtfldOreLavoro.getValue().toString(), txtfldOreViaggio.getValue().toString()
-					,"","", txtDescrizione.toString());
+					,"","", txtDescrizione.toString(),"");
 			intervalliC.add(intervallo);
 		}
 		

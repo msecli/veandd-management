@@ -242,8 +242,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 						
 					}
 				});	
-			}
-	  		
+			}  		
 	  	});
 	  	
 	  	btnChiudiCosting=new Button();

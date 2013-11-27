@@ -25,6 +25,7 @@ import gestione.pack.client.model.CostingModel;
 import gestione.pack.client.model.CostingRisorsaModel;
 import gestione.pack.client.model.DatiFatturazioneCommessaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
+import gestione.pack.client.model.FatturaModel;
 import gestione.pack.client.model.FoglioFatturazioneModel;
 import gestione.pack.client.model.GestioneCostiDipendentiModel;
 import gestione.pack.client.model.GestioneRdoCommesse;
@@ -98,13 +99,14 @@ public interface AdministrationService extends RemoteService {
 
 	void insertDataCliente(int codCliente, String ragSociale,
 			String codFiscale, String partitaIVA, String codRaggr,
-			String comune, String provincia, String stato, String indirizzo,
-			String cap, String telefono, String fax, String email) throws IllegalArgumentException;
+			String codFornitore, String comune, String provincia, String stato,
+			String indirizzo, String cap, String telefono, String fax,
+			String email);
 
 	void editDataCliente(int parseInt, String ragSociale, String codFiscale,
-			String partitaIVA, String codRaggr, String comune,
-			String provincia, String stato, String indirizzo, String cap,
-			String telefono, String fax, String email) throws IllegalArgumentException;
+			String partitaIVA, String codRaggr, String codFornitore,
+			String comune, String provincia, String stato, String indirizzo,
+			String cap, String telefono, String fax, String email);
 
 	void removeDataCliente(int parseInt) throws IllegalArgumentException;
 	
@@ -131,14 +133,16 @@ public interface AdministrationService extends RemoteService {
 	
 	boolean saveRdoCompleta(String numRdo, String cliente, String numOfferta,
 			Date dataOfferte, String importo, String numOrdine,
-			String descrizione, Date dataInizio, Date dataFine, String tariffa,
-			String numRisorse, String oreDisp, String oreRes,
+			String descrizione, String elementoWbs, String conto,
+			String prCenter, String bem, Date dataInizio, Date dataFine,
+			String tariffa, String numRisorse, String oreDisp, String oreRes,
 			List<TariffaOrdineModel> listaTar, String importoOrdine,
 			String importoResiduoOrdine);
 	
 	boolean editRdoCompleta(int idRdo, String numRdo, String cliente,
 			String numOfferta, Date dataOfferte, String importo,
-			String numOrdine, String descrizione, Date dataInizio,
+			String numOrdine, String descrizione, String elementoWbs,
+			String conto, String prCenter, String bem, Date dataInizio,
 			Date dataFine, String tariffa, String numRisorse, String oreDisp,
 			String oreRes, List<TariffaOrdineModel> listaTar,
 			String importoOrdine, String importoResiduoOrdine);
@@ -386,6 +390,9 @@ public interface AdministrationService extends RemoteService {
 	boolean saveNewVersionCosting(int idSelected)throws IllegalArgumentException;
 
 	boolean editStatoCosting(int idSelected, String operazione)throws IllegalArgumentException;
+
+	FatturaModel elaboraDatiPerFattura(String numeroOrdine,
+			int idFoglioFatturazione);
 
 	
 }

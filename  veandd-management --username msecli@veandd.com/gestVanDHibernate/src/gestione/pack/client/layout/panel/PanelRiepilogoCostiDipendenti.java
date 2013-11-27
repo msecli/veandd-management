@@ -187,7 +187,7 @@ public class PanelRiepilogoCostiDipendenti extends LayoutContainer{
 	    column.setWidth(80);  
 	    configs.add(column);
 	        
-	    column = new ColumnConfig();  
+	  /*  column = new ColumnConfig();  
 	    column.setId("tipoCad");  
 	    column.setHeader("Tipo CAD");  
 	    column.setWidth(80);  
@@ -227,7 +227,7 @@ public class PanelRiepilogoCostiDipendenti extends LayoutContainer{
 	    column.setId("sommaCostoHwSw");  
 	    column.setHeader("Costo HW e SW");  
 	    column.setWidth(80);  
-	    configs.add(column);
+	    configs.add(column);*/
 	    
 	    column = new ColumnConfig();  
 	    column.setId("costoAggiuntivo");  

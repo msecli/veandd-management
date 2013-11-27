@@ -60,6 +60,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 
 public class PanelCommessa extends LayoutContainer {
@@ -322,10 +323,24 @@ public class PanelCommessa extends LayoutContainer {
 		cntpnlLayout.setFrame(true);
 		cntpnlLayout.add(horPanel);
 		cntpnlLayout.setButtonAlign(HorizontalAlignment.CENTER);
-		cntpnlLayout.addButton(btnSend);
+		
+		ToolBar tlbr= new ToolBar();
+		tlbr.setAlignment(HorizontalAlignment.RIGHT);
+		tlbr.add(new SeparatorToolItem());
+		tlbr.add(btnSend);
+		tlbr.add(new SeparatorToolItem());
+		tlbr.add(btnEdit);
+		tlbr.add(new SeparatorToolItem());
+		tlbr.add(btnDelete);
+		tlbr.add(new SeparatorToolItem());
+		tlbr.add(btnReset);
+		tlbr.add(new SeparatorToolItem());
+		cntpnlLayout.setTopComponent(tlbr);
+		
+		/*cntpnlLayout.addButton(btnSend);
 		cntpnlLayout.addButton(btnEdit);
 		cntpnlLayout.addButton(btnDelete);
-		cntpnlLayout.addButton(btnReset);
+		cntpnlLayout.addButton(btnReset);*/
 		//cntpnlLayout.setStyleAttribute("padding-left", "7px");
 		//cntpnlLayout.setStyleAttribute("margin-top", "15px");
 		
@@ -351,8 +366,8 @@ public class PanelCommessa extends LayoutContainer {
 									String descrizione = new String();
 									String statoCommessa= new String();
 									String note= new String();
-									String oreLavoro="0";
-									String oreLavoroResidue="0";
+									String oreLavoro="0.00";
+									String oreLavoroResidue="0.00";
 									String tariffaSal="0.0";
 									String salAttuale="0.0";
 									String pclAttuale="0.0";
@@ -360,8 +375,8 @@ public class PanelCommessa extends LayoutContainer {
 																								
 									if(txtfldNumeroCommessa.getRawValue().isEmpty()){ numCommessa="";}else{numCommessa=txtfldNumeroCommessa.getValue().toString();}
 									if(txtfldEstensione.getRawValue().isEmpty()){ estensione="";}else{estensione=txtfldEstensione.getValue().toString();}
-									if(!txtfldOreLavoro.getRawValue().isEmpty()){oreLavoro=txtfldOreLavoro.getValue().toString();}
-									if(!txtfldOreLavoroResidue.getRawValue().isEmpty()){oreLavoroResidue=txtfldOreLavoroResidue.getValue().toString();}
+									//if(!txtfldOreLavoro.getRawValue().isEmpty()){oreLavoro=txtfldOreLavoro.getValue().toString();}
+									//if(!txtfldOreLavoroResidue.getRawValue().isEmpty()){oreLavoroResidue=txtfldOreLavoroResidue.getValue().toString();}
 									if(!txtfldTariffa.getRawValue().isEmpty()){tariffaSal=txtfldTariffa.getValue().toString();}
 									if(!txtfldSalAttuale.getRawValue().isEmpty()){salAttuale=txtfldSalAttuale.getValue().toString();}
 									if(!txtfldPclAttuale.getRawValue().isEmpty()){pclAttuale=txtfldPclAttuale.getValue().toString();}
@@ -450,8 +465,8 @@ public class PanelCommessa extends LayoutContainer {
 					tipoCommessa=c.getTipoCommessa();
 					pM=c.getPm();
 					statoCommessa=c.getStatoCommessa();
-					oreLavoro=c.getOreLavoro();
-					oreLavoroResidue=c.getOreLavoroResidue();
+					oreLavoro="0.00";//c.getOreLavoro();
+					oreLavoroResidue="0.00";//c.getOreLavoroResidue();
 					descrizione=c.getDescrizione();
 					note=c.getNote();
 				
@@ -740,8 +755,9 @@ public class PanelCommessa extends LayoutContainer {
 		txtfldOreLavoro=new TextField<String>();
 		txtfldOreLavoro.setFieldLabel("Ore Lavoro");
 		txtfldOreLavoro.setName("oreLavoro");
-		txtfldOreLavoro.setRegex("[0-9]+[.]{1}[0-9]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
-		txtfldOreLavoro.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+		txtfldOreLavoro.setVisible(false);
+		//txtfldOreLavoro.setRegex("[0-9]+[.]{1}[0-9]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
+		//txtfldOreLavoro.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
 		frmPanel.add(txtfldOreLavoro, new FormData("60%"));
 		txtfldOreLavoro.addKeyListener(new KeyListener(){
 			 public void componentKeyDown(ComponentEvent event) { 	  
@@ -776,8 +792,9 @@ public class PanelCommessa extends LayoutContainer {
 		txtfldOreLavoroResidue=new TextField<String>();
 		txtfldOreLavoroResidue.setFieldLabel("Ore Residue");
 		txtfldOreLavoroResidue.setName("oreLavoroResidue");
-		txtfldOreLavoroResidue.setRegex("[0-9]+[.]{1}[0-9]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
-		txtfldOreLavoroResidue.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+		txtfldOreLavoroResidue.setVisible(false);
+		//txtfldOreLavoroResidue.setRegex("[0-9]+[.]{1}[0-9]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
+		//txtfldOreLavoroResidue.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
 		txtfldOreLavoroResidue.addKeyListener(new KeyListener(){
 			 public void componentKeyDown(ComponentEvent event) { 	  
 			    	int keyCode=event.getKeyCode();
@@ -947,18 +964,22 @@ public class PanelCommessa extends LayoutContainer {
 		
 		//frmPanel.add(buttonBar, new FormData("100%"));
 		
-		btnSend = new Button("Insert");
+		btnSend = new Button("Save");
+		btnSend.setToolTip("Salva i dati.");
 		btnSend.setWidth("65px");
 				
 		btnDelete = new Button("Delete");
+		btnDelete.setToolTip("Elimina i dati.");
 		btnDelete.setWidth("65px");
 		btnDelete.setEnabled(false);
 				
 		btnEdit = new Button("Edit");
+		btnEdit.setToolTip("Modifica i dati.");
 		btnEdit.setWidth("65px");
 		btnEdit.setEnabled(false);
 				
 		btnReset= new Button("X");
+		btnReset.setToolTip("Azzera i campi compilati.");
 		btnReset.setWidth("25px");
 						
 		buttonBar.add(btnSend);

@@ -96,6 +96,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 			public void componentSelected(ButtonEvent ce) {
 				Dialog d= new Dialog();
 				d.setHeaderVisible(true);
+				d.setConstrain(false);
 				d.setHeading("Riepilogo dettagliato (Commesse).");
 				d.setSize(1500, 650);
 				d.add(new PanelRiepilogoMeseGiornalieroCommesseHorizontal(username, data));

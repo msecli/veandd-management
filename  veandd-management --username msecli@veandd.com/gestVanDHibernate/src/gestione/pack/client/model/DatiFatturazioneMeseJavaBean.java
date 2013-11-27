@@ -5,6 +5,7 @@ public class DatiFatturazioneMeseJavaBean {
 	private String pm;
 	private String commessa;
 	private String cliente;
+	private String numeroOrdine;
 	private String oggettoAttivita;
 	private Float tariffaOraria;
 	private Float oreEseguite;
@@ -18,13 +19,14 @@ public class DatiFatturazioneMeseJavaBean {
 	private Float margine;
 	private String note;
 	
-	public  DatiFatturazioneMeseJavaBean(String pm, String commessa, String cliente, String oggettoAttivita, Float oreEseguite, 
+	public  DatiFatturazioneMeseJavaBean(String pm, String commessa, String cliente, String numeroOrdine, String oggettoAttivita, Float oreEseguite, 
 			Float oreFatturate, Float tariffaOraria, Float importo, Float variazioneSal, Float importoSal, Float variazionePcl,
 			Float importoPcl, Float oreScaricate, Float margine, String note){
 		
 		this.pm=pm;
 		this.commessa= commessa;
 		this.cliente=cliente;
+		this.numeroOrdine=numeroOrdine;
 		this.oggettoAttivita=oggettoAttivita;
 		this.tariffaOraria=tariffaOraria;
 		this.oreEseguite=oreEseguite;
@@ -39,6 +41,9 @@ public class DatiFatturazioneMeseJavaBean {
 		this.note=note;
 	}
 	
+	public String getNumeroOrdine(){
+		return numeroOrdine;
+	}
 	
 	public String getPm() {
 		return pm;

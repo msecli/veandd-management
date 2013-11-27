@@ -3,6 +3,7 @@ package gestione.pack.client.layout.panel;
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.model.RiepilogoOreAnnualiDipendente;
+import gestione.pack.client.model.RiepilogoSALPCLModel;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.DatiComboBox;
 import gestione.pack.client.utility.MyImages;
@@ -266,6 +267,15 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 		final NumberFormat number = NumberFormat.getFormat("0.00");
 		
+		GridCellRenderer<RiepilogoSALPCLModel> renderer = new GridCellRenderer<RiepilogoSALPCLModel>() {
+            public String render(RiepilogoSALPCLModel model, String property, ColumnData config, int rowIndex,
+                    int colIndex, ListStore<RiepilogoSALPCLModel> store, Grid<RiepilogoSALPCLModel> grid) {
+				
+            	config.style = config.style + ";background-color:#d2f5af;" +"font-weight:bold;" ;
+            	//config.style = config.style + ";background-color:#FFFFFF;" +"font-weight:normal;";    	
+				return model.get(property);				
+            }};
+		
 		SummaryColumnConfig<Double> column=new SummaryColumnConfig<Double>();		
 	    column.setId("cognome");  
 	    column.setHeader("Cognome");  
@@ -442,6 +452,7 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 	    columnOreTotali.setWidth(100);    
 	    columnOreTotali.setRowHeader(true); 
 	    columnOreTotali.setSummaryType(SummaryType.SUM);  
+	    columnOreTotali.setRenderer(renderer);
 	    columnOreTotali.setAlignment(HorizontalAlignment.RIGHT); 
 	    columnOreTotali.setToolTip("Calcolate come somma tra ore ordinarie, straordinarie e viaggio");
 	    columnOreTotali.setRenderer(new GridCellRenderer<RiepilogoOreAnnualiDipendente>() {
@@ -451,6 +462,7 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 					int colIndex,
 					ListStore<RiepilogoOreAnnualiDipendente> store,
 					Grid<RiepilogoOreAnnualiDipendente> grid) {
+				config.style = config.style + ";background-color:#d2f5af;" +"font-weight:bold;" ;
 				Float n=model.get(property);
 				return number.format(n);
 			}			
@@ -710,7 +722,8 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 	    columnOreTotaliGiustificativi.setWidth(100);    
 	    columnOreTotaliGiustificativi.setRowHeader(true); 
 	    columnOreTotaliGiustificativi.setSummaryType(SummaryType.SUM);  
-	    columnOreTotaliGiustificativi.setAlignment(HorizontalAlignment.RIGHT);    
+	    columnOreTotaliGiustificativi.setAlignment(HorizontalAlignment.RIGHT);  
+	    //columnOreTotaliGiustificativi.setRenderer(renderer);
 	    columnOreTotaliGiustificativi.setRenderer(new GridCellRenderer<RiepilogoOreAnnualiDipendente>() {
 			@Override
 			public Object render(RiepilogoOreAnnualiDipendente model,
@@ -718,6 +731,7 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 					int colIndex,
 					ListStore<RiepilogoOreAnnualiDipendente> store,
 					Grid<RiepilogoOreAnnualiDipendente> grid) {
+				config.style = config.style + ";background-color:#d2f5af;" +"font-weight:bold;" ;
 				Float n=model.get(property);
 				if(n!=0)
 					n=n*-1;

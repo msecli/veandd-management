@@ -11,6 +11,7 @@ import gestione.pack.client.model.CostingModel;
 import gestione.pack.client.model.CostingRisorsaModel;
 import gestione.pack.client.model.DatiFatturazioneCommessaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
+import gestione.pack.client.model.FatturaModel;
 import gestione.pack.client.model.FoglioFatturazioneModel;
 import gestione.pack.client.model.GestioneCostiDipendentiModel;
 import gestione.pack.client.model.GestioneRdoCommesse;
@@ -48,16 +49,16 @@ public interface AdministrationServiceAsync {
 	void getAllClientiModel(AsyncCallback<List<ClienteModel>> asyncCallback);
 
 	void insertDataCliente(int codCliente, String ragSociale,
-			String codFiscale, String partitaIVA, String codRaggr,
+			String codFiscale, String partitaIVA, String codRaggr, String codFornitore,
 			String comune, String provincia, String stato, String indirizzo,
 			String cap, String telefono, String fax, String email,
 			AsyncCallback<Void> asyncCallback);
 
 	void editDataCliente(int parseInt, String ragSociale, String codFiscale,
-			String partitaIVA, String codRaggr, String comune,
+			String partitaIVA, String codRaggr, String codFornitore,String comune,
 			String provincia, String stato, String indirizzo, String cap,
 			String telefono, String fax, String email,
-			AsyncCallback<Void> asyncCallback);
+			 AsyncCallback<Void> asyncCallback);
 
 	void removeDataCliente(int parseInt, AsyncCallback<Void> asyncCallback);
 	
@@ -105,13 +106,13 @@ public interface AdministrationServiceAsync {
 	
 	void saveRdoCompleta(String numRdo, String cliente, String numOfferta,
 			Date dataOfferte, String importo, String numOrdine,
-			String descrizione, Date dataInizio, Date dataFine, String tariffa,
+			String descrizione, String elementoWbs, String conto, String prCenter, String bem, Date dataInizio, Date dataFine, String tariffa,
 			String numRisorse, String oreDisp, String oreRes,
 			List<TariffaOrdineModel> listaTar, String importoOrdine, String importoResiduoOrdine, AsyncCallback<Boolean> asyncCallback);
 	
 	void editRdoCompleta(int idRdo, String numRdo, String cliente,
 			String numOfferta, Date dataOfferte, String importo,
-			String numOrdine, String descrizione, Date dataInizio,
+			String numOrdine, String descrizione, String elementoWbs, String conto, String prCenter, String bem, Date dataInizio,
 			Date dataFine, String tariffa, String numRisorse, String oreDisp,
 			String oreRes, List<TariffaOrdineModel> listaTar, String importoOrdine, String importoResiduoOrdine, AsyncCallback<Boolean> asyncCallback);
 
@@ -289,6 +290,9 @@ public interface AdministrationServiceAsync {
 	void getElencoCommesseSuFoglioFatturazione(String numCommessa,
 			String numEstensione, String data,
 			AsyncCallback<List<RiepilogoOreTotaliCommesse>> asyncCallback);
+	
+	void elaboraDatiPerFattura(String numeroOrdine, int idFoglioFatturazione,
+			AsyncCallback<FatturaModel> asyncCallback);
 
 //----------------------------------------------------VARIE
 	void invioCommenti(String testo, String username,
@@ -372,7 +376,7 @@ public interface AdministrationServiceAsync {
 			AsyncCallback<List<CostingModel>> asyncCallback);
 
 	void insertDataCosting(String commessa, String area, int idCliente, String descrizione, String usernamePM,
-			AsyncCallback<Boolean> asyncCallback);
+			 AsyncCallback<Boolean> asyncCallback);
 
 	void getRiepilogoDatiCostingRisorse(int idCosting,
 			AsyncCallback<List<CostingRisorsaModel>> asyncCallback);
@@ -390,6 +394,8 @@ public interface AdministrationServiceAsync {
 
 	void editStatoCosting(int idSelected, String operazione,
 			AsyncCallback<Boolean> asyncCallback);
+
+	
 
 				
 }

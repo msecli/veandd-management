@@ -37,6 +37,9 @@ public interface MyImages extends ClientBundle{
 	
 	@Source("Icone/printer24x24.png")
 	ImageResource print24();
+	
+	@Source("Icone/printer64x64.png")
+	ImageResource print64();
 
 	@Source("Icone/riep_comm.png")
 	ImageResource riep_comm();
@@ -139,5 +142,8 @@ public interface MyImages extends ClientBundle{
 	
 	@Source("Icone/delete1.png")
 	ImageResource respingi();
+	
+	@Source("Icone/fattura.png")
+	ImageResource fattura();
 }
 

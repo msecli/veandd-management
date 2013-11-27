@@ -72,6 +72,8 @@ public class Cliente extends LightEntity implements IsSerializable {
 	private String valuta;
 	
 	private String codRaggr;
+	
+	private String codFornitore;
 
 	//bi-directional many-to-one association to Rda
 	@OneToMany(mappedBy="cliente", fetch=FetchType.LAZY)
@@ -271,6 +273,14 @@ public class Cliente extends LightEntity implements IsSerializable {
 
 	public void setRdas(Set<Rda> rdas) {
 		this.rdas = rdas;
+	}
+
+	public String getCodFornitore() {
+		return codFornitore;
+	}
+
+	public void setCodFornitore(String codFornitore) {
+		this.codFornitore = codFornitore;
 	}
 	
 }

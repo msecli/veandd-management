@@ -623,6 +623,20 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        	center.layout(true);}      
 	    });
 	    cp.add(btnReportDatiFatt);
+	    
+	    Button btnElaboraFattura = new Button();
+	    btnElaboraFattura.setToolTip("Elabora Fatture");
+	    btnElaboraFattura.setHeight(65);
+	    btnElaboraFattura.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.fattura()));
+	    btnElaboraFattura.setIconAlign(IconAlign.BOTTOM);
+	    btnElaboraFattura.setWidth("100%");
+	    btnElaboraFattura.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new CenterLayout_ElaboraFatture());
+	        	center.layout(true);}      
+	    });
+	    cp.add(btnElaboraFattura);
 	    panel.add(cp);
 	    
 	    cp = new ContentPanel();
@@ -768,7 +782,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        
 //----------------------------------------------------------------------------------------------
 	    
-	   center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb()); 
+	   center.add(new CenterLayout_ElaboraFatture()); 
 	  // center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb());   
 	   container.add(north, northData);
 	   container.add(west, westData);

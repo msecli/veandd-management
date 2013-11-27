@@ -15,6 +15,7 @@
 package gestione.pack.client;
 
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
+import gestione.pack.client.model.FatturaModel;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
@@ -84,6 +85,9 @@ public interface SessionManagementService extends RemoteService {
 	boolean setDataRiepilogoCommesseInSession(String dataR, String usernameR,
 			String string, String totOreCommesse, String totOreIU,
 			List<RiepilogoMeseGiornalieroModel> models);
+
+	boolean setDataFattura(String numeroOrdine, int idFoglioFatturazione,
+			FatturaModel fM, String operazione);
 	
 	
 }

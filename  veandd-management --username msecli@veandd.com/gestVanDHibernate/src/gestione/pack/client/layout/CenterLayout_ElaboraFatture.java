@@ -7,8 +7,9 @@ import java.util.Map;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
-import gestione.pack.client.layout.panel.PanelRiepilogoDatiPerFatturazione;
+import gestione.pack.client.layout.panel.PanelFormInserimentoDatiFattura;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
+import gestione.pack.client.model.FatturaModel;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.DatiComboBox;
 import gestione.pack.client.utility.MyImages;
@@ -22,6 +23,7 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.fx.Resizable;
 import com.extjs.gxt.ui.client.store.GroupingStore;
@@ -33,12 +35,14 @@ import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
+import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.GroupSummaryView;
 import com.extjs.gxt.ui.client.widget.grid.SummaryColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.SummaryRenderer;
@@ -55,9 +59,9 @@ import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 
 
-public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
+public class CenterLayout_ElaboraFatture extends LayoutContainer{
 
-	public CenterLayout_RiepilogoDatiFatturazione(){}
+	public CenterLayout_ElaboraFatture(){}
 	
 	private int h=Window.getClientHeight();
 	private int w=Window.getClientWidth();
@@ -88,10 +92,12 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		private GroupingStore<DatiFatturazioneMeseModel>store = new GroupingStore<DatiFatturazioneMeseModel>();
 		private EditorGrid<DatiFatturazioneMeseModel> gridRiepilogo;
 		private ColumnModel cm;
+		private GridSelectionModel<DatiFatturazioneMeseModel> sm = new CheckBoxSelectionModel<DatiFatturazioneMeseModel>();
 		
 		private Button btnSelect;
 		private Button btnPrint;
-		private Button btnRiepDatiFatt;
+		private Button btnShowFormFatturazione;
+		//private Button btnRiepDatiFatt;
 		
 		CntpnlRiepilogoMese(){
 			
@@ -226,24 +232,51 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 				}
 			});
 			
-			btnRiepDatiFatt= new Button();
-			btnRiepDatiFatt.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.datiTimb()));
-			//btnRiepDatiFatt.setToolTip("Load");
-			btnRiepDatiFatt.setIconAlign(IconAlign.TOP);
-			btnRiepDatiFatt.setSize(26, 26);
-			btnRiepDatiFatt.addSelectionListener(new SelectionListener<ButtonEvent>() {		
+			btnShowFormFatturazione=new Button();
+			btnShowFormFatturazione.setSize("55px","25px");	   
+			btnShowFormFatturazione.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.datiTimb()));
+			btnShowFormFatturazione.setToolTip("Elabora Fattura");
+			btnShowFormFatturazione.setIconAlign(IconAlign.TOP);
+			btnShowFormFatturazione.setSize(26, 26);
+			btnShowFormFatturazione.disable();
+			btnShowFormFatturazione.addSelectionListener(new SelectionListener<ButtonEvent>() {
+				
 				@Override
-				public void componentSelected(ButtonEvent ce) {		
-					Dialog d= new Dialog();
-					//d.setHeaderVisible(false);
-					d.setSize(1350, 1060);
-					d.setButtons("");
-					d.setHeading("Dati per la fatturazione.");
-					d.add(new PanelRiepilogoDatiPerFatturazione(store.getModels()));
-					d.show();
+				public void componentSelected(ButtonEvent ce) {
+										
+					//numeroOrdine, numeroCommessa, oggetto, importoEffettivo, idFoglioFatturazione
+					//cerco i dati relativi all'ordine passato e restituisco un form per completare i dati di fatturazione
+					final String numeroOrdine=sm.getSelectedItem().get("numeroOrdine");
+					final int idFoglioFatturazione=sm.getSelectedItem().get("idFoglioFatturazione");
+					AdministrationService.Util.getInstance().elaboraDatiPerFattura(numeroOrdine, idFoglioFatturazione, new AsyncCallback<FatturaModel>() {
+
+						@Override
+						public void onFailure(Throwable caught) {
+							Window.alert("Error on elaboraDatiPerFattura()");
+							
+						}
+
+						@Override
+						public void onSuccess(FatturaModel result) {
+							if(result!=null){
+								Dialog d= new Dialog();
+								//d.setHeaderVisible(false);
+								d.setSize(630, 520);
+								d.setButtons("");
+								d.setHeading("Dati per la fatturazione.");
+								d.setConstrain(false);
+								d.add(new PanelFormInserimentoDatiFattura(numeroOrdine,idFoglioFatturazione,result));
+								d.show();
+								
+							}
+							else
+								Window.alert("Problemi durante il recupero dei dati per la compilazione della fattura!");
+						}
+					});
+					
 				}
 			});
-			
+					
 			fp.setMethod(FormPanel.METHOD_POST);
 			fp.setAction(url);
 			fp.addSubmitCompleteHandler(new FormSubmitCompleteHandler());  
@@ -259,7 +292,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			tlbOperazioni.add(new SeparatorToolItem());
 			tlbOperazioni.add(cp);
 			tlbOperazioni.add(new SeparatorToolItem());
-			tlbOperazioni.add(btnRiepDatiFatt);
+			tlbOperazioni.add(btnShowFormFatturazione);
 			tlbOperazioni.add(new SeparatorToolItem());
 			tlbOperazioni.add(txtGroup);
 			tlbOperazioni.add(smplcmbxOrderBy);
@@ -283,8 +316,18 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		    gridRiepilogo.setBorders(false); 
 		    gridRiepilogo.setColumnLines(true);
 		    gridRiepilogo.setStripeRows(true);
-		    gridRiepilogo.setView(summary);  
-		    gridRiepilogo.getView().setShowDirtyCells(false);
+		    gridRiepilogo.setSelectionModel(sm);
+			gridRiepilogo.setView(summary);  
+			gridRiepilogo.getView().setShowDirtyCells(false);
+			gridRiepilogo.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<DatiFatturazioneMeseModel>>() {  
+		          public void handleEvent(SelectionChangedEvent<DatiFatturazioneMeseModel> be) {  
+			        	
+			            if (be.getSelection().size() > 0) { 
+			            	   btnShowFormFatturazione.enable();
+			            }             
+			          }		            
+			}); 
+		    
 		    			   		   	    	   
 		  	add(gridRiepilogo);			
 		}
@@ -324,7 +367,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		private List<ColumnConfig> createColumns() {
 			List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 			final NumberFormat number= NumberFormat.getFormat("0.00");
-			
+				
 			SummaryColumnConfig<Double> column=new SummaryColumnConfig<Double>();		
 		    column.setId("pm");  
 		    column.setHeader("Project Manager");  
@@ -364,8 +407,8 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		    column.setId("numeroOrdine");  
 			column.setHeader("Ordine");  
 			column.setWidth(80);  
-			column.setRowHeader(true); 
-		    configs.add(column); 
+			column.setRowHeader(true);
+			configs.add(column);
 		    
 		    column=new SummaryColumnConfig<Double>();		
 		    column.setId("oggettoAttivita");  
@@ -402,7 +445,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		    columnOreLavoro.setHeader("Ore Eseguite");  
 		    columnOreLavoro.setWidth(75);    
 		    columnOreLavoro.setRowHeader(true); 
-		    columnOreLavoro.setAlignment(HorizontalAlignment.RIGHT);
+		    columnOreLavoro.setAlignment(HorizontalAlignment.RIGHT);  	
 		    columnOreLavoro.setSummaryType(SummaryType.SUM);  
 		    columnOreLavoro.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
 				@Override
@@ -426,7 +469,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		    columnOreFatturate.setHeader("Ore Fatturate");  
 		    columnOreFatturate.setWidth(75);    
 		    columnOreFatturate.setRowHeader(true);   
-		    columnOreFatturate.setAlignment(HorizontalAlignment.RIGHT);    
+		    columnOreFatturate.setAlignment(HorizontalAlignment.RIGHT);  
 		    columnOreFatturate.setSummaryType(SummaryType.SUM);  
 		    columnOreFatturate.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
 				@Override
@@ -443,7 +486,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					return number.format(value);
 				}
 			});
-		     configs.add(columnOreFatturate); 	
+		    configs.add(columnOreFatturate); 	
 		      
 		    SummaryColumnConfig<Double> columnImporto=new SummaryColumnConfig<Double>();		
 		    columnImporto.setId("importo");  
@@ -452,7 +495,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		    columnImporto.setRowHeader(true); 
 		    columnImporto.setAlignment(HorizontalAlignment.RIGHT);
 		    columnImporto.setStyle("color:#e71d2b;");
-		    columnImporto.setSummaryType(SummaryType.SUM);  
+		    columnImporto.setSummaryType(SummaryType.SUM);
 		    columnImporto.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
 				@Override
 				public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
@@ -467,13 +510,13 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 				@Override
 				public String render(Number value, Map<String, Number> data) {
 					final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
-					
+					//Float n=value;
 					return num.format(value);
 				}
 			});
-		     configs.add(columnImporto); 
-		     
-		     SummaryColumnConfig<Double> columnImportoEffettivo=new SummaryColumnConfig<Double>();		
+		    configs.add(columnImporto); 	
+		    
+		    SummaryColumnConfig<Double> columnImportoEffettivo=new SummaryColumnConfig<Double>();		
 		     columnImportoEffettivo.setId("importoEffettivo");  
 		     columnImportoEffettivo.setHeader("Importo Effettivo");  
 		     columnImportoEffettivo.setWidth(100);    
@@ -495,169 +538,13 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					@Override
 					public String render(Number value, Map<String, Number> data) {
 						final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
-						
+						//Float n=value;
 						return num.format(value);
 					}
 				});
 			configs.add(columnImportoEffettivo); 
-		    	    
-		    SummaryColumnConfig<Double> variazioneSal=new SummaryColumnConfig<Double>();		
-		    variazioneSal.setId("variazioneSal");  
-		    variazioneSal.setHeader("Var. SAL");  
-		    variazioneSal.setWidth(80);    
-		    variazioneSal.setRowHeader(true); 
-		    variazioneSal.setAlignment(HorizontalAlignment.RIGHT);  
-		    variazioneSal.setSummaryType(SummaryType.SUM);  
-		    variazioneSal.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
-				@Override
-				public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
-						Grid<DatiFatturazioneMeseModel> grid) {
-					Float n=model.get(property);
-					return number.format(n);
-				}  	
-			});
-		    variazioneSal.setSummaryRenderer(new SummaryRenderer() {
-				
-				@Override
-				public String render(Number value, Map<String, Number> data) {
-					return number.format(value);
-				}
-			});
-		    configs.add(variazioneSal); 	
-		    
-		    SummaryColumnConfig<Double> columnImportoSal=new SummaryColumnConfig<Double>();		
-		    columnImportoSal.setId("importoSal");  
-		    columnImportoSal.setHeader("Importo Sal");  
-		    columnImportoSal.setWidth(100);    
-		    columnImportoSal.setRowHeader(true); 
-		    columnImportoSal.setAlignment(HorizontalAlignment.RIGHT);
-		    columnImportoSal.setStyle("color:#e71d2b;");
-		    columnImportoSal.setSummaryType(SummaryType.SUM);  
-		    columnImportoSal.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
-				@Override
-				public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
-						Grid<DatiFatturazioneMeseModel> grid) {				
-					final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
-					Float n=model.get(property);
-					return num.format(n);
-				}  	
-			});  
-		    columnImportoSal.setSummaryRenderer(new SummaryRenderer() {
-				
-				@Override
-				public String render(Number value, Map<String, Number> data) {
-					return number.format(value);
-				}
-			});
-		    configs.add(columnImportoSal);
-		    
-		    SummaryColumnConfig<Double> variazionePcl=new SummaryColumnConfig<Double>();		
-		    variazionePcl.setId("variazionePcl");  
-		    variazionePcl.setHeader("Var. PCL");  
-		    variazionePcl.setWidth(80);    
-		    variazionePcl.setRowHeader(true); 
-		    variazionePcl.setAlignment(HorizontalAlignment.RIGHT);  
-		    variazionePcl.setSummaryType(SummaryType.SUM);  
-		    variazionePcl.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
-				@Override
-				public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
-						Grid<DatiFatturazioneMeseModel> grid) {
-					Float n=model.get(property);
-					return number.format(n);
-				}  	
-			});
-		    variazionePcl.setSummaryRenderer(new SummaryRenderer() {
-				
-				@Override
-				public String render(Number value, Map<String, Number> data) {
-					return number.format(value);
-				}
-			});
-		    configs.add(variazionePcl);     
-		    
-		    SummaryColumnConfig<Double> columnImportoPcl=new SummaryColumnConfig<Double>();		
-		    columnImportoPcl.setId("importoPcl");  
-		    columnImportoPcl.setHeader("Importo Pcl");  
-		    columnImportoPcl.setWidth(100);    
-		    columnImportoPcl.setRowHeader(true); 
-		    columnImportoPcl.setAlignment(HorizontalAlignment.RIGHT);
-		    columnImportoPcl.setStyle("color:#e71d2b;");
-		    columnImportoPcl.setSummaryType(SummaryType.SUM);  
-		    columnImportoPcl.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
-				@Override
-				public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
-						Grid<DatiFatturazioneMeseModel> grid) {				
-					final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
-					Float n=model.get(property);
-					return num.format(n);
-				}  	
-			});  
-		    columnImportoPcl.setSummaryRenderer(new SummaryRenderer() {
-				
-				@Override
-				public String render(Number value, Map<String, Number> data) {
-					return number.format(value);
-				}
-			});
-		    configs.add(columnImportoPcl);
-		    
-		    SummaryColumnConfig<Double> oreScaricate=new SummaryColumnConfig<Double>();		
-		    oreScaricate.setId("oreScaricate");  
-		    oreScaricate.setHeader("Scaricate");  
-		    oreScaricate.setWidth(80);    
-		    oreScaricate.setRowHeader(true); 
-		    oreScaricate.setAlignment(HorizontalAlignment.RIGHT);  	
-		    oreScaricate.setSummaryType(SummaryType.SUM);  
-		    oreScaricate.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
-				@Override
-				public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
-						Grid<DatiFatturazioneMeseModel> grid) {
-					Float n=model.get(property);
-					return number.format(n);
-				}  	
-			});
-		    oreScaricate.setSummaryRenderer(new SummaryRenderer() {
-				
-				@Override
-				public String render(Number value, Map<String, Number> data) {
-					return number.format(value);
-				}
-			});
-		    configs.add(oreScaricate);
-		    
-		    
-		    SummaryColumnConfig<Double> margine=new SummaryColumnConfig<Double>();		
-		    margine.setId("margine");  
-		    margine.setHeader("Margine");  
-		    margine.setWidth(80);    
-		    margine.setRowHeader(true);  
-		    margine.setAlignment(HorizontalAlignment.RIGHT);  	
-		    margine.setSummaryType(SummaryType.SUM);  
-		    margine.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
-				@Override
-				public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
-						Grid<DatiFatturazioneMeseModel> grid) {
-					Float n=model.get(property);
-					return number.format(n);
-				}  	
-			});
-		    margine.setSummaryRenderer(new SummaryRenderer() {
-				
-				@Override
-				public String render(Number value, Map<String, Number> data) {
-					return number.format(value);
-				}
-			});
-		    configs.add(margine);	
-		   
-		   SummaryColumnConfig<Double> note=new SummaryColumnConfig<Double>();		
-		   note.setId("note");  
-		   note.setHeader("Note");  
-		   note.setWidth(200);    
-		   note.setRowHeader(true);  
-		   note.setAlignment(HorizontalAlignment.RIGHT);  	
-		   configs.add(note);
-		return configs;
+			
+		    return configs;
 		}
 
 		
@@ -684,7 +571,9 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		private void loadTable(List<DatiFatturazioneMeseModel> result) {
 			try {
 				store.removeAll();
-				store.add(result);
+				for(DatiFatturazioneMeseModel d: result)
+					if((Float)d.get("importo")!=0)
+						store.add(d);
 				store.groupBy("pm");
 				gridRiepilogo.reconfigure(store, cm);	    		    	
 			} catch (NullPointerException e) {

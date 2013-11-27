@@ -572,7 +572,7 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("costoOrario");  
 	    column.setHeader("Costo/h");  
-	    column.setWidth(55);  
+	    column.setWidth(70);  
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    //column.setRenderer(renderer);

@@ -23,7 +23,6 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -37,7 +36,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
-import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
@@ -114,7 +112,6 @@ public class PanelRiepilogoMeseGiornalieroCommesseHorizontal  extends LayoutCont
 		cntpnlTxtField.setWidth(500);
 		cntpnlTxtField.setHeight(100);
 		cntpnlTxtField.setStyleAttribute("padding-top", "20px");
-	
 				
 		/*Date d= new Date();
 		String dt= d.toString();
@@ -272,8 +269,7 @@ public class PanelRiepilogoMeseGiornalieroCommesseHorizontal  extends LayoutCont
 		
 		layoutContainer.add(cpGrid, new FitData(3,3,3,3));
 		//layoutContainer.add(cntpnlTxtField);
-		add(layoutContainer);
-	
+		add(layoutContainer);	
 	}
 	
 	
@@ -284,7 +280,7 @@ public class PanelRiepilogoMeseGiornalieroCommesseHorizontal  extends LayoutCont
 		column.setId("commessa");  
 		column.setHeader("Commessa");  
 		column.setWidth(150);	
-		column.setResizable(false);
+		column.setResizable(true);
 		column.setRenderer(new GridCellRenderer<RiepilogoMeseGiornalieroModel>() {
 
 			@Override
@@ -429,7 +425,7 @@ public class PanelRiepilogoMeseGiornalieroCommesseHorizontal  extends LayoutCont
 		
 		int numeroGiorniMese=0;
 		String anno=dataR.substring(3,dataR.length());//smplcmbxAnno.getRawValue().toString();		
-		String mese=dataR.substring(0,3);//ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
+		String mese=ClientUtility.traduciMeseToIt(dataR.substring(0,3));//ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
 		numeroGiorniMese=ClientUtility.getGiorniMese(mese, anno);
 		
 		store.removeAll();
