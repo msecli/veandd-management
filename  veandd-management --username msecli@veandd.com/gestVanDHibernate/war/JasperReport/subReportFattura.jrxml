@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="subReportFattura" pageWidth="550" pageHeight="200" columnWidth="490" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="9a498501-8b77-49cd-9144-0b4ffe3dedfc">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<import value="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#73B0E6">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#CFDBE6">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue()%2==0)]]></conditionExpression>
+			<style backcolor="#F3F6F8"/>
+		</conditionalStyle>
+	</style>
+	<subDataset name="Table Dataset 1" uuid="6a5cf5c7-9009-4fcb-a1a4-ae2696819b98">
+		<field name="descrizione" class="java.lang.String"/>
+		<field name="importo" class="java.lang.String"/>
+	</subDataset>
+	<detail>
+		<band height="25" splitType="Stretch">
+			<componentElement>
+				<reportElement uuid="cc9860b7-1754-44d2-897e-02801bef0233" key="table" style="table" x="0" y="3" width="550" height="20"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="Table Dataset 1" uuid="ec6d5881-fdb7-4201-941d-03693283a85a">
+						<dataSourceExpression><![CDATA[$P{REPORT_DATA_SOURCE}]]></dataSourceExpression>
+					</datasetRun>
+					<jr:column width="384" uuid="7f868aed-da92-44c2-8661-2b1d56ab0c7b">
+						<jr:detailCell style="table_TD" height="35" rowSpan="1">
+							<textField>
+								<reportElement uuid="7d47d78c-117c-4599-8e84-1e9ec8b6a1d2" x="0" y="0" width="380" height="35"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{descrizione}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="145" uuid="60fd89b2-6683-4927-9ae7-e54dd9e82532">
+						<jr:detailCell style="table_TD" height="35" rowSpan="1">
+							<textField>
+								<reportElement uuid="e3e19780-0a81-4c8d-84b8-b1d63a90b053" x="0" y="0" width="145" height="35"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{importo}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</detail>
+</jasperReport>
