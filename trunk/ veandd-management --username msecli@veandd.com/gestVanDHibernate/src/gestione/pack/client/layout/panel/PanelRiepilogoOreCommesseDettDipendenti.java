@@ -27,6 +27,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
@@ -59,6 +60,7 @@ public class PanelRiepilogoOreCommesseDettDipendenti extends LayoutContainer{
 	private SimpleComboBox<String> smplcmbxMese;
 	private SimpleComboBox<String> smplcmbxAnno;
 	private SimpleComboBox<String> smplcmbxSede;
+	private SimpleComboBox<String> smplcmbxOrderBy;
 	private Button btnSelect;
 	private Button btnShowDettaglioOre;
 	private int idDip;
@@ -132,6 +134,33 @@ public class PanelRiepilogoOreCommesseDettDipendenti extends LayoutContainer{
 		smplcmbxSede.setTriggerAction(TriggerAction.ALL);
 		smplcmbxSede.setSimpleValue("T");	
 		smplcmbxSede.setWidth(70);
+		
+		smplcmbxOrderBy= new SimpleComboBox<String>();
+		smplcmbxOrderBy.setFieldLabel("Group By");
+		smplcmbxOrderBy.setEmptyText("Selezionare..");
+		smplcmbxOrderBy.setAllowBlank(false);
+		smplcmbxOrderBy.add("Dipendente");
+		smplcmbxOrderBy.add("Commessa");
+		smplcmbxOrderBy.setWidth(110);
+		smplcmbxOrderBy.setTriggerAction(TriggerAction.ALL);
+		smplcmbxOrderBy.setSimpleValue("PM");
+		smplcmbxOrderBy.addListener(Events.Select, new Listener<BaseEvent>(){
+			@Override
+			public void handleEvent(BaseEvent be) {
+				String raggruppamento=smplcmbxOrderBy.getRawValue().toString().toLowerCase();
+				if(raggruppamento.compareTo("commessa")==0){
+					store.groupBy("numeroCommessa",true);
+					gridRiepilogo.reconfigure(store, cm);
+				}
+				else{
+					store.groupBy(raggruppamento,true);
+					gridRiepilogo.reconfigure(store, cm);
+				}
+			}		
+		});
+		
+		Text txtGroup= new Text();
+		txtGroup.setText("Group By: ");
 			
 		btnSelect= new Button();
 		btnSelect.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.reload()));
@@ -222,6 +251,9 @@ public class PanelRiepilogoOreCommesseDettDipendenti extends LayoutContainer{
 	    tlbrRiepilogoOre.add(btnSelect);
 	    tlbrRiepilogoOre.add(new SeparatorToolItem());
 	    tlbrRiepilogoOre.add(btnShowDettaglioOre);
+	    tlbrRiepilogoOre.add(new SeparatorToolItem());
+	    tlbrRiepilogoOre.add(txtGroup);
+	    tlbrRiepilogoOre.add(smplcmbxOrderBy);
 	    
 	    //tlbrOrderBy.add(smplcmbxOrderBy);
 	   	    

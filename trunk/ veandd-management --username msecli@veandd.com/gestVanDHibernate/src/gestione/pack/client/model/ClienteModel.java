@@ -65,9 +65,9 @@ public class ClienteModel extends BaseModel implements IsSerializable {
 		set("ragioneSociale",ragioneSociale);
 	}
 	
-	public ClienteModel(int codCliente2, String ragioneSociale2, String codFiscale2, String partitaIVA2, String codRaggr2,
+	public ClienteModel(int codCliente2, String ragioneSociale2, String codFiscale2, String partitaIVA2, String codRaggr2, String codFornitore,
 			String citta2, String provincia2, String stato2, String indirizzo2,	String cap2, String telefono2, String fax2, String email2,
-			String banca2, String valuta2, String codABI2, String codCAB2, String codCIN2, String condizioniPagamento2, Set<Rda> rdas2) {
+			String banca2, String valuta2, String codABI2, String codCAB2, String codCIN2, String condizioniPagamento2,  Set<Rda> rdas2) {
 		
 		//impostazione della proprietà che dovrà essere uguale (il nome) al momento della configurazione delle colonne
 		
@@ -76,6 +76,7 @@ public class ClienteModel extends BaseModel implements IsSerializable {
 		set("codFiscale",codFiscale2);
 		set("partitaIVA",partitaIVA2);
 		set("codRaggr", codRaggr2);
+		set("codFornitore",codFornitore);
 		set("citta", citta2);
 		set("provincia",provincia2);
 		set("stato",stato2);

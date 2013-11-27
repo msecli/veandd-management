@@ -1,6 +1,5 @@
 package gestione.pack.shared;
 
-import java.io.Serializable;
 import javax.persistence.*;
 
 import net.sf.gilead.pojo.gwt.LightEntity;

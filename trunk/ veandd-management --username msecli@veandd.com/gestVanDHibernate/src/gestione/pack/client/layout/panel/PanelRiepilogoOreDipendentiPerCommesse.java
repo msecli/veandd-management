@@ -130,9 +130,7 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 		smplcmbxSede.setTriggerAction(TriggerAction.ALL);
 		smplcmbxSede.setSimpleValue("T");	
 		smplcmbxSede.setWidth(70);
-		
-		
-		
+			
 		btnSelect= new Button();
 		btnSelect.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.reload()));
 		btnSelect.setToolTip("Load");
@@ -152,8 +150,7 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 				}else Window.alert("Controllare i dati selezionati!");
 			}			
 		});			
-		
-		
+			
 		try {
 		    	cm = new ColumnModel(createColumns());	
 			} catch (Exception e) {

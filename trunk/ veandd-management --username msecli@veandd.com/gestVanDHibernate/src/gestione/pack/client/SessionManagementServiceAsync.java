@@ -1,6 +1,7 @@
 package gestione.pack.client;
 
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
+import gestione.pack.client.model.FatturaModel;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
@@ -61,6 +62,9 @@ public interface SessionManagementServiceAsync {
 			String string, String totOreCommesse, String totOreIU,
 			List<RiepilogoMeseGiornalieroModel> models,
 			AsyncCallback<Boolean> asyncCallback);
+
+	void setDataFattura(String numeroOrdine, int idFoglioFatturazione,
+			FatturaModel fM, String operazione, AsyncCallback<Boolean> asyncCallback);
 	
 
 }

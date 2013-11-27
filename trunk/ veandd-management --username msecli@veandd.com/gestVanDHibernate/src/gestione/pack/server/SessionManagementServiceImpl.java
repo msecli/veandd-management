@@ -29,6 +29,7 @@ import org.hibernate.Transaction;
 
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
+import gestione.pack.client.model.FatturaModel;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
@@ -357,6 +358,26 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 		     httpSession.setAttribute("totOreCommesse", totOreCommesse);
 		     httpSession.setAttribute("totOreIU", totOreIU);
 		     httpSession.setAttribute("listaM", models);
+		   	 
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+
+	@Override
+	public boolean setDataFattura(String numeroOrdine,
+			int idFoglioFatturazione, FatturaModel fM, String operazione) {
+		try {
+			 HttpServletRequest request = this.getThreadLocalRequest();
+		   	 HttpSession httpSession = request.getSession();
+		   	   
+		   	 httpSession.setAttribute("numeroOrdine", numeroOrdine);
+		   	 httpSession.setAttribute("idFoglioFatturazione", idFoglioFatturazione);
+		     httpSession.setAttribute("operazione", operazione);
+		     httpSession.setAttribute("fatturaModel", fM);
 		   	 
 			return true;
 		} catch (Exception e) {

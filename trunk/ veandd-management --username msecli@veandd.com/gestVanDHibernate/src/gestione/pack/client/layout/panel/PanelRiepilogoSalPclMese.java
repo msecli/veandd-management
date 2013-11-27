@@ -95,7 +95,7 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 		cpGrid.setHeaderVisible(false);
 		cpGrid.setBorders(false);
 		cpGrid.setFrame(false);
-		cpGrid.setSize(w-300, h-140);
+		cpGrid.setSize(w-300, h-155);
 		cpGrid.setScrollMode(Scroll.AUTO);
 		cpGrid.setLayout(new FitLayout());
 								
@@ -350,7 +350,7 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("precedente");  
 	    column.setHeader("Mese Prec.");  
-	    column.setWidth(80);  
+	    column.setWidth(95);  
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT); 
 	    column.setRenderer(rendererSum); 
@@ -359,7 +359,7 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("variazione");  
 	    column.setHeader("Variazione Mese");  
-	    column.setWidth(80);  
+	    column.setWidth(105);  
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT); 
 	    column.setRenderer(rendererSum); 
@@ -368,7 +368,7 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("attuale");  
 	    column.setHeader("Attuale");  
-	    column.setWidth(80);  
+	    column.setWidth(95);  
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT); 
 	    column.setRenderer(rendererSum); 
@@ -396,7 +396,7 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	    SummaryColumnConfig<Double> columnOreLavoro=new SummaryColumnConfig<Double>();		
 	    columnOreLavoro.setId("oreEseguite");  
 	    columnOreLavoro.setHeader("Ore Eseguite");  
-	    columnOreLavoro.setWidth(75);    
+	    columnOreLavoro.setWidth(90);    
 	    columnOreLavoro.setRowHeader(true); 
 	    columnOreLavoro.setAlignment(HorizontalAlignment.RIGHT);  	
 	    columnOreLavoro.setRenderer(rendererSum); 

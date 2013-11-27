@@ -11,7 +11,8 @@ public class OrdineModel  extends BaseModel implements Serializable {
 
 	public OrdineModel(){}
 	
-	public OrdineModel(int idordine, String numOrdine, String numRda, String commessa, String dataInizioOrdine, String dataFineOrdine, String descrizione, String tariffaOraria, String numeroRisorse, String numeroOre){
+	public OrdineModel(int idordine, String numOrdine, String numRda, String commessa, String dataInizioOrdine,
+			String dataFineOrdine, String descrizione, String tariffaOraria, String numeroRisorse, String numeroOre, String importo){
 		
 		set("idOrdine", idordine );
     	set("numeroOrdine", numOrdine);
@@ -23,6 +24,7 @@ public class OrdineModel  extends BaseModel implements Serializable {
     	set("dataFine", dataFineOrdine);
     	set("numeroRisorse", numeroRisorse);
     	set("numeroOre", numeroOre);
+    	set("importo", importo);
 		
 	}
 	

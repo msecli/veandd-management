@@ -111,7 +111,7 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 		column.setWidth(60);  
 		column.setRowHeader(true);
 		configs.add(column);
-	    
+				
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("mese");  
 		column.setHeader("Mese");  

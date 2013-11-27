@@ -194,8 +194,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		private PanelRiepilogoMeseFoglioOre pnlRiepilogo;//= new PanelRiepilogoMeseFoglioOre(txtfldUsername.getValue().toString(), giornoRiferimento.getValue());
 		
 		CreateFormIntervalliOre() {
-			
-			
+						
 			setLabelWidth(30);
 			setFrame(true);
 			setButtonAlign(HorizontalAlignment.CENTER);
@@ -4288,7 +4287,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			oreL=txtfldOreLavoro.getValue().toString();
 			//if(oreV.compareTo("0.00")!=0 || oreL.compareTo("0.00")!=0){
 				intervallo= new IntervalliCommesseModel(txtfldNumCommessa.getValue().toString(), txtfldOreLavoro.getValue().toString(), txtfldOreViaggio.getValue().toString()
-					,"","", txtDescrizione.toString());
+					,"","", txtDescrizione.toString(), "");
 				intervalliC.add(intervallo);
 			//}
 		}

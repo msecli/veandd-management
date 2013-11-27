@@ -51,6 +51,8 @@ import com.google.gwt.user.client.Window;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
@@ -191,7 +193,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 		ButtonBar buttonBar = new ButtonBar();
 		buttonBar.setStyleAttribute("padding-top", "0px");
 				
-		btnSend = new Button("Insert");
+		btnSend = new Button("Save");
 		btnSend.setWidth("65px");
 		btnSend.setEnabled(true);
 		buttonBar.add(btnSend);
@@ -232,16 +234,24 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 		cpLayout.setCollapsible(false);
 		cpLayout.setFrame(true);
 		cpLayout.setHeaderVisible(false);
-		cpLayout.setButtonAlign(HorizontalAlignment.CENTER);
 		cpLayout.setHeading("Dettaglio Dipendente.");
 		//cpLayout.setStyleAttribute("padding-left", "7px");
 		//cpLayout.setStyleAttribute("margin-top", "5px");
 		cpLayout.setWidth(1030);
 		cpLayout.setHeight(850);
-		cpLayout.addButton(btnSend);
-		cpLayout.addButton(btnEdit);
-		cpLayout.addButton(btnDelete);
-		cpLayout.addButton(btnReset);
+		
+		ToolBar tlbr= new ToolBar();
+		tlbr.setAlignment(HorizontalAlignment.RIGHT);
+		tlbr.add(new SeparatorToolItem());
+		tlbr.add(btnSend);
+		tlbr.add(new SeparatorToolItem());
+		tlbr.add(btnEdit);
+		tlbr.add(new SeparatorToolItem());
+		tlbr.add(btnDelete);
+		tlbr.add(new SeparatorToolItem());
+		tlbr.add(btnReset);
+		tlbr.add(new SeparatorToolItem());
+		cpLayout.setTopComponent(tlbr);
 		
 		cpLayout.add(horizontalPanel);
 		//cntntpnlParent.add(cpLayout);

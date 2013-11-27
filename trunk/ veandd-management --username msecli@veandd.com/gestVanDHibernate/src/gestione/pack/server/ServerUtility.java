@@ -1487,7 +1487,7 @@ public class ServerUtility {
 					importoPcl=ServerUtility.calcolaImporto(o.getTariffaOraria(),f.getVariazionePCL());
 					
 					datiModel=new DatiFatturazioneMeseJavaBean(f.getCommessa().getMatricolaPM(), f.getCommessa().getNumeroCommessa()+"."+f.getCommessa().getEstensione(), o.getRda().getCliente().getRagioneSociale(),
-							o.getCommessa().getDenominazioneAttivita(), Float.valueOf(f.getOreEseguite()), Float.valueOf(f.getOreFatturare()), Float.valueOf(f.getTariffaUtilizzata()),
+							o.getCodiceOrdine(),o.getCommessa().getDenominazioneAttivita(), Float.valueOf(f.getOreEseguite()), Float.valueOf(f.getOreFatturare()), Float.valueOf(f.getTariffaUtilizzata()),
 							importo, Float.valueOf(f.getVariazioneSAL()), importoSal, Float.valueOf(f.getVariazionePCL()), importoPcl, Float.valueOf(oreScaricate), margine, f.getNote());
 				}
 				else{
@@ -1499,7 +1499,7 @@ public class ServerUtility {
 					importoSal=ServerUtility.calcolaImporto(f.getTariffaUtilizzata(),f.getVariazioneSAL());
 					importoPcl=ServerUtility.calcolaImporto(f.getTariffaUtilizzata(),f.getVariazionePCL());
 					
-					datiModel=new DatiFatturazioneMeseJavaBean(f.getCommessa().getMatricolaPM(), f.getCommessa().getNumeroCommessa()+"."+f.getCommessa().getEstensione(), "#",
+					datiModel=new DatiFatturazioneMeseJavaBean(f.getCommessa().getMatricolaPM(), f.getCommessa().getNumeroCommessa()+"."+f.getCommessa().getEstensione(), "#", "",
 							f.getCommessa().getDenominazioneAttivita(), Float.valueOf(f.getOreEseguite()), Float.valueOf(f.getOreFatturare()),
 							Float.valueOf(f.getTariffaUtilizzata()), (float) 0.0, Float.valueOf(f.getVariazioneSAL()), importoSal, Float.valueOf(f.getVariazionePCL()), importoPcl, Float.valueOf(oreScaricate),margine, f.getNote());	
 				}
@@ -1526,7 +1526,7 @@ public class ServerUtility {
 												
 					}				
 				}	
-				datiModel=new DatiFatturazioneMeseJavaBean(pm, "TOTALE", "", "", Float.valueOf(totOreEseguite), Float.valueOf(totOreFatturate), 
+				datiModel=new DatiFatturazioneMeseJavaBean(pm, "TOTALE", "", "", "", Float.valueOf(totOreEseguite), Float.valueOf(totOreFatturate), 
 						Float.valueOf("0"),totImport, Float.valueOf(totVarSal), totImportoSal, Float.valueOf(totVarPcl), totImportoPcl, 
 						Float.valueOf(totOreScaricate), Float.valueOf(totOreMargine), "");
 				
@@ -1587,6 +1587,38 @@ public class ServerUtility {
 		listaMesi.add("Dic"+data);
 		
 		return listaMesi;
+	}
+	
+
+	public static String traduciMeseToIt(String month){
+		//String mese=new String();
+		
+		if(month.compareTo("Jan") ==0)
+			month="Gen";
+		if(month.compareTo("Feb") ==0)
+			month="Feb";
+		if(month.compareTo("Mar") ==0)
+			month="Mar";
+		if(month.compareTo("Apr") ==0)
+			month="Apr";
+		if(month.compareTo("May") ==0)
+			month="Mag";
+		if(month.compareTo("Jun") ==0)
+			month="Giu";
+		if(month.compareTo("Jul") ==0)
+			month="Lug";
+		if(month.compareTo("Aug") ==0)
+			month="Ago";
+		if(month.compareTo("Sep") ==0)
+			month="Set";
+		if(month.compareTo("Oct") ==0)
+			month="Ott";
+		if(month.compareTo("Nov") ==0)
+			month="Nov";
+		if(month.compareTo("Dec") ==0)
+			month="Dic";
+		
+		return month;
 	}
 	
 	
@@ -1657,7 +1689,7 @@ public class ServerUtility {
 		
 		for(DatiFatturazioneMeseModel r:lista){
 			
-			rB= new DatiFatturazioneMeseJavaBean(r.getPM(), (String)r.get("numeroCommessa"), (String)r.get("cliente"), (String)r.get("oggettoAttivita"), 
+			rB= new DatiFatturazioneMeseJavaBean(r.getPM(), (String)r.get("numeroCommessa"), (String)r.get("cliente"), (String)r.get("numeroOrdine"), (String)r.get("oggettoAttivita"), 
 					(Float)r.get("oreEseguite"), (Float)r.get("oreFatturate"), (Float)r.get("tariffaOraria"), (Float)r.get("importo"), (float)0, (float)0, (float)0, (float)0, (float)0, (float)0, "");
 			listaB.add(rB);
 		}
@@ -1937,13 +1969,12 @@ public class ServerUtility {
 			return null;
 		}finally{
 			session.close();
-		}
-		
+		}		
 		return null;
 	}
 
 	
-
+/*
 	public static IntervalliCommesseModel checkDatiGiornoCommessa(
 			List<DettaglioOreGiornaliere> listaG, String giornoR,
 			String commessa) {
@@ -1962,13 +1993,12 @@ public class ServerUtility {
 			if(giorno.compareTo(giornoR)==0){
 				existDay=true;						
 				
-				for(DettaglioIntervalliCommesse dt:d.getDettaglioIntervalliCommesses()){
-					
+				for(DettaglioIntervalliCommesse dt:d.getDettaglioIntervalliCommesses()){				
 					numerocommessa=dt.getNumeroCommessa()+"."+dt.getEstensioneCommessa();
 					if(numerocommessa.compareTo(commessa)==0){
-						ic=new IntervalliCommesseModel("", dt.getOreLavorate(), dt.getOreViaggio(), "", "", "");
+						ic=new IntervalliCommesseModel("", dt.getOreLavorate(), dt.getOreViaggio(), "", "", "", "");
 						break;
-					}					
+					}												
 				}	
 				
 				if(Float.valueOf(d.getOreFerie())!=0)
@@ -1979,18 +2009,17 @@ public class ServerUtility {
 					giustificativo=giustificativo+"; "+"STRAO";
 					
 				giustificativo=giustificativo+"; "+d.getGiustificativo();
-				ic.set("descrizione", giustificativo);
-				break;
-				
+				ic.set("giustificativo", giustificativo);
+				break;			
 			}										
 		}
 		
-		if(!existDay)
-			ic=new IntervalliCommesseModel("", "0.00", "0.00", "", "", giustificativo);				
+		if(!existDay || ic.get("oreLavoro")==null)
+			ic=new IntervalliCommesseModel("", "0.00", "0.00", "", "", "", giustificativo);				
 		
 		return ic;
 	}
-
+*/
 	public static String checkGiustificativiGiornoCommessa(
 			List<DettaglioOreGiornaliere> listaG, String giornoR) {
 		
@@ -2004,8 +2033,7 @@ public class ServerUtility {
 			DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd") ; 
 			giorno=formatter.format(d.getGiornoRiferimento());
 			if(giorno.compareTo(giornoR)==0){
-				existDay=true;						
-								
+				existDay=true;														
 				
 				if(Float.valueOf(d.getOreFerie())!=0)
 					giustificativo=giustificativo+";"+"FERIE:"+d.getOreFerie();
@@ -2017,10 +2045,8 @@ public class ServerUtility {
 					giustificativo=giustificativo+";"+"RECUP:"+d.getOreAssenzeRecupero();
 					
 				if(d.getGiustificativo().length()>2)
-					giustificativo=giustificativo+"; "+d.getGiustificativo();
-				
-				break;
-				
+					giustificativo=giustificativo+"; "+d.getGiustificativo();				
+				break;			
 			}										
 		}
 		
@@ -2030,8 +2056,50 @@ public class ServerUtility {
 			return giustificativo;
 	}
 
-	
-
-	
+	public static IntervalliCommesseModel checkDatiGiornoCommessa(
+			List<DettaglioOreGiornaliere> listaG, String giornoR, Commessa c) {
+		IntervalliCommesseModel ic=new IntervalliCommesseModel();
+		
+		String giorno= new String();
+		String numerocommessa;
+		//String giustificativo="";
+		Boolean existDay=false;
+		String commessa=c.getNumeroCommessa()+"."+c.getEstensione();
+		
+		for(DettaglioOreGiornaliere d:listaG){
+			
+			DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd") ; 
+			giorno=formatter.format(d.getGiornoRiferimento());
+			if(giorno.compareTo(giornoR)==0){
+				existDay=true;						
+				
+				for(DettaglioIntervalliCommesse dt:d.getDettaglioIntervalliCommesses()){
+					
+					numerocommessa=dt.getNumeroCommessa()+"."+dt.getEstensioneCommessa();
+					if(numerocommessa.compareTo(commessa)==0){
+						ic=new IntervalliCommesseModel("", dt.getOreLavorate(), dt.getOreViaggio(), "", "", "", "");
+						break;
+					}												
+				}	
+				/*
+				if(Float.valueOf(d.getOreFerie())!=0)
+					giustificativo=giustificativo+"; "+"FERIE";
+				if(Float.valueOf(d.getOrePermesso())!=0)
+					giustificativo=giustificativo+"; "+"ROL";
+				if(Float.valueOf(d.getOreStraordinario())!=0)
+					giustificativo=giustificativo+"; "+"STRAO";
+					
+				giustificativo=giustificativo+"; "+d.getGiustificativo();
+				ic.set("giustificativo", giustificativo);
+				*/
+				break;			
+			}										
+		}
+		
+		if(!existDay || ic.get("oreLavoro")==null)
+			ic=new IntervalliCommesseModel("", "0.00", "0.00", "", "","","");				
+		
+		return ic;
+	}	
 }
 
