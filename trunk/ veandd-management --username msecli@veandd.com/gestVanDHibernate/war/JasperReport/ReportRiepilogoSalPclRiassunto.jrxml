@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReportRiepilogoSalPcl" pageWidth="890" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3e64915b-4396-4ec2-987d-f00025c0c0f8">
+	<import value="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<field name="pm" class="java.lang.String"/>
+	<field name="numeroCommessa" class="java.lang.String"/>
+	<field name="cliente" class="java.lang.String"/>
+	<field name="importoComplessivo" class="java.lang.Float"/>
+	<field name="oreEseguite" class="java.lang.Float"/>
+	
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="26" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="3613eb35-f3d6-47a1-8da9-b39f2e1154c2" x="1" y="1" width="104" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Project Manager]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0bbe56d9-c047-4fe0-b1f6-0a67893b1607" x="296" y="1" width="123" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Numero Commessa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="92b2d56a-84ac-4cb0-a643-a2fac7465b0f" x="116" y="0" width="167" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cliente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e2ab04ca-d099-4f77-8a40-ed90661b9f61" x="438" y="0" width="147" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Importo SAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="163920a5-03fb-4661-a8b0-c0cef620c245" x="607" y="0" width="151" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Importo PCL]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="23" splitType="Stretch">
+			<textField>
+				<reportElement uuid="0853e9e9-e2e7-499d-948f-b18c12f3cfff"  x="1" y="0" width="104" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{pm}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="30eb176b-fac4-425e-ba32-5e1b1786ed34" x="296" y="0" width="123" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{numeroCommessa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="23567c25-b122-46be-9642-b31874b2b114" x="116" y="0" width="167" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cliente}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="08580c46-a0b0-4f88-a286-a5771e35f18d" x="438" y="0" width="147" height="20" forecolor="#FF0033"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{importoComplessivo}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="1099dd18-7f49-42ec-9a14-674b4d0d735e" x="607" y="0" width="151" height="20" forecolor="#FF0033"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{oreEseguite}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
