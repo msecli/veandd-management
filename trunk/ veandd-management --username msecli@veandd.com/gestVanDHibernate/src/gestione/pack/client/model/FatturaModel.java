@@ -2,6 +2,7 @@ package gestione.pack.client.model;
 
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.data.BaseModel;
@@ -17,11 +18,15 @@ public class FatturaModel extends BaseModel{
 		
 	}
 	
-	public FatturaModel(int idFattura,String ragioneSociale, String indirizzo, String cap, String citta, String piva, String codiceFornitore, String numeroFattura, String dataFattura,
+	public FatturaModel(int idFattura, int idFoglioFatturazione, String descrizioneOrdine, String ragioneSociale, String indirizzo, String cap, String citta, String piva, 
+			String codiceFornitore, String numeroFattura, Date dataFattura,
 			String condizioni, String filiale, String iban, String numeroOrdine, String numeroOfferta, String lineaOrdine, String bem, String elementoWbs, String conto
-			, String prCenter, String imponibile, String iva, String totaleIva, String totaleImporto, List<AttivitaFatturateModel> listaAttivita){
+			, String prCenter, String imponibile, String iva, String totaleIva, String totaleImporto, String nomeAzienda, String capitaleSociale, String sedeLegale,
+			String sedeOperativa, String registroImprese, String rea){
 		
 		set("idFattura",idFattura);
+		set("idFoglioFatturazione", idFoglioFatturazione);
+		set("descrizione", descrizioneOrdine);
 		set("ragioneSociale",ragioneSociale);
 		set("indirizzo",indirizzo);
 		set("cap",cap);
@@ -44,7 +49,12 @@ public class FatturaModel extends BaseModel{
 		set("iva",iva);
 		set("totaleIva",totaleIva);
 		set("totaleImporto",totaleImporto);
-		set("listaAttivita",listaAttivita);
+		set("nomeAzienda",nomeAzienda);
+		set("capitaleSociale" , capitaleSociale);
+		set("sedeLegale", sedeLegale);
+		set("sedeOperativa",sedeOperativa);
+		set("registroImprese", registroImprese);
+		set("rea", rea);
 		
 	}
 }

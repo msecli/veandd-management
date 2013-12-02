@@ -16,6 +16,10 @@ import gestione.pack.client.model.RiepilogoOreNonFatturabiliJavaBean;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 import gestione.pack.client.model.RiepilogoSALPCLJavaBean;
 import gestione.pack.client.model.RiepilogoSALPCLModel;
+import gestione.pack.shared.AttivitaFatturata;
+import gestione.pack.shared.Fattura;
+import gestione.pack.shared.FoglioFatturazione;
+import gestione.pack.shared.Ordine;
 import gestione.pack.shared.Personale;
 
 import java.io.BufferedInputStream;
@@ -23,10 +27,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -35,6 +44,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
@@ -626,16 +638,44 @@ public class PrintDataServlet extends HttpServlet  {
 				BufferedInputStream bufferedInputStream;
 				byte[] rtfResume = null;
 				
-				try{
+				String imponibile="0.00";
+				String importoIva="0.00";
+				String totaleIva="0.00";
+				String totaleImporto="0.00";
+				String dataFattura="";
 				
+				DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+			    formatSymbols.setDecimalSeparator('.');
+			    String pattern="0.00";
+			    DecimalFormat d= new DecimalFormat(pattern,formatSymbols);
+						
+			    SimpleDateFormat formatter =new SimpleDateFormat("dd/MM/yyyy",Locale.ITALIAN);				
+				
+				try{
+								
 					List<FatturaJavaBean> listaO= new ArrayList<FatturaJavaBean>();						
 					FatturaModel fm= (FatturaModel) httpSession.getAttribute("fatturaModel");
-					List<AttivitaFatturateJavaBean> listaAF= elaboraListaAttivita((List<AttivitaFatturateModel>)fm.get("listaAttivita"));
-															
+					List<AttivitaFatturateJavaBean> listaAF= elaboraListaAttivita((List<AttivitaFatturateModel>) httpSession.getAttribute("listaA"));
+				
+					//salvare i dati della fattura con le attivita fatturate
+					boolean saveOk=ServerUtility.saveDataFattura(fm, listaAF);					
+													
+					for(AttivitaFatturateJavaBean af:listaAF){
+						imponibile=ServerUtility.aggiornaTotGenerale(imponibile, af.getImporto());
+						importoIva=d.format(Float.valueOf((String)fm.get("iva"))*Float.valueOf(af.getImporto())/100);
+						totaleIva=ServerUtility.aggiornaTotGenerale(totaleIva, importoIva);
+						totaleImporto=ServerUtility.aggiornaTotGenerale(totaleImporto, ServerUtility.aggiornaTotGenerale(af.getImporto(), importoIva));	
+					}
+									
+					listaAF.add(0, new AttivitaFatturateJavaBean("", "0.00"));//aggiungo una riga all'inizio della lista per un problema di formattazione del report
+					listaAF.add(new AttivitaFatturateJavaBean("COMPLESSIVI", imponibile));
+					dataFattura=formatter.format((Date)fm.get("dataFattura"));
+					
 					listaO.add(new FatturaJavaBean((String)fm.get("ragioneSociale"),(String) fm.get("indirizzo"), (String)fm.get("cap"), (String)fm.get("citta"), (String)fm.get("piva"),
-							(String) fm.get("codiceFornitore"), (String)fm.get("numeroFattura"),(String)fm.get("dataFattura"), (String)fm.get("condizioni"), (String)fm.get("filiale"), (String)fm.get("iban"),
+							(String) fm.get("codiceFornitore"), (String)fm.get("numeroFattura"), dataFattura, (String)fm.get("condizioni"), (String)fm.get("filiale"), (String)fm.get("iban"),
 							(String)fm.get("numeroOrdine"),(String) fm.get("numeroOfferta"), (String)fm.get("lineaOrdine"), (String)fm.get("bem"), (String)fm.get("elementoWbs"), (String)fm.get("conto"), 
-							(String)fm.get("prCenter"), (String)fm.get("imponibile"), (String)fm.get("iva"), (String)fm.get("totaleIva"), (String)fm.get("totaleImporto"), listaAF));
+							(String)fm.get("prCenter"), imponibile, (String)fm.get("iva"), totaleIva, totaleImporto, listaAF,
+							(String)fm.get("nomeAzienda"),(String)fm.get("capitaleSociale"),(String)fm.get("sedeLegale"),(String)fm.get("sedeOperativa"),(String)fm.get("registroImprese"),(String)fm.get("rea")));
 					
 					fis = new FileInputStream(/*Constanti.PATHAmazon+*/"JasperReport/report1.jasper");
 					
@@ -660,14 +700,14 @@ public class PrintDataServlet extends HttpServlet  {
 					// set content dispostion to attachment in with file name.
 					// case the open/save dialog needs to appear.
 					response.setHeader("Content-Disposition", "attachment;filename="+"1");
-					
-					int n = 0;				
+								
 					for(int i=0; i<rtfResume.length; i++){
 						outStream.write(rtfResume[i]);			
 					}
 							
 					outStream.flush();
-					outStream.close();					
+					outStream.close();		
+					
 				} catch (JRException e) {
 					e.printStackTrace();
 				}				

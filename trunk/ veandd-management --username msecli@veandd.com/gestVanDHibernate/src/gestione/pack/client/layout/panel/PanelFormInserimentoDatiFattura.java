@@ -1,38 +1,29 @@
 package gestione.pack.client.layout.panel;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import sun.text.resources.FormatData;
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.model.AttivitaFatturateModel;
-import gestione.pack.client.model.CostingRisorsaModel;
 import gestione.pack.client.model.FatturaModel;
-import gestione.pack.client.model.TariffaOrdineModel;
-import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.MyImages;
-import gestione.pack.server.ServerUtility;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.KeyListener;
-import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
@@ -48,13 +39,16 @@ import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.i18n.client.NumberFormat;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 
-public class PanelFormInserimentoDatiFattura extends LayoutContainer{
+public class PanelFormInserimentoDatiFattura extends Dialog{
 
 	private TextField<String> txtfldTotaleImponibile= new TextField<String>();
 	private TextField<String> txtfldTotaleIva= new TextField<String>();
@@ -65,6 +59,7 @@ public class PanelFormInserimentoDatiFattura extends LayoutContainer{
 	private TextField<String> txtfldAliquotaIva= new TextField<String>();
 	private TextField<String> txtfldDescrizione;
 	private TextField<String> txtfldImporto;
+	private DateField dtfldDataFattura;
 	private EditorGrid<AttivitaFatturateModel> gridAttivitaFatturate;
 	private ListStore<AttivitaFatturateModel> storeAttivita= new ListStore<AttivitaFatturateModel>();
 	private ColumnModel cm;
@@ -72,25 +67,14 @@ public class PanelFormInserimentoDatiFattura extends LayoutContainer{
 	
 	private Button btnAddAttivita;
 	private Button btnDelAttivita;
-	private Button btnPrintToPDF;
+	
 	private Button btnPrintToRTF;
-	
-	private String numeroOrdine;
-	private int idFoglioFatturazione;
-	private FatturaModel fM;
-	
+
 	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
 	private static String url= "/gestvandhibernate/PrintDataServlet";
 	
-	public PanelFormInserimentoDatiFattura(String numeroOrdine, int idFoglioFatturazione, FatturaModel fM){
-		this.numeroOrdine=numeroOrdine;
-		this.idFoglioFatturazione=idFoglioFatturazione;
-		this.fM=fM;		
-	}
-	
-	protected void onRender(Element target, int index) {  
-	    super.onRender(target, index);
-	    
+	public PanelFormInserimentoDatiFattura(final String numeroOrdine, final int idFoglioFatturazione, final FatturaModel fM){
+  
 	    final FitLayout fl= new FitLayout();
 		LayoutContainer layoutContainer= new LayoutContainer();
 		layoutContainer.setBorders(false);
@@ -100,7 +84,7 @@ public class PanelFormInserimentoDatiFattura extends LayoutContainer{
 		cntpnlLayout.setHeaderVisible(false);
 		cntpnlLayout.setBorders(false);
 		cntpnlLayout.setFrame(true);
-		cntpnlLayout.setHeight(480);
+		cntpnlLayout.setHeight(400);
 		cntpnlLayout.setWidth(600);
 		cntpnlLayout.setScrollMode(Scroll.NONE);
 				
@@ -162,10 +146,17 @@ public class PanelFormInserimentoDatiFattura extends LayoutContainer{
 		txtfldNumeroFattura.setValue((String) fM.get("numeroFattura"));
 		layoutCol1.add(txtfldNumeroFattura, new FormData("80%"));
 		
-		txtfldDataFattura.setAllowBlank(false);
+		/*txtfldDataFattura.setAllowBlank(false);
 		txtfldDataFattura.setFieldLabel("Data Fattura");
-		txtfldDataFattura.setValue((String) fM.get("dataFattura"));
-		layoutCol1.add(txtfldDataFattura, new FormData("80%"));
+		txtfldDataFattura.setValue((String) fM.get("dataFattura"));*/
+		//Date dataFattura=null;
+		//dtfldDataFattura.setValue(new Date());
+		//dataFattura=DateTimeFormat.getFormat("yyyy-MM-dd").parse((String) fM.get("dataFattura"));
+		dtfldDataFattura= new DateField();
+		dtfldDataFattura.setAllowBlank(false);
+		dtfldDataFattura.setFieldLabel("Data Fattura");
+		dtfldDataFattura.setValue((Date) fM.get("dataFattura"));
+		layoutCol1.add(dtfldDataFattura, new FormData("80%"));
 		
 		txtfldAliquotaIva.setAllowBlank(false);
 		txtfldAliquotaIva.setFieldLabel("IVA (%)");
@@ -205,41 +196,56 @@ public class PanelFormInserimentoDatiFattura extends LayoutContainer{
 		btnPrintToRTF.addSelectionListener(new SelectionListener<ButtonEvent>() {		
 			@Override
 			public void componentSelected(ButtonEvent ce) {			
-								
-				List<AttivitaFatturateModel> listaAM= storeAttivita.getModels();
-				fM.set("listaAttivita", listaAM);
 				
-				SessionManagementService.Util.getInstance().setDataFattura(numeroOrdine, idFoglioFatturazione, fM, "STAMPAFATTURA",
+				if(checkDati()){
+					List<AttivitaFatturateModel> listaAM= storeAttivita.getModels();
+					fM.set("listaAttivita", null);
+					fM.set("numeroFattura", txtfldNumeroFattura.getValue().toString());
+					fM.set("dataFattura",dtfldDataFattura.getValue());
+					fM.set("condizioni", txtfldCondizioniPagamento.getValue().toString());
+					fM.set("iva", txtfldAliquotaIva.getValue().toString());
+				
+					String nordine=numeroOrdine;
+					int idFF=idFoglioFatturazione;
+				
+					SessionManagementService.Util.getInstance().setDataFattura(nordine, idFF, fM, listaAM, "STAMPAFATTURA", 
 						new AsyncCallback<Boolean>() {
 
-					@Override
-					public void onFailure(Throwable caught) {
-						Window.alert("Error on setDataInSession()");					
-					}
+						@Override
+						public void onFailure(Throwable caught) {
+							Window.alert("Error on setDataInSession()");					
+						}
 
-					@Override
-					public void onSuccess(Boolean result) {
-						if(result)
-							fp.submit();
-						else
-							Window.alert("Problemi durante il settaggio dei parametri in Sessione (http)");
-					}
-				});		
+						@Override
+						public void onSuccess(Boolean result) {
+							if(result){
+								fp.submit();							
+							}
+							else
+								Window.alert("Problemi durante il settaggio dei parametri in Sessione (http)");
+						}
+		
+					});
+				}else
+					Window.alert("Controllare i dati inseriti!");
 			}
+
 		});
 		
-		fp.setMethod(com.google.gwt.user.client.ui.FormPanel.METHOD_POST);
+		fp.setMethod(FormPanel.METHOD_POST);
 		fp.setAction(url);
-		//fp.addSubmitCompleteHandler(new FormSubmitCompleteHandler());  
+		fp.addSubmitCompleteHandler(new FormSubmitCompleteHandler()); 
 		fp.add(btnPrintToRTF);
 		ContentPanel cp= new ContentPanel();
 		cp.setHeaderVisible(false);
+		cp.setHeight(130);
 		cp.add(fp);
 		
 		cs=new CellSelectionModel<AttivitaFatturateModel>();
 	    cs.setSelectionMode(SelectionMode.SIMPLE);
    
 	    cm=new ColumnModel(createColumns());
+	    storeAttivita.insert(new AttivitaFatturateModel((String)fM.get("descrizione"), (String)fM.get("imponibile")), 0);
 		gridAttivitaFatturate=new EditorGrid<AttivitaFatturateModel>(storeAttivita, cm);
 		gridAttivitaFatturate.setBorders(false);  
 		gridAttivitaFatturate.setItemId("grid");
@@ -285,7 +291,7 @@ public class PanelFormInserimentoDatiFattura extends LayoutContainer{
 		RowData data = new RowData(.70, 1);
 		data.setMargins(new Margins(5));
 		cntpnlDatiAggiuntivi.add(layoutCol1, data);
-		cntpnlDatiAggiuntivi.add(btnPrintToRTF, new RowData(.20, .55, new Margins(5)));	
+		cntpnlDatiAggiuntivi.add(cp, new RowData(.20, .65, new Margins(5)));	
 		
 		RowData data1 = new RowData(.32, .5);
 		data1.setMargins(new Margins(5));
@@ -300,7 +306,7 @@ public class PanelFormInserimentoDatiFattura extends LayoutContainer{
 		vp.setSpacing(5);
 		
 		vp.add(cntpnlDatiAggiuntivi);
-		vp.add(cntpnlDatiRiepilogo);
+		//vp.add(cntpnlDatiRiepilogo);
 		vp.add(cntpnlGrid);
 		
 		cntpnlLayout.add(vp);
@@ -350,9 +356,9 @@ public class PanelFormInserimentoDatiFattura extends LayoutContainer{
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    txtfldImporto= new TextField<String>();
 	    txtfldImporto.setAllowBlank(false);
-	    txtfldImporto.setRegex("[0-9]+[.][0-9]+|[0-9]+");
+	    txtfldImporto.setRegex("[0-9]+[.]{1}[0-9]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
 		txtfldImporto.getMessages().setRegexText("Deve essere un numero, eventualmente nel formato 99.99");		
-		txtfldImporto.addKeyListener(new KeyListener(){
+		/*txtfldImporto.addKeyListener(new KeyListener(){
 				 public void componentKeyDown(ComponentEvent event) { 	  
 				    	int keyCode=event.getKeyCode();
 						if(keyCode==9){		
@@ -373,7 +379,7 @@ public class PanelFormInserimentoDatiFattura extends LayoutContainer{
 			    	  		txtfldTotaleImporto.setValue(totaleImporto);
 						}
 				 }
-		});
+		});*/
 		
 	    editorTxt= new CellEditor(txtfldImporto){
 	    	@Override  
@@ -398,8 +404,35 @@ public class PanelFormInserimentoDatiFattura extends LayoutContainer{
 	    return configs;
 	}
 	
+	private class FormSubmitCompleteHandler implements SubmitCompleteHandler {
+
+		@Override
+		public void onSubmitComplete(final SubmitCompleteEvent event) {
+			closeDialog();
+		}
+
+		
+	}
+	
+	private void closeDialog() {
+		this.hide();
+	}
+	
 	protected boolean hasValue(TextField<String> field) {
 	    return field.getValue() != null && field.isValid();
+	}
+	
+	private boolean checkDati() {
+		
+		if(txtfldAliquotaIva.isValid())
+			if(txtfldCondizioniPagamento.isValid())
+				if(dtfldDataFattura.isValid())
+					if(txtfldImporto.isValid())
+						if (txtfldNumeroFattura.isValid())
+						return true;
+		
+			return false;
+		
 	}
 	
 }

@@ -42,6 +42,7 @@ import com.google.gwt.cell.client.EditTextCell;
 
 
 import gestione.pack.client.AdministrationService;
+import gestione.pack.client.model.AttivitaFatturateJavaBean;
 import gestione.pack.client.model.AttivitaFatturateModel;
 import gestione.pack.client.model.ClienteModel;
 import gestione.pack.client.model.CommentiModel;
@@ -5489,6 +5490,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			df=(DatiFatturazioneAzienda)session.createQuery("from DatiFatturazioneAzienda").uniqueResult();
 			f=(Fattura)session.createQuery("from Fattura where idFoglioFatturazione=:id").setParameter("id", idFoglioFatturazione).uniqueResult();
 			
+			//TODO numero fattura automatico
+			
 			if(f==null){
 				
 				String ragioneSociale=o.getRda().getCliente().getRagioneSociale();
@@ -5498,7 +5501,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				String piva=o.getRda().getCliente().getPartitaIVA();
 				String codiceFornitore=o.getRda().getCliente().getCodFornitore();
 				String numeroFattura="#";
-				String dataFattura="#";
+				//String dataFattura="#";
 				String condizioni="#";
 				String filiale=df.getDatiFiliale();
 				String iban=df.getIban();
@@ -5508,15 +5511,15 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				String elementoWbs=o.getElementoWbs();
 				String conto=o.getConto();
 				String prCenter=o.getPrCenter();
-				String imponibile="0.00";
+				String imponibile=ff.getImportoRealeFatturato();
 				String iva=df.getAliquotaIva();
 				String totaleIva="0.00";
 				String totaleImporto="0.00";
-				List<AttivitaFatturateModel> listaAttivita=new ArrayList<AttivitaFatturateModel>();
-								
-				fM=new FatturaModel(0,ragioneSociale, indirizzo, cap, citta, piva, codiceFornitore, numeroFattura, dataFattura, condizioni, 
+												
+				fM=new FatturaModel(0, ff.getIdFoglioFatturazione(), o.getDescrizioneAttivita(),ragioneSociale, indirizzo, cap, citta, piva, codiceFornitore, numeroFattura, new Date(), condizioni, 
 						filiale, iban, numeroOrdine, numeroOfferta, lineaOrdine, bem, elementoWbs, conto, prCenter, imponibile, iva, totaleIva,
-						totaleImporto, listaAttivita);
+						totaleImporto, df.getRagioneSociale(), df.getCapitaleSociale(), df.getSedeLegale(), df.getSedeOperativa(), df.getRegistroImprese(),
+						df.getRea());
 				
 			}else{
 				AttivitaFatturateModel afM;
@@ -5544,6 +5547,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				String importoIva="0.00";
 				List<AttivitaFatturateModel> listaAttivita=new ArrayList<AttivitaFatturateModel>();
 				
+				SimpleDateFormat formatter =new SimpleDateFormat("yyyy-MM-dd",Locale.ITALIAN);
+				Date dataF=formatter.parse(dataFattura);
+				
 				for(AttivitaFatturata af:f.getAttivitaFatturatas()){
 					afM=new AttivitaFatturateModel(af.getDescrizione(), af.getImporto());
 					listaAttivita.add(afM);
@@ -5553,9 +5559,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					totaleImporto=ServerUtility.aggiornaTotGenerale(totaleImporto, ServerUtility.aggiornaTotGenerale(af.getImporto(), importoIva));					
 				}
 				
-				fM=new FatturaModel(f.getIdFattura(),ragioneSociale, indirizzo, cap, citta, piva, codiceFornitore, numeroFattura, dataFattura, condizioni, 
-						filiale, iban, numeroOrdine, numeroOfferta, lineaOrdine, bem, elementoWbs, conto, prCenter, imponibile, iva, totaleIva,
-						totaleImporto, listaAttivita);			
+				fM=new FatturaModel(f.getIdFattura(),ff.getIdFoglioFatturazione(), o.getDescrizioneAttivita(),ragioneSociale, indirizzo, cap, citta, piva, codiceFornitore,
+						numeroFattura, dataF, condizioni, filiale, iban, numeroOrdine, numeroOfferta, lineaOrdine, bem, elementoWbs, conto, prCenter, imponibile, iva, totaleIva,
+						totaleImporto, df.getRagioneSociale(), df.getCapitaleSociale(), df.getSedeLegale(), df.getSedeOperativa(), df.getRegistroImprese(),
+						df.getRea());		
 			}
 			
 			tx.commit();
@@ -5688,6 +5695,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		List<FoglioFatturazione> listaFF=new ArrayList<FoglioFatturazione>();
 		List<String> matricolePM= new ArrayList<String>();
 		DatiFatturazioneMeseModel datiModel;
+		Fattura fattura;
 		Ordine o;
 		float importo=0;
 		float importoEffettivo=0;
@@ -5707,6 +5715,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String totOreScaricate="0.00";
 		String totOreMargine="0.00";*/
 		String attivitaOrdine="";
+		String statoFattura="N";
 		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
@@ -5721,6 +5730,12 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 			listaFF=(List<FoglioFatturazione>)session.createQuery("from FoglioFatturazione where meseCorrente=:mese").setParameter("mese", mese).list();
 			for(FoglioFatturazione f: listaFF){	
+				
+				fattura=(Fattura)session.createQuery("from Fattura where idFoglioFatturazione=:id").setParameter("id", f.getIdFoglioFatturazione()).uniqueResult();
+				if(fattura!=null)
+					statoFattura="S";
+				else statoFattura="N";
+				
 				if(f.getCommessa().getMatricolaPM()!=null && !exsistMatricolaPM(f.getCommessa().getMatricolaPM(), matricolePM))
 					matricolePM.add(f.getCommessa().getMatricolaPM());
 				if(!f.getCommessa().getOrdines().isEmpty()){
@@ -5745,7 +5760,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					datiModel=new DatiFatturazioneMeseModel(f.getIdFoglioFatturazione(),f.getCommessa().getMatricolaPM(), f.getCommessa().getNumeroCommessa()+"."+f.getCommessa().getEstensione(), o.getRda().getCliente().getRagioneSociale(), 
 							numeroOrdine, o.getCommessa().getDenominazioneAttivita(),attivitaOrdine , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf(ServerUtility.getOreCentesimi(f.getOreFatturare()))
 							, Float.valueOf(f.getTariffaUtilizzata()),	importo, importoEffettivo, Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), importoSal, 
-							Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), importoPcl, Float.valueOf(ServerUtility.getOreCentesimi(oreScaricate)), margine, f.getNote());
+							Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), importoPcl, Float.valueOf(ServerUtility.getOreCentesimi(oreScaricate)), margine, f.getNote(), statoFattura);
 				}
 				else{
 					numeroOrdine="";
@@ -5760,7 +5775,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					datiModel=new DatiFatturazioneMeseModel(f.getIdFoglioFatturazione(),f.getCommessa().getMatricolaPM(), f.getCommessa().getNumeroCommessa()+"."+f.getCommessa().getEstensione(), "#", numeroOrdine,
 							f.getCommessa().getDenominazioneAttivita(),attivitaOrdine, Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf(ServerUtility.getOreCentesimi(f.getOreFatturare())),
 							Float.valueOf(f.getTariffaUtilizzata()), (float) 0.0, (float)0.0, Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), importoSal, Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), 
-							importoPcl, Float.valueOf(oreScaricate),margine, f.getNote());	
+							importoPcl, Float.valueOf(oreScaricate),margine, f.getNote(), statoFattura);	
 				}
 				listaDati.add(datiModel);
 			}			
@@ -8507,11 +8522,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			e.printStackTrace();
 			return false;		
 		}finally{
-			
+						
 		}				
 	}
 
-	
 
 	
 }

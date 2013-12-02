@@ -1,8 +1,10 @@
 package gestione.pack.server;
 
+import gestione.pack.client.model.AttivitaFatturateJavaBean;
 import gestione.pack.client.model.CostingRisorsaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseJavaBean;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
+import gestione.pack.client.model.FatturaModel;
 import gestione.pack.client.model.IntervalliCommesseModel;
 import gestione.pack.client.model.RiepilogoAnnualeJavaBean;
 import gestione.pack.client.model.RiepilogoCostiDipendentiBean;
@@ -18,12 +20,15 @@ import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 import gestione.pack.client.model.RiepilogoSALPCLJavaBean;
 import gestione.pack.client.model.RiepilogoSALPCLModel;
 import gestione.pack.shared.AssociazionePtoA;
+import gestione.pack.shared.AttivitaFatturata;
 import gestione.pack.shared.Commessa;
 import gestione.pack.shared.CostingRisorsa;
+import gestione.pack.shared.DatiFatturazioneAzienda;
 import gestione.pack.shared.DatiOreMese;
 import gestione.pack.shared.DatiRiepilogoMensileCommesse;
 import gestione.pack.shared.DettaglioIntervalliCommesse;
 import gestione.pack.shared.DettaglioOreGiornaliere;
+import gestione.pack.shared.Fattura;
 import gestione.pack.shared.FoglioFatturazione;
 import gestione.pack.shared.Ordine;
 
@@ -2100,6 +2105,106 @@ public class ServerUtility {
 			ic=new IntervalliCommesseModel("", "0.00", "0.00", "", "","","");				
 		
 		return ic;
+	}
+
+public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateJavaBean> listaAF) throws IllegalArgumentException{
+		
+		Ordine o= new Ordine();
+		FoglioFatturazione ff= new FoglioFatturazione();
+		Fattura f=new Fattura();
+		AttivitaFatturata attF= new AttivitaFatturata();
+				
+		SimpleDateFormat formatter =new SimpleDateFormat("yyyy-MM-dd",Locale.ITALIAN);
+		
+		int idFattura=fm.get("idFattura");
+		int idFoglioFatturazione=fm.get("idFoglioFatturazione");
+		String numeroOrdine=fm.get("numeroOrdine");	
+		String iva=(String) fm.get("iva");
+		String condizioni=(String) fm.get("condizioni");
+		String dataFattura=formatter.format((Date) fm.get("dataFattura"));
+		String numeroFattura=(String) fm.get("numeroFattura");
+		
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try{
+			tx=session.beginTransaction();
+			
+			//ff=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where idFoglioFatturazione=:id").setParameter("id", idFoglioFatturazione).uniqueResult();
+			o=(Ordine)session.createQuery("from Ordine where codiceOrdine=:nOrdine").setParameter("nOrdine", numeroOrdine).uniqueResult();
+			
+			f=(Fattura)session.createQuery("from Fattura where idFattura=:id").setParameter("id", idFattura).uniqueResult();
+						
+			if(f==null){
+				//una nuova fattura da salvare
+				f=new Fattura();
+				f.setAliquotaIva(iva);
+				f.setCondizioniPagamento(condizioni);
+				f.setDataFatturazione(dataFattura);
+				f.setIdFoglioFatturazione(idFoglioFatturazione);
+				f.setNumeroFattura(numeroFattura);
+				f.setStatoElaborazione("S");
+				//f.setStatoPagamento("");// nulla al momento
+									
+				f.setOrdine(o);
+				
+				o.getFatturas().add(f);
+				
+				session.save(o);
+				tx.commit();
+				
+				for(AttivitaFatturateJavaBean att:listaAF){
+					savaDataAttivitaFattura(idFoglioFatturazione,att);//con l'id del foglio fatturazione prelevo la Fattura
+				}
+				
+				//TODO edit
+			}		
+			
+		}catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return false;
+		}finally{
+			session.close();
+		}			
+		return true;
+	}
+	
+	
+	private static void savaDataAttivitaFattura(int idFoglioFatturazione,
+			AttivitaFatturateJavaBean att) {
+		
+		Fattura f= new Fattura();
+		AttivitaFatturata a= new AttivitaFatturata();
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try{
+			tx=session.beginTransaction();
+			
+			f=(Fattura)session.createQuery("from Fattura where idFoglioFatturazione=:id").setParameter("id", idFoglioFatturazione).uniqueResult();
+			
+			a.setDescrizione(att.getDescrizione());
+			a.setImporto(att.getImporto());
+			a.setFattura(f);
+			
+			f.getAttivitaFatturatas().add(a);
+			
+			session.save(f);
+			
+			tx.commit();
+			
+		}catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			
+		}finally{
+			session.close();
+		}		
 	}	
 }
 
