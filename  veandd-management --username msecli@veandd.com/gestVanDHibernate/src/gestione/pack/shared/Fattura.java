@@ -1,6 +1,5 @@
 package gestione.pack.shared;
 
-import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -22,6 +21,7 @@ public class Fattura extends LightEntity implements IsSerializable{
 	@Column(name="ID_FATTURA")
 	private int idFattura;
 	
+	@Column(name="idFoglioFatturazione")
 	private int idFoglioFatturazione;
 
 	private String aliquotaIva;

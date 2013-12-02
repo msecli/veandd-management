@@ -21,6 +21,7 @@ import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
@@ -239,15 +240,14 @@ public class CenterLayout_ElaboraFatture extends LayoutContainer{
 			btnShowFormFatturazione.setIconAlign(IconAlign.TOP);
 			btnShowFormFatturazione.setSize(26, 26);
 			btnShowFormFatturazione.disable();
-			btnShowFormFatturazione.addSelectionListener(new SelectionListener<ButtonEvent>() {
-				
+			btnShowFormFatturazione.addSelectionListener(new SelectionListener<ButtonEvent>() {				
 				@Override
-				public void componentSelected(ButtonEvent ce) {
-										
+				public void componentSelected(ButtonEvent ce) {									
 					//numeroOrdine, numeroCommessa, oggetto, importoEffettivo, idFoglioFatturazione
 					//cerco i dati relativi all'ordine passato e restituisco un form per completare i dati di fatturazione
 					final String numeroOrdine=sm.getSelectedItem().get("numeroOrdine");
 					final int idFoglioFatturazione=sm.getSelectedItem().get("idFoglioFatturazione");
+					//final String descrizione=sm.getSelectedItem().get("oggettoAttivita");
 					AdministrationService.Util.getInstance().elaboraDatiPerFattura(numeroOrdine, idFoglioFatturazione, new AsyncCallback<FatturaModel>() {
 
 						@Override
@@ -259,15 +259,7 @@ public class CenterLayout_ElaboraFatture extends LayoutContainer{
 						@Override
 						public void onSuccess(FatturaModel result) {
 							if(result!=null){
-								Dialog d= new Dialog();
-								//d.setHeaderVisible(false);
-								d.setSize(630, 520);
-								d.setButtons("");
-								d.setHeading("Dati per la fatturazione.");
-								d.setConstrain(false);
-								d.add(new PanelFormInserimentoDatiFattura(numeroOrdine,idFoglioFatturazione,result));
-								d.show();
-								
+								showDialog(numeroOrdine, idFoglioFatturazione, result);						
 							}
 							else
 								Window.alert("Problemi durante il recupero dei dati per la compilazione della fattura!");
@@ -279,7 +271,7 @@ public class CenterLayout_ElaboraFatture extends LayoutContainer{
 					
 			fp.setMethod(FormPanel.METHOD_POST);
 			fp.setAction(url);
-			fp.addSubmitCompleteHandler(new FormSubmitCompleteHandler());  
+			//fp.addSubmitCompleteHandler(new FormSubmitCompleteHandler());  
 			fp.add(btnPrint);
 			ContentPanel cp= new ContentPanel();
 			cp.setHeaderVisible(false);
@@ -310,8 +302,7 @@ public class CenterLayout_ElaboraFatture extends LayoutContainer{
 		    GroupSummaryView summary = new GroupSummaryView();  
 		    summary.setForceFit(false);  
 		    summary.setShowGroupedColumn(false);  
-			   
-		    		    
+			   		    		    
 		    gridRiepilogo= new EditorGrid<DatiFatturazioneMeseModel>(store, cm);  
 		    gridRiepilogo.setBorders(false); 
 		    gridRiepilogo.setColumnLines(true);
@@ -320,50 +311,44 @@ public class CenterLayout_ElaboraFatture extends LayoutContainer{
 			gridRiepilogo.setView(summary);  
 			gridRiepilogo.getView().setShowDirtyCells(false);
 			gridRiepilogo.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<DatiFatturazioneMeseModel>>() {  
-		          public void handleEvent(SelectionChangedEvent<DatiFatturazioneMeseModel> be) {  
-			        	
+		          public void handleEvent(SelectionChangedEvent<DatiFatturazioneMeseModel> be) {  	        	
 			            if (be.getSelection().size() > 0) { 
 			            	   btnShowFormFatturazione.enable();
-			            }             
-			          }		            
-			}); 
-		    
+			            } else{
+			            	btnShowFormFatturazione.disable();
+			            }
+			            	
+			          }		          
+			}); 		
+			gridRiepilogo.addListener(Events.CellDoubleClick, new Listener<BaseEvent>() {
+
+				@Override
+				public void handleEvent(BaseEvent be) {
+					final String numeroOrdine=sm.getSelectedItem().get("numeroOrdine");
+					final int idFoglioFatturazione=sm.getSelectedItem().get("idFoglioFatturazione");
+					AdministrationService.Util.getInstance().elaboraDatiPerFattura(numeroOrdine, idFoglioFatturazione, new AsyncCallback<FatturaModel>() {
+
+						@Override
+						public void onFailure(Throwable caught) {
+							Window.alert("Error on elaboraDatiPerFattura()");						
+						}
+
+						@Override
+						public void onSuccess(FatturaModel result) {
+							if(result!=null){									
+								showDialog(numeroOrdine, idFoglioFatturazione, result);
+							}
+							else
+								Window.alert("Problemi durante il recupero dei dati per la compilazione della fattura!");
+						}
+					});
+				}
+			});
 		    			   		   	    	   
 		  	add(gridRiepilogo);			
 		}
 		
-		
-		private class FormSubmitCompleteHandler implements SubmitCompleteHandler {
-
-			@Override
-			public void onSubmitComplete(final SubmitCompleteEvent event) {
-				
-				//Window.open("/FileStorage/RiepilogoAnnuale.pdf", "_blank", "1");
-				
-			}
-		}
-	/*
-		private void getNomePM() {
-			AdministrationService.Util.getInstance().getNomePM(new AsyncCallback<List<String>>() {
-
-				@Override
-				public void onFailure(Throwable caught) {
-					Window.alert("Errore connessione on getNomePM();");
-					caught.printStackTrace();
-				}
-
-				@Override
-				public void onSuccess(List<String> result) {
-					if(result!=null){
-						smplcmbxPM.add(result);
-						smplcmbxPM.recalculate();
-												
-					}else Window.alert("error: Errore durante l'accesso ai dati PM.");			
-				}
-			});		
-		}*/
-
-
+	
 		private List<ColumnConfig> createColumns() {
 			List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 			final NumberFormat number= NumberFormat.getFormat("0.00");
@@ -522,7 +507,8 @@ public class CenterLayout_ElaboraFatture extends LayoutContainer{
 		     columnImportoEffettivo.setWidth(100);    
 		     columnImportoEffettivo.setRowHeader(true); 
 		     columnImportoEffettivo.setAlignment(HorizontalAlignment.RIGHT);
-		     columnImportoEffettivo.setStyle("color:#e71d2b; background-color:#d2f5af;");
+		     columnImportoEffettivo.setStyle("color:#e71d2b; background-color:#f0f6f6;");
+		     //e1e3e1  d2f5af
 		     columnImportoEffettivo.setSummaryType(SummaryType.SUM);  
 		     columnImportoEffettivo.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
 					@Override
@@ -543,10 +529,60 @@ public class CenterLayout_ElaboraFatture extends LayoutContainer{
 					}
 				});
 			configs.add(columnImportoEffettivo); 
+	
+			column=new SummaryColumnConfig<Double>();		
+			column.setId("statoFattura"); 
+			column.setToolTip("Stato Fatturazione");
+			column.setHeader("Stato Fatturazione");  
+			column.setWidth(50);  
+			column.setRowHeader(true); 
+			column.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
+				@Override
+				public Object render(DatiFatturazioneMeseModel model,
+						String property, ColumnData config, int rowIndex,
+						int colIndex,
+						ListStore<DatiFatturazioneMeseModel> store,
+						Grid<DatiFatturazioneMeseModel> grid) {
+					
+					String t= model.get("statoFattura");
+					if(t.compareTo("S")==0)												
+							config.style = config.style + ";background-color:" + "#90EE90" + ";";									
+						else
+							config.style = config.style + ";background-color:" + "#F08080" + ";";
+					
+					return "";
+				}
+			});
+			configs.add(column);
 			
 		    return configs;
 		}
 
+		
+		private void showDialog(String numeroOrdine, int idFoglioFatturazione, FatturaModel result){
+			PanelFormInserimentoDatiFattura dp= new PanelFormInserimentoDatiFattura(numeroOrdine, idFoglioFatturazione, result);
+			dp.setSize(630, 440);
+			dp.setButtons("");
+			dp.setHeading("Dati per la fatturazione.");
+			dp.setConstrain(false);
+			dp.show();
+			
+			dp.addListener(Events.Hide, new Listener<ComponentEvent>() {
+			     
+				@Override
+				public void handleEvent(ComponentEvent be) {
+					
+					String meseRif= new String();
+					String anno= smplcmbxAnno.getRawValue().toString();
+					String data;
+					meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
+					data=meseRif+anno;
+					
+					sm.getSelectedItem().set("statoFattura", "S");
+					gridRiepilogo.reconfigure(store, cm);
+			    }
+			});	
+		}
 		
 		private void caricaTabellaDati(String mese) {
 			AdministrationService.Util.getInstance().getReportDatiFatturazioneMese(mese, new AsyncCallback<List<DatiFatturazioneMeseModel>>() {		

@@ -28,6 +28,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import gestione.pack.client.SessionManagementService;
+import gestione.pack.client.model.AttivitaFatturateModel;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.FatturaModel;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
@@ -369,7 +370,7 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 
 	@Override
 	public boolean setDataFattura(String numeroOrdine,
-			int idFoglioFatturazione, FatturaModel fM, String operazione) {
+			int idFoglioFatturazione, FatturaModel fM, List<AttivitaFatturateModel> listaA, String operazione) {
 		try {
 			 HttpServletRequest request = this.getThreadLocalRequest();
 		   	 HttpSession httpSession = request.getSession();
@@ -378,6 +379,7 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 		   	 httpSession.setAttribute("idFoglioFatturazione", idFoglioFatturazione);
 		     httpSession.setAttribute("operazione", operazione);
 		     httpSession.setAttribute("fatturaModel", fM);
+		     httpSession.setAttribute("listaA", listaA);
 		   	 
 			return true;
 		} catch (Exception e) {

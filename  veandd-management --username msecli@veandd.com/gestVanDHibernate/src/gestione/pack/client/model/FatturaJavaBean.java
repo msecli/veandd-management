@@ -7,11 +7,13 @@ public class FatturaJavaBean {
 	private String ragioneSociale; private String indirizzo; private String cap; private String citta; private String piva; private String codiceFornitore; private String numeroFattura; private String dataFattura;
 	private String condizioni; private String filiale; private String iban; private String numeroOrdine; private String numeroOfferta; private String lineaOrdine; private String bem; private String elementoWbs; private String conto
 	; private String prCenter; private String imponibile; private String iva; private String totaleIva; private String totaleImporto; 
-	private List<AttivitaFatturateJavaBean> listaAF;
+	private String nomeAzienda; private String capitaleSociale; private String sedeLegale; private String sedeOperativa; private String registroImprese; private String rea; 
+	private List<AttivitaFatturateJavaBean> listaA;
 	
 	public FatturaJavaBean(String ragioneSociale, String indirizzo, String cap, String citta, String piva, String codiceFornitore, String numeroFattura, String dataFattura,
 			String condizioni, String filiale, String iban, String numeroOrdine, String numeroOfferta, String lineaOrdine, String bem, String elementoWbs, String conto
-			, String prCenter, String imponibile, String iva, String totaleIva, String totaleImporto, List<AttivitaFatturateJavaBean>listaAF){
+			, String prCenter, String imponibile, String iva, String totaleIva, String totaleImporto, List<AttivitaFatturateJavaBean> listaA, 
+			String nomeAzienda, String capitaleSociale, String sedeLegale, String sedeOperativa, String registroImprese, String rea){
 		
 		this.ragioneSociale=ragioneSociale;
 		this.indirizzo=indirizzo;
@@ -35,7 +37,13 @@ public class FatturaJavaBean {
 		this.iva=iva;
 		this.totaleIva=totaleIva;
 		this.totaleImporto=totaleImporto;	
-		this.listaAF = listaAF;
+		this.nomeAzienda=nomeAzienda;
+		this.capitaleSociale=capitaleSociale;
+		this.sedeLegale=sedeLegale;
+		this.sedeOperativa=sedeOperativa;
+		this.registroImprese= registroImprese;
+		this.rea=rea;
+		this.listaA=listaA;
 	}
 	
 	
@@ -128,13 +136,32 @@ public class FatturaJavaBean {
 		return totaleImporto;
 	}
 
-	public List<AttivitaFatturateJavaBean> getListaAF() {
-		return listaAF;
+	public String getCapitaleSociale() {
+		return capitaleSociale;
 	}
 
-	public void setListaAF(List<AttivitaFatturateJavaBean> listaAF) {
-		this.listaAF = listaAF;
+	public String getNomeAzienda() {
+		return nomeAzienda;
 	}
-	
-	
+
+	public String getSedeLegale() {
+		return sedeLegale;
+	}
+
+	public String getSedeOperativa() {
+		return sedeOperativa;
+	}
+
+	public String getRegistroImprese() {
+		return registroImprese;
+	}
+
+	public String getRea() {
+		return rea;
+	}
+
+	public List<AttivitaFatturateJavaBean> getListaA() {
+		return listaA;
+	}
+
 }

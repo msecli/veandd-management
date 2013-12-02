@@ -19,7 +19,7 @@ public class AttivitaFatturata extends LightEntity implements IsSerializable{
 
 	//bi-directional many-to-one association to Fattura
     @ManyToOne
-    @JoinColumn(name="ID_FATTURA")
+    @JoinColumn(name="FATTURA_ID_FATTURA")
 	private Fattura fattura;
 
     public AttivitaFatturata() {

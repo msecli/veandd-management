@@ -101,6 +101,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 				d.setSize(1500, 650);
 				d.add(new PanelRiepilogoMeseGiornalieroCommesseHorizontal(username, data));
 				d.setButtons("");
+				d.setScrollMode(Scroll.AUTOX);
 				d.show();			
 			}
 		});
