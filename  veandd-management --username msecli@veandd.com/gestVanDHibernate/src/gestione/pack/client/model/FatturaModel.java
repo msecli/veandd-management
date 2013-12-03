@@ -6,14 +6,17 @@ import java.util.Date;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.data.BaseModel;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class FatturaModel extends BaseModel{
+public class FatturaModel extends BaseModel  implements IsSerializable{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	private List<AttivitaFatturateModel> listaAttF;
+	
+	
 	public FatturaModel(){
 		
 	}
@@ -55,6 +58,16 @@ public class FatturaModel extends BaseModel{
 		set("sedeOperativa",sedeOperativa);
 		set("registroImprese", registroImprese);
 		set("rea", rea);
-		
+				
 	}
+
+	public List<AttivitaFatturateModel> getListaAttF() {
+		return listaAttF;
+	}
+
+	public void setListaAttF(List<AttivitaFatturateModel> listaAttF) {
+		this.listaAttF = listaAttF;
+	}
+	
+	
 }

@@ -1027,7 +1027,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				session.save(ordine);
 				tx.commit();			
 			}
-			
+						
 		} catch (Exception e) {
 			if (tx!=null)
 	    		tx.rollback();		    	
@@ -1038,6 +1038,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}
 	}
 
+	
 	private void editDataOrdine(String numOrdine, int idRdo, Date dataInizio,
 			Date dataFine, String descrizione, String tariffa,
 			String numRisorse, String oreDisp, String oreRes, String importoOrdine, String importoResiduoOrdine) {
@@ -1061,7 +1062,15 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			o.setOreResidueBudget(oreRes);
 			o.setImporto(importoOrdine);
 			o.setImportoResiduo(importoResiduoOrdine);
-	  
+	  /*
+			List<AttivitaOrdine> listaAttO= new ArrayList<AttivitaOrdine>();
+			listaAttO.addAll(o.getAttivitaOrdines());
+			for(AttivitaOrdine attO:listaAttO){
+				attO.setOrdine(null);
+				session.delete(attO); //TODO non permettere l'eliminazione delle tariffe su un ordine
+			}
+			
+			o.setAttivitaOrdines(null);*/
 			tx.commit();		  
 	    		
 		} catch (Exception e) {
@@ -2567,6 +2576,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		int idDettGiorno;
 		boolean intervalliIUpresenti;
 		boolean intervalliCommPresenti;
+		boolean duplicato=false;
 		
 		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
 		anno=formatter.format(giornoRiferimento);
@@ -2644,8 +2654,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						dettOreGiornaliero.setOreAbbuono(oreAbbuono);
 						dettOreGiornaliero.setGiustificativo(giustificativo);
 						dettOreGiornaliero.setNoteAggiuntive(noteAggiuntive);
-						dettOreGiornaliero.setStatoRevisione(revisione);
-						
+						dettOreGiornaliero.setStatoRevisione(revisione);					
 						
 						//TODO possibile ottimizzare?
 						if(dettOreGiornaliero.getDettaglioIntervalliIUs().isEmpty())
@@ -2685,10 +2694,23 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						dettOreGiornaliero.setGiustificativo(giustificativo);
 						dettOreGiornaliero.setNoteAggiuntive(noteAggiuntive);
 						dettOreGiornaliero.setStatoRevisione(revisione);
-						foglioOre.getDettaglioOreGiornalieres().add(dettOreGiornaliero);
-																		
-						session.save(foglioOre);
-						tx.commit();
+						//foglioOre.getDettaglioOreGiornalieres().add(dettOreGiornaliero);
+								
+						//TODO aggiunta per controllo duplicati
+						for(DettaglioOreGiornaliere dtt:foglioOre.getDettaglioOreGiornalieres())
+							if(dettOreGiornaliero.equals(dtt))
+								duplicato=true;
+								
+						if(!duplicato){		
+							foglioOre.getDettaglioOreGiornalieres().add(dettOreGiornaliero);				
+							session.save(foglioOre);
+							tx.commit();
+						}else
+							tx.commit();
+							//session.close();
+												
+						//session.save(foglioOre);
+						//tx.commit();
 
 						createDettaglioIntervalliIU(intervalliIU ,username,giornoRiferimento);
 						createDettaglioIntervalliCommesse(intervalliC, username, giornoRiferimento);
@@ -2718,6 +2740,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String data=new String();
 		String mese=new String();
 		String anno= new String();
+		boolean duplicato=false;
 		
 		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
 		anno=formatter.format(giornoRiferimento);
@@ -2738,7 +2761,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 			foglioOre=(FoglioOreMese)session.createQuery("from FoglioOreMese where id_personale=:id and meseRiferimento=:mese")
 					.setParameter("id", p.getId_PERSONALE()).setParameter("mese", data).uniqueResult();
-			
+						
 			dettOreGiornaliero.setFoglioOreMese(foglioOre);
 			dettOreGiornaliero.setGiornoRiferimento(giornoRiferimento);
 			dettOreGiornaliero.setTotaleOreGiorno(totOreGenerale);
@@ -2753,11 +2776,21 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			dettOreGiornaliero.setGiustificativo(giustificativo);
 			dettOreGiornaliero.setNoteAggiuntive(noteAggiuntive);
 			dettOreGiornaliero.setStatoRevisione(revisione);
-			foglioOre.getDettaglioOreGiornalieres().add(dettOreGiornaliero);
-		
-			session.save(foglioOre);
-			tx.commit();
 				
+			//TODO modifiche per controlli dati duplicati
+			for(DettaglioOreGiornaliere dtt:foglioOre.getDettaglioOreGiornalieres())
+				if(dettOreGiornaliero.equals(dtt))
+					duplicato=true;
+					
+			if(!duplicato){		
+				foglioOre.getDettaglioOreGiornalieres().add(dettOreGiornaliero);				
+				session.save(foglioOre);
+				tx.commit();
+			}else{
+				tx.commit();
+				//session.close();
+			}
+							
 		} catch (Exception e) {
 			if (tx!=null)
 	    		tx.rollback();	
@@ -2850,6 +2883,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String commessa=new String();
 		String numeroC= new String();
 		String estensione= new String();
+		boolean duplicato=false;
 		int index;
 		
 		try {
@@ -2867,15 +2901,21 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			dettCommesse.setNumeroCommessa(numeroC);
 			dettCommesse.setEstensioneCommessa(estensione);
 			dettCommesse.setOreLavorate(i.getOreLavoro());
-			dettCommesse.setOreViaggio(i.getOreViaggio());
-			
+			dettCommesse.setOreViaggio(i.getOreViaggio());			
 			dettCommesse.setDettaglioOreGiornaliere(dettGiorno);
 			
-			dettGiorno.getDettaglioIntervalliCommesses().add(dettCommesse);
+			for(DettaglioIntervalliCommesse dtt: dettGiorno.getDettaglioIntervalliCommesses())
+				if(dettCommesse.equals(dtt))
+					duplicato=true;
 			
-			session.save(dettGiorno);
-			tx.commit();
-			
+			if(!duplicato){
+				dettGiorno.getDettaglioIntervalliCommesses().add(dettCommesse);			
+				session.save(dettGiorno);
+				tx.commit();
+			}else{			
+				tx.commit();
+			}		
+						
 		} catch (Exception e) {
 			if (tx!=null)
 	    		tx.rollback();	
@@ -2953,7 +2993,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		DettaglioOreGiornaliere dettGiorno= new DettaglioOreGiornaliere();
 		DettaglioIntervalliIU dettIU=new DettaglioIntervalliIU();
-		
+		boolean duplicato=false;
 		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
 		Transaction tx= null;
 		
@@ -2962,17 +3002,26 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			dettGiorno=(DettaglioOreGiornaliere)session.createQuery("from DettaglioOreGiornaliere where id_dettaglio_ore_giornaliere=:id")
 					.setParameter("id", idDett).uniqueResult();
 			
+			//TODO controllo per limitare duplicazioni
+			
 			dettIU.setOrario(intervallo);
 			dettIU.setMovimento(movimento);
 			dettIU.setSorgente(sorgente);
 			dettIU.setDettaglioOreGiornaliere(dettGiorno);
 			dettIU.setSostituito("N");
+						
+			for(DettaglioIntervalliIU dtt: dettGiorno.getDettaglioIntervalliIUs())
+				if(dettIU.equals(dtt))
+					duplicato=true;
 			
-			dettGiorno.getDettaglioIntervalliIUs().add(dettIU);
-			
-			session.save(dettGiorno);
-			
-			tx.commit();			
+			if(!duplicato){
+				dettGiorno.getDettaglioIntervalliIUs().add(dettIU);			
+				session.save(dettGiorno);
+				tx.commit();
+			}else{
+				
+				tx.commit();
+			}					
 			
 		} catch (Exception e) {
 			if (tx!=null)
@@ -4173,19 +4222,21 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	
 	
 	@Override
-	public List<RiepilogoMeseGiornalieroModel> getRiepilogoMensileDettagliatoCommesseHorizontalLayout(//TODO
+	public List<RiepilogoMeseGiornalieroModel> getRiepilogoMensileDettagliatoCommesseHorizontalLayout(
 			String dipendente, String data) throws IllegalArgumentException {
 
 		List<RiepilogoMeseGiornalieroModel> listaR= new ArrayList<RiepilogoMeseGiornalieroModel>();
 		List<FoglioOreMese> listaF= new ArrayList<FoglioOreMese>();
 		List<DettaglioOreGiornaliere> listaG= new ArrayList<DettaglioOreGiornaliere>();
-		List<String> listaCommessePerDip=new ArrayList<String>();
+		List<AssociazionePtoA> listaAssociazioniPtoC= new ArrayList<AssociazionePtoA>();
 		List<Commessa> listaCommesse= new ArrayList<Commessa>();
 		RiepilogoMeseGiornalieroModel riep;
 		List<IntervalliCommesseModel> listaDatiCommessePerGiorno= new ArrayList<IntervalliCommesseModel>();
 		List<String> listaGiustificativiPerGiorno= new ArrayList<String>();
 		List<String> listaLettereGiorno= new ArrayList<String>();
 		Commessa comm= new Commessa();
+		String numeroCommessa= new String();
+		String estensioneCommessa= new String();
 		
 		Personale p= new Personale();
 		
@@ -4223,6 +4274,18 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			}
 			
 			//Mi prendo le commesse associate al dipendente
+			
+			listaAssociazioniPtoC.addAll(p.getAssociazionePtoas());
+			for(AssociazionePtoA ass: p.getAssociazionePtoas()){
+				numeroCommessa=ass.getAttivita().getCommessa().getNumeroCommessa();
+				estensioneCommessa=ass.getAttivita().getCommessa().getEstensione();
+				comm=(Commessa)session.createQuery("from Commessa where numeroCommessa=:ncommessa and estensione=:nestensione").setParameter("ncommessa", numeroCommessa)
+						.setParameter("nestensione", estensioneCommessa).uniqueResult();
+				
+				listaCommesse.add(comm);
+			}
+			
+			/*
 			for(DettaglioIntervalliCommesse dc: listaG.get(0).getDettaglioIntervalliCommesses()){
 				//listaCommessePerDip.add(dc.getNumeroCommessa()+"."+dc.getEstensioneCommessa());
 				comm=(Commessa)session.createQuery("from Commessa where numeroCommessa=:ncommessa and estensione=:nestensione").setParameter("ncommessa", dc.getNumeroCommessa())
@@ -4230,7 +4293,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				
 				listaCommesse.add(comm);
 			}
-			
+			*/
 			//Per ogni commessa considerata elaboro un record di 31 giorni con le ore
 			//for(String commessa:listaCommessePerDip){
 			for(Commessa c:listaCommesse){
@@ -5471,9 +5534,12 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		FatturaModel fM;
 		Fattura f=new Fattura();
 		FoglioFatturazione ff= new FoglioFatturazione();
+		List<AttivitaFatturateModel> listaAttF= new ArrayList<AttivitaFatturateModel>();
+		AttivitaFatturateModel attF= new AttivitaFatturateModel();
+		
 		Ordine o= new Ordine();
 		DatiFatturazioneAzienda df= new DatiFatturazioneAzienda();
-		
+			
 		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
 	    formatSymbols.setDecimalSeparator('.');
 	    String pattern="0.00";
@@ -5488,19 +5554,29 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			ff=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where idFoglioFatturazione=:id").setParameter("id", idFoglioFatturazione).uniqueResult();
 			o=(Ordine)session.createQuery("from Ordine where codiceOrdine=:nOrdine").setParameter("nOrdine", numeroOrdine).uniqueResult();
 			df=(DatiFatturazioneAzienda)session.createQuery("from DatiFatturazioneAzienda").uniqueResult();
-			f=(Fattura)session.createQuery("from Fattura where idFoglioFatturazione=:id").setParameter("id", idFoglioFatturazione).uniqueResult();
-			
-			//TODO numero fattura automatico
+			f=(Fattura)session.createQuery("from Fattura where idFoglioFatturazione=:id").setParameter("id", idFoglioFatturazione).uniqueResult();		
 			
 			if(f==null){
+				Date dataAnno= new Date();		
+				String anno=dataAnno.toString();
+				anno=anno.substring(anno.length()-4, anno.length());
+				String numeroFattura= new String();
+				numeroFattura=(String)session.createSQLQuery("SELECT MAX(numeroFattura) FROM gestionaledb.fattura where annoFattura=:anno")
+						.setParameter("anno", anno).uniqueResult();	
+				
+				if(numeroFattura==null){
+					numeroFattura="1";
+				}else {				
+					int parteNumeroFattura=Integer.valueOf(numeroFattura)+1;
+					numeroFattura=String.valueOf(parteNumeroFattura);
+				}
 				
 				String ragioneSociale=o.getRda().getCliente().getRagioneSociale();
 				String indirizzo=o.getRda().getCliente().getIndirizzo();
 				String cap=o.getRda().getCliente().getCap();
 				String citta=o.getRda().getCliente().getCitta();
 				String piva=o.getRda().getCliente().getPartitaIVA();
-				String codiceFornitore=o.getRda().getCliente().getCodFornitore();
-				String numeroFattura="#";
+				String codiceFornitore=o.getRda().getCliente().getCodFornitore();			
 				//String dataFattura="#";
 				String condizioni="#";
 				String filiale=df.getDatiFiliale();
@@ -5515,11 +5591,14 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				String iva=df.getAliquotaIva();
 				String totaleIva="0.00";
 				String totaleImporto="0.00";
-												
-				fM=new FatturaModel(0, ff.getIdFoglioFatturazione(), o.getDescrizioneAttivita(),ragioneSociale, indirizzo, cap, citta, piva, codiceFornitore, numeroFattura, new Date(), condizioni, 
+								
+				attF= new AttivitaFatturateModel(0, o.getDescrizioneAttivita(), totaleImporto);
+				listaAttF.add(attF);
+				fM=new FatturaModel(0, ff.getIdFoglioFatturazione(), "" ,ragioneSociale, indirizzo, cap, citta, piva, codiceFornitore, numeroFattura, new Date(), condizioni, 
 						filiale, iban, numeroOrdine, numeroOfferta, lineaOrdine, bem, elementoWbs, conto, prCenter, imponibile, iva, totaleIva,
-						totaleImporto, df.getRagioneSociale(), df.getCapitaleSociale(), df.getSedeLegale(), df.getSedeOperativa(), df.getRegistroImprese(),
+						"", df.getRagioneSociale(), df.getCapitaleSociale(), df.getSedeLegale(), df.getSedeOperativa(), df.getRegistroImprese(),
 						df.getRea());
+				fM.setListaAttF(listaAttF);
 				
 			}else{
 				AttivitaFatturateModel afM;
@@ -5545,14 +5624,15 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				String totaleIva="0.00";
 				String totaleImporto="0.00";
 				String importoIva="0.00";
-				List<AttivitaFatturateModel> listaAttivita=new ArrayList<AttivitaFatturateModel>();
+				//List<AttivitaFatturateModel> listaAttivita=new ArrayList<AttivitaFatturateModel>();
 				
 				SimpleDateFormat formatter =new SimpleDateFormat("yyyy-MM-dd",Locale.ITALIAN);
 				Date dataF=formatter.parse(dataFattura);
 				
 				for(AttivitaFatturata af:f.getAttivitaFatturatas()){
-					afM=new AttivitaFatturateModel(af.getDescrizione(), af.getImporto());
-					listaAttivita.add(afM);
+					afM=new AttivitaFatturateModel(af.getIdATTIVITA_FATTURATA(), af.getDescrizione(), af.getImporto());
+					listaAttF.add(afM);
+					
 					imponibile=ServerUtility.aggiornaTotGenerale(imponibile, af.getImporto());
 					importoIva=d.format(Float.valueOf(iva)*Float.valueOf(af.getImporto())/100);
 					totaleIva=ServerUtility.aggiornaTotGenerale(totaleIva, importoIva);
@@ -5562,7 +5642,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				fM=new FatturaModel(f.getIdFattura(),ff.getIdFoglioFatturazione(), o.getDescrizioneAttivita(),ragioneSociale, indirizzo, cap, citta, piva, codiceFornitore,
 						numeroFattura, dataF, condizioni, filiale, iban, numeroOrdine, numeroOfferta, lineaOrdine, bem, elementoWbs, conto, prCenter, imponibile, iva, totaleIva,
 						totaleImporto, df.getRagioneSociale(), df.getCapitaleSociale(), df.getSedeLegale(), df.getSedeOperativa(), df.getRegistroImprese(),
-						df.getRea());		
+						df.getRea());	
+				fM.setListaAttF(listaAttF);
 			}
 			
 			tx.commit();
@@ -7728,7 +7809,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					listaAss.addAll(p.getAssociazionePtoas());
 				
 					f=(FoglioOreMese)session.createQuery("from FoglioOreMese where meseRiferimento=:mese and id_personale=:id")
-						.setParameter("id", p.getId_PERSONALE()).setParameter("mese", "Ott2013").uniqueResult();//TODO impostare la scelta del mese
+						.setParameter("id", p.getId_PERSONALE()).setParameter("mese", "Dic2013").uniqueResult();//TODO impostare la scelta del mese
 					if(f!=null)
 						if(!f.getDettaglioOreGiornalieres().isEmpty())
 							listaD.addAll(f.getDettaglioOreGiornalieres());

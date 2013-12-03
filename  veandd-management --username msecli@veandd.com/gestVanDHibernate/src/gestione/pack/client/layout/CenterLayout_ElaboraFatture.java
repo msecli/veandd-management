@@ -253,7 +253,6 @@ public class CenterLayout_ElaboraFatture extends LayoutContainer{
 						@Override
 						public void onFailure(Throwable caught) {
 							Window.alert("Error on elaboraDatiPerFattura()");
-							
 						}
 
 						@Override
