@@ -29,6 +29,8 @@ public class Fattura extends LightEntity implements IsSerializable{
 	private String condizioniPagamento;
 
 	private String dataFatturazione;
+	
+	private String annoFattura;//utile al momento di generare il numero automatico per la fattura
 
 	private String numeroFattura;
 
@@ -127,6 +129,14 @@ public class Fattura extends LightEntity implements IsSerializable{
 
 	public void setIdFoglioFatturazione(int idFoglioFatturazione) {
 		this.idFoglioFatturazione = idFoglioFatturazione;
+	}
+
+	public String getAnnoFattura() {
+		return annoFattura;
+	}
+
+	public void setAnnoFattura(String annoFattura) {
+		this.annoFattura = annoFattura;
 	}
 	
 	

@@ -53,7 +53,6 @@ public class PanelFormInserimentoDatiFattura extends Dialog{
 	private TextField<String> txtfldTotaleImponibile= new TextField<String>();
 	private TextField<String> txtfldTotaleIva= new TextField<String>();
 	private TextField<String> txtfldTotaleImporto= new TextField<String>();
-	private TextField<String> txtfldDataFattura= new TextField<String>();
 	private TextField<String> txtfldNumeroFattura= new TextField<String>();
 	private TextField<String> txtfldCondizioniPagamento= new TextField<String>();
 	private TextField<String> txtfldAliquotaIva= new TextField<String>();
@@ -245,7 +244,8 @@ public class PanelFormInserimentoDatiFattura extends Dialog{
 	    cs.setSelectionMode(SelectionMode.SIMPLE);
    
 	    cm=new ColumnModel(createColumns());
-	    storeAttivita.insert(new AttivitaFatturateModel((String)fM.get("descrizione"), (String)fM.get("imponibile")), 0);
+	    storeAttivita.add((List<AttivitaFatturateModel>) fM.getListaAttF());
+	    //storeAttivita.insert(new AttivitaFatturateModel((String)fM.get("descrizione"), (String)fM.get("imponibile")), 0);
 		gridAttivitaFatturate=new EditorGrid<AttivitaFatturateModel>(storeAttivita, cm);
 		gridAttivitaFatturate.setBorders(false);  
 		gridAttivitaFatturate.setItemId("grid");
@@ -358,29 +358,7 @@ public class PanelFormInserimentoDatiFattura extends Dialog{
 	    txtfldImporto.setAllowBlank(false);
 	    txtfldImporto.setRegex("[0-9]+[.]{1}[0-9]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
 		txtfldImporto.getMessages().setRegexText("Deve essere un numero, eventualmente nel formato 99.99");		
-		/*txtfldImporto.addKeyListener(new KeyListener(){
-				 public void componentKeyDown(ComponentEvent event) { 	  
-				    	int keyCode=event.getKeyCode();
-						if(keyCode==9){		
-							final NumberFormat number = NumberFormat.getFormat("0.00");
-			    	  		String imponibile="0.00";
-			    	  		String importoIva="0.00";
-			    	  		String totaleIva="0.00";
-			    	  		String totaleImporto="0.00";
-			    	  		List<AttivitaFatturateModel> lista=storeAttivita.getModels();
-			    	  		for(AttivitaFatturateModel f:lista){
-			    	  			imponibile=ClientUtility.aggiornaTotGenerale(imponibile,(String) f.get("importo"));
-								importoIva=number.format(Float.valueOf(txtfldAliquotaIva.getValue().toString())*Float.valueOf((String) f.get("importo"))/100);
-								totaleIva=ClientUtility.aggiornaTotGenerale(totaleIva, importoIva);
-								totaleImporto=ClientUtility.aggiornaTotGenerale(totaleImporto, ClientUtility.aggiornaTotGenerale((String) f.get("importo"), importoIva));			    	  					    	  			
-			    	  		}
-			    	  		txtfldTotaleImponibile.setValue(imponibile);
-			    	  		txtfldTotaleIva.setValue(totaleIva);
-			    	  		txtfldTotaleImporto.setValue(totaleImporto);
-						}
-				 }
-		});*/
-		
+				
 	    editorTxt= new CellEditor(txtfldImporto){
 	    	@Override  
 	        public Object preProcessValue(Object value) {  

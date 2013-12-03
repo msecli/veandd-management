@@ -83,5 +83,54 @@ public class DettaglioIntervalliIU extends LightEntity implements IsSerializable
 	public void setDettaglioOreGiornaliere(DettaglioOreGiornaliere dettaglioOreGiornaliere) {
 		this.dettaglioOreGiornaliere = dettaglioOreGiornaliere;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((movimento == null) ? 0 : movimento.hashCode());
+		result = prime * result + ((orario == null) ? 0 : orario.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DettaglioIntervalliIU other = (DettaglioIntervalliIU) obj;
+		
+		if(movimento!=null && orario!=null)
+		if(movimento.equals(other.movimento))
+			if(orario.equals(other.orario))
+				return true;
+		
+		if (movimento == null) {
+			if (other.movimento != null)
+				return false;
+		} else if (!movimento.equals(other.movimento))
+			return false;	
+		
+		if (orario == null) {
+			if (other.orario != null)
+				return false;
+		} else if (!orario.equals(other.orario))
+			return false;
+			
+		return true;
+	}
+
+	
+	
 	
 }

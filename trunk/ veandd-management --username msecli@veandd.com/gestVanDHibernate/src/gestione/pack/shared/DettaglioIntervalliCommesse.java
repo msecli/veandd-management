@@ -93,5 +93,39 @@ public class DettaglioIntervalliCommesse extends LightEntity implements IsSerial
 	public void setDettaglioOreGiornaliere(DettaglioOreGiornaliere dettaglioOreGiornaliere) {
 		this.dettaglioOreGiornaliere = dettaglioOreGiornaliere;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((numeroCommessa == null) ? 0 : numeroCommessa.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DettaglioIntervalliCommesse other = (DettaglioIntervalliCommesse) obj;
+		if (numeroCommessa == null) {
+			if (other.numeroCommessa != null)
+				return false;
+		} else if (!numeroCommessa.equals(other.numeroCommessa))
+			return false;
+		return true;
+	}
+
+	
 	
 }

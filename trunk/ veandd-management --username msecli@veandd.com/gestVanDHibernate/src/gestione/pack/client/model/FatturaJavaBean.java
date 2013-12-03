@@ -8,10 +8,10 @@ public class FatturaJavaBean {
 	private String condizioni; private String filiale; private String iban; private String numeroOrdine; private String numeroOfferta; private String lineaOrdine; private String bem; private String elementoWbs; private String conto
 	; private String prCenter; private String imponibile; private String iva; private String totaleIva; private String totaleImporto; 
 	private String nomeAzienda; private String capitaleSociale; private String sedeLegale; private String sedeOperativa; private String registroImprese; private String rea; 
-	private List<AttivitaFatturateJavaBean> listaA;
+	private List<AttivitaFatturateJavaBean> listaA; private String annoFattura;
 	
 	public FatturaJavaBean(String ragioneSociale, String indirizzo, String cap, String citta, String piva, String codiceFornitore, String numeroFattura, String dataFattura,
-			String condizioni, String filiale, String iban, String numeroOrdine, String numeroOfferta, String lineaOrdine, String bem, String elementoWbs, String conto
+			String annoFattura, String condizioni, String filiale, String iban, String numeroOrdine, String numeroOfferta, String lineaOrdine, String bem, String elementoWbs, String conto
 			, String prCenter, String imponibile, String iva, String totaleIva, String totaleImporto, List<AttivitaFatturateJavaBean> listaA, 
 			String nomeAzienda, String capitaleSociale, String sedeLegale, String sedeOperativa, String registroImprese, String rea){
 		
@@ -23,6 +23,7 @@ public class FatturaJavaBean {
 		this.codiceFornitore=codiceFornitore;
 		this.numeroFattura=numeroFattura;
 		this.dataFattura=dataFattura;
+		this.annoFattura=annoFattura;
 		this.condizioni=condizioni;
 		this.filiale=filiale;
 		this.iban=iban;
@@ -163,5 +164,13 @@ public class FatturaJavaBean {
 	public List<AttivitaFatturateJavaBean> getListaA() {
 		return listaA;
 	}
+
+
+
+	public String getAnnoFattura() {
+		return annoFattura;
+	}
+
+
 
 }

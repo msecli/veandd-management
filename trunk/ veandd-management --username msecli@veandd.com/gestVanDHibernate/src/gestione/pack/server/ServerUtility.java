@@ -1,6 +1,7 @@
 package gestione.pack.server;
 
 import gestione.pack.client.model.AttivitaFatturateJavaBean;
+import gestione.pack.client.model.AttivitaFatturateModel;
 import gestione.pack.client.model.CostingRisorsaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseJavaBean;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
@@ -2107,13 +2108,11 @@ public class ServerUtility {
 		return ic;
 	}
 
-public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateJavaBean> listaAF) throws IllegalArgumentException{
+public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateModel> listaAF) throws IllegalArgumentException{
 		
 		Ordine o= new Ordine();
-		FoglioFatturazione ff= new FoglioFatturazione();
 		Fattura f=new Fattura();
-		AttivitaFatturata attF= new AttivitaFatturata();
-				
+						
 		SimpleDateFormat formatter =new SimpleDateFormat("yyyy-MM-dd",Locale.ITALIAN);
 		
 		int idFattura=fm.get("idFattura");
@@ -2123,7 +2122,10 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateJav
 		String condizioni=(String) fm.get("condizioni");
 		String dataFattura=formatter.format((Date) fm.get("dataFattura"));
 		String numeroFattura=(String) fm.get("numeroFattura");
+		String annoFattura;
 		
+		formatter=new SimpleDateFormat("yyyy", Locale.ITALIAN);
+		annoFattura=formatter.format((Date) fm.get("dataFattura"));
 		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
@@ -2146,7 +2148,8 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateJav
 				f.setNumeroFattura(numeroFattura);
 				f.setStatoElaborazione("S");
 				//f.setStatoPagamento("");// nulla al momento
-									
+				f.setAnnoFattura(annoFattura);
+				
 				f.setOrdine(o);
 				
 				o.getFatturas().add(f);
@@ -2154,12 +2157,38 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateJav
 				session.save(o);
 				tx.commit();
 				
-				for(AttivitaFatturateJavaBean att:listaAF){
-					savaDataAttivitaFattura(idFoglioFatturazione,att);//con l'id del foglio fatturazione prelevo la Fattura
-				}
+				for(AttivitaFatturateModel att:listaAF){
+					savaDatiAttivitaFattura(idFoglioFatturazione,att);//con l'id del foglio fatturazione prelevo la Fattura
+				}		
 				
-				//TODO edit
-			}		
+				
+			}	
+			
+			else{
+				f.setAliquotaIva(iva);
+				f.setCondizioniPagamento(condizioni);
+				f.setDataFatturazione(dataFattura);
+				f.setIdFoglioFatturazione(idFoglioFatturazione);
+				f.setNumeroFattura(numeroFattura);
+				f.setStatoElaborazione("S");
+				f.setAnnoFattura(annoFattura);
+				
+				//session.save(f);
+				
+				List<AttivitaFatturata> listaAtt= new ArrayList<AttivitaFatturata>();
+				listaAtt.addAll(f.getAttivitaFatturatas());
+				for(AttivitaFatturata a:listaAtt){
+					a.setFattura(null);
+					session.delete(a);					
+				}
+				f.getAttivitaFatturatas().clear();
+				
+				tx.commit();
+				
+				for(AttivitaFatturateModel att:listaAF){
+					savaDatiAttivitaFattura(idFoglioFatturazione,att);//con l'id del foglio fatturazione prelevo la Fattura
+				}
+			}
 			
 		}catch (Exception e) {
 			if (tx != null)
@@ -2173,29 +2202,53 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateJav
 	}
 	
 	
-	private static void savaDataAttivitaFattura(int idFoglioFatturazione,
-			AttivitaFatturateJavaBean att) {
+	private static void savaDatiAttivitaFattura(int idFoglioFatturazione,
+			AttivitaFatturateModel att) {
 		
 		Fattura f= new Fattura();
-		AttivitaFatturata a= new AttivitaFatturata();
+		AttivitaFatturata a;
+		Integer idAttivita;
 		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
 		
 		try{
 			tx=session.beginTransaction();
+			/*
+			idAttivita=att.get("idAttivita");
+			if(idAttivita==0 || idAttivita==null){
+				a=new AttivitaFatturata();
+				f=(Fattura)session.createQuery("from Fattura where idFoglioFatturazione=:id").setParameter("id", idFoglioFatturazione).uniqueResult();
 			
+				a.setDescrizione((String) att.get("descrizione"));
+				a.setImporto((String) att.get("importo"));
+				a.setFattura(f);
+			
+				f.getAttivitaFatturatas().add(a);		
+				session.save(f);
+				tx.commit();
+			}else{				
+				a=(AttivitaFatturata)session.createQuery("from AttivitaFatturata where idATTIVITA_FATTURATA=:id").setParameter("id", idAttivita).uniqueResult();
+				
+				a.setDescrizione((String) att.get("descrizione"));
+				a.setImporto((String) att.get("importo"));
+													
+				session.save(a);
+				tx.commit();
+			}
+			
+			*/
+			a=new AttivitaFatturata();
 			f=(Fattura)session.createQuery("from Fattura where idFoglioFatturazione=:id").setParameter("id", idFoglioFatturazione).uniqueResult();
-			
-			a.setDescrizione(att.getDescrizione());
-			a.setImporto(att.getImporto());
+		
+			a.setDescrizione((String) att.get("descrizione"));
+			a.setImporto((String) att.get("importo"));
 			a.setFattura(f);
-			
-			f.getAttivitaFatturatas().add(a);
-			
+		
+			f.getAttivitaFatturatas().add(a);		
 			session.save(f);
-			
 			tx.commit();
+			
 			
 		}catch (Exception e) {
 			if (tx != null)

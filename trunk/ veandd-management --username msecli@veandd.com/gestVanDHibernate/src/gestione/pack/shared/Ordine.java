@@ -89,7 +89,7 @@ public class Ordine extends LightEntity implements IsSerializable {
 	
 	//bi-directional many-to-one association to AttivitaOrdine
 	@OneToMany(mappedBy="ordine", fetch=FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.DELETE_ORPHAN})
+	@Cascade({CascadeType.SAVE_UPDATE})
 	private Set<AttivitaOrdine> attivitaOrdines;
 	
 	//bi-directional many-to-one association to Fattura
