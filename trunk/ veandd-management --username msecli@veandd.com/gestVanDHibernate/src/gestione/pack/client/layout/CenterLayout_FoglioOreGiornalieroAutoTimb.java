@@ -4102,7 +4102,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 
 			ContentPanel cp = new ContentPanel();
 			cp.setHeaderVisible(false);
-			cp.setSize(320, 145);
+			cp.setSize(320, 125);
 			cp.setBorders(false);
 			cp.setBodyBorder(false);
 			cp.setFrame(false);
@@ -4134,7 +4134,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			layoutCol1.add(txtfldOreAssenzaMese, new FormData("95%"));
 			//layoutCol1.add(txtfldOreStraordinarioMese, new FormData("95%"));
 			layoutCol1.add(txtfldOreRecuperoMonteMese, new FormData("95%"));
-			layoutCol1.add(txtfldOreRecuperoMonteTotale, new FormData("95%"));
+			//layoutCol1.add(txtfldOreRecuperoMonteTotale, new FormData("95%"));
 
 			RowData data = new RowData(.8, 1);
 			data.setMargins(new Margins(5));

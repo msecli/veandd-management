@@ -366,9 +366,6 @@ public interface AdministrationServiceAsync {
 	void getRiepilogoDatiCostiPersonale(String string,
 			AsyncCallback<List<RiepilogoCostiDipendentiModel>> asyncCallback);
 
-	void checkIntervallicommesse(AsyncCallback<List<String>> asyncCallback);
-	
-
 	void getListaDatiCosting(String username,
 			AsyncCallback<List<CostingModel>> asyncCallback);
 
@@ -395,7 +392,5 @@ public interface AdministrationServiceAsync {
 	void editStatoCosting(int idSelected, String operazione,
 			AsyncCallback<Boolean> asyncCallback);
 
-	
-
-				
+			
 }

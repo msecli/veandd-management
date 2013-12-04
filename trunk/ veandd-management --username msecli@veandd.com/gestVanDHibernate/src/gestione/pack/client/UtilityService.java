@@ -1,5 +1,7 @@
 package gestione.pack.client;
 
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -21,6 +23,8 @@ public interface UtilityService  extends  RemoteService{
 	void generateAttivitaOrdine();
 
 	void insertIdAttivitaOrdineInFoglioFatturazione();
+
+	List<String> checkIntervallicommesse(String periodo) throws IllegalArgumentException;
 	
 	
 	

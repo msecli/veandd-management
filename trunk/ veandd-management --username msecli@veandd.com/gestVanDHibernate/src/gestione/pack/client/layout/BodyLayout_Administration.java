@@ -20,6 +20,7 @@ import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoSituazioneMensileOreDipendenti;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
+import gestione.pack.client.utility.DatiComboBox;
 import gestione.pack.client.utility.MyImages;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -35,7 +36,9 @@ import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.Viewport;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
@@ -59,6 +62,8 @@ public class BodyLayout_Administration extends LayoutContainer {
 	private Text txtUsername = new Text();
 	private Text txtCheck= new Text();
 	private String listaCheck= new String();
+	
+	 private SimpleComboBox<String> smplcmbxPeriodo= new SimpleComboBox<String>();
 	
 	public TextField<String> txtfldUsername= new TextField<String>();
 	public TextField<String> txtfldRuolo= new TextField<String>();
@@ -671,6 +676,8 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    status.hide();
 	    status.setAutoWidth(true);
 	    
+	   
+	    
 	    Button btnGestioneHwSw = new Button();
 	    btnGestioneHwSw.setToolTip("Check I/U I commesse");
 	    btnGestioneHwSw.setHeight(65);
@@ -680,8 +687,14 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    btnGestioneHwSw.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	        	
-	        	status.setBusy("Please wait...");
-	    	    status.show();
+	        	smplcmbxPeriodo.setFieldLabel("Mese");
+	        	smplcmbxPeriodo.setName("mese");
+	        	smplcmbxPeriodo.setEmptyText("Mese..");
+	        	smplcmbxPeriodo.setAllowBlank(false);
+	    		 for(String l : DatiComboBox.getPeriodo()){
+	    			 smplcmbxPeriodo.add(l);}
+	    		 smplcmbxPeriodo.setTriggerAction(TriggerAction.ALL);
+	    		
 	    	    Dialog d= new Dialog();
 	    	    d.setSize(500, 500);
 	    	    ContentPanel cp= new ContentPanel();
@@ -689,36 +702,51 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    	    cp.setHeading("Check su valori giornalieri duplicati.");
 	    	    cp.setSize(485, 450);
 	    	    cp.setTopComponent(status);
+	    	    //cp.add(smplcmbxPeriodo);
 	    	    cp.add(txtCheck);
+	    	    d.add(smplcmbxPeriodo);
 	    	    d.add(cp);
 	    	    d.show();
 	    	    
-	    	    AdministrationService.Util.getInstance().checkIntervallicommesse(new AsyncCallback<List<String>>() {
-
+	    	    
+	    	    smplcmbxPeriodo.addListener(Events.Select, new Listener<BaseEvent>(){
 					@Override
-					public void onFailure(Throwable caught) {
-						Window.alert("Errore di connessione on checkIntervallicommesse();");	
-						status.hide();					
-					}
+					public void handleEvent(BaseEvent be) {					
+							
+						String scelta=smplcmbxPeriodo.getRawValue().toString();
+						status.setBusy("Please wait...");
+			    	    status.show();
+						
+						UtilityService.Util.getInstance().checkIntervallicommesse(scelta, 
+				    	    		new AsyncCallback<List<String>>() {
 
-					@Override
-					public void onSuccess(List<String> result) {
-						status.hide();
-						if(result.size()==0)
-							txtCheck.setText("Tutto OK!");
-						else
-						for(String l :result)
-							listaCheck=listaCheck+"<BR>"+l;
-						txtCheck.setText(listaCheck);
-					}
+								@Override
+								public void onFailure(Throwable caught) {
+									Window.alert("Errore di connessione on checkIntervallicommesse();");	
+									status.hide();					
+								}
+
+								@Override
+								public void onSuccess(List<String> result) {
+									status.hide();
+									if(result.size()==0)
+										txtCheck.setText("Tutto OK!");
+									else{
+									for(String l :result)
+										listaCheck=listaCheck+"<BR>"+l;
+									txtCheck.setText(listaCheck);}
+								}
+							});
+						
+					}		
 				});
-	        	
+	    	  
 	        ;}        	
 	    });
 	    btnGestioneHwSw.setWidth("100%");
 	    cp.add(btnGestioneHwSw);
 	    
-	    
+	    /*
 	    Button btnTmp = new Button();
 	    btnTmp.setToolTip("Generare tariffe Ordine");
 	    btnTmp.setHeight(65);
@@ -771,7 +799,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 				});	    	            	
 	        ;}        	
 	    });
-	    btnTmp.setWidth("100%");
+	    btnTmp.setWidth("100%");*/
 	   // cp.add(btnTmp);
 	    	        
 	    panel.add(cp);

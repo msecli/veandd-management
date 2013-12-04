@@ -326,6 +326,13 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			final NumberFormat number= NumberFormat.getFormat("0.00");
 			
 			SummaryColumnConfig<Double> column=new SummaryColumnConfig<Double>();		
+		    column.setId("sede");  
+		    column.setHeader("Sede");  
+		    column.setWidth(30);  
+		    column.setRowHeader(true);  
+		    configs.add(column); 
+			
+			column=new SummaryColumnConfig<Double>();		
 		    column.setId("pm");  
 		    column.setHeader("Project Manager");  
 		    column.setWidth(140);  

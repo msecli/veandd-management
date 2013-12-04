@@ -356,7 +356,7 @@ public class PanelFormInserimentoDatiFattura extends Dialog{
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    txtfldImporto= new TextField<String>();
 	    txtfldImporto.setAllowBlank(false);
-	    txtfldImporto.setRegex("[0-9]+[.]{1}[0-9]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
+	    txtfldImporto.setRegex("[0-9]+[.]{1}[0-9]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00");
 		txtfldImporto.getMessages().setRegexText("Deve essere un numero, eventualmente nel formato 99.99");		
 				
 	    editorTxt= new CellEditor(txtfldImporto){
@@ -387,9 +387,7 @@ public class PanelFormInserimentoDatiFattura extends Dialog{
 		@Override
 		public void onSubmitComplete(final SubmitCompleteEvent event) {
 			closeDialog();
-		}
-
-		
+		}	
 	}
 	
 	private void closeDialog() {

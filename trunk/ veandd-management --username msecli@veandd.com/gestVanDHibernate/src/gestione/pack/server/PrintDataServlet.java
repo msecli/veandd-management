@@ -10,6 +10,7 @@ import gestione.pack.client.model.RiepilogoAnnualeJavaBean;
 import gestione.pack.client.model.RiepilogoCostiDipendentiBean;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoDatiOreMeseJavaBean;
+import gestione.pack.client.model.RiepilogoFoglioOreModel;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroJavaBean;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliJavaBean;
@@ -131,6 +132,8 @@ public class PrintDataServlet extends HttpServlet  {
 			String totOreCommesse=(String) httpSession.getAttribute("totOreCommesse");
 			String totOreIU=(String) httpSession.getAttribute("totOreIU");
 			
+			RiepilogoFoglioOreModel riep=(RiepilogoFoglioOreModel) httpSession.getAttribute("riepilogoTotali");
+			
 			listaM= (List<RiepilogoMeseGiornalieroModel>) httpSession.getAttribute("listaM");
 			listaJB.addAll(ServerUtility.traduciDatiRiepilogoCommesseGiornalieri(listaM));
 			
@@ -144,6 +147,11 @@ public class PrintDataServlet extends HttpServlet  {
 				parameters.put("Cognome", cognome);
 				parameters.put("TotOreCommesse", totOreCommesse);
 				parameters.put("TotOreIU", totOreIU);
+				
+				parameters.put("oreTotFerie", riep.getOreFerie());
+				parameters.put("oreTotPermessi", riep.getOrePermesso());
+				parameters.put("oreTotRecupero", riep.getOreRecupero());
+				parameters.put("oreTotStrao", riep.getOreStraordinario());				
 				
 				JasperPrint jasperPrint;
 				FileInputStream fis;

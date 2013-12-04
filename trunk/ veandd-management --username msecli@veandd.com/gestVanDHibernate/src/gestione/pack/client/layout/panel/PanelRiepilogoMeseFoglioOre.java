@@ -54,6 +54,12 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	private Button btnRiepilogoCommesse= new Button();
 	private Button btnLegenda= new Button();
 	
+	//uso queste 4 variabili per poter indicare nel riepilogo commesse il totale dei vari giustif.
+	private String oreTotFerie= new String();
+	private String oreTotRecupero= new String();
+	private String oreTotStrao=new String();
+	private String oreTotPermessi= new String();
+	
 	public PanelRiepilogoMeseFoglioOre(String user, Date dataRiferimento, String tipoLavoratore){
 		username=user;
 		data=dataRiferimento;
@@ -99,7 +105,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 				d.setConstrain(false);
 				d.setHeading("Riepilogo dettagliato (Commesse).");
 				d.setSize(1500, 650);
-				d.add(new PanelRiepilogoMeseGiornalieroCommesseHorizontal(username, data));
+				d.add(new PanelRiepilogoMeseGiornalieroCommesseHorizontal(username, data, oreTotFerie, oreTotPermessi,oreTotRecupero, oreTotStrao));
 				d.setButtons("");
 				d.setScrollMode(Scroll.AUTOX);
 				d.show();			
@@ -397,6 +403,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	   				}
 	   				
 	   				Float n=Float.valueOf(tot);
+	   				oreTotFerie=number.format(n);
 					return number.format(n);
 			}  
 	    });
@@ -421,6 +428,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	   				}
 	   				
 	   				Float n=Float.valueOf(tot);
+	   				oreTotPermessi=number.format(n);
 					return number.format(n);
 			}  
 	    });      
@@ -445,6 +453,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	   				}
 	   				
 	   				Float n=Float.valueOf(tot);
+	   				oreTotStrao=number.format(n);
 					return number.format(n);
 			}  
 	    });      
@@ -469,6 +478,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 	   				}
 	   				
 	   				Float n=Float.valueOf(tot);
+	   				oreTotRecupero=number.format(n);
 					return number.format(n);
 			}  
 	    });      
