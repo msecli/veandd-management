@@ -3888,7 +3888,7 @@ String movimento= new String();
 			layoutCol1.add(txtfldOreAssenzaMese, new FormData("95%"));
 			//layoutCol1.add(txtfldOreStraordinarioMese, new FormData("95%"));
 			layoutCol1.add(txtfldOreRecuperoMonteMese, new FormData("95%"));
-			layoutCol1.add(txtfldOreRecuperoMonteTotale, new FormData("95%"));
+			//layoutCol1.add(txtfldOreRecuperoMonteTotale, new FormData("95%"));
 
 			RowData data = new RowData(.8, 1);
 			data.setMargins(new Margins(5));

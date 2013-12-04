@@ -366,8 +366,22 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 	        	center.layout(true);}      
 	    });
 	    cp.add(btnReportDatiFatt);
-	    panel.add(cp);
 	    
+	    Button btnElaboraFattura = new Button();
+	    btnElaboraFattura.setToolTip("Elabora Fatture");
+	    btnElaboraFattura.setHeight(65);
+	    btnElaboraFattura.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.fattura()));
+	    btnElaboraFattura.setIconAlign(IconAlign.BOTTOM);
+	    btnElaboraFattura.setWidth("100%");
+	    btnElaboraFattura.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new CenterLayout_ElaboraFatture());
+	        	center.layout(true);}      
+	    });
+	    cp.add(btnElaboraFattura);
+	    
+	    panel.add(cp);    
 	    panel.setSize(180, Window.getClientHeight()-70);
 	    west.add(panel);
 	        

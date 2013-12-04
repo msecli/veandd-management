@@ -38,11 +38,7 @@ import net.sf.gilead.gwt.PersistentRemoteService;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import com.google.gwt.cell.client.EditTextCell;
-
-
 import gestione.pack.client.AdministrationService;
-import gestione.pack.client.model.AttivitaFatturateJavaBean;
 import gestione.pack.client.model.AttivitaFatturateModel;
 import gestione.pack.client.model.ClienteModel;
 import gestione.pack.client.model.CommentiModel;
@@ -4426,7 +4422,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			listaR.add(riep);		
 			
 			//creo il record con la lettera del giorno
-			riep=new RiepilogoMeseGiornalieroModel("", "", " ", listaLettereGiorno.get(0),  listaLettereGiorno.get(1),  listaLettereGiorno.get(2),  listaLettereGiorno.get(3),
+			riep=new RiepilogoMeseGiornalieroModel("", ""," "+data, listaLettereGiorno.get(0),  listaLettereGiorno.get(1),  listaLettereGiorno.get(2),  listaLettereGiorno.get(3),
 					 listaLettereGiorno.get(4),  listaLettereGiorno.get(5),  listaLettereGiorno.get(6),  listaLettereGiorno.get(7),  listaLettereGiorno.get(8),  listaLettereGiorno.get(9),
 					 listaLettereGiorno.get(10),  listaLettereGiorno.get(11),  listaLettereGiorno.get(12),  listaLettereGiorno.get(13),  listaLettereGiorno.get(14),
 					 listaLettereGiorno.get(15),  listaLettereGiorno.get(16),  listaLettereGiorno.get(17),  listaLettereGiorno.get(18),  listaLettereGiorno.get(19),
@@ -5590,9 +5586,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				String imponibile=ff.getImportoRealeFatturato();
 				String iva=df.getAliquotaIva();
 				String totaleIva="0.00";
-				String totaleImporto="0.00";
+				//String totaleImporto="0.00";
 								
-				attF= new AttivitaFatturateModel(0, o.getDescrizioneAttivita(), totaleImporto);
+				attF= new AttivitaFatturateModel(0, o.getDescrizioneAttivita(), imponibile);
 				listaAttF.add(attF);
 				fM=new FatturaModel(0, ff.getIdFoglioFatturazione(), "" ,ragioneSociale, indirizzo, cap, citta, piva, codiceFornitore, numeroFattura, new Date(), condizioni, 
 						filiale, iban, numeroOrdine, numeroOfferta, lineaOrdine, bem, elementoWbs, conto, prCenter, imponibile, iva, totaleIva,
@@ -5778,6 +5774,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		DatiFatturazioneMeseModel datiModel;
 		Fattura fattura;
 		Ordine o;
+		Personale p= new Personale();
 		float importo=0;
 		float importoEffettivo=0;
 		float margine=0;
@@ -5797,6 +5794,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String totOreMargine="0.00";*/
 		String attivitaOrdine="";
 		String statoFattura="N";
+		String cognome="";
 		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
@@ -5819,6 +5817,12 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				
 				if(f.getCommessa().getMatricolaPM()!=null && !exsistMatricolaPM(f.getCommessa().getMatricolaPM(), matricolePM))
 					matricolePM.add(f.getCommessa().getMatricolaPM());
+				
+				cognome=f.getCommessa().getMatricolaPM();
+				cognome=cognome.substring(0,cognome.indexOf(" "));
+				
+				p=(Personale)session.createQuery("from Personale where cognome=:cognome").setParameter("cognome", cognome).uniqueResult();
+				
 				if(!f.getCommessa().getOrdines().isEmpty()){
 					o=f.getCommessa().getOrdines().iterator().next();
 					numeroOrdine=o.getCodiceOrdine();
@@ -5838,7 +5842,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							importoPcl=ServerUtility.calcolaImporto(a.getTariffaAttivita(),f.getVariazionePCL());
 							attivitaOrdine=a.getDescrizioneAttivita();
 						}
-					datiModel=new DatiFatturazioneMeseModel(f.getIdFoglioFatturazione(),f.getCommessa().getMatricolaPM(), f.getCommessa().getNumeroCommessa()+"."+f.getCommessa().getEstensione(), o.getRda().getCliente().getRagioneSociale(), 
+					datiModel=new DatiFatturazioneMeseModel(f.getIdFoglioFatturazione(), p.getSedeOperativa(),f.getCommessa().getMatricolaPM(), f.getCommessa().getNumeroCommessa()+"."+f.getCommessa().getEstensione(), o.getRda().getCliente().getRagioneSociale(), 
 							numeroOrdine, o.getCommessa().getDenominazioneAttivita(),attivitaOrdine , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf(ServerUtility.getOreCentesimi(f.getOreFatturare()))
 							, Float.valueOf(f.getTariffaUtilizzata()),	importo, importoEffettivo, Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), importoSal, 
 							Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), importoPcl, Float.valueOf(ServerUtility.getOreCentesimi(oreScaricate)), margine, f.getNote(), statoFattura);
@@ -5853,7 +5857,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					importoSal=ServerUtility.calcolaImporto(f.getTariffaUtilizzata(),f.getVariazioneSAL());
 					importoPcl=ServerUtility.calcolaImporto(f.getTariffaUtilizzata(),f.getVariazionePCL());
 					
-					datiModel=new DatiFatturazioneMeseModel(f.getIdFoglioFatturazione(),f.getCommessa().getMatricolaPM(), f.getCommessa().getNumeroCommessa()+"."+f.getCommessa().getEstensione(), "#", numeroOrdine,
+					datiModel=new DatiFatturazioneMeseModel(f.getIdFoglioFatturazione(), p.getSedeOperativa(), f.getCommessa().getMatricolaPM(), f.getCommessa().getNumeroCommessa()+"."+f.getCommessa().getEstensione(), "#", numeroOrdine,
 							f.getCommessa().getDenominazioneAttivita(),attivitaOrdine, Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf(ServerUtility.getOreCentesimi(f.getOreFatturare())),
 							Float.valueOf(f.getTariffaUtilizzata()), (float) 0.0, (float)0.0, Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), importoSal, Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), 
 							importoPcl, Float.valueOf(oreScaricate),margine, f.getNote(), statoFattura);	
@@ -7782,69 +7786,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		return listaC;
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<String> checkIntervallicommesse() {
-		
-		List<Personale> listaP= new ArrayList<Personale>();
-		List<FoglioOreMese> listaF= new ArrayList<FoglioOreMese>();
-		List<DettaglioOreGiornaliere> listaD= new ArrayList<DettaglioOreGiornaliere>();
-		List<DettaglioIntervalliCommesse> listaDC= new ArrayList<DettaglioIntervalliCommesse>();
-		List<AssociazionePtoA> listaAss= new ArrayList<AssociazionePtoA>();
-		Commessa c= new Commessa();
-		FoglioOreMese f= new FoglioOreMese();
-		List<String> listaCheck= new ArrayList<String>();
-		
-		Session session= MyHibernateUtil.getSessionFactory().openSession();
-		Transaction tx= null;
-		
-		try {
-			tx=session.beginTransaction();
-			
-			listaP=(List<Personale>)session.createQuery("from Personale where sedeOperativa=:sede").setParameter("sede", "T").list();
-			
-			for(Personale p:listaP){
-								
-				if(!p.getAssociazionePtoas().isEmpty())
-					listaAss.addAll(p.getAssociazionePtoas());
-				
-					f=(FoglioOreMese)session.createQuery("from FoglioOreMese where meseRiferimento=:mese and id_personale=:id")
-						.setParameter("id", p.getId_PERSONALE()).setParameter("mese", "Dic2013").uniqueResult();//TODO impostare la scelta del mese
-					if(f!=null)
-						if(!f.getDettaglioOreGiornalieres().isEmpty())
-							listaD.addAll(f.getDettaglioOreGiornalieres());
-				
-					for(DettaglioOreGiornaliere d: listaD){
-					
-						for(AssociazionePtoA ass:listaAss){
-							c= ass.getAttivita().getCommessa();
-						
-							listaDC=(List<DettaglioIntervalliCommesse>)session.createQuery("from DettaglioIntervalliCommesse " +
-									"where id_dettaglio_ore=:id and numeroCommessa=:numeroCommessa and estensioneCommessa=:estensione")
-									.setParameter("id", d.getIdDettaglioOreGiornaliere()).setParameter("numeroCommessa", c.getNumeroCommessa())
-									.setParameter("estensione", c.getEstensione()).list();	
-						
-							if(listaDC.size()>1)
-								listaCheck.add(c.getNumeroCommessa()+" "+c.getEstensione()+" "+String.valueOf(d.getIdDettaglioOreGiornaliere())+" "+p.getCognome());
-						
-							listaDC.clear();
-						}				
-				}	
-				listaD.clear();
-				listaF.clear();
-				listaAss.clear();
-			}
-			
-			tx.commit();		
-			return listaCheck;			
-			
-		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
-			e.printStackTrace();
-			return null;
-		}				
-	}
 	
 
 	@SuppressWarnings("unchecked")

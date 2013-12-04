@@ -1,6 +1,5 @@
 package gestione.pack.server;
 
-import gestione.pack.client.model.AttivitaFatturateJavaBean;
 import gestione.pack.client.model.AttivitaFatturateModel;
 import gestione.pack.client.model.CostingRisorsaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseJavaBean;
@@ -11,7 +10,6 @@ import gestione.pack.client.model.RiepilogoAnnualeJavaBean;
 import gestione.pack.client.model.RiepilogoCostiDipendentiBean;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoDatiOreMeseJavaBean;
-import gestione.pack.client.model.RiepilogoFoglioOreModel;
 import gestione.pack.client.model.RiepilogoMensileDatiIntervalliCommesseJavaBean;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroJavaBean;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
@@ -24,7 +22,6 @@ import gestione.pack.shared.AssociazionePtoA;
 import gestione.pack.shared.AttivitaFatturata;
 import gestione.pack.shared.Commessa;
 import gestione.pack.shared.CostingRisorsa;
-import gestione.pack.shared.DatiFatturazioneAzienda;
 import gestione.pack.shared.DatiOreMese;
 import gestione.pack.shared.DatiRiepilogoMensileCommesse;
 import gestione.pack.shared.DettaglioIntervalliCommesse;
@@ -43,7 +40,6 @@ import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -2158,10 +2154,8 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 				tx.commit();
 				
 				for(AttivitaFatturateModel att:listaAF){
-					savaDatiAttivitaFattura(idFoglioFatturazione,att);//con l'id del foglio fatturazione prelevo la Fattura
-				}		
-				
-				
+					salvaDatiAttivitaFattura(idFoglioFatturazione,att);//con l'id del foglio fatturazione prelevo la Fattura
+				}						
 			}	
 			
 			else{
@@ -2181,12 +2175,11 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 					a.setFattura(null);
 					session.delete(a);					
 				}
-				f.getAttivitaFatturatas().clear();
-				
+				f.getAttivitaFatturatas().clear();				
 				tx.commit();
 				
 				for(AttivitaFatturateModel att:listaAF){
-					savaDatiAttivitaFattura(idFoglioFatturazione,att);//con l'id del foglio fatturazione prelevo la Fattura
+					salvaDatiAttivitaFattura(idFoglioFatturazione,att);//con l'id del foglio fatturazione prelevo la Fattura
 				}
 			}
 			
@@ -2202,12 +2195,12 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 	}
 	
 	
-	private static void savaDatiAttivitaFattura(int idFoglioFatturazione,
+	private static void salvaDatiAttivitaFattura(int idFoglioFatturazione,
 			AttivitaFatturateModel att) {
 		
 		Fattura f= new Fattura();
 		AttivitaFatturata a;
-		Integer idAttivita;
+		//Integer idAttivita;
 		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;

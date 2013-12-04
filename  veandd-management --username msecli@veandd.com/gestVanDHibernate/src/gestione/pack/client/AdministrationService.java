@@ -369,9 +369,6 @@ public interface AdministrationService extends RemoteService {
 
 	List<CommentiModel> getAllCommenti(String utente);
 
-	List<String> checkIntervallicommesse();
-
-
 	List<CostingModel> getListaDatiCosting(String username)throws IllegalArgumentException;
 
 	List<CostingModel> getDatiCosting(int costing)throws IllegalArgumentException;

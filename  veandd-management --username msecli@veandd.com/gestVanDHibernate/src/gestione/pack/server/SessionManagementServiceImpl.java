@@ -32,6 +32,7 @@ import gestione.pack.client.model.AttivitaFatturateModel;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.FatturaModel;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
+import gestione.pack.client.model.RiepilogoFoglioOreModel;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 import gestione.pack.client.model.RiepilogoSALPCLModel;
@@ -347,7 +348,7 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 	@Override
 	public boolean setDataRiepilogoCommesseInSession(String dataR,
 			String usernameR, String operazione, String totOreCommesse,
-			String totOreIU, List<RiepilogoMeseGiornalieroModel> models) {
+			String totOreIU, List<RiepilogoMeseGiornalieroModel> models, RiepilogoFoglioOreModel riepOreTot) {
 		
 		try {
 			 HttpServletRequest request = this.getThreadLocalRequest();
@@ -359,6 +360,7 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 		     httpSession.setAttribute("totOreCommesse", totOreCommesse);
 		     httpSession.setAttribute("totOreIU", totOreIU);
 		     httpSession.setAttribute("listaM", models);
+		     httpSession.setAttribute("riepilogoTotali", riepOreTot);
 		   	 
 			return true;
 		} catch (Exception e) {

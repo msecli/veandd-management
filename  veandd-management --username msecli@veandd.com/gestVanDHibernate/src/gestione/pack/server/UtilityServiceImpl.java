@@ -7,10 +7,15 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import gestione.pack.client.UtilityService;
+import gestione.pack.shared.AssociazionePtoA;
 import gestione.pack.shared.AttivitaOrdine;
 import gestione.pack.shared.Commessa;
+import gestione.pack.shared.DettaglioIntervalliCommesse;
+import gestione.pack.shared.DettaglioOreGiornaliere;
 import gestione.pack.shared.FoglioFatturazione;
+import gestione.pack.shared.FoglioOreMese;
 import gestione.pack.shared.Ordine;
+import gestione.pack.shared.Personale;
 import net.sf.gilead.core.PersistentBeanManager;
 import net.sf.gilead.core.hibernate.HibernateUtil;
 import net.sf.gilead.core.store.stateless.StatelessProxyStore;
@@ -142,4 +147,70 @@ private static final long serialVersionUID = 1L;
 		    	session.close();
 		    }			
 	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> checkIntervallicommesse(String periodo) {
+		
+		List<Personale> listaP= new ArrayList<Personale>();
+		List<FoglioOreMese> listaF= new ArrayList<FoglioOreMese>();
+		List<DettaglioOreGiornaliere> listaD= new ArrayList<DettaglioOreGiornaliere>();
+		List<DettaglioIntervalliCommesse> listaDC= new ArrayList<DettaglioIntervalliCommesse>();
+		List<AssociazionePtoA> listaAss= new ArrayList<AssociazionePtoA>();
+		Commessa c= new Commessa();
+		FoglioOreMese f= new FoglioOreMese();
+		List<String> listaCheck= new ArrayList<String>();
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {
+			tx=session.beginTransaction();
+			
+			listaP=(List<Personale>)session.createQuery("from Personale where sedeOperativa=:sede").setParameter("sede", "T").list();
+			
+			for(Personale p:listaP){
+								
+				if(!p.getAssociazionePtoas().isEmpty())
+					listaAss.addAll(p.getAssociazionePtoas());
+				
+					f=(FoglioOreMese)session.createQuery("from FoglioOreMese where meseRiferimento=:mese and id_personale=:id")
+						.setParameter("id", p.getId_PERSONALE()).setParameter("mese", periodo).uniqueResult();//TODO impostare la scelta del mese
+					if(f!=null)
+						if(!f.getDettaglioOreGiornalieres().isEmpty())
+							listaD.addAll(f.getDettaglioOreGiornalieres());
+				
+					for(DettaglioOreGiornaliere d: listaD){					
+						for(AssociazionePtoA ass:listaAss){
+							c= ass.getAttivita().getCommessa();
+						
+							listaDC=(List<DettaglioIntervalliCommesse>)session.createQuery("from DettaglioIntervalliCommesse " +
+									"where id_dettaglio_ore=:id and numeroCommessa=:numeroCommessa and estensioneCommessa=:estensione")
+									.setParameter("id", d.getIdDettaglioOreGiornaliere()).setParameter("numeroCommessa", c.getNumeroCommessa())
+									.setParameter("estensione", c.getEstensione()).list();	
+						
+							if(listaDC.size()>1)
+								listaCheck.add(c.getNumeroCommessa()+" "+c.getEstensione()+" "+String.valueOf(d.getIdDettaglioOreGiornaliere())+" "+p.getCognome());
+						
+							listaDC.clear();
+						}				
+				}	
+				listaD.clear();
+				listaF.clear();
+				listaAss.clear();
+			}
+			
+			tx.commit();		
+			return listaCheck;			
+			
+		} catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return null;
+		}				
+	}
+	
+	
 }

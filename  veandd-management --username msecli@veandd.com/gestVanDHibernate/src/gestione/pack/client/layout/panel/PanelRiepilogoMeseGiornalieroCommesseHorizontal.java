@@ -7,6 +7,7 @@ import java.util.List;
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.model.PersonaleModel;
+import gestione.pack.client.model.RiepilogoFoglioOreModel;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.MyImages;
@@ -51,10 +52,6 @@ public class PanelRiepilogoMeseGiornalieroCommesseHorizontal  extends LayoutCont
 	private ColumnModel cmRiepilogo;
 	private CellSelectionModel<RiepilogoMeseGiornalieroModel> cm=new CellSelectionModel<RiepilogoMeseGiornalieroModel>();
 	
-	//private Button btnViewFoglioOre;
-	//private Button btnSelect;
-	//private SimpleComboBox<String> smplcmbxAnno;
-	//private SimpleComboBox<String> smplcmbxMese;
 	private ComboBox<PersonaleModel> cmbxDipendente= new ComboBox<PersonaleModel>();
 	private TextField<String> txtOreTotaliIntCommesse;
 	private TextField<String> txtOreTotaliIntIU;
@@ -62,20 +59,24 @@ public class PanelRiepilogoMeseGiornalieroCommesseHorizontal  extends LayoutCont
 	
 	private String dataR;
 	private String usernameR;
-	
-	//private int h=Window.getClientHeight();
-	//private int w=Window.getClientWidth();
-	
+		
+	private RiepilogoFoglioOreModel riepOreTot;
+			
 	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
 	private static String url= "/gestvandhibernate/PrintDataServlet";
 	
-	public PanelRiepilogoMeseGiornalieroCommesseHorizontal(String username, Date data){
+	public PanelRiepilogoMeseGiornalieroCommesseHorizontal(String username, Date data,
+			String oreTotFerie, String oreTotPermessi, String oreTotRecupero, String oreTotStrao){
+		
 		String dataRif=data.toString();
 		String mese=dataRif.substring(4, 7);
 		String anno=dataRif.substring(dataRif.length()-4,dataRif.length());
 		
 		this.dataR=mese+anno;
 		this.usernameR=username;
+		
+		this.riepOreTot=new RiepilogoFoglioOreModel(0, "", "", "", "", "",(float)0, (float)0, (float)0, (float)0, Float.valueOf(oreTotFerie),
+				Float.valueOf(oreTotPermessi), Float.valueOf(oreTotRecupero), Float.valueOf(oreTotStrao), (float)0, "", "", "");
 	}
 	
 	protected void onRender(Element target, int index) {  
@@ -207,7 +208,7 @@ public class PanelRiepilogoMeseGiornalieroCommesseHorizontal  extends LayoutCont
 			    String totOreIU= txtOreTotaliIntIU.getValue().toString();
 				
 				SessionManagementService.Util.getInstance().setDataRiepilogoCommesseInSession(dataR, usernameR, "COMM", totOreCommesse,
-						totOreIU, store.getModels(), new AsyncCallback<Boolean>() {
+						totOreIU, store.getModels(), riepOreTot, new AsyncCallback<Boolean>() {
 
 					@Override
 					public void onFailure(Throwable caught) {

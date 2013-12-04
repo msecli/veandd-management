@@ -203,4 +203,24 @@ public class DatiComboBox {
 		
 		return listaR;
 	}	
+	
+	public static List<String> getPeriodo() {
+		List <String> listaR=new ArrayList<String>();
+		String anno="2013";
+		
+		listaR.add("Gen"+anno);
+		listaR.add("Feb"+anno);
+		listaR.add("Mar"+anno);
+		listaR.add("Apr"+anno);
+		listaR.add("Mag"+anno);
+		listaR.add("Giu"+anno);
+		listaR.add("Lug"+anno);
+		listaR.add("Ago"+anno);
+		listaR.add("Set"+anno);
+		listaR.add("Ott"+anno);
+		listaR.add("Nov"+anno);
+		listaR.add("Dic"+anno);
+		
+		return listaR;
+	}	
 }
