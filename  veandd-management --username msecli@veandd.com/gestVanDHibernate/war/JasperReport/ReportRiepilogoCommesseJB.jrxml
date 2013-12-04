@@ -23,6 +23,18 @@
 	<parameter name="TotOreIU" class="java.lang.String" isForPrompting="false">
 		<parameterDescription><![CDATA[TotOreIU]]></parameterDescription>
 	</parameter>
+	<parameter name="oreTotFerie" class="java.lang.Float" isForPrompting="false">
+		<parameterDescription><![CDATA[oreTotFerie]]></parameterDescription>
+	</parameter>
+	<parameter name="oreTotPermessi" class="java.lang.Float" isForPrompting="false">
+		<parameterDescription><![CDATA[oreTotPermessi]]></parameterDescription>
+	</parameter>
+	<parameter name="oreTotRecupero" class="java.lang.Float" isForPrompting="false">
+		<parameterDescription><![CDATA[oreTotRecupero]]></parameterDescription>
+	</parameter>
+	<parameter name="oreTotStrao" class="java.lang.Float" isForPrompting="false">
+		<parameterDescription><![CDATA[oreTotStrao]]></parameterDescription>
+	</parameter>
 	<field name="commessa" class="java.lang.String"/>
 	<field name="giorno1" class="java.lang.String"/>
 	<field name="giorno2" class="java.lang.String"/>
@@ -519,4 +531,56 @@
 			</textField>
 		</band>
 	</detail>
+	<summary>
+		<band height="60">
+			<staticText>
+				<reportElement uuid="baf3641f-cb1c-48b8-9570-c722fb7ff098" x="16" y="11" width="100" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tot. Ore Ferie:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6d25d7b2-67f2-4cbc-8527-1704ce407bc3" x="16" y="33" width="100" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tot. Ore ROL:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="c8bb1299-7bf8-44a0-b0b6-d62fa7c90dd0" x="120" y="12" width="80" height="18"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{oreTotFerie}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="84dc5bdf-5c7c-4b24-b1c0-4144e2ab7a5b" x="120" y="34" width="80" height="18"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{oreTotPermessi}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b4c77aa4-5063-4199-be1b-5b7fda477007" x="372" y="11" width="80" height="18"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{oreTotRecupero}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="3f8f4b85-f9a1-4221-a529-df90885235f0" x="230" y="10" width="141" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tot. Ore Recupero:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="f4c78dff-234b-4ba6-b96f-b901379866ce" x="372" y="33" width="80" height="18"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{oreTotStrao}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="71ae5bdc-e2ce-4b31-86e9-98a28482b669" x="230" y="32" width="141" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tot. Ore Straordinario:]]></text>
+			</staticText>
+		</band>
+	</summary>
 </jasperReport>

@@ -42,7 +42,7 @@
 					</datasetRun>
 					<jr:column width="384" uuid="7f868aed-da92-44c2-8661-2b1d56ab0c7b">
 						<jr:detailCell style="table_TD" height="35" rowSpan="1">
-							<textField>
+							<textField isStretchWithOverflow="true">
 								<reportElement uuid="7d47d78c-117c-4599-8e84-1e9ec8b6a1d2" x="0" y="0" width="380" height="35"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{descrizione}]]></textFieldExpression>
@@ -51,7 +51,7 @@
 					</jr:column>
 					<jr:column width="145" uuid="60fd89b2-6683-4927-9ae7-e54dd9e82532">
 						<jr:detailCell style="table_TD" height="35" rowSpan="1">
-							<textField>
+							<textField isStretchWithOverflow="true">
 								<reportElement uuid="e3e19780-0a81-4c8d-84b8-b1d63a90b053" x="0" y="0" width="145" height="35"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{importo}]]></textFieldExpression>
