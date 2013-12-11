@@ -5,6 +5,7 @@ package gestione.pack.client.layout;
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
 import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
+import gestione.pack.client.layout.panel.PanelRiepilogoStatoAvanzamentoOreCommesse;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
 import gestione.pack.client.utility.MyImages;
@@ -37,6 +38,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.Image;
 
 
 public class BodyLayout_PersonalManager extends LayoutContainer {
@@ -190,52 +192,8 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 
 	    panel.setLayout(new AccordionLayout());
 
-	    ContentPanel cp = new ContentPanel();
-	    cp.setAnimCollapse(false);
-	    cp.setBodyStyleName("pad-text");
-	    cp.setHeading("Gestione Commesse");
-	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent be) {
-            	center.removeAll();
-	        	center.add(new CenterLayout_AssociaPersonale());
-	        	center.layout(true);               
-            }
-        });	    
-	    Button btnGestioneCommessa = new Button();
-	    btnGestioneCommessa.setToolTip("Gestione Dati Commessa");
-	    btnGestioneCommessa.setHeight(65);
-	    btnGestioneCommessa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.anagrafica()));
-	    btnGestioneCommessa.setIconAlign(IconAlign.BOTTOM);
-	    btnGestioneCommessa.setWidth("100%");
-	    btnGestioneCommessa.addSelectionListener(new SelectionListener<ButtonEvent>() {
-	        public void componentSelected(ButtonEvent ce) {
-	          center.removeAll();
-	        	center.add(new CenterLayout_GestioneCommessa());
-	        	center.layout(true);}
-	        
-	      });
-	    btnGestioneCommessa.setWidth("100%");
-	    cp.add(btnGestioneCommessa);
 	    
-	    Button btnAssociaPersonale = new Button();
-	    btnAssociaPersonale.setToolTip("Associazione Dipendenti Commessa");
-	    btnAssociaPersonale.setHeight(65);
-	    btnAssociaPersonale.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.associaPtoC()));
-	    btnAssociaPersonale.setIconAlign(IconAlign.BOTTOM);
-	    btnAssociaPersonale.setWidth("100%");
-	    btnAssociaPersonale.addSelectionListener(new SelectionListener<ButtonEvent>() {
-	        public void componentSelected(ButtonEvent ce) {
-	          center.removeAll();
-	        	center.add(new CenterLayout_AssociaPersonale());
-	        	center.layout(true);}
-	        
-	      });
-	    btnAssociaPersonale.setWidth("100%");
-	    cp.add(btnAssociaPersonale);
-	    cp.add(btnAssociaPersonale);
-	    panel.add(cp);
-
-	    cp = new ContentPanel();
+	    ContentPanel cp = new ContentPanel();
 	    cp.setAnimCollapse(false);
 	    cp.setBodyStyleName("pad-text");
 	    cp.setHeading("Gestione Presenze");
@@ -332,7 +290,77 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	    btnRiepilogoMese.setWidth("100%");
 	    cp.add(btnRiepilogoMese);
 	    
+	    if(txtfldUsername.getValue().toString().compareTo("enzo.cardano")==0){
+	    	Image loadingImage = new Image(MyImages.INSTANCE.logoEnzo());
+	    	cp.add(loadingImage);
+		}
 	    panel.add(cp);
+	    
+	    
+	    cp = new ContentPanel();
+	    cp.setAnimCollapse(false);
+	    cp.setBodyStyleName("pad-text");
+	    cp.setHeading("Gestione Commesse");
+	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent be) {
+            	center.removeAll();
+	        	center.add(new CenterLayout_AssociaPersonale());
+	        	center.layout(true);               
+            }
+        });	    
+	    Button btnGestioneCommessa = new Button();
+	    btnGestioneCommessa.setToolTip("Gestione Dati Commessa");
+	    btnGestioneCommessa.setHeight(65);
+	    btnGestioneCommessa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.anagrafica()));
+	    btnGestioneCommessa.setIconAlign(IconAlign.BOTTOM);
+	    btnGestioneCommessa.setWidth("100%");
+	    btnGestioneCommessa.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	          center.removeAll();
+	        	center.add(new CenterLayout_GestioneCommessa());
+	        	center.layout(true);}
+	        
+	      });
+	    btnGestioneCommessa.setWidth("100%");
+	    cp.add(btnGestioneCommessa);
+	    
+	    Button btnAssociaPersonale = new Button();
+	    btnAssociaPersonale.setToolTip("Associazione Dipendenti Commessa");
+	    btnAssociaPersonale.setHeight(65);
+	    btnAssociaPersonale.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.associaPtoC()));
+	    btnAssociaPersonale.setIconAlign(IconAlign.BOTTOM);
+	    btnAssociaPersonale.setWidth("100%");
+	    btnAssociaPersonale.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	          center.removeAll();
+	        	center.add(new CenterLayout_AssociaPersonale());
+	        	center.layout(true);}
+	        
+	      });
+	    btnAssociaPersonale.setWidth("100%");
+	    cp.add(btnAssociaPersonale);
+	    
+	    Button btnRiepilogoMesePerCommessa = new Button();
+	    btnRiepilogoMesePerCommessa.setToolTip("Riepilogo Ore Su Commesse");
+	    btnRiepilogoMesePerCommessa.setHeight(65);
+	    btnRiepilogoMesePerCommessa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnRiepilogoMesePerCommessa.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoMesePerCommessa.setWidth("100%");
+	    btnRiepilogoMesePerCommessa.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelRiepilogoStatoAvanzamentoOreCommesse());
+	        	center.layout(true);}      
+	      });
+	    cp.add(btnRiepilogoMesePerCommessa);
+	    
+	    if(txtfldUsername.getValue().toString().compareTo("enzo.cardano")==0){
+	    	Image loadingImage = new Image(MyImages.INSTANCE.logoEnzo());
+	    	cp.add(loadingImage);
+		}    
+	    panel.add(cp);
+
+	    
 	    
 	   /* cp = new ContentPanel();
 	    cp.setAnimCollapse(false);
@@ -397,6 +425,11 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	        	center.layout(true);}      
 	    });
 	    cp.add(btnReportDatiFatt);
+	    
+	    if(txtfldUsername.getValue().toString().compareTo("enzo.cardano")==0){
+	    	Image loadingImage = new Image(MyImages.INSTANCE.logoEnzo());
+	    	cp.add(loadingImage);
+		}
 	    panel.add(cp);
 
 	    panel.setSize(180,Window.getClientHeight()-70);

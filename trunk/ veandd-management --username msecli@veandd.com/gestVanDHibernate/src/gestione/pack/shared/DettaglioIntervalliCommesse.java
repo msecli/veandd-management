@@ -118,12 +118,26 @@ public class DettaglioIntervalliCommesse extends LightEntity implements IsSerial
 		if (getClass() != obj.getClass())
 			return false;
 		DettaglioIntervalliCommesse other = (DettaglioIntervalliCommesse) obj;
+		
+		if(numeroCommessa!=null && estensioneCommessa!=null)
+			if(numeroCommessa.equals(other.numeroCommessa))
+				if(estensioneCommessa.equals(other.estensioneCommessa))
+					return true;
+				else
+					return false;
+			else
+				return false;
+		else
+			return false;
+		
+		/*
 		if (numeroCommessa == null) {
 			if (other.numeroCommessa != null)
 				return false;
 		} else if (!numeroCommessa.equals(other.numeroCommessa))
 			return false;
-		return true;
+		
+		return true;*/
 	}
 
 	

@@ -77,10 +77,6 @@ public class PanelRiepilogoOreCommesseDettDipendenti extends LayoutContainer{
 	
 	    final FitLayout fl= new FitLayout();
 		
-		LayoutContainer bodyContainer = new LayoutContainer();
-		bodyContainer.setLayout(new FlowLayout());
-		bodyContainer.setBorders(false);	
-		
 		LayoutContainer layoutContainer= new LayoutContainer();
 		layoutContainer.setBorders(false);
 		layoutContainer.setLayout(fl);

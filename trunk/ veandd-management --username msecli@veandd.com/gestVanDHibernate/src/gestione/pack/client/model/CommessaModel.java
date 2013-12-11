@@ -13,6 +13,14 @@ public class CommessaModel extends BaseModel  implements IsSerializable{
 	public CommessaModel(){}
 	
 	
+	public CommessaModel(int idCommessa, String numeroCommessa, String estensione, String descrizione){
+		set("idCommessa",idCommessa);
+		set("numeroCommessa",numeroCommessa);
+		set("estensione",estensione);
+		set("descrizione",descrizione);	
+		set("commessa", numeroCommessa+"."+estensione+" ("+descrizione+")");
+	}
+	
 	public CommessaModel( int idCommessa, String numeroCommessa, String rdo, String numeroOfferta, String numeroOrdine, String estensione, String tipoCommessa,
 			String ragioneSociale, String pm, String statoCommessa, String oreLavoro, String oreLavoroResidue, String tariffaSal, String salAttuale, String pclAttuale, 
 			String dataInizio, String dataChiusura, String descrizione, String note, String numRisorse ){

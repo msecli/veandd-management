@@ -7,6 +7,7 @@ import gestione.pack.client.layout.panel.PanelGestioneCostiDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoAnnualeOreDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoCostiDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
+import gestione.pack.client.layout.panel.PanelRiepilogoStatoAvanzamentoOreCommesse;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
 import gestione.pack.client.utility.MyImages;
@@ -392,6 +393,20 @@ public class BodyLayout_Direzione extends LayoutContainer {
 	      });
 	    btnRiepilogoAnnuale.setWidth("100%");
 	    cp.add(btnRiepilogoAnnuale);
+	    
+	    Button btnRiepilogoMesePerCommessa = new Button();
+	    btnRiepilogoMesePerCommessa.setToolTip("Riepilogo Ore Su Commesse");
+	    btnRiepilogoMesePerCommessa.setHeight(65);
+	    btnRiepilogoMesePerCommessa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.presenzeDip()));
+	    btnRiepilogoMesePerCommessa.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoMesePerCommessa.setWidth("100%");
+	    btnRiepilogoMesePerCommessa.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelRiepilogoStatoAvanzamentoOreCommesse());
+	        	center.layout(true);}      
+	      });
+	    cp.add(btnRiepilogoMesePerCommessa);
 	    
 	    panel.add(cp);
 	    

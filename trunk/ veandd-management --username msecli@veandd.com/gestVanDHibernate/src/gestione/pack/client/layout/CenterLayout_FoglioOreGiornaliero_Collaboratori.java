@@ -400,7 +400,7 @@ public class CenterLayout_FoglioOreGiornaliero_Collaboratori extends LayoutConta
 		
 		private void caricaFieldSet(List<IntervalliCommesseModel> result) {
 			List<IntervalliCommesseModel> lista = new ArrayList<IntervalliCommesseModel>();
-			
+			String descrizioneCompleta= new String();
 			Collections.sort(result, new Comparator<IntervalliCommesseModel>(){
 				  public int compare(IntervalliCommesseModel s1, IntervalliCommesseModel s2) {
 				    return s1.getNumeroCommessa().compareToIgnoreCase(s2.getNumeroCommessa());
@@ -438,9 +438,14 @@ public class CenterLayout_FoglioOreGiornaliero_Collaboratori extends LayoutConta
 						frmInsCommesse.txtfldOreIntervallo.setEnabled(false);
 						frmInsCommesse.txtfldOreViaggio.setEnabled(false);
 					}
-					frmInsCommesse.txtfldTotOreLavoro.setValue(result.get(i).getTotOreLavoro());
-					frmInsCommesse.txtfldTotOreViaggio.setValue(result.get(i).getTotOreViaggio());
-					frmInsCommesse.txtDescrizione.setText(result.get(i).getDescrizione().toLowerCase());
+					
+					frmInsCommesse.txtOreTotLavoro.setText("Totale nel Mese: "+result.get(i).getTotOreLavoro());
+					frmInsCommesse.txtOreTotViaggio.setText("Totale nel Mese: "+result.get(i).getTotOreViaggio());
+					
+					descrizioneCompleta=result.get(i).getNumeroCommessa()+" ("+result.get(i).getDescrizione().toLowerCase()+") ";
+					
+					//frmInsCommesse.txtDescrizione.setText(result.get(i).getDescrizione().toLowerCase());
+					frmInsCommesse.txtDescrizione.setText(descrizioneCompleta);
 					add(frmInsCommesse);
 			
 					}
@@ -454,7 +459,7 @@ public class CenterLayout_FoglioOreGiornaliero_Collaboratori extends LayoutConta
 	
 	public List<IntervalliCommesseModel> elaboraIntervalliC(FldsetIntervalliCommesse fldSetIntervalliC) {
 		
-		TextField<String> txtfldNumCommessa=new TextField<String>();
+		//TextField<String> txtfldNumCommessa=new TextField<String>();
 		TextField<String> txtfldOreLavoro=new TextField<String>();
 		TextField<String> txtfldOreViaggio=new TextField<String>();
 		Text txtDescrizione= new Text();
@@ -464,6 +469,8 @@ public class CenterLayout_FoglioOreGiornaliero_Collaboratori extends LayoutConta
 		List<IntervalliCommesseModel>  intervalliC= new ArrayList<IntervalliCommesseModel>();
 		String frmItemId= new String();
 		
+		String numeroCommessa;
+		String descrizione;
 		int i;
 		
 		i= fldSetIntervalliC.getItemCount();//numero di commesse registrate
@@ -472,13 +479,18 @@ public class CenterLayout_FoglioOreGiornaliero_Collaboratori extends LayoutConta
 		{
 			frmItemId=String.valueOf(j-1);
 			frm=(FormInserimentoIntervalloCommessa) fldSetIntervalliC.getItemByItemId(frmItemId);
-			
-			txtfldNumCommessa=frm.txtfldNumeroCommessa;
+						
+			//txtfldNumCommessa=frm.txtfldNumeroCommessa;
 			txtfldOreLavoro=frm.txtfldOreIntervallo;
 			txtfldOreViaggio=frm.txtfldOreViaggio;
 			txtDescrizione=frm.txtDescrizione;
-			intervallo= new IntervalliCommesseModel(txtfldNumCommessa.getValue().toString(), txtfldOreLavoro.getValue().toString(), txtfldOreViaggio.getValue().toString()
-					,"","", txtDescrizione.toString(), "");
+			
+			descrizione=txtDescrizione.getText();
+			numeroCommessa=descrizione.substring(0,descrizione.indexOf(" "));
+			descrizione=descrizione.substring(descrizione.indexOf("(")+1, descrizione.indexOf(")"));
+			
+			intervallo= new IntervalliCommesseModel(numeroCommessa, txtfldOreLavoro.getValue().toString(), txtfldOreViaggio.getValue().toString()
+					,"","", descrizione, "");
 			intervalliC.add(intervallo);
 		}
 		

@@ -18,6 +18,7 @@ import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal
 import gestione.pack.client.layout.panel.PanelRiepilogoOreCommesseDettDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoSituazioneMensileOreDipendenti;
+import gestione.pack.client.layout.panel.PanelRiepilogoStatoAvanzamentoOreCommesse;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
 import gestione.pack.client.utility.DatiComboBox;
@@ -574,15 +575,15 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    cp.add(btnRiepilogoAnnuale);
 	    
 	    Button btnRiepilogoMesePerCommessa = new Button();
-	    btnRiepilogoMesePerCommessa.setToolTip("Riepilogo dei dati ore mensili per commessa con dettaglio dipendenti");
+	    btnRiepilogoMesePerCommessa.setToolTip("Riepilogo Ore Su Commesse");
 	    btnRiepilogoMesePerCommessa.setHeight(65);
-	    btnRiepilogoMesePerCommessa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnRiepilogoMesePerCommessa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.presenzeDip()));
 	    btnRiepilogoMesePerCommessa.setIconAlign(IconAlign.BOTTOM);
 	    btnRiepilogoMesePerCommessa.setWidth("100%");
 	    btnRiepilogoMesePerCommessa.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	        	center.removeAll();
-	        	center.add(new PanelRiepilogoOreCommesseDettDipendenti());
+	        	center.add(new PanelRiepilogoStatoAvanzamentoOreCommesse());
 	        	center.layout(true);}      
 	      });
 	    cp.add(btnRiepilogoMesePerCommessa);
@@ -675,9 +676,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    status.setBusy("Please wait...");
 	    status.hide();
 	    status.setAutoWidth(true);
-	    
-	   
-	    
+    
 	    Button btnGestioneHwSw = new Button();
 	    btnGestioneHwSw.setToolTip("Check I/U I commesse");
 	    btnGestioneHwSw.setHeight(65);
@@ -810,8 +809,8 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        
 //----------------------------------------------------------------------------------------------
 	    
-	   center.add(new CenterLayout_ElaboraFatture()); 
-	  // center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb());   
+	    
+	   center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb());   
 	   container.add(north, northData);
 	   container.add(west, westData);
 	   container.add(center, centerData);

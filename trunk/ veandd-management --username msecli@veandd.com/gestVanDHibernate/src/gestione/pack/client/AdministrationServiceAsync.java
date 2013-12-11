@@ -190,9 +190,9 @@ public interface AdministrationServiceAsync {
 
 	void getCommesse(AsyncCallback<List<String>> asyncCallback);
 	
-	void getCommesseAperte(AsyncCallback<List<String>> callback);
+	void getCommesseAperte(AsyncCallback<List<CommessaModel>> asyncCallback);
 
-	void getCommesseByPM(String nome, String cognome, /*String pm*/AsyncCallback<List<String>> asyncCallback) ;
+	void getCommesseByPM(String nome, String cognome, /*String pm*/AsyncCallback<List<CommessaModel>> asyncCallback) ;
 
 	void getAllRdoCommesse(AsyncCallback<List<GestioneRdoCommesse>> asyncCallback);
 	
@@ -213,6 +213,12 @@ public interface AdministrationServiceAsync {
 			AsyncCallback<List<PersonaleAssociatoModel>> asyncCallback);
 
 	void getCommesseAperteSenzaOrdine(AsyncCallback<List<CommessaModel>> asyncCallback);
+	
+	void getCommesseByPmConAssociazioni(String nome, String cognome,
+			AsyncCallback<List<CommessaModel>> asyncCallback);
+
+	void getCommesseAperteConAssociazioni(
+			AsyncCallback<List<CommessaModel>> asyncCallback);
 
 	//------------------------------------------FOGLIO ORE
 	void getAssociazioniPersonaleCommessaByUsername(
@@ -349,6 +355,10 @@ public interface AdministrationServiceAsync {
 	void getRiepilogoOreCommesseDettDipendenti(String data, String sede,
 			AsyncCallback<List<RiepilogoOreDipFatturazione>> asyncCallback);
 	
+	void getRiepilogoOreCommesseDettDipendentiPeriodo(String anno,
+			String string, String string2, String string3,
+			String pm, List<CommessaModel> listaCommesseSel, AsyncCallback<List<RiepilogoOreDipFatturazione>> asyncCallback);
+	
 //-------------------------------------------------COSTI---------------------------------
 	
 	void getDatiCostiPersonale(int idPersonale,
@@ -391,6 +401,10 @@ public interface AdministrationServiceAsync {
 
 	void editStatoCosting(int idSelected, String operazione,
 			AsyncCallback<Boolean> asyncCallback);
+
+	
+
+	
 
 			
 }

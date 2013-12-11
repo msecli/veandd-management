@@ -493,6 +493,7 @@ public class CenterLayout_RilevazioneOreColocation extends LayoutContainer{
 		
 		
 		private void caricaFieldSet(List<IntervalliCommesseModel> result) {
+			String descrizioneCompleta= new String();
 			List<IntervalliCommesseModel> lista = new ArrayList<IntervalliCommesseModel>();
 			Collections.sort(result, new Comparator<IntervalliCommesseModel>(){
 				  public int compare(IntervalliCommesseModel s1, IntervalliCommesseModel s2) {
@@ -525,12 +526,17 @@ public class CenterLayout_RilevazioneOreColocation extends LayoutContainer{
 					frmInsCommesse = new FormInserimentoIntervalloCommessa("2");
 					frmInsCommesse.setItemId(num);
 
-					frmInsCommesse.txtfldNumeroCommessa.setValue(result.get(i).getNumeroCommessa());
+					//frmInsCommesse.txtfldNumeroCommessa.setValue(result.get(i).getNumeroCommessa());
 					frmInsCommesse.txtfldOreIntervallo.setValue(result.get(i).getOreLavoro());
 					frmInsCommesse.txtfldOreViaggio.setValue(result.get(i).getOreViaggio());
-					frmInsCommesse.txtfldTotOreLavoro.setValue(result.get(i).getTotOreLavoro());
-					frmInsCommesse.txtfldTotOreViaggio.setValue(result.get(i).getTotOreViaggio());
-					frmInsCommesse.txtDescrizione.setText("("+result.get(i).getDescrizione()+")");
+					frmInsCommesse.txtOreTotLavoro.setText("Totale nel Mese: "+result.get(i).getTotOreLavoro());
+					frmInsCommesse.txtOreTotViaggio.setText("Totale nel Mese: "+result.get(i).getTotOreViaggio());
+					
+					descrizioneCompleta=result.get(i).getNumeroCommessa()+" ("+result.get(i).getDescrizione().toLowerCase()+") ";
+					
+					//frmInsCommesse.txtDescrizione.setText(result.get(i).getDescrizione().toLowerCase());
+					frmInsCommesse.txtDescrizione.setText(descrizioneCompleta);					
+					
 					add(frmInsCommesse);
 			
 					}
@@ -545,11 +551,12 @@ public class CenterLayout_RilevazioneOreColocation extends LayoutContainer{
 	
 	public List<IntervalliCommesseModel> elaboraIntervalliC(FldsetIntervalliCommesse fldSetIntervalliC) {
 		
-		TextField<String> txtfldNumCommessa=new TextField<String>();
 		TextField<String> txtfldOreLavoro=new TextField<String>();
 		TextField<String> txtfldOreViaggio=new TextField<String>();
 		Text txtDescrizione= new Text();
 		FormInserimentoIntervalloCommessa frm=new FormInserimentoIntervalloCommessa("2");
+		String numeroCommessa;
+		String descrizione;
 		
 		IntervalliCommesseModel intervallo;
 		List<IntervalliCommesseModel>  intervalliC= new ArrayList<IntervalliCommesseModel>();
@@ -564,12 +571,17 @@ public class CenterLayout_RilevazioneOreColocation extends LayoutContainer{
 			frmItemId=String.valueOf(j-1);
 			frm=(FormInserimentoIntervalloCommessa) fldSetIntervalliC.getItemByItemId(frmItemId);
 			
-			txtfldNumCommessa=frm.txtfldNumeroCommessa;
+			//txtfldNumCommessa=frm.txtfldNumeroCommessa;
 			txtfldOreLavoro=frm.txtfldOreIntervallo;
 			txtfldOreViaggio=frm.txtfldOreViaggio;
 			txtDescrizione=frm.txtDescrizione;
-			intervallo= new IntervalliCommesseModel(txtfldNumCommessa.getValue().toString(), txtfldOreLavoro.getValue().toString(), txtfldOreViaggio.getValue().toString()
-					,"","", txtDescrizione.toString(), "");
+			
+			descrizione=txtDescrizione.getText();
+			numeroCommessa=descrizione.substring(0,descrizione.indexOf(" "));
+			descrizione=descrizione.substring(descrizione.indexOf("(")+1, descrizione.indexOf(")"));
+						
+			intervallo= new IntervalliCommesseModel(numeroCommessa, txtfldOreLavoro.getValue().toString(), txtfldOreViaggio.getValue().toString()
+					,"","", descrizione, "");
 			intervalliC.add(intervallo);
 		}
 		

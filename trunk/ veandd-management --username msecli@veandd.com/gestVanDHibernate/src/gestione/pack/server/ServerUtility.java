@@ -2251,6 +2251,52 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 		}finally{
 			session.close();
 		}		
+	}
+	
+	//Verifico che il mese da controllare sia all'interno del periodo indicato
+	public static boolean isIncluded(String meseRiferimento, String annoI,
+			String meseI, String annoF, String meseF) {
+	
+		//se c'è solo la data d'inizio controllo solo l'anno
+		if(meseI.compareTo("")==0){			
+			meseRiferimento=meseRiferimento.substring(3, meseRiferimento.length());
+			if(meseRiferimento.compareTo(annoI)==0)
+				return true;
+			else 
+				return false;
+		}else{										
+			String annoRif=meseRiferimento.substring(3,7);
+			String meseRif=meseRiferimento.substring(0, 3);
+			
+			meseI=meseI.substring(0, 3).toLowerCase();
+			meseF=meseF.substring(0, 3).toLowerCase();
+			meseRif=meseRif.toLowerCase();
+			
+			Date dataRif= new Date();
+			Date dataInizio= new Date();
+			Date dataFine=new Date();
+					    
+		    DateFormat  formatter = new SimpleDateFormat("MMMyyyy", Locale.ITALIAN);
+		    	    
+			try {			
+				dataInizio= formatter.parse(meseI+annoI);
+				dataFine= formatter.parse(meseF+annoF);
+				dataRif= formatter.parse(meseRif+annoRif);
+				
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			
+			if(dataRif.before(dataFine)||dataRif.equals(dataFine))
+				if(dataRif.after(dataInizio)||dataRif.equals(dataInizio))
+					return true;
+				else 
+					return false;
+			else 
+				return false;			
+			
+		}	
+
 	}	
 }
 

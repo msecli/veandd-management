@@ -1,9 +1,11 @@
 package gestione.pack.client.layout.panel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.model.ClienteModel;
+import gestione.pack.client.model.CommessaModel;
 import gestione.pack.client.model.PersonaleModel;
 import gestione.pack.client.utility.DatiComboBox;
 import gestione.pack.client.utility.MyImages;
@@ -275,7 +277,7 @@ public class DialogNewCosting extends Dialog{
 	}
 	
 	private void getCommesseAperte() {
-		AdministrationService.Util.getInstance().getCommesseAperte( new AsyncCallback<List<String>>() {
+		AdministrationService.Util.getInstance().getCommesseAperte( new AsyncCallback<List<CommessaModel>>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -284,12 +286,18 @@ public class DialogNewCosting extends Dialog{
 			}
 
 			@Override
-			public void onSuccess(List<String> result) {
-				String max=result.get(result.size()-1);
+			public void onSuccess(List<CommessaModel> result) {
+				
+				List<String> listaCommesse= new ArrayList<String>();
+				for(CommessaModel c:result){
+					listaCommesse.add(c.getNumeroCommessa()+"."+c.getEstensione());					
+				}
+				//cm=result.get(result.size()-1);
+				String max=listaCommesse.get(result.size()-1);
 				if(result!=null){
 					smplcmbxCommessa.removeAll();
-					java.util.Collections.sort(result);
-					smplcmbxCommessa.add(result);
+					java.util.Collections.sort(listaCommesse);
+					smplcmbxCommessa.add(listaCommesse);
 					smplcmbxCommessa.recalculate();
 					//smplcmbxCommessa.reset();
 					smplcmbxCommessa.setSimpleValue(max);
