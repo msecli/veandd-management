@@ -95,8 +95,8 @@ public interface MyImages extends ClientBundle{
 	@Source("Icone/anagrafica.png")
 	ImageResource anagrafica();
 	
-	@Source("Icone/porter.jpg")
-	ImageResource porter();
+	@Source("Icone/logoEnzo.png")
+	ImageResource logoEnzo();
 	
 	@Source("Icone/save1.png")
 	ImageResource save1();

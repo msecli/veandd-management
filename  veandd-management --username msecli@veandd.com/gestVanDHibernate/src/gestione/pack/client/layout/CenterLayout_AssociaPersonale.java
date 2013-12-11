@@ -44,6 +44,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
@@ -56,6 +57,7 @@ import com.extjs.gxt.ui.client.widget.grid.GroupingView;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
@@ -77,7 +79,8 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 	private Button btnReset= new Button("X");
 	private Button btnAdd= new Button();
 	private Button btnRefresh= new Button("R");
-	private SimpleComboBox<String> smplcmbxCommessa= new SimpleComboBox<String>();
+	private ComboBox<CommessaModel> cmbxCommessa= new ComboBox<CommessaModel>();
+	private ListStore<CommessaModel> storeCommesse=new ListStore<CommessaModel>();
 		
 	private TextField<String> txtfldCommessa= new TextField<String>();
 	private TextField<String> txtfldNome= new TextField<String>();
@@ -158,13 +161,18 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 			@Override
 			public void componentSelected(ButtonEvent ce) {
 			  if(list2.getElements().size()>0)
-				if(smplcmbxCommessa.isValid()){
+				if(cmbxCommessa.isValid()){
 					List<String> listaDipendenti= new ArrayList<String>();
 					String pm= new String();
 					String commessa= new String();
 					
-					if(smplcmbxCommessa.getRawValue().isEmpty()){ commessa="";}
-						else{commessa=smplcmbxCommessa.getRawValue().toString();}
+					/*if(smplcmbxCommessa.getRawValue().isEmpty()){ commessa="";}
+						else{commessa=smplcmbxCommessa.getRawValue().toString();}*/
+					
+					if(!cmbxCommessa.isValid())
+						commessa="";
+					else
+						commessa=cmbxCommessa.getValue().getNumeroCommessa()+"."+cmbxCommessa.getValue().getEstensione();
 					
 					for (PersonaleModel p: list2.getStore().getModels()){
 						listaDipendenti.add(p.getUsername());
@@ -302,14 +310,15 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
             	btnRemove.setEnabled(false);
             	btnRemoveAll.setEnabled(false);
             	btnRefresh.setEnabled(false);
-            	smplcmbxCommessa.setEnabled(true);
+            	cmbxCommessa.setEnabled(true);
             	btnAdd.setEnabled(false);
             	gridCommessa.getSelectionModel().deselectAll();
             	
             	txtfldCommessa.clear();
             	txtfldCognome.clear();
             	txtfldNome.clear();
-            	smplcmbxCommessa.setEmptyText("Selezionare la commessa..");
+            	cmbxCommessa.setEmptyText("Selezionare la commessa..");
+            	
             	//getCommesseByPm(txtNome.getText(), txtCognome.getText());
             	caricaTabellaDati();
             	getListaPersonale();
@@ -356,24 +365,28 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 		toolBar.setAlignment(HorizontalAlignment.RIGHT);
 		toolBar.setStyleAttribute("margin-bottom", "1px");		
 		
-		smplcmbxCommessa.setFieldLabel("Commessa");
-		smplcmbxCommessa.setEnabled(true);
-		smplcmbxCommessa.setEmptyText("Selezionare la commessa..");
-		smplcmbxCommessa.setEditable(false);
-		smplcmbxCommessa.setVisible(true);
-		smplcmbxCommessa.setTriggerAction(TriggerAction.ALL);
-		smplcmbxCommessa.setAllowBlank(false);
-		smplcmbxCommessa.addListener(Events.OnClick, new Listener<BaseEvent>(){
+		storeCommesse.setStoreSorter(new StoreSorter<CommessaModel>());
+		storeCommesse.setDefaultSort("numeroCommessa", SortDir.ASC);
+		cmbxCommessa.setStore(storeCommesse);
+		cmbxCommessa.setFieldLabel("Commessa");
+		cmbxCommessa.setEnabled(true);
+		cmbxCommessa.setEmptyText("Selezionare la commessa..");
+		cmbxCommessa.setEditable(true);
+		cmbxCommessa.setVisible(true);
+		cmbxCommessa.setTriggerAction(TriggerAction.ALL);
+		cmbxCommessa.setAllowBlank(false);
+		cmbxCommessa.setDisplayField("commessa");
+		cmbxCommessa.addListener(Events.OnClick, new Listener<BaseEvent>(){
 			@Override
-			public void handleEvent(BaseEvent be) {
+			public void handleEvent(BaseEvent be) {					
 				if(txtRuolo.getText()!=null)
 					if(txtRuolo.getText().compareTo("PM")==0)//se è un PM vedrà le sue commesse aperte	
 						getCommesseByPm(txtNome.getText(), txtCognome.getText());
 					else getCommesseAperte();//altrimenti verranno selezionate tutte le commesse aperte
-				else getCommesseAperte();
-			}
-			
+				else getCommesseAperte();				
+			}		
 		});
+		
 					
 		txtfldCommessa.setVisible(false);
 		txtfldCognome.setVisible(false);
@@ -447,7 +460,7 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 	            	btnRemoveAll.setEnabled(true);
 	            	btnAdd.setEnabled(true);
 	            	btnRefresh.setEnabled(true);
-	            	smplcmbxCommessa.setEnabled(false);
+	            	cmbxCommessa.setEnabled(false);
 	            	
 	            	txtfldCommessa.setValue(be.getSelectedItem().getCommessa());
 	            	txtfldCognome.setValue(be.getSelectedItem().getCognome());
@@ -466,7 +479,8 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 		buttonBar.add(btnAssocia);
 		buttonBar.add(btnReset);
 		
-		cntpnlSelezioni.add(smplcmbxCommessa);
+		//cntpnlSelezioni.add(smplcmbxCommessa);
+		cntpnlSelezioni.add(cmbxCommessa,new FormData("80%"));
 		cntpnlSelezioni.add(txtfldCognome);
 		cntpnlSelezioni.add(txtfldNome);
 		cntpnlSelezioni.add(txtfldCommessa);
@@ -635,7 +649,7 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 		
 	
 	private void getCommesseByPm(String nome, String cognome) {	
-		AdministrationService.Util.getInstance().getCommesseByPM(nome, cognome, new AsyncCallback<List<String>>() {
+		AdministrationService.Util.getInstance().getCommesseByPM(nome, cognome, new AsyncCallback<List<CommessaModel>>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -644,13 +658,18 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 			}
 
 			@Override
-			public void onSuccess(List<String> result) {
-				if(result!=null){			
+			public void onSuccess(List<CommessaModel> result) {
+				if(result!=null){
+					storeCommesse.removeAll();
+					storeCommesse.add(result);	
+					cmbxCommessa.clear();									
+					cmbxCommessa.setStore(storeCommesse);					
+					/*		
 					smplcmbxCommessa.removeAll();
 					java.util.Collections.sort(result);
 					smplcmbxCommessa.add(result);
 					smplcmbxCommessa.recalculate();
-					smplcmbxCommessa.reset();
+					smplcmbxCommessa.reset();*/
 				}else Window.alert("error: Errore durante l'accesso ai dati Commesse.");		
 			}
 		});
@@ -658,7 +677,7 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 	
 	
 	private void getCommesseAperte() {	
-		AdministrationService.Util.getInstance().getCommesseAperte( new AsyncCallback<List<String>>() {
+		AdministrationService.Util.getInstance().getCommesseAperte( new AsyncCallback<List<CommessaModel>>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -667,13 +686,17 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 			}
 
 			@Override
-			public void onSuccess(List<String> result) {
+			public void onSuccess(List<CommessaModel> result) {
 				if(result!=null){
-					smplcmbxCommessa.removeAll();
+					storeCommesse.removeAll();
+					storeCommesse.add(result);	
+					cmbxCommessa.clear();				
+					cmbxCommessa.setStore(storeCommesse);						
+					/*smplcmbxCommessa.removeAll();
 					java.util.Collections.sort(result);
 					smplcmbxCommessa.add(result);
 					smplcmbxCommessa.recalculate();
-					smplcmbxCommessa.reset();
+					smplcmbxCommessa.reset();*/
 				}else Window.alert("error: Errore durante l'accesso ai dati Commesse.");
 				
 			}
@@ -685,22 +708,19 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 		SessionManagementService.Util.getInstance().getRuolo(new AsyncCallback<String>() {
 			
 			@Override
-			public void onSuccess(String result) {
-				
+			public void onSuccess(String result) {			
 				setRuolo(result);
 			}
 			
 			@Override
-			public void onFailure(Throwable caught) {
-				
+			public void onFailure(Throwable caught) {		
 				Window.alert("Error on getRuolo();");
 			}
 		});				
 	}
 	
 	public  void setRuolo(String result){
-		txtRuolo.setText(result);		
-		
+		txtRuolo.setText(result);			
 			if(txtRuolo.getText().compareTo("")!=0){
 				caricaTabellaDati();//deve essere caricata qui in quanto dipende dalla restituzione della
 									//chiamata asincrona per il ruolo

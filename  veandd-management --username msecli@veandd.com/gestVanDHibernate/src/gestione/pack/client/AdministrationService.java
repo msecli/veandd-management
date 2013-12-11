@@ -213,9 +213,9 @@ public interface AdministrationService extends RemoteService {
 
 	List<String> getCommesse()throws IllegalArgumentException;
 	
-	List<String> getCommesseAperte()throws IllegalArgumentException;
+	List<CommessaModel> getCommesseAperte();
 
-	List<String> getCommesseByPM(String nome, String cognome)throws IllegalArgumentException;
+	List<CommessaModel> getCommesseByPM(String nome, String cognome);
 
 	
 	//---------------------------------------Associazioni Commesse Attivita Dip
@@ -240,6 +240,11 @@ public interface AdministrationService extends RemoteService {
 	List<CommessaModel> getCommesseAperteSenzaOrdine()throws IllegalArgumentException;
 
 	//List<IntervalliIUModel> getIntervalliIUTimbratrice(String u)throws IllegalArgumentException;
+	
+	List<CommessaModel> getCommesseByPmConAssociazioni(String nome,
+			String cognome)throws IllegalArgumentException;
+
+	List<CommessaModel> getCommesseAperteConAssociazioni()throws IllegalArgumentException;
 
 	
 	//--------------------------------------FOGLIO ORE------------------------------------------------------
@@ -389,7 +394,13 @@ public interface AdministrationService extends RemoteService {
 	boolean editStatoCosting(int idSelected, String operazione)throws IllegalArgumentException;
 
 	FatturaModel elaboraDatiPerFattura(String numeroOrdine,
-			int idFoglioFatturazione);
+			int idFoglioFatturazione)throws IllegalArgumentException;
+
+	List<RiepilogoOreDipFatturazione> getRiepilogoOreCommesseDettDipendentiPeriodo(
+			String anno, String string, String string2, String string3,
+			String pm, List<CommessaModel> listaCommesseSel)throws IllegalArgumentException;
+
+
 
 	
 }

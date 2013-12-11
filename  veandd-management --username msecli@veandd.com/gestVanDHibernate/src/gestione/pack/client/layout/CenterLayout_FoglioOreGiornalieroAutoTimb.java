@@ -4134,7 +4134,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			layoutCol1.add(txtfldOreAssenzaMese, new FormData("95%"));
 			//layoutCol1.add(txtfldOreStraordinarioMese, new FormData("95%"));
 			layoutCol1.add(txtfldOreRecuperoMonteMese, new FormData("95%"));
-			//layoutCol1.add(txtfldOreRecuperoMonteTotale, new FormData("95%"));
+			layoutCol1.add(txtfldOreRecuperoMonteTotale, new FormData("95%"));
 
 			RowData data = new RowData(.8, 1);
 			data.setMargins(new Margins(5));
@@ -4197,6 +4197,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		
 		
 		private void caricaFieldSet(List<IntervalliCommesseModel> result) {
+			String descrizioneCompleta= new String();
 			List<IntervalliCommesseModel> lista = new ArrayList<IntervalliCommesseModel>();
 			frmInsCommesse= new FormInserimentoIntervalloCommessa("1");//indico il tipo di foglio ore che fa da parent
 			
@@ -4239,9 +4240,16 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 						frmInsCommesse.txtfldOreViaggio.setEnabled(false);
 					}
 					
-					frmInsCommesse.txtfldTotOreLavoro.setValue(result.get(i).getTotOreLavoro());
-					frmInsCommesse.txtfldTotOreViaggio.setValue(result.get(i).getTotOreViaggio());
-					frmInsCommesse.txtDescrizione.setText(result.get(i).getDescrizione().toLowerCase());
+					//frmInsCommesse.txtfldTotOreLavoro.setValue(result.get(i).getTotOreLavoro());
+					//frmInsCommesse.txtfldTotOreViaggio.setValue(result.get(i).getTotOreViaggio());
+					
+					frmInsCommesse.txtOreTotLavoro.setText("Totale nel Mese: "+result.get(i).getTotOreLavoro());
+					frmInsCommesse.txtOreTotViaggio.setText("Totale nel Mese: "+result.get(i).getTotOreViaggio());
+					
+					descrizioneCompleta=result.get(i).getNumeroCommessa()+" ("+result.get(i).getDescrizione().toLowerCase()+") ";
+					
+					//frmInsCommesse.txtDescrizione.setText(result.get(i).getDescrizione().toLowerCase());
+					frmInsCommesse.txtDescrizione.setText(descrizioneCompleta);
 					add(frmInsCommesse);
 			
 					}
@@ -4256,17 +4264,18 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 	
 	public List<IntervalliCommesseModel> elaboraIntervalliC(FldsetIntervalliCommesse fldSetIntervalliC) {
 		
-		TextField<String> txtfldNumCommessa=new TextField<String>();
+		//TextField<String> txtfldNumCommessa=new TextField<String>();
 		TextField<String> txtfldOreLavoro=new TextField<String>();
 		TextField<String> txtfldOreViaggio=new TextField<String>();
 		Text txtDescrizione= new Text();
+		
+		String numeroCommessa;
+		String descrizione;		
 		FormInserimentoIntervalloCommessa frm=new FormInserimentoIntervalloCommessa("1");
 		
 		IntervalliCommesseModel intervallo;
 		List<IntervalliCommesseModel>  intervalliC= new ArrayList<IntervalliCommesseModel>();
 		String frmItemId= new String();
-		String oreV;
-		String oreL;
 		
 		int i;
 		
@@ -4277,19 +4286,22 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			frmItemId=String.valueOf(j-1);
 			frm=(FormInserimentoIntervalloCommessa) fldSetIntervalliC.getItemByItemId(frmItemId);
 			
-			txtfldNumCommessa=frm.txtfldNumeroCommessa;
+			//txtfldNumCommessa=frm.txtfldNumeroCommessa;
 			txtfldOreLavoro=frm.txtfldOreIntervallo;
 			txtfldOreViaggio=frm.txtfldOreViaggio;
 			txtDescrizione=frm.txtDescrizione;
 			
-			//TODO inserito il controllo che  non va perchè non mi fa gli edit!!!
-			oreV=txtfldOreViaggio.getValue().toString();
-			oreL=txtfldOreLavoro.getValue().toString();
-			//if(oreV.compareTo("0.00")!=0 || oreL.compareTo("0.00")!=0){
-				intervallo= new IntervalliCommesseModel(txtfldNumCommessa.getValue().toString(), txtfldOreLavoro.getValue().toString(), txtfldOreViaggio.getValue().toString()
-					,"","", txtDescrizione.toString(), "");
-				intervalliC.add(intervallo);
-			//}
+			descrizione=txtDescrizione.getText();
+			numeroCommessa=descrizione.substring(0,descrizione.indexOf(" "));
+			descrizione=descrizione.substring(descrizione.indexOf("(")+1, descrizione.indexOf(")"));
+			
+			//oreV=txtfldOreViaggio.getValue().toString();
+			//oreL=txtfldOreLavoro.getValue().toString();
+			
+			intervallo= new IntervalliCommesseModel(numeroCommessa, txtfldOreLavoro.getValue().toString(), txtfldOreViaggio.getValue().toString()
+					,"","", descrizione, "");
+			intervalliC.add(intervallo);
+			
 		}
 		
 		return intervalliC;

@@ -114,6 +114,8 @@ public class DettaglioIntervalliIU extends LightEntity implements IsSerializable
 		if(movimento.equals(other.movimento))
 			if(orario.equals(other.orario))
 				return true;
+			else
+				return false;
 		
 		if (movimento == null) {
 			if (other.movimento != null)

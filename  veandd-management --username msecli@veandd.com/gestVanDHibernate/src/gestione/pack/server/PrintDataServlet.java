@@ -692,7 +692,7 @@ public class PrintDataServlet extends HttpServlet  {
 							(String)fm.get("prCenter"), imponibile, (String)fm.get("iva"), totaleIva, totaleImporto, listaAF,
 							(String)fm.get("nomeAzienda"),(String)fm.get("capitaleSociale"),(String)fm.get("sedeLegale"),(String)fm.get("sedeOperativa"),(String)fm.get("registroImprese"),(String)fm.get("rea")));
 					
-					fis = new FileInputStream(/*Constanti.PATHAmazon+*/"JasperReport/ReportFattura.jasper");
+					fis = new FileInputStream(Constanti.PATHAmazon+"JasperReport/ReportFattura.jasper");
 					
 					bufferedInputStream = new BufferedInputStream(fis);
 

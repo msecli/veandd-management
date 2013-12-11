@@ -250,8 +250,7 @@ public class PanelRiepilogoGiornalieroCommesse extends LayoutContainer{
 		}	
 	    
 	    store.groupBy("numeroCommessa");
-	    store.setSortField("giorno");
-	       
+	    store.setSortField("giorno");    
 	          
 	    GroupSummaryView summary = new GroupSummaryView();  
 	    summary.setForceFit(true);  
