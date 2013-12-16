@@ -2300,7 +2300,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 				    		   fldsetGiustificativo.txtfldOreDelta.setValue(delta);
 				    		  
 			    		   }	
-					}	    		
+						}	    		
 			      }
 			 });
 

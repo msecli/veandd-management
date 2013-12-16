@@ -118,7 +118,7 @@ public interface AdministrationServiceAsync {
 
 	void deleteRdoCompleta(int idRdo, AsyncCallback<Boolean> asyncCallback);
 	
-	void closeOrdine(String numeroOrdine, AsyncCallback<Boolean> asyncCallback);
+	void eliminaAssociazioneOrdine(String numeroOrdine, AsyncCallback<Boolean> asyncCallback);
 
 	void loadTariffePerOrdine(int idRdo,
 			AsyncCallback<List<TariffaOrdineModel>> asyncCallback);
@@ -269,6 +269,13 @@ public interface AdministrationServiceAsync {
 	void getRiepilogoMensileDettagliatoCommesseHorizontalLayout(
 			String dipendente, String data,
 			AsyncCallback<List<RiepilogoMeseGiornalieroModel>> asyncCallback);
+	
+	void elaboraDatiOreCollaboratori(RiepilogoOreDipCommesseGiornaliero g,
+			Date data, AsyncCallback<Boolean> asyncCallback);
+	
+	void getDatiOreCollaboratori(String pm,	Date data,
+			AsyncCallback<List<RiepilogoOreDipCommesseGiornaliero>> asyncCallback);
+	
 //----------------------------------------------FATTURAZIONE
 	
 	void getRiepilogoOreDipFatturazione(String mese, String pm, AsyncCallback<List<RiepilogoOreDipFatturazione>> asyncCallback);
@@ -405,6 +412,5 @@ public interface AdministrationServiceAsync {
 	
 
 	
-
 			
 }

@@ -149,7 +149,7 @@ public interface AdministrationService extends RemoteService {
 	
 	boolean deleteRdoCompleta(int idRdo) throws IllegalArgumentException;
 
-	boolean closeOrdine(String numeroOrdine) throws IllegalArgumentException;
+	boolean eliminaAssociazioneOrdine(String numeroOrdine) throws IllegalArgumentException;
 
 	List<TariffaOrdineModel> loadTariffePerOrdine(int idRdo)throws IllegalArgumentException;
 	
@@ -285,6 +285,12 @@ public interface AdministrationService extends RemoteService {
 			String username, Date data)throws IllegalArgumentException;
 	
 	boolean eliminaDatiGiorno(String username, Date giorno)throws IllegalArgumentException;
+	
+	boolean elaboraDatiOreCollaboratori(RiepilogoOreDipCommesseGiornaliero g,
+			Date data);
+	
+	List<RiepilogoOreDipCommesseGiornaliero> getDatiOreCollaboratori(String pm,
+			Date data)throws IllegalArgumentException;
 
 //----------------------------------FATTURAZIONE-------------------------------------------------------------------
 	List<RiepilogoOreDipFatturazione> getRiepilogoOreDipFatturazione(
@@ -400,7 +406,4 @@ public interface AdministrationService extends RemoteService {
 			String anno, String string, String string2, String string3,
 			String pm, List<CommessaModel> listaCommesseSel)throws IllegalArgumentException;
 
-
-
-	
 }

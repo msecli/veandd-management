@@ -12,8 +12,10 @@ public class RiepilogoOreDipCommesse extends BaseModel implements IsSerializable
 
 	public RiepilogoOreDipCommesse(){}
 	
-	public RiepilogoOreDipCommesse(String numeroCommessa, String dipendente, Float oreLavoro, Float oreViaggio, Float totOre){
+	public RiepilogoOreDipCommesse(int idCommessa, String numeroCommessa, int idDipendente, String dipendente, Float oreLavoro, Float oreViaggio, Float totOre){
 		
+		set("idCommessa", idCommessa);
+		set("idDipendente", idDipendente);
 		set("numeroCommessa", numeroCommessa);
 		set("dipendente", dipendente);
 		set("oreLavoro",oreLavoro);

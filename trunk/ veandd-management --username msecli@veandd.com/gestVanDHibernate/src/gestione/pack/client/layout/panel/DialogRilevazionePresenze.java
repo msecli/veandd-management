@@ -4,7 +4,6 @@ package gestione.pack.client.layout.panel;
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.utility.MyImages;
 
-import gestione.pack.client.layout.CenterLayout_FoglioOreSelectDipendenti.FldsetGiustificativi;
 import gestione.pack.client.layout.panel.DialogInvioCommenti;
 import gestione.pack.client.layout.panel.FormInserimentoIntervalloCommessa;
 import gestione.pack.client.model.GiustificativiModel;
