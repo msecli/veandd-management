@@ -18,6 +18,7 @@ import com.google.gwt.user.client.Window;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -273,6 +274,8 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			}	
 
 			store.groupBy("pm");
+			store.setSortField("numeroCommessa");
+			store.setSortDir(SortDir.ASC);			
 			    
 		    GroupSummaryView summary = new GroupSummaryView();  
 		    summary.setForceFit(false);  
@@ -553,7 +556,9 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 				
 				@Override
 				public String render(Number value, Map<String, Number> data) {
-					return number.format(value);
+					final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
+					
+					return num.format(value);
 				}
 			});
 		    configs.add(columnImportoSal);
@@ -603,7 +608,9 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 				
 				@Override
 				public String render(Number value, Map<String, Number> data) {
-					return number.format(value);
+					final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
+					
+					return num.format(value);
 				}
 			});
 		    configs.add(columnImportoPcl);

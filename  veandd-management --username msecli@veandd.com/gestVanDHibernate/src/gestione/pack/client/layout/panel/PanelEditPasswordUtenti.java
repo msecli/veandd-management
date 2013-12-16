@@ -33,7 +33,6 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.gwtext.client.widgets.ToolbarSeparator;
 
 public class PanelEditPasswordUtenti  extends LayoutContainer{
 

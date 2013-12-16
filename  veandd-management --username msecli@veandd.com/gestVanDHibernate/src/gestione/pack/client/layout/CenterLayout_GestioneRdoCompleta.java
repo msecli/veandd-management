@@ -60,8 +60,6 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.gwtext.client.widgets.ToolbarItem;
-import com.gwtext.client.widgets.ToolbarSeparator;
 
 public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 
@@ -620,7 +618,8 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			txtfldNumeroOre.setToolTip("Numero Ore");
 			txtfldNumeroOre.setEmptyText("Ore...");
 			txtfldNumeroOre.setName("numeroOre");
-			txtfldNumeroOre.setRegex("[0-9]+[.][0-5]{1}[0-9]{1}|0.00|0.0");
+			txtfldNumeroOre.setRegex("^([0-9]+).(00|15|30|45)$");
+			//txtfldNumeroOre.setRegex("[0-9]+[.][0-5]{1}[0-9]{1}|0.00|0.0");
 			txtfldNumeroOre.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
 			txtfldNumeroOre.addKeyListener(new KeyListener(){
 				
@@ -664,7 +663,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			txtfldNumeroOreResidue.setEmptyText("Ore Residue...");
 			txtfldNumeroOreResidue.setName("numeroOreResidue");
 			txtfldNumeroOreResidue.setToolTip("Ore Residue");
-			txtfldNumeroOreResidue.setRegex("[0-9]+[.][0-5]{1}[0-9]{1}|0.00|0.0");
+			txtfldNumeroOreResidue.setRegex("^([0-9]+).(00|15|30|45)$");
 			txtfldNumeroOreResidue.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
 			txtfldNumeroOreResidue.addKeyListener(new KeyListener(){
 				 public void componentKeyDown(ComponentEvent event) { 	  
@@ -999,7 +998,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 	
 	private class CntpnlGridRdo extends ContentPanel{
 		
-		private Button btnChiudiOrdine;
+		private Button btnEliminaAssociazioneCommessa;
 		private Button btnAssociaCommessa;
 		
 		public CntpnlGridRdo(){
@@ -1049,7 +1048,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		            if (be.getSelection().size() > 0) {      
 		            	Date dataOff = null, dataInizio=null, dataFine=null;
 		            	String statoOrdine=be.getSelectedItem().get("statoOrdine");
-		            	btnChiudiOrdine.setEnabled(true);
+		            	btnEliminaAssociazioneCommessa.setEnabled(true);
 		            	btnAssociaCommessa.setEnabled(true);
 		            	
 		            	String data=be.getSelectedItem().getData();
@@ -1116,26 +1115,30 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		          }   
 		    }); 
 				    	
-		    btnChiudiOrdine= new Button();
-		    btnChiudiOrdine.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.chiudiCommessa()));
-		    btnChiudiOrdine.setIconAlign(IconAlign.TOP);
-		    btnChiudiOrdine.setToolTip("Chiudi Ordine");
-		    btnChiudiOrdine.setEnabled(false);
-		    btnChiudiOrdine.addSelectionListener(new SelectionListener<ButtonEvent>() {			
+		    btnEliminaAssociazioneCommessa= new Button();
+		    btnEliminaAssociazioneCommessa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.chiudiCommessa()));
+		    btnEliminaAssociazioneCommessa.setIconAlign(IconAlign.TOP);
+		    btnEliminaAssociazioneCommessa.setToolTip("Elimina l'associazione dell'ordine selezionato con la commessa.");
+		    btnEliminaAssociazioneCommessa.setEnabled(false);
+		    btnEliminaAssociazioneCommessa.setSize(26, 26);
+		    btnEliminaAssociazioneCommessa.addSelectionListener(new SelectionListener<ButtonEvent>() {			
 				@Override
 				public void componentSelected(ButtonEvent ce) {
+					
 					String numeroOrdine= txtfldNumeroOrdine.getValue().toString();
-					AdministrationService.Util.getInstance().closeOrdine(numeroOrdine, new AsyncCallback<Boolean>(){
+					AdministrationService.Util.getInstance().eliminaAssociazioneOrdine(numeroOrdine, new AsyncCallback<Boolean>(){
 
 						@Override
 						public void onFailure(Throwable caught) {						
-							System.out.println("Errore di connessione oncloseOrdine()");
+							System.out.println("Errore di connessione on eliminaAssociazioneOrdine()");
 						}
 
 						@Override
 						public void onSuccess(Boolean result) {
 							if(!result)
-								System.out.println("Impossibile effettuare la chiusura dell'ordine!");							
+								System.out.println("Impossibile effettuare l'operazione richiesta!");	
+							else
+								caricaTabellaDati();
 						}
 					});
 				}
@@ -1146,6 +1149,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    btnAssociaCommessa.setIconAlign(IconAlign.TOP);
 		    btnAssociaCommessa.setToolTip("Associa una commessa all'ordine");
 		    btnAssociaCommessa.setEnabled(false);
+		    btnAssociaCommessa.setSize(26, 26);
 		    btnAssociaCommessa.addSelectionListener(new SelectionListener<ButtonEvent>() {			
 				@Override
 				public void componentSelected(ButtonEvent ce) {
@@ -1201,9 +1205,9 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    
 		    tlbarSearchField.add(txtfldsearch);
 		    tlbarSearchField.add(btnSearch);
-		    //tlbarSearchField.add(btnChiudiOrdine);
-		    tlbarSearchField.add(new SeparatorToolItem());
 		    tlbarSearchField.add(btnAssociaCommessa);
+		    tlbarSearchField.add(new SeparatorToolItem());		    
+		    tlbarSearchField.add(btnEliminaAssociazioneCommessa);
 		    
 		    ContentPanel cntpnlGrid= new ContentPanel();
 		    cntpnlGrid.setBodyBorder(false);  

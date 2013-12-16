@@ -1,6 +1,7 @@
 package gestione.pack.client.layout;
 
 import gestione.pack.client.AdministrationService;
+import gestione.pack.client.model.CommessaModel;
 import gestione.pack.client.model.PersonaleModel;
 import gestione.pack.client.utility.DatiComboBox;
 
@@ -88,6 +89,9 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	private Button btnDelete;
 	
 	private ListStore<PersonaleModel> store=new ListStore<PersonaleModel>();
+	private ListStore<PersonaleModel> storeCompleto=new ListStore<PersonaleModel>();
+	private ListStore<PersonaleModel> storeResult=new ListStore<PersonaleModel>();
+	private List<PersonaleModel> listaStore= new ArrayList<PersonaleModel>();
 	private ColumnModel cm;
 	private Grid<PersonaleModel> grid;
 	private FormBinding formBindings;
@@ -137,6 +141,36 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 
 	    caricaTabellaDati();
 	    
+	    ToolBar tlbrSearch= new ToolBar();	    
+	    final TextField<String> txtfldsearch= new TextField<String>();
+		txtfldsearch.setEmptyText("Cerca cognome...");
+		txtfldsearch.addKeyListener(new KeyListener(){
+	    	 public void componentKeyUp(ComponentEvent event) {
+	    		 
+	    		 if(txtfldsearch.getRawValue().isEmpty()){
+	    			 storeResult.removeAll();
+	    			 store.removeAll();
+	    			 store.add(storeCompleto.getModels());
+	    			 //grid.reconfigure(store, cm);
+	    			 impostaPagingConfiguration(store.getModels()); 			 
+	    		 }else{
+	    		 	    		 	    		 
+	    			 String campo= txtfldsearch.getValue().toString().toLowerCase();	    			 	    			 
+	    			 storeResult.removeAll();
+	    			 for(PersonaleModel r:listaStore){
+	    				 if(r.getCognome().toLowerCase().contains(campo)){
+	    					 storeResult.add(r);		    				 
+	    				 }
+	    			 }
+	    			 listaStore.clear();
+	    			 listaStore.addAll(store.getModels());
+	    			 impostaPagingConfiguration(storeResult.getModels());	    			 
+	    		 } 
+	    	 }    	  	 
+		});	
+	    tlbrSearch.add(txtfldsearch);
+		cntpnlGrid.setTopComponent(tlbrSearch);
+		
 //Definizione colonne griglia    
 	    cm = new ColumnModel(createColumns());	
 	    store.setDefaultSort("cognome", SortDir.ASC);
@@ -504,6 +538,29 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	}
 //
 
+	private void impostaPagingConfiguration(List<PersonaleModel> models) {
+		 // add paging support for a local collection of models  
+	    PagingModelMemoryProxy proxy = new PagingModelMemoryProxy(models); 
+	    
+	    // loader  
+	    PagingLoader<PagingLoadResult<PersonaleModel>> loader = new BasePagingLoader<PagingLoadResult<PersonaleModel>>(proxy);  
+	    loader.setRemoteSort(true);
+	    
+	    ListStore<PersonaleModel> store1= new ListStore<PersonaleModel>(loader);
+	    store1.setDefaultSort("cognome", SortDir.ASC);
+	     
+	    loader.setSortDir(SortDir.ASC);
+	    loader.setSortField("cognome");
+	    toolBar.bind(loader); 
+	    
+	    loader.load(0, 30); 
+	    
+	    toolBar.setActivePage(1);
+		grid.reconfigure(store1, cm);
+		
+		grid.getAriaSupport().setDescribedBy(toolBar.getId() + "-display");
+		btnSend.setEnabled(true);
+	}	
 
 	private List<ColumnConfig> createColumns() {
 		
@@ -1025,28 +1082,14 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	
 	private void loadTable(List<PersonaleModel> lista) {
 	
-	    // add paging support for a local collection of models  
-	    PagingModelMemoryProxy proxy = new PagingModelMemoryProxy(lista); 
-	    
-	    // loader  
-	    PagingLoader<PagingLoadResult<PersonaleModel>> loader = new BasePagingLoader<PagingLoadResult<PersonaleModel>>(proxy);  
-	    loader.setRemoteSort(true);
-	    
-	    ListStore<PersonaleModel> store1= new ListStore<PersonaleModel>(loader);
-	    store1.setDefaultSort("cognome", SortDir.ASC);
-	     
-	    loader.setSortDir(SortDir.ASC);
-	    loader.setSortField("cognome");
-	    toolBar.bind(loader); 
-	    
-	    loader.load(0, 30); 
-	    
-	    toolBar.setActivePage(1);
-		grid.reconfigure(store1, cm);
+		store.add(lista);	
+		storeResult.removeAll();
+		storeCompleto.removeAll();
+		storeResult.add(store.getModels());
+		storeCompleto.add(store.getModels());
+		listaStore.addAll(store.getModels());
 		
-		grid.getAriaSupport().setDescribedBy(toolBar.getId() + "-display");
-		btnSend.setEnabled(true);
-		
+	    impostaPagingConfiguration(lista);		
 	}
 		      
 }

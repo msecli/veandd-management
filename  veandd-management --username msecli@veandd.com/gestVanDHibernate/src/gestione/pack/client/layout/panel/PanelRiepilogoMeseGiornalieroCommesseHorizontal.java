@@ -52,7 +52,6 @@ public class PanelRiepilogoMeseGiornalieroCommesseHorizontal  extends LayoutCont
 	private ColumnModel cmRiepilogo;
 	private CellSelectionModel<RiepilogoMeseGiornalieroModel> cm=new CellSelectionModel<RiepilogoMeseGiornalieroModel>();
 	
-	private ComboBox<PersonaleModel> cmbxDipendente= new ComboBox<PersonaleModel>();
 	private TextField<String> txtOreTotaliIntCommesse;
 	private TextField<String> txtOreTotaliIntIU;
 	private Button btnPrint= new Button();

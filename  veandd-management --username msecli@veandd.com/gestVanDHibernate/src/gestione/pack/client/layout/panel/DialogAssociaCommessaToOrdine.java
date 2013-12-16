@@ -4,7 +4,6 @@ import java.util.List;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.model.CommessaModel;
-import gestione.pack.client.model.PersonaleModel;
 
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.event.ButtonEvent;

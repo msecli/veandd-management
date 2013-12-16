@@ -1,13 +1,12 @@
 package gestione.pack.client.layout.panel;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.model.CommessaModel;
-import gestione.pack.client.model.CostingRisorsaModel;
-import gestione.pack.client.model.RiepilogoFoglioOreModel;
 import gestione.pack.client.model.RiepilogoOreDipFatturazione;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.DatiComboBox;
@@ -30,6 +29,7 @@ import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
@@ -48,6 +48,7 @@ import com.extjs.gxt.ui.client.widget.grid.SummaryRenderer;
 import com.extjs.gxt.ui.client.widget.grid.SummaryType;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
@@ -77,6 +78,7 @@ public class PanelRiepilogoStatoAvanzamentoOreCommesse extends LayoutContainer{
 	private SimpleComboBox<String> smplcmbxMeseFine;
 	private SimpleComboBox<String> smplcmbxGroupBy;
 	private Button btnAggiorna;
+	private Text txtCommessaSelezionata;
 	
 	private int h=Window.getClientHeight();
 	private int w=Window.getClientWidth();	
@@ -140,7 +142,7 @@ public class PanelRiepilogoStatoAvanzamentoOreCommesse extends LayoutContainer{
 		            List<RiepilogoOreDipFatturazione>listaDati=new ArrayList<RiepilogoOreDipFatturazione>();
 					RiepilogoOreDipFatturazione r=cm.getSelectedItem();	
 					String numeroCommessa=r.get("numeroCommessa");
-						
+					txtCommessaSelezionata.setText(" Commessa selezionata: "+numeroCommessa);	
 					storeRiepMesi.removeAll();
 					listaDati=storeRiepCommesseAll.getModels();
 					for(RiepilogoOreDipFatturazione r1:listaDati){
@@ -189,6 +191,7 @@ public class PanelRiepilogoStatoAvanzamentoOreCommesse extends LayoutContainer{
 		cmbxCommessa.setTriggerAction(TriggerAction.ALL);
 		cmbxCommessa.setAllowBlank(false);
 		cmbxCommessa.setDisplayField("commessa");
+		cmbxCommessa.setWidth(250);
 		cmbxCommessa.addListener(Events.OnClick, new Listener<BaseEvent>(){
 			@Override
 			public void handleEvent(BaseEvent be) {	
@@ -280,9 +283,13 @@ public class PanelRiepilogoStatoAvanzamentoOreCommesse extends LayoutContainer{
 					}else
 						Window.alert("Controllare i campi inseriti!");
 				}
-
-			});	  
+		});	  
 				
+		Date d= new Date();
+		String data= d.toString();
+		String mese= ClientUtility.meseToLong(ClientUtility.traduciMeseToIt(data.substring(4, 7)));
+		String anno= data.substring(data.length()-4, data.length());
+		
 		smplcmbxAnnoInizio= new SimpleComboBox<String>();
 		smplcmbxAnnoInizio.setWidth(80);
 		smplcmbxAnnoInizio.setEmptyText("Anno..");
@@ -307,6 +314,8 @@ public class PanelRiepilogoStatoAvanzamentoOreCommesse extends LayoutContainer{
 			 smplcmbxAnnoInizio.add(l);
 			 smplcmbxAnnoFine.add(l);
 		}
+		smplcmbxAnnoInizio.setSimpleValue(anno);
+		smplcmbxAnnoFine.setSimpleValue(anno);
 		
 		smplcmbxMeseFine=new SimpleComboBox<String>();
 		smplcmbxMeseFine.setWidth(100);
@@ -318,6 +327,7 @@ public class PanelRiepilogoStatoAvanzamentoOreCommesse extends LayoutContainer{
 			smplcmbxMeseInizio.add(l);
 			smplcmbxMeseFine.add(l);			 
 		}
+		smplcmbxMeseFine.setSimpleValue(mese);
 		
 		smplcmbxGroupBy= new SimpleComboBox<String>();	
 		smplcmbxGroupBy.setWidth(120);
@@ -340,13 +350,16 @@ public class PanelRiepilogoStatoAvanzamentoOreCommesse extends LayoutContainer{
 				}			
 			}		
 		});
+		
+		txtCommessaSelezionata=new Text();	
+		txtCommessaSelezionata.setStyleAttribute("font-weight", "bold");
 				
 		HorizontalPanel hrzpnl1=new HorizontalPanel();
 		hrzpnl1.setSpacing(2);		
 		HorizontalPanel hrzpnl2=new HorizontalPanel();
 		hrzpnl2.setSpacing(2);
 		VerticalPanel vrtclpnl1= new VerticalPanel();
-		vrtclpnl1.setSpacing(1);
+		//vrtclpnl1.setSpacing(1);
 		
 		hrzpnl1.add(smplcmbxPm);
 		hrzpnl1.add(cmbxCommessa);
@@ -365,8 +378,16 @@ public class PanelRiepilogoStatoAvanzamentoOreCommesse extends LayoutContainer{
 		cntpnlGroupPerCommesse.setTopComponent(tlbrGroupCommesse);
 		cntpnlGroupPerCommesse.add(gridRiepCommesse);
 		
+		HorizontalPanel hrpnl3= new HorizontalPanel();
+		hrpnl3.setSpacing(3);
+		
+		hrpnl3.add(smplcmbxGroupBy);
+		hrpnl3.add(txtCommessaSelezionata);
+		
 		ToolBar tlbrGroup=new ToolBar();
-		tlbrGroup.add(smplcmbxGroupBy);		
+		tlbrGroup.add(hrpnl3);	
+		//tlbrGroup.add(new SeparatorMenuItem());
+		//tlbrGroup.add(txtCommessaSelezionata);
 		cntpnlGroupPerMese.setTopComponent(tlbrGroup);
 		cntpnlGroupPerMese.add(gridRiepMesi);
 		
@@ -374,9 +395,8 @@ public class PanelRiepilogoStatoAvanzamentoOreCommesse extends LayoutContainer{
 		vp.add(cntpnlGroupPerMese);
 		
 		layoutContainer.add(vp, new FitData(1,1,1,1));
-		
-		add(layoutContainer);
-	
+		 
+		add(layoutContainer);	
 	}
 
 	

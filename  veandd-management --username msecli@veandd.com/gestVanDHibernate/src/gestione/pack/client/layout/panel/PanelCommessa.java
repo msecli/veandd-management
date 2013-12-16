@@ -148,7 +148,6 @@ public class PanelCommessa extends LayoutContainer {
 		
 		final TextField<String> txtfldsearch= new TextField<String>();
 		txtfldsearch.setEmptyText("Cerca...");
-		Button btnSearch= new Button();
 		
 		smplcmbxSelectStatoCommessa= new SimpleComboBox<String>();
 		smplcmbxSelectStatoCommessa.setFieldLabel("Stato Commessa");
@@ -171,7 +170,7 @@ public class PanelCommessa extends LayoutContainer {
 		toolBar.setLayoutData(new FormLayout());
 		toolBar.add(smplcmbxSelectStatoCommessa);
 		toolBar.add(txtfldsearch);
-		toolBar.add(btnSearch);
+		
 		toolBar.add(btnClose);
 		toolBar.add(btnOrdine);
 		toolBar.setBorders(true);
@@ -179,11 +178,6 @@ public class PanelCommessa extends LayoutContainer {
 		toolBar.setAlignment(HorizontalAlignment.RIGHT);
 		toolBar.setStyleAttribute("margin-bottom", "1px");
 		toolBar.setBorders(false);
-	    
-	    btnSearch.setSize(26, 26);
-	    btnSearch.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.search()));
-	    btnSearch.setIconAlign(IconAlign.TOP);
-	    btnSearch.setEnabled(false);
 	        
 		txtfldsearch.addKeyListener(new KeyListener(){
 		    	 public void componentKeyUp(ComponentEvent event) {
