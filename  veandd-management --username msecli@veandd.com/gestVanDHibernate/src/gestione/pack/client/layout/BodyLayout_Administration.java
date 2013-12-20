@@ -6,6 +6,7 @@ import java.util.List;
 
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.UtilityService;
+import gestione.pack.client.layout.panel.PanelAttribuzioneOreColocationCollaboratori;
 import gestione.pack.client.layout.panel.PanelEditPasswordUtenti;
 import gestione.pack.client.layout.panel.PanelGestioneCostiDipendenti;
 import gestione.pack.client.layout.panel.PanelGestioneCosting;

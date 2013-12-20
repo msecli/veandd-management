@@ -205,7 +205,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			
 			setBorders(false);
 			
-			 Date retVal = null;
+			Date retVal = null;
 		        try
 		        {
 		            retVal = DateTimeFormat.getFormat( "dd-MM-yyyy" ).parse( 01+"-"+03+"-"+2013 );
@@ -230,10 +230,11 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			btnMostraIntervalli.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.datiTimb()));
 			ToolTipConfig config= new ToolTipConfig();
 			config.setTitle("Dati rilevati dalla timbratrice:");
-			config.setCloseable(true);
+			//config.setCloseable(true);
 			config.setAnchor("left");
 			config.setMouseOffset(new int[]{0, -5});
 			config.setMinWidth(150);
+			config.setAutoHide(true);
 			btnMostraIntervalli.setToolTip(config);
 			btnMostraIntervalli.setIconAlign(IconAlign.TOP);
 			btnMostraIntervalli.setSize(26, 26);
@@ -748,9 +749,9 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 				d.show();
 			}				
 		}
+
 		
-		private void load(String tipo, List<IntervalliIUModel> result) {
-			
+		private void load(String tipo, List<IntervalliIUModel> result) {			
 			setBorders(true);
 			setHeading("Dettaglio Giornaliero.");
 			setItemId("fldSetIntervalliIU");
@@ -778,10 +779,29 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		
 			if((txtSede.getText().compareTo("F")==0)&&(statoRevisione==0)){
 				enableField();					
-			}else			
-			if(txtSede.getText().compareTo("S")==0)
-				disableFldTxt();
+			}else					
+				if(txtSede.getText().compareTo("S")==0)
+					disableFldTxt();
 			
+			
+			//TODO sblocco solo sulla data?
+			Date retVal = null;
+	        try
+	        {
+	            retVal = DateTimeFormat.getFormat( "dd-MM-yyyy" ).parse( 20+"-"+12+"-"+2013 );
+	        }
+	        catch ( Exception e )
+	        {
+	            retVal = null;
+	        }			
+			
+	        String data1=DateTimeFormat.getFormat( "dd-MM-yyyy").format(retVal);
+	        String data2=DateTimeFormat.getFormat( "dd-MM-yyyy").format(data);
+	        if(data1.compareTo(data2)==0)
+	        	enableField();
+			
+	        
+	        
 			txtfld1I.setItemId("1I");
 			txtfld1I.setFieldLabel("I");
 			txtfld1I.setMaxLength(5);

@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import gestione.pack.client.AdministrationService;
-import gestione.pack.client.model.GestioneCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoOreDipCommesseGiornaliero;
 import gestione.pack.client.utility.MyImages;
 
@@ -26,7 +25,6 @@ import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
-import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -37,6 +35,7 @@ import com.extjs.gxt.ui.client.widget.grid.GroupSummaryView;
 import com.extjs.gxt.ui.client.widget.grid.SummaryColumnConfig;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
@@ -49,7 +48,7 @@ public class PanelAttribuzioneOreColocationCollaboratori extends LayoutContainer
 	private GroupingStore<RiepilogoOreDipCommesseGiornaliero>store = new GroupingStore<RiepilogoOreDipCommesseGiornaliero>();
 	private EditorGrid<RiepilogoOreDipCommesseGiornaliero> gridRiepilogo;
 	private ColumnModel cm;
-	private CheckBoxSelectionModel<RiepilogoOreDipCommesseGiornaliero> sm = new CheckBoxSelectionModel<RiepilogoOreDipCommesseGiornaliero>();  
+	//private CheckBoxSelectionModel<RiepilogoOreDipCommesseGiornaliero> sm = new CheckBoxSelectionModel<RiepilogoOreDipCommesseGiornaliero>();  
 	
 	private SimpleComboBox<String> smplcmbxPM;
 	private DateField dtfldData;
@@ -57,11 +56,13 @@ public class PanelAttribuzioneOreColocationCollaboratori extends LayoutContainer
 	private Button btnConferma;
 	private Button btnReset;
 	
-	private int h=Window.getClientHeight();
 	private int w=Window.getClientWidth();
+	private String pm;
+	protected int conta=0;
+	protected int nModificati=0;
 	
-	public PanelAttribuzioneOreColocationCollaboratori(){
-		
+	public PanelAttribuzioneOreColocationCollaboratori(String pm){
+		this.pm=pm;
 	}
 	
 	protected void onRender(Element target, int index) {  
@@ -74,10 +75,10 @@ public class PanelAttribuzioneOreColocationCollaboratori extends LayoutContainer
 		layoutContainer.setLayout(fl);
 		
 		ContentPanel cpGrid= new ContentPanel();
-		cpGrid.setHeaderVisible(true);
+		cpGrid.setHeaderVisible(false);
 		cpGrid.setBorders(false);
 		cpGrid.setFrame(true);
-		cpGrid.setHeight((h-55));
+		cpGrid.setHeight((830));
 		cpGrid.setWidth(w-250);
 		cpGrid.setScrollMode(Scroll.AUTO);
 		cpGrid.setLayout(new FitLayout());
@@ -89,31 +90,31 @@ public class PanelAttribuzioneOreColocationCollaboratori extends LayoutContainer
 		smplcmbxPM.setTriggerAction(TriggerAction.ALL);
 		smplcmbxPM.setEmptyText("Project Manager..");
 		smplcmbxPM.setAllowBlank(false);
-		smplcmbxPM.add(getNomePm());
+		getNomePm();
 		    
 		dtfldData= new DateField();
 		dtfldData.setValue(new Date());
 		
-		store.groupBy("numeroCommessa");
-		store.setSortField("dipendente");
+		store.groupBy("dipendente");
+		store.setSortField("numeroCommessa");
 		store.setSortDir(SortDir.ASC);			
-		store.add(caricaDatiTabella());
+		caricaDatiTabella();
 		
-	    GroupSummaryView summary = new GroupSummaryView();  
-	    summary.setForceFit(false);  
-	    summary.setShowGroupedColumn(false); 
+		GroupSummaryView summary = new GroupSummaryView();  
+		summary.setForceFit(false);  
+		summary.setShowGroupedColumn(false);
+		summary.setStartCollapsed(false);
 		
 		cm = new ColumnModel(createColumns());		
 		gridRiepilogo= new EditorGrid<RiepilogoOreDipCommesseGiornaliero>(store, cm);  
-		gridRiepilogo.setBorders(false);  
+		gridRiepilogo.setBorders(false);
 		gridRiepilogo.setItemId("grid");
 		gridRiepilogo.setColumnLines(true);
 	    gridRiepilogo.setStripeRows(true);
-	    gridRiepilogo.addPlugin(sm);
+	    //gridRiepilogo.addPlugin(sm);
 	    gridRiepilogo.setView(summary);
 	    //gridRiepilogo.setSelectionModel(sm);
-	    gridRiepilogo.getView().setShowDirtyCells(false);
-	      
+	    gridRiepilogo.getView().setShowDirtyCells(true);	      
 		
 		btnAggiorna= new Button();
 		btnAggiorna.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.reload()));
@@ -123,7 +124,7 @@ public class PanelAttribuzioneOreColocationCollaboratori extends LayoutContainer
 		btnAggiorna.addSelectionListener(new SelectionListener<ButtonEvent>() {		
 			@Override
 			public void componentSelected(ButtonEvent ce) {		
-				
+				caricaDatiTabella();
 			}
 		});		
 		
@@ -136,7 +137,8 @@ public class PanelAttribuzioneOreColocationCollaboratori extends LayoutContainer
 			@Override
 			public void componentSelected(ButtonEvent ce) {
 				Date data=dtfldData.getValue();
-								
+				nModificati=store.getModifiedRecords().size();
+		
 				for(Record record: store.getModifiedRecords()){		    		  
 					RiepilogoOreDipCommesseGiornaliero g= new RiepilogoOreDipCommesseGiornaliero();
 		    		  g=(RiepilogoOreDipCommesseGiornaliero) record.getModel();		    		  
@@ -152,10 +154,15 @@ public class PanelAttribuzioneOreColocationCollaboratori extends LayoutContainer
 									if(!result){
 										Window.alert("Errore durante il salvataggio dati!");
 									}
+									else{
+										conta+=1;
+										if(conta==nModificati)
+											caricaDatiTabella();
+									}
 								}		    			  
 						}); 	  
 		    	  }
-		    	  store.commitChanges();				
+		    	  store.commitChanges();	    	
 			}
 		});	
 		
@@ -172,20 +179,30 @@ public class PanelAttribuzioneOreColocationCollaboratori extends LayoutContainer
 		});	
 		
 	    ToolBar tlbrOpzioni= new ToolBar();
-		
+		tlbrOpzioni.add(smplcmbxPM);
+		tlbrOpzioni.add(new SeparatorToolItem());
+		tlbrOpzioni.add(dtfldData);
+		tlbrOpzioni.add(new SeparatorToolItem());
+		tlbrOpzioni.add(btnAggiorna);
+		tlbrOpzioni.add(new SeparatorToolItem());
+		tlbrOpzioni.add(btnConferma);
+		tlbrOpzioni.add(new SeparatorToolItem());
+		tlbrOpzioni.add(btnReset);
+	    
 	    cpGrid.setTopComponent(tlbrOpzioni);
 	    cpGrid.add(gridRiepilogo);
 	    
 		layoutContainer.add(cpGrid, new FitData(3, 3, 3, 3));
-			
-		add(layoutContainer);	
+		add(layoutContainer);
 	}
 
-	private List<RiepilogoOreDipCommesseGiornaliero> caricaDatiTabella() {		
-		final List<RiepilogoOreDipCommesseGiornaliero> listaDati=new ArrayList<RiepilogoOreDipCommesseGiornaliero>();
+	private void caricaDatiTabella() {		
 		String pm=smplcmbxPM.getRawValue().toString();
 		Date data=dtfldData.getValue();
+		nModificati=0;
+		conta=0;
 		
+		if(pm!="")
 		AdministrationService.Util.getInstance().getDatiOreCollaboratori(pm, data, new AsyncCallback<List<RiepilogoOreDipCommesseGiornaliero>>() {
 
 			@Override
@@ -197,21 +214,18 @@ public class PanelAttribuzioneOreColocationCollaboratori extends LayoutContainer
 			@Override
 			public void onSuccess(List<RiepilogoOreDipCommesseGiornaliero> result) {
 				if(result!=null){
-					listaDati.addAll(result);									
+					store.removeAll();
+					store.add(result);
+					gridRiepilogo.reconfigure(store, cm);
 				}				
 				else Window.alert("error: Errore durante l'accesso ai dati PM.");			
 			}
-		});		
+		});				
 		
-		return listaDati;
 	}
 
-	private List<String> getNomePm() {
-		
-		final List<String> listaPm= new ArrayList<String>();				
-		
+	private void getNomePm() {				
 		AdministrationService.Util.getInstance().getNomePM(new AsyncCallback<List<String>>() {
-
 			@Override
 			public void onFailure(Throwable caught) {
 				Window.alert("Errore connessione on getNomePM();");
@@ -221,12 +235,12 @@ public class PanelAttribuzioneOreColocationCollaboratori extends LayoutContainer
 			@Override
 			public void onSuccess(List<String> result) {
 				if(result!=null){
-					listaPm.addAll(result);									
+					smplcmbxPM.add(result);
+					smplcmbxPM.setSimpleValue(pm);
 				}				
 				else Window.alert("error: Errore durante l'accesso ai dati PM.");			
 			}
-		});
-		return listaPm;		
+		});			
 	}
 
 	private List<ColumnConfig> createColumns() {
@@ -234,7 +248,7 @@ public class PanelAttribuzioneOreColocationCollaboratori extends LayoutContainer
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 		final NumberFormat number= NumberFormat.getFormat("0.00");
 		
-		ColumnConfig column=new ColumnConfig();		
+		SummaryColumnConfig<Double> column=new SummaryColumnConfig<Double>();		
 	    column.setId("numeroCommessa");  
 	    column.setHeader("Commessa");  
 	    column.setWidth(130);  
@@ -242,7 +256,7 @@ public class PanelAttribuzioneOreColocationCollaboratori extends LayoutContainer
 	    column.setRowHeader(true);  
 	    configs.add(column); 
 	    
-	    column=new ColumnConfig();		
+	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("dipendente");  
 	    column.setHeader("Dipendente");  
 	    column.setWidth(200);  
@@ -266,9 +280,26 @@ public class PanelAttribuzioneOreColocationCollaboratori extends LayoutContainer
 			}  	
 		});   
 	    TextField<String> txtfldOreLavoro= new TextField<String>();
-	    txtfldOreLavoro.setRegex("^([0-9]+).(00|15|30|45)$");
+	    txtfldOreLavoro.setRegex("^([0-9]+).(0|00|15|30|45)$");
 	    txtfldOreLavoro.getMessages().setRegexText("Deve essere un numero!");
-	    column.setEditor(new CellEditor(txtfldOreLavoro));
+	    CellEditor editor = new CellEditor(txtfldOreLavoro) {  
+	    	@Override  
+	        public Object preProcessValue(Object value) {  
+	          if (value == null) {  
+	            return value;  
+	          }           
+	          return value.toString();
+	        } 
+	        @Override  
+	        public Object postProcessValue(Object value) {  
+	          if (value == null) {  
+	            return value;  
+	          }  
+	          String n=(String)value;
+	          return Float.valueOf(n);	          
+	        }  
+	    };
+	    columnOreLavoro.setEditor(editor);
 	    configs.add(columnOreLavoro); 	
 	    
 	    SummaryColumnConfig<Double> columnOreViaggio=new SummaryColumnConfig<Double>();		
@@ -281,14 +312,32 @@ public class PanelAttribuzioneOreColocationCollaboratori extends LayoutContainer
 			@Override
 			public Object render(RiepilogoOreDipCommesseGiornaliero model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreDipCommesseGiornaliero> store,
 					Grid<RiepilogoOreDipCommesseGiornaliero> grid) {
-				Float n=model.get(property);
+				Float n= model.get(property);
 				return number.format(n);
 			}  	
 		}); 
 	    TextField<String> txtfldOreViaggio= new TextField<String>();
-	    txtfldOreViaggio.setRegex("^([0-9]+).(00|15|30|45)$");
+	    txtfldOreViaggio.setRegex("^([0-9]+).(0|00|15|30|45)$");
 	    txtfldOreViaggio.getMessages().setRegexText("Deve essere un numero!");
-	    column.setEditor(new CellEditor(txtfldOreViaggio));
+	    editor = new CellEditor(txtfldOreViaggio) {  
+	    	@Override  
+	        public Object preProcessValue(Object value) {  
+	          if (value == null) {  
+	            return value;  
+	          }  
+	          return value.toString();
+	        } 
+	        @Override  
+	        public Object postProcessValue(Object value) {  
+	          if (value == null) {  
+	            return value;  
+	          }  
+	          String n=(String)value;
+	          return Float.valueOf(n);	 
+	        }  
+	    };
+	  //  columnOreViaggio.setEditor(new CellEditor(txtfldOreViaggio));
+	    columnOreViaggio.setEditor(editor);
 	    configs.add(columnOreViaggio); 	
 	  		
 		return configs;

@@ -678,7 +678,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			    	 		   			  
 			    	  if(hasValue(txtfld1I)){ //se 1I è corretto
 			    		   txtfld1I.clearInvalid();
-			    		   txtfld1I.setData("sorgente", "DIP");
+			    		   txtfld1I.setData("sorgente", "GP");
 		    			   txtfld1U.setAllowBlank(false); //1U deve essere compilato
 		    			   if(hasValue(txtfld1U)){ //se 1U è corretto ricavo il parziale della differenza tra gli intervalli
 		    				   String sommaIntervalli= new String();  		   
@@ -785,7 +785,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 					    	 		   			  
 					    	  if(hasValue(txtfld1I)){ //se 1I è corretto
 					    		   txtfld1I.clearInvalid();
-					    		   txtfld1I.setData("sorgente", "DIP");
+					    		   txtfld1I.setData("sorgente", "GP");
 				    			   txtfld1U.setAllowBlank(false); //1U deve essere compilato
 				    			   if(hasValue(txtfld1U)){ //se 1U è corretto ricavo il parziale della differenza tra gli intervalli
 				    				   String sommaIntervalli= new String();  		   
@@ -874,7 +874,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			    	  
 			    	  if(hasValue(txtfld1U)){
 			    		  txtfld1U.clearInvalid();
-			    		  txtfld1U.setData("sorgente", "DIP");
+			    		  txtfld1U.setData("sorgente", "GP");
 		    			   txtfld1I.setAllowBlank(false);
 		    			   if(hasValue(txtfld1I)){
 		    				   String sommaIntervalli= new String();  		   
@@ -974,7 +974,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 				    	  
 				    	  if(hasValue(txtfld1U)){
 				    		  txtfld1U.clearInvalid();
-				    		  txtfld1U.setData("sorgente", "DIP");
+				    		  txtfld1U.setData("sorgente", "GP");
 			    			   txtfld1I.setAllowBlank(false);
 			    			   if(hasValue(txtfld1I)){
 			    				   String sommaIntervalli= new String();  		   
@@ -1056,7 +1056,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			    	  
 			    	  if(hasValue(txtfld2I)){
 			    		  txtfld2I.clearInvalid();
-			    		  txtfld2I.setData("sorgente", "DIP");
+			    		  txtfld2I.setData("sorgente", "GP");
 			    		  //controllo che il valore di 2I sia maggiore dell'intervallo precedente
 			    		  if(!isMax(txtfld2I, txtfld1I)|| !isMax(txtfld2I, txtfld1U)){
 			    			  txtErrore.setVisible(true);
@@ -1168,7 +1168,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 				    	  
 				    	  if(hasValue(txtfld2I)){
 				    		  txtfld2I.clearInvalid();
-				    		  txtfld2I.setData("sorgente", "DIP");
+				    		  txtfld2I.setData("sorgente", "GP");
 				    		  //controllo che il valore di 2I sia maggiore dell'intervallo precedente
 				    		  if(!isMax(txtfld2I, txtfld1I)|| !isMax(txtfld2I, txtfld1U)){
 				    			  txtErrore.setVisible(true);
@@ -1263,7 +1263,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 		   			   
 			    	  if(hasValue(txtfld2U)){
 			    		  txtfld2U.clearInvalid();
-			    		  txtfld2U.setData("sorgente", "DIP");
+			    		  txtfld2U.setData("sorgente", "GP");
 		    			   txtfld2I.setAllowBlank(false);
 		    			   if(hasValue(txtfld2I)){
 		    				   String sommaIntervalli= new String();  		   
@@ -1360,7 +1360,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			   			   
 				    	  if(hasValue(txtfld2U)){
 				    		  txtfld2U.clearInvalid();
-				    		  txtfld2U.setData("sorgente", "DIP");
+				    		  txtfld2U.setData("sorgente", "GP");
 			    			   txtfld2I.setAllowBlank(false);
 			    			   if(hasValue(txtfld2I)){
 			    				   String sommaIntervalli= new String();  		   
@@ -1439,7 +1439,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 		   			  fldsetGiustificativo=(FldsetGiustificativi) lc.getItemByItemId("fldSetGiustificativi");
 			    	  if(hasValue(txtfld3I)){	
 			    		  txtfld3I.clearInvalid();
-			    		  txtfld3I.setData("sorgente", "DIP");
+			    		  txtfld3I.setData("sorgente", "GP");
 			    		  if(!isMax(txtfld3I, txtfld2I)|| !isMax(txtfld3I, txtfld2U)){
 			    			  txtErrore.setVisible(true);
 			    			  txtErrore.setText("errore: Orario inferiore a quelle dell'intervallo precedente!");
@@ -1545,7 +1545,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			   			  fldsetGiustificativo=(FldsetGiustificativi) lc.getItemByItemId("fldSetGiustificativi");
 				    	  if(hasValue(txtfld3I)){	
 				    		  txtfld3I.clearInvalid();
-				    		  txtfld3I.setData("sorgente", "DIP");
+				    		  txtfld3I.setData("sorgente", "GP");
 				    		  if(!isMax(txtfld3I, txtfld2I)|| !isMax(txtfld3I, txtfld2U)){
 				    			  txtErrore.setVisible(true);
 				    			  txtErrore.setText("errore: Orario inferiore a quelle dell'intervallo precedente!");
@@ -1635,7 +1635,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 		   			   
 			    	  if(hasValue(txtfld3U)){
 			    		   txtfld3U.clearInvalid();
-			    		   txtfld3U.setData("sorgente", "DIP");
+			    		   txtfld3U.setData("sorgente", "GP");
 		    			   txtfld3I.setAllowBlank(false);
 		    			   if(hasValue(txtfld3I)){
 		    				   String sommaIntervalli= new String();  		   
@@ -1732,7 +1732,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			   			   
 				    	  if(hasValue(txtfld3U)){
 				    		   txtfld3U.clearInvalid();
-				    		   txtfld3U.setData("sorgente", "DIP");
+				    		   txtfld3U.setData("sorgente", "GP");
 			    			   txtfld3I.setAllowBlank(false);
 			    			   if(hasValue(txtfld3I)){
 			    				   String sommaIntervalli= new String();  		   
@@ -1812,7 +1812,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 		   			   
 			    	  if(hasValue(txtfld4I)){
 			    		  txtfld4I.clearInvalid();
-			    		  txtfld4I.setData("sorgente", "DIP");
+			    		  txtfld4I.setData("sorgente", "GP");
 			    		  if(!isMax(txtfld4I, txtfld3I)|| !isMax(txtfld4I, txtfld3U)){
 			    			  txtErrore.setVisible(true);
 			    			  txtErrore.setText("errore: Orario inferiore a quelle dell'intervallo precedente!");
@@ -1918,7 +1918,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			   			   
 				    	  if(hasValue(txtfld4I)){
 				    		  txtfld4I.clearInvalid();
-				    		  txtfld4I.setData("sorgente", "DIP");
+				    		  txtfld4I.setData("sorgente", "GP");
 				    		  if(!isMax(txtfld4I, txtfld3I)|| !isMax(txtfld4I, txtfld3U)){
 				    			  txtErrore.setVisible(true);
 				    			  txtErrore.setText("errore: Orario inferiore a quelle dell'intervallo precedente!");
@@ -2007,7 +2007,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 		   			   
 			    	  if(hasValue(txtfld4U)){
 			    		   txtfld4U.clearInvalid();
-			    		   txtfld4U.setData("sorgente", "DIP");
+			    		   txtfld4U.setData("sorgente", "GP");
 		    			   txtfld4I.setAllowBlank(false);
 		    			   if(hasValue(txtfld4I)){
 		    				   String sommaIntervalli= new String();  		   
@@ -2106,7 +2106,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			   			   
 				    	  if(hasValue(txtfld4U)){
 				    		   txtfld4U.clearInvalid();
-				    		   txtfld4U.setData("sorgente", "DIP");
+				    		   txtfld4U.setData("sorgente", "GP");
 			    			   txtfld4I.setAllowBlank(false);
 			    			   if(hasValue(txtfld4I)){
 			    				   String sommaIntervalli= new String();  		   
@@ -2188,7 +2188,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			    	  
 			    	  if(hasValue(txtfld5I)){
 			    		  txtfld5I.clearInvalid();
-			    		  txtfld5I.setData("sorgente", "DIP");
+			    		  txtfld5I.setData("sorgente", "GP");
 			    		  if(!isMax(txtfld5I, txtfld4I)|| !isMax(txtfld5I, txtfld4U)){
 			    			  txtErrore.setVisible(true);
 			    			  txtErrore.setText("errore: Orario inferiore a quelle dell'intervallo precedente!");
@@ -2309,7 +2309,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 		   			   
 			    	  if(hasValue(txtfld5U)){
 			    		   txtfld5U.clearInvalid();
-			    		   txtfld5U.setData("sorgente", "DIP");
+			    		   txtfld5U.setData("sorgente", "GP");
 		    			   txtfld5I.setAllowBlank(false);
 		    			   if(hasValue(txtfld5I)){
 		    				   String sommaIntervalli= new String();  		   
@@ -2569,7 +2569,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 		
 		private void setIntervalli(List<IntervalliIUModel> result) {
 
-String movimento= new String();
+			String movimento= new String();
 			
 			txtfld1I.setData("sorgente", "");
 			txtfld1U.setData("sorgente", "");

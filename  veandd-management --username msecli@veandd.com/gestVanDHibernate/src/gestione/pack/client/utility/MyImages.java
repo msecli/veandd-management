@@ -145,5 +145,8 @@ public interface MyImages extends ClientBundle{
 	
 	@Source("Icone/fattura.png")
 	ImageResource fattura();
+	
+	@Source("Icone/edit.png")
+	ImageResource edit();
 }
 
