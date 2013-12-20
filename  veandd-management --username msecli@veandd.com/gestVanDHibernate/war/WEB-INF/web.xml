@@ -56,5 +56,15 @@
   	<servlet-name>SessionManagementService</servlet-name>
   	<url-pattern>/gestvandhibernate/SessionManagementService</url-pattern>
   </servlet-mapping>
+  
+  
+  <servlet>
+   	<servlet-name>UtilityService</servlet-name>
+  	<servlet-class>gestione.pack.server.UtilityServiceImpl</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>UtilityService</servlet-name>
+  	<url-pattern>/gestvandhibernate/UtilityService</url-pattern>
+  </servlet-mapping>
 
 </web-app>
