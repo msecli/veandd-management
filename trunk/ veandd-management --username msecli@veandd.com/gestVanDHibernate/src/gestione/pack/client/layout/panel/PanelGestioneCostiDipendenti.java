@@ -179,7 +179,7 @@ public class PanelGestioneCostiDipendenti extends LayoutContainer{
 	    gridRiepilogo.setStripeRows(true);
 	    gridRiepilogo.addPlugin(sm);
 	    gridRiepilogo.setSelectionModel(sm);
-	    gridRiepilogo.getView().setShowDirtyCells(false);
+	    gridRiepilogo.getView().setShowDirtyCells(true);
 	    gridRiepilogo.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<GestioneCostiDipendentiModel>>() {  
 	          public void handleEvent(SelectionChangedEvent<GestioneCostiDipendentiModel> be) {  
 		        	

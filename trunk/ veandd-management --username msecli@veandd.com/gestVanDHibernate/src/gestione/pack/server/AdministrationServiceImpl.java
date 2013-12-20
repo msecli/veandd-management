@@ -291,8 +291,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		     
 			return listaDTO;
 		} 
+		
 	
-	
+	//TODO passare invece della ista di stringhe una lista di entity personale, in modo da usare una combobox lato view
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<String> getNomePM() throws IllegalArgumentException {
@@ -2579,7 +2580,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		Personale p= new Personale();
 		FoglioOreMese foglioOre=new FoglioOreMese();
-		DettaglioOreGiornaliere dettOreGiornaliero= new DettaglioOreGiornaliere();
+		//DettaglioOreGiornaliere dettOreGiornaliero= new DettaglioOreGiornaliere();
 		
 		String data=new String();
 		String mese=new String();
@@ -2627,9 +2628,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			return false;
 		}finally{
 			session.close();
-		}
-	    
-		return false;
+		}	    
+		return true;
 	}
 	
 	@Override
@@ -3163,8 +3163,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				}else{			
 					tx.commit();
 				}
-				
-				
+						
 				/*
 				d.getDettaglioIntervalliCommesses().add(dettCommesse);
 				session.save(d);
@@ -4656,11 +4655,12 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	    String pattern="0.00";
 	    DecimalFormat d= new DecimalFormat(pattern,formatSymbols);
 		
-	    int idDipendente=g.get("idDipendente");
+	    String username;
+	    username=(String)g.get("username");
 		//int idCommessa=g.get("idCommessa");
 		//String oreLavoro=d.format(g.getOreLavoro());
 		//String oreViaggio=d.format(g.getOreViaggio());
-		String username;
+		//String username;
 		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
@@ -4668,7 +4668,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		try {
 			
 			tx=session.beginTransaction();
-			p=(Personale)session.createQuery("from Personale where ID_PERSONALE=:id").setParameter("id", idDipendente).uniqueResult();
+			p=(Personale)session.createQuery("from Personale where username=:username").setParameter("username", username).uniqueResult();
 			username=p.getUsername();
 			tx.commit();
 			
@@ -4690,20 +4690,33 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}	
 	
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<RiepilogoOreDipCommesseGiornaliero> getDatiOreCollaboratori(
 			String pm, Date giornoRiferimento) throws IllegalArgumentException {
 		// TODO Auto-generated method stub
 		
+		Personale p= new Personale();
+		List<RiepilogoOreDipCommesseGiornaliero> listaRiep= new ArrayList<RiepilogoOreDipCommesseGiornaliero>();
+		List<Commessa> listaC= new ArrayList<Commessa>();
+		
+		RiepilogoOreDipCommesseGiornaliero riep;
+		
+		String numeroCommessa, numeroCommessaRif;;
 		String anno, mese , data;
+		String dataGiornoRif, dataComp;//usate per ilo confronto tra giorno scelto eed eventuale giorno già compilato
+		Float oreViaggio=(float)0.0;
+		Float oreLavoro=(float)0.0;
 		
 		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
 		anno=formatter.format(giornoRiferimento);
 		formatter = new SimpleDateFormat("MMM",Locale.ITALIAN);
 		mese=formatter.format(giornoRiferimento);
-	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
+	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));	
+		data=(mese+anno);
 		
-		data=(mese+anno);//sostituito mese con data
+		formatter = new SimpleDateFormat("yyyy-MMM-dd",Locale.ITALIAN);
+		dataGiornoRif = formatter.format(giornoRiferimento);
 		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
@@ -4711,6 +4724,54 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		try {
 			
 			tx=session.beginTransaction();
+		
+			listaC=(List<Commessa>)session.createQuery("from Commessa where matricolaPM=:pm and statoCommessa=:stato")
+					.setParameter("pm", pm).setParameter("stato", "Aperta").list();
+			
+			for(Commessa c: listaC){
+				numeroCommessaRif=c.getNumeroCommessa()+"."+c.getEstensione();
+				//nel giorno indicato cerca un intervallo commesse 
+				
+				for(Attivita a: c.getAttivitas()){
+					
+					for(AssociazionePtoA ass: a.getAssociazionePtoas()){
+						
+						if(ass.getPersonale().getTipologiaLavoratore().compareTo("C")==0 || ass.getPersonale().getSede().compareTo("F")==0){
+						
+							p=ass.getPersonale();
+							for(FoglioOreMese fm:p.getFoglioOreMeses())
+								if(fm.getMeseRiferimento().compareTo(data)==0)
+									for(DettaglioOreGiornaliere d:fm.getDettaglioOreGiornalieres()){
+										dataComp=formatter.format(d.getGiornoRiferimento());
+										if(dataComp.compareTo(dataGiornoRif)==0){
+											//prelevo i dati di ore sulla commessa desiderata
+											for(DettaglioIntervalliCommesse dc:d.getDettaglioIntervalliCommesses()){
+												numeroCommessa=dc.getNumeroCommessa()+"."+dc.getEstensioneCommessa();
+												if(numeroCommessa.compareTo(numeroCommessaRif)==0){
+													oreLavoro=Float.valueOf(dc.getOreLavorate());
+													oreViaggio=Float.valueOf(dc.getOreViaggio());
+													break;
+												}												
+												
+											}
+											
+										}
+													
+									}
+														
+							riep=new RiepilogoOreDipCommesseGiornaliero(p.getUsername(), c.getNumeroCommessa()+"."+c.getEstensione(), 
+									p.getCognome()+" "+p.getNome(), "", "", oreLavoro, oreViaggio, (float)0.0, "");
+							
+							listaRiep.add(riep);
+							
+							oreLavoro=(float)0.0;
+							oreViaggio=(float)0.0;									
+						}
+					}
+					
+				}
+				
+			}
 			
 			tx.commit();
 			
@@ -4721,9 +4782,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			return null;
 		}finally{
 			session.close();
-		}
-		
-		return null;
+		}	
+		return listaRiep;
 	}	
 	
 	

@@ -6,6 +6,7 @@ import java.util.List;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.layout.panel.DialogRiepilogoDatiFoglioFatturazione;
+import gestione.pack.client.layout.panel.PanelAttribuzioneOreColocationCollaboratori;
 import gestione.pack.client.layout.panel.PanelRiepilogoGiornalieroCommesse;
 import gestione.pack.client.model.RiepilogoOreDipFatturazione;
 import gestione.pack.client.model.RiepilogoOreTotaliCommesse;
@@ -129,8 +130,7 @@ public CenterLayout_FoglioFatturazione(){}
 		cntpnlFoglioFatturazione.setFrame(true);
 		cntpnlFoglioFatturazione.setButtonAlign(HorizontalAlignment.CENTER);
 		//cntpnlFoglioFatturazione.setStyleAttribute("padding-left", "7px");
-		//cntpnlFoglioFatturazione.setStyleAttribute("margin-top", "15px");
-		
+		//cntpnlFoglioFatturazione.setStyleAttribute("margin-top", "15px");		
 		//cntpnlFoglioFatturazione.addButton(btnSalva);
 					
 		Date d= new Date();
@@ -138,8 +138,7 @@ public CenterLayout_FoglioFatturazione(){}
 		String mese= ClientUtility.meseToLong(ClientUtility.traduciMeseToIt(data.substring(4, 7)));
 		String anno= data.substring(data.length()-4, data.length());
 			
-		txtfldUsername.setVisible(false);
-		
+		txtfldUsername.setVisible(false);		
 		txtRuolo.setVisible(false);
 		
 		smplcmbxMese.setWidth(110);
@@ -281,6 +280,7 @@ public CenterLayout_FoglioFatturazione(){}
 		private int idDip;
 		
 		private Button btnShowDettaglioOre;
+		private Button btnEditOreDip;
 		
 		CntpnlRiepilogoOreDipFatturazione(){		
 			setHeading("Riepilogo Ore (Mensile).");
@@ -418,10 +418,42 @@ public CenterLayout_FoglioFatturazione(){}
 					d.add(new PanelRiepilogoGiornalieroCommesse(idDip, anno, meseRif, "1")); //tipo indica da quale layout creo la classe
 					d.show();
 				}
-
+			});
+		    
+		    btnEditOreDip= new Button();
+		    btnEditOreDip.setEnabled(false);
+		    btnEditOreDip.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.edit()));
+		    btnEditOreDip.setToolTip("Assegna le ore a collaboratori e dipendenti fuori sede");
+		    btnEditOreDip.setIconAlign(IconAlign.TOP);
+		    btnEditOreDip.setSize(26, 26);
+		    btnEditOreDip.addSelectionListener(new SelectionListener<ButtonEvent>() {	
+		    	private String pm;
+		    	private String periodo;
+				@Override
+				public void componentSelected(ButtonEvent ce) {	
+					pm=smplcmbxPM.getRawValue().toString();
+					String anno=smplcmbxAnno.getRawValue().toString();
+					String meseCorrente=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
+					periodo=meseCorrente+anno;
+					
+					Dialog d= new Dialog();
+					d.setSize(550, 870);
+					d.setButtons("");
+					d.setScrollMode(Scroll.AUTOY);
+					d.setHeading("Assegna le ore a collaboratori e dipendenti fuori sede.");
+					d.add(new PanelAttribuzioneOreColocationCollaboratori(pm));
+					d.show();
+					d.addListener(Events.Hide, new Listener<ComponentEvent>() {			     
+						@Override
+						public void handleEvent(ComponentEvent be) {
+							caricaTabellaRiepOreDipFatturazione(periodo, pm);			
+					    }
+					});	
+				}
 			});
 		    
 		    tlbrRiepilogoOre.add(btnShowDettaglioOre);
+		    tlbrRiepilogoOre.add(btnEditOreDip);
 		    
 		    ContentPanel cntpnlGrid= new ContentPanel();
 		    cntpnlGrid.setBodyBorder(false);  
@@ -579,7 +611,8 @@ public CenterLayout_FoglioFatturazione(){}
 			return configs;
 		}	
 	
-		private void caricaTabellaRiepOreDipFatturazione(String meseRif, String pm) {		
+		private void caricaTabellaRiepOreDipFatturazione(String meseRif, String pm) {	
+			
 			AdministrationService.Util.getInstance().getRiepilogoOreDipFatturazione(meseRif, pm, new AsyncCallback<List<RiepilogoOreDipFatturazione>>() {	
 				@Override
 				public void onSuccess(List<RiepilogoOreDipFatturazione> result) {
@@ -604,6 +637,7 @@ public CenterLayout_FoglioFatturazione(){}
 		
 		private void loadTable(List<RiepilogoOreDipFatturazione> result) {
 			try {
+				btnEditOreDip.enable();
 				btnShowDettaglioOre.enable();
 				store.removeAll();
 				store.add(result);
