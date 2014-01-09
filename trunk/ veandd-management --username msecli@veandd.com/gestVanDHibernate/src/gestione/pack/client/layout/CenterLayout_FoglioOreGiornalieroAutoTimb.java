@@ -785,7 +785,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			
 			
 			//TODO sblocco solo sulla data?
-			Date retVal = null;
+			/*Date retVal = null;
 	        try
 	        {
 	            retVal = DateTimeFormat.getFormat( "dd-MM-yyyy" ).parse( 20+"-"+12+"-"+2013 );
@@ -797,10 +797,11 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			
 	        String data1=DateTimeFormat.getFormat( "dd-MM-yyyy").format(retVal);
 	        String data2=DateTimeFormat.getFormat( "dd-MM-yyyy").format(data);
-	        if(data1.compareTo(data2)==0)
-	        	enableField();
-			
 	        
+	       
+	        if(data1.compareTo(data2)==0)
+	        	enableField();			
+	        */
 	        
 			txtfld1I.setItemId("1I");
 			txtfld1I.setFieldLabel("I");
@@ -811,7 +812,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		    if(statoRevisione==2)txtfld1I.setEnabled(false); 
 			txtfld1I.addKeyListener(new KeyListener() {
 				
-				  public void componentKeyUp(ComponentEvent event) {		    		   
+				  public void componentKeyUp(ComponentEvent event) {
 			    	  //carico il fldSet riferito ai giustificativi
 			    	  LayoutContainer lc= new LayoutContainer(); 
 			    	  LayoutContainer right= new LayoutContainer();
@@ -2605,6 +2606,10 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			if(tipo=="new"){
 				
 				statoRevisione=Integer.valueOf(result.get(0).getMovimento());
+				String sblocco=result.get(0).getSorgente();
+				
+				if(sblocco.compareTo("Si")==0)
+					enableField();
 
 				txtfldSomma1.setValue("0.0");
 				txtfldSomma2.setValue("0.0");

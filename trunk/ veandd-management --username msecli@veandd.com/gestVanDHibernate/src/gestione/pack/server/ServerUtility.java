@@ -29,6 +29,7 @@ import gestione.pack.shared.DettaglioOreGiornaliere;
 import gestione.pack.shared.Fattura;
 import gestione.pack.shared.FoglioFatturazione;
 import gestione.pack.shared.Ordine;
+import gestione.pack.shared.PeriodoSbloccoGiorni;
 
 import gestione.pack.shared.FoglioOreMese;
 import gestione.pack.shared.Personale;
@@ -198,7 +199,9 @@ public class ServerUtility {
 			return true;	
 		if(dataCompleta.compareTo("2013-Giu-24")==0)
 			return true;
-		if(dataCompleta.compareTo("2013-Gen-01")==0)
+		if(dataCompleta.compareTo("2014-Gen-01")==0)
+			return true;
+		if(dataCompleta.compareTo("2014-Gen-06")==0)
 			return true;
 		if(dataCompleta.compareTo("2013-Dic-25")==0)
 			return true;
@@ -2293,10 +2296,46 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 				else 
 					return false;
 			else 
-				return false;			
-			
+				return false;					
 		}	
+	}
+	
 
+	@SuppressWarnings("unchecked")
+	public static String confrontaDataSblocco(Date giornoRiferimento) {
+		
+		List<PeriodoSbloccoGiorni> listaP= new ArrayList<PeriodoSbloccoGiorni>();
+		Date dataInizio= new Date();
+		Date dataFine= new Date();
+		String sbloccata="No";
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try{
+			tx=session.beginTransaction();
+		
+			listaP=(List<PeriodoSbloccoGiorni>)session.createQuery("from PeriodoSbloccoGiorni").list();
+			for(PeriodoSbloccoGiorni p:listaP){
+				dataInizio=p.getDataInizio();
+				dataFine=p.getDataFine();
+				if(giornoRiferimento.compareTo(dataInizio)>=0 && giornoRiferimento.compareTo(dataFine)<=0){
+					sbloccata="Si";
+					return sbloccata;
+				}				
+			}			
+			tx.commit();
+			
+		}catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return null;
+		}finally{
+			session.close();
+		}		
+		return sbloccata;
+		
 	}	
 }
 

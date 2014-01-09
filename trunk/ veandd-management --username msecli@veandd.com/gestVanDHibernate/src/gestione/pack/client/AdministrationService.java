@@ -29,9 +29,11 @@ import gestione.pack.client.model.FatturaModel;
 import gestione.pack.client.model.FoglioFatturazioneModel;
 import gestione.pack.client.model.GestioneCostiDipendentiModel;
 import gestione.pack.client.model.GestioneRdoCommesse;
+import gestione.pack.client.model.GiorniFestiviModel;
 import gestione.pack.client.model.GiustificativiModel;
 import gestione.pack.client.model.IntervalliCommesseModel;
 import gestione.pack.client.model.IntervalliIUModel;
+import gestione.pack.client.model.PeriodoSbloccoModel;
 import gestione.pack.client.model.PersonaleAssociatoModel;
 import gestione.pack.client.model.PersonaleModel;
 import gestione.pack.client.model.RdaModel;
@@ -365,6 +367,19 @@ public interface AdministrationService extends RemoteService {
 	
 	List<RiepilogoMeseGiornalieroModel> getRiepilogoMensileDettagliatoCommesseHorizontalLayout(
 			String dipendente, String data)throws IllegalArgumentException;
+
+	List<PeriodoSbloccoModel> getDatiPeriodoSblocco();
+	
+	boolean confermaPeriodoSblocco(Date dataInizio,
+			Date dataFine, String sede)throws IllegalArgumentException;
+
+	boolean eliminaPeriodoSblocco(int idSel)throws IllegalArgumentException;
+
+	boolean inserisciGiornoFestivo(Date giorno)throws IllegalArgumentException;
+
+	boolean eliminaGiornoFestivi(int idSel)throws IllegalArgumentException;
+
+	List<GiorniFestiviModel> getGiorniFestivi()throws IllegalArgumentException;
 	
 //---------------------------------------------COSTI
 	List<GestioneCostiDipendentiModel> getDatiCostiPersonale(int idPersonale) throws IllegalArgumentException;
@@ -405,5 +420,9 @@ public interface AdministrationService extends RemoteService {
 	List<RiepilogoOreDipFatturazione> getRiepilogoOreCommesseDettDipendentiPeriodo(
 			String anno, String string, String string2, String string3,
 			String pm, List<CommessaModel> listaCommesseSel)throws IllegalArgumentException;
+
+
+
+	
 
 }

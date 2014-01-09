@@ -680,7 +680,8 @@ public class PanelGestioneCosting extends LayoutContainer{
 			public void handleEvent(BaseEvent be) {	
 				int idPersonale=cmbxPersonale.getValue().get("idPersonale");
 				int idCosting=cmbbxCosting.getValue().get("idCosting");
-				final int index=cm.getSelectCell().row;			
+				final int index=cm.getSelectCell().row;		
+				
 				AdministrationService.Util.getInstance().getDatiCostiDipendenteSelezionato(idPersonale, idCosting, new AsyncCallback<CostingRisorsaModel>() {
 
 					@Override

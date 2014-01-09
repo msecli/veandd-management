@@ -31,8 +31,9 @@ public class DatiComboBox {
 		List <String> listaR=new ArrayList<String>();
 		
 		listaR.add("8");
-		listaR.add("7");
+		listaR.add("7");	
 		listaR.add("6");
+		listaR.add("5");
 		listaR.add("4");
 		listaR.add("A");
 		

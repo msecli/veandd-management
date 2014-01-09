@@ -52,9 +52,11 @@ import gestione.pack.client.model.FatturaModel;
 import gestione.pack.client.model.FoglioFatturazioneModel;
 import gestione.pack.client.model.GestioneCostiDipendentiModel;
 import gestione.pack.client.model.GestioneRdoCommesse;
+import gestione.pack.client.model.GiorniFestiviModel;
 import gestione.pack.client.model.GiustificativiModel;
 import gestione.pack.client.model.IntervalliCommesseModel;
 import gestione.pack.client.model.IntervalliIUModel;
+import gestione.pack.client.model.PeriodoSbloccoModel;
 import gestione.pack.client.model.PersonaleAssociatoModel;
 import gestione.pack.client.model.PersonaleModel;
 import gestione.pack.client.model.RdaModel;
@@ -94,6 +96,7 @@ import gestione.pack.shared.FoglioFatturazione;
 import gestione.pack.shared.FoglioOreMese;
 import gestione.pack.shared.Offerta;
 import gestione.pack.shared.Ordine;
+import gestione.pack.shared.PeriodoSbloccoGiorni;
 import gestione.pack.shared.Personale;
 import gestione.pack.shared.Rda;
 
@@ -3296,6 +3299,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String anno= new String();
 		String compilato= new String();
 		String giornoCompl= new String();
+		String sblocco; //Si-No
 				
 		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
 		anno=formatter.format(giornoRiferimento);
@@ -3319,6 +3323,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			foglioOre=(FoglioOreMese)session.createQuery("from FoglioOreMese where id_personale=:id and  meseRiferimento=:mese")
 						.setParameter("id", p.getId_PERSONALE()).setParameter("mese", data).uniqueResult();
 			
+			
+			//controllo che la data sia presente in un periodo inserito per sbloccare la compilazione
+			sblocco=ServerUtility.confrontaDataSblocco(giornoRiferimento);
+			
 			if(foglioOre!=null){
 				String giorno= new String();
 				String statoRevisione=foglioOre.getStatoRevisioneMese();
@@ -3330,22 +3338,21 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						break;
 					}
 					else
-						compilato="n";
-						
+						compilato="n";					
 				}
 				
-				listaIntervalli.add(new IntervalliIUModel(statoRevisione, compilato, "", "")); //il primo che inserisco sarà lo stato revsione. questo verrà poi rimosso
+				listaIntervalli.add(new IntervalliIUModel(statoRevisione, compilato, sblocco, "")); //il primo che inserisco sarà lo stato revsione. questo verrà poi rimosso
 				
 				if(!foglioOre.getDettaglioOreGiornalieres().isEmpty())
 					listaGiorni.addAll(foglioOre.getDettaglioOreGiornalieres());			
-				else return listaIntervalli;
-				
-				
+				else 
+					return listaIntervalli;				
 			}
 			else {
 				String statoRevisione="0";
+				
 				compilato="n";
-				listaIntervalli.add(new IntervalliIUModel(statoRevisione, compilato, "", "")); //il primo che inserisco sarà lo stato revsione. questo verrà poi rimosso
+				listaIntervalli.add(new IntervalliIUModel(statoRevisione, compilato, sblocco, "")); //il primo che inserisco sarà lo stato revsione. questo verrà poi rimosso
 				
 				return listaIntervalli;
 			}
@@ -3359,8 +3366,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				{
 					listaIntIU.addAll(d.getDettaglioIntervalliIUs());//prelevo gli intervalli che sono stati creati
 					int size=listaIntIU.size();
-					for(int i=0;i<size;i++){
-					
+					for(int i=0;i<size;i++){					
 						intervallo=new IntervalliIUModel(listaIntIU.get(i).getMovimento(), listaIntIU.get(i).getOrario(), listaIntIU.get(i).getSorgente(), listaIntIU.get(i).getSostituito());
 						listaIntervalli.add(intervallo);
 					}
@@ -5129,6 +5135,122 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			}		
 			return true;
 		}
+		
+		
+		@SuppressWarnings("unchecked")
+		@Override
+		public List<PeriodoSbloccoModel> getDatiPeriodoSblocco() throws IllegalArgumentException {
+			List<PeriodoSbloccoModel> listaPM= new ArrayList<PeriodoSbloccoModel>();
+			PeriodoSbloccoModel p;
+			List<PeriodoSbloccoGiorni> listaP= new ArrayList<PeriodoSbloccoGiorni>();
+			
+			Session session= MyHibernateUtil.getSessionFactory().openSession();
+			Transaction tx= null;
+				
+			try {
+				tx = session.beginTransaction();
+				
+				listaP=(List<PeriodoSbloccoGiorni>)session.createQuery("from PeriodoSbloccoGiorni").list();
+				
+				if(listaP!=null)
+					for(PeriodoSbloccoGiorni ps:listaP){
+						p= new PeriodoSbloccoModel(ps.getIdPeriodo(), ps.getSede(), ps.getDataInizio(), ps.getDataFine());	
+						listaPM.add(p);
+					}
+				
+				tx.commit();			
+			} catch (Exception e) {
+				if (tx != null)
+					tx.rollback();
+				e.printStackTrace();
+				return null;
+			} finally {
+				session.close();
+			}
+			
+			return listaPM;
+		}
+		
+		
+		@Override
+		public boolean confermaPeriodoSblocco(Date dataInizio,
+				Date dataFine, String sede) {
+			
+			PeriodoSbloccoGiorni p= new PeriodoSbloccoGiorni();
+			Session session= MyHibernateUtil.getSessionFactory().openSession();
+			Transaction tx= null;
+				
+			try {
+				tx = session.beginTransaction();
+				
+				p.setDataFine(dataFine);
+				p.setDataInizio(dataInizio);
+				p.setSede(sede);
+				
+				session.save(p);
+				
+				tx.commit();			
+			} catch (Exception e) {
+				if (tx != null)
+					tx.rollback();
+				e.printStackTrace();
+				return false;
+			} finally {
+				session.close();
+			}
+			
+			return true;
+		}
+
+		
+		@Override
+		public boolean eliminaPeriodoSblocco(int idSel) {
+			PeriodoSbloccoGiorni p= new PeriodoSbloccoGiorni();
+			Session session= MyHibernateUtil.getSessionFactory().openSession();
+			Transaction tx= null;
+				
+			try {
+				tx = session.beginTransaction();
+				
+				p=(PeriodoSbloccoGiorni)session.createQuery("from PeriodoSbloccoGiorni where idPeriodo=:id").setParameter("id", idSel).uniqueResult();
+					
+				session.delete(p);
+				
+				tx.commit();			
+			} catch (Exception e) {
+				if (tx != null)
+					tx.rollback();
+				e.printStackTrace();
+				return false;
+			} finally {
+				session.close();
+			}
+			
+			return true;
+		}
+		
+		
+		@Override
+		public boolean inserisciGiornoFestivo(Date giorno)
+				throws IllegalArgumentException {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean eliminaGiornoFestivi(int idSel)
+				throws IllegalArgumentException {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public List<GiorniFestiviModel> getGiorniFestivi()
+				throws IllegalArgumentException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
 	
 	
 	
@@ -5363,6 +5485,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		return listaR;
 	}
 
+	
+	
+	
+	
 
 //------------------------------------------------------FATTURAZIONE---------------------------------------------
 	
@@ -8909,6 +9035,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			session.close();
 		}	
 	}
+	
 
 	@Override
 	public boolean editStatoCosting(int idSelected, String operazione)
@@ -8982,8 +9109,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						
 		}				
 	}
-
 	
 
-	
 }
