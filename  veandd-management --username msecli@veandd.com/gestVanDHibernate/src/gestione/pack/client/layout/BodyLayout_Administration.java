@@ -6,6 +6,7 @@ import java.util.List;
 
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.UtilityService;
+import gestione.pack.client.layout.panel.DialogSceltaPeriodoSbloccoCompilazione;
 import gestione.pack.client.layout.panel.PanelAttribuzioneOreColocationCollaboratori;
 import gestione.pack.client.layout.panel.PanelEditPasswordUtenti;
 import gestione.pack.client.layout.panel.PanelGestioneCostiDipendenti;
@@ -42,6 +43,10 @@ import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuBar;
+import com.extjs.gxt.ui.client.widget.menu.MenuBarItem;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -190,7 +195,23 @@ public class BodyLayout_Administration extends LayoutContainer {
 		toolBar.add(txtfldUsername);
 		toolBar.add(txtfldRuolo);
 		toolBar.add(btnLoginIcon);
-		toolBar.add(txtUsername);	
+		toolBar.add(txtUsername);
+				
+		
+		/*Menu menu = new Menu();  
+		  
+		MenuItem item1 = new MenuItem("Strumenti");  
+		menu.add(item1);
+		
+		MenuBar bar = new MenuBar();  
+		bar.setBorders(true);  
+		bar.setStyleAttribute("borderTop", "none");  
+		bar.add(new MenuBarItem("Strumenti", menu));  
+		
+		toolBar.add(bar);
+		*/
+		
+				
 		toolBar.add(buttonBar);
 		north.setTopComponent(toolBar); 
 		
@@ -799,6 +820,26 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    btnTmp.setWidth("100%");*/
 	   // cp.add(btnTmp);
 	    	        
+	    Button btnTools = new Button();
+	    btnTools.setToolTip("Strumenti Utili");
+	    btnTools.setHeight(65);
+	    btnTools.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.tools()));
+	    btnTools.setIconAlign(IconAlign.BOTTOM);
+	    btnTools.setWidth("100%");
+	    btnTools.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	
+	        	DialogSceltaPeriodoSbloccoCompilazione d= new DialogSceltaPeriodoSbloccoCompilazione();
+	        	d.show();
+	        	
+	        }
+	        	/*center.removeAll();
+	        	center.add(new PanelEditPasswordUtenti());
+	        	center.layout(true);}*/      
+	      });
+	    btnTools.setWidth("100%");
+	    cp.add(btnTools);
+	    
 	    panel.add(cp);
 	    	    
 	    panel.setSize(180,Window.getClientHeight()-70);

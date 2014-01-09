@@ -15,9 +15,11 @@ import gestione.pack.client.model.FatturaModel;
 import gestione.pack.client.model.FoglioFatturazioneModel;
 import gestione.pack.client.model.GestioneCostiDipendentiModel;
 import gestione.pack.client.model.GestioneRdoCommesse;
+import gestione.pack.client.model.GiorniFestiviModel;
 import gestione.pack.client.model.GiustificativiModel;
 import gestione.pack.client.model.IntervalliCommesseModel;
 import gestione.pack.client.model.IntervalliIUModel;
+import gestione.pack.client.model.PeriodoSbloccoModel;
 import gestione.pack.client.model.PersonaleAssociatoModel;
 import gestione.pack.client.model.PersonaleModel;
 import gestione.pack.client.model.RdaModel;
@@ -365,6 +367,22 @@ public interface AdministrationServiceAsync {
 	void getRiepilogoOreCommesseDettDipendentiPeriodo(String anno,
 			String string, String string2, String string3,
 			String pm, List<CommessaModel> listaCommesseSel, AsyncCallback<List<RiepilogoOreDipFatturazione>> asyncCallback);
+	
+	void getDatiPeriodoSblocco(AsyncCallback<List<PeriodoSbloccoModel>> asyncCallback);
+	
+	void confermaPeriodoSblocco(Date dataInizio,
+			Date dataFine, String sede,
+			AsyncCallback<Boolean> asyncCallback);
+
+	void eliminaPeriodoSblocco(int idSel, AsyncCallback<Boolean> asyncCallback);
+
+	
+	void inserisciGiornoFestivo(Date giorno,
+			AsyncCallback<Boolean> asyncCallback);
+
+	void eliminaGiornoFestivi(int idSel, AsyncCallback<Boolean> asyncCallback);
+
+	void getGiorniFestivi(AsyncCallback<List<GiorniFestiviModel>> asyncCallback);
 	
 //-------------------------------------------------COSTI---------------------------------
 	

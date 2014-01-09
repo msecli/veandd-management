@@ -51,6 +51,7 @@ public class PanelRichiesteDipendenti extends LayoutContainer{
 	private RowExpander expander;
 	private Button btnDeleteRichiesta;
 	private Button btnSetEdit;
+	private SimpleComboBox<String >smplcmbxAnno;
 	private SimpleComboBox<String >smplcmbxMese;
 	
 	private  CheckBoxSelectionModel<CommentiModel> sm = new CheckBoxSelectionModel<CommentiModel>();  
@@ -97,6 +98,7 @@ public class PanelRichiesteDipendenti extends LayoutContainer{
 			}
 		});
 		
+		
 		btnSetEdit= new Button();
 		btnSetEdit.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.confirm()));
 		btnSetEdit.setIconAlign(IconAlign.TOP);
@@ -136,6 +138,18 @@ public class PanelRichiesteDipendenti extends LayoutContainer{
 		Date d= new Date();
 		String data= d.toString();
 		String mese= ClientUtility.meseToLong(ClientUtility.traduciMeseToIt(data.substring(4, 7)));
+		String anno= data.substring(data.length()-4, data.length());
+		
+		smplcmbxAnno= new SimpleComboBox<String>();
+		smplcmbxAnno.setFieldLabel("Anno");
+		smplcmbxAnno.setName("anno");
+		smplcmbxAnno.setEmptyText("Anno..");
+		smplcmbxAnno.setAllowBlank(false);
+		smplcmbxAnno.setWidth(60);
+		 for(String l : DatiComboBox.getAnno()){
+			 smplcmbxAnno.add(l);}
+		smplcmbxAnno.setTriggerAction(TriggerAction.ALL);
+		smplcmbxAnno.setSimpleValue(anno);
 		
 		smplcmbxMese= new SimpleComboBox<String>();
 		smplcmbxMese.setFieldLabel("Mese");
@@ -153,16 +167,21 @@ public class PanelRichiesteDipendenti extends LayoutContainer{
 				ListStore<CommentiModel>storeApp = new ListStore<CommentiModel>();
 				ListStore<CommentiModel>storeRes = new ListStore<CommentiModel>();
 				String meseListStore= new String();
+				String annoListStore= new String();
 				String meseCmbx=smplcmbxMese.getRawValue().toString();
+				String anno=smplcmbxAnno.getRawValue().toString();
+				
 				meseCmbx=meseCmbx.substring(0, 3);
 				storeRes.removeAll();
 				storeApp.removeAll();
 				storeApp.add(store.getModels());
 				for(CommentiModel c:storeApp.getModels()){
 					meseListStore=c.get("data");
+					annoListStore=meseListStore.substring(7,meseListStore.length());
 					meseListStore=meseListStore.substring(0,3);
+					
 					meseListStore=ClientUtility.traduciMeseToIt(meseListStore);
-					if(meseListStore.compareTo(meseCmbx)==0)
+					if(meseListStore.compareTo(meseCmbx)==0 && anno.compareTo(annoListStore)==0)
 						storeRes.add(c);
 				}
 								
@@ -177,6 +196,8 @@ public class PanelRichiesteDipendenti extends LayoutContainer{
 	  	toolBar.add(btnDeleteRichiesta);
 	  	toolBar.add(sp);
 	  	toolBar.add(btnSetEdit);
+	  	toolBar.add(new SeparatorToolItem());
+	  	toolBar.add(smplcmbxAnno);
 	  	toolBar.add(new SeparatorToolItem());
 	  	toolBar.add(smplcmbxMese);
 	  	

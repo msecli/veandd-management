@@ -8,6 +8,7 @@ import gestione.pack.client.utility.MyImages;
 import gestione.pack.client.layout.panel.DialogInvioCommenti;
 import gestione.pack.client.layout.panel.FormInserimentoIntervalloCommessa;
 import gestione.pack.client.layout.panel.PanelRiepilogoGiornalieroCommesse;
+import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroCommesseHorizontal;
 import gestione.pack.client.model.IntervalliCommesseModel;
 
 import java.util.ArrayList;
@@ -173,11 +174,13 @@ public class CenterLayout_FoglioOreGiornaliero_Collaboratori extends LayoutConta
 
 				@Override
 				public void componentSelected(ButtonEvent ce) {
+					Date data= dtfldGiorno.getValue();
 					Dialog d= new Dialog();
 					d.setHeaderVisible(true);
+					d.setConstrain(false);
 					d.setHeading("Riepilogo dettagliato (Commesse).");
-					d.setSize(550, 605);
-					d.add(new PanelRiepilogoGiornalieroCommesse(txtfldUsername.getValue().toString(), giornoRiferimento.getValue()));
+					d.setSize(1500, 650);
+					d.add(new PanelRiepilogoMeseGiornalieroCommesseHorizontal(txtfldUsername.getValue().toString(), data, "0.00", "0.00", "0.00", "0.00"));
 					d.setButtons("");
 					d.show();			
 				}

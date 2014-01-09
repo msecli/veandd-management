@@ -148,5 +148,8 @@ public interface MyImages extends ClientBundle{
 	
 	@Source("Icone/edit.png")
 	ImageResource edit();
+	
+	@Source("Icone/repair.png")
+	ImageResource tools();
 }
 

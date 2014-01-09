@@ -53,9 +53,10 @@
       <mapping class="gestione.pack.shared.Costing"/>
       <mapping class="gestione.pack.shared.CostingRisorsa"/>    
  	  <mapping class="gestione.pack.shared.AttivitaOrdine"/> 
- 	   <mapping class="gestione.pack.shared.AttivitaFatturata"/>
+ 	  <mapping class="gestione.pack.shared.AttivitaFatturata"/>
       <mapping class="gestione.pack.shared.DatiFatturazioneAzienda"/>
       <mapping class="gestione.pack.shared.Fattura"/>
+      <mapping class="gestione.pack.shared.PeriodoSbloccoGiorni"/>
       
 </session-factory>
  
