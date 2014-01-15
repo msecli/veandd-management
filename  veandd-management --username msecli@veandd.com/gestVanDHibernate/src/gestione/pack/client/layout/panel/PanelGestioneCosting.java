@@ -83,8 +83,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 	private Text txtCognome= new Text();
 	private int idSelected;
 	
-	private String username= new String();
-	
+	private String username= new String();	
 	
 	public PanelGestioneCosting(){
 		

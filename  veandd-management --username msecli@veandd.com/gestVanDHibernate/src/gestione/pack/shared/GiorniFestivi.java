@@ -20,6 +20,8 @@ public class GiorniFestivi implements Serializable{
 
     @Temporal( TemporalType.DATE)
 	private Date giorno;
+    
+    private String sede;
 
 	
 	public int getIdGiorno() {
@@ -36,6 +38,14 @@ public class GiorniFestivi implements Serializable{
 
 	public void setGiorno(Date giorno) {
 		this.giorno = giorno;
+	}
+
+	public String getSede() {
+		return sede;
+	}
+
+	public void setSede(String sede) {
+		this.sede = sede;
 	}
    
 

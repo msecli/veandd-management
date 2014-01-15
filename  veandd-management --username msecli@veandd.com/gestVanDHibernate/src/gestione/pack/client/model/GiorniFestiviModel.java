@@ -13,9 +13,9 @@ public class GiorniFestiviModel extends BaseModel implements IsSerializable{
 		
 	}
 	
-	public GiorniFestiviModel(int idGiorno, Date giorno){
+	public GiorniFestiviModel(int idGiorno, Date giorno, String sede){
 		set("idGiorno", idGiorno);
-		
+		set("sede",sede);
 		set("giorno", giorno);
 	}
 	

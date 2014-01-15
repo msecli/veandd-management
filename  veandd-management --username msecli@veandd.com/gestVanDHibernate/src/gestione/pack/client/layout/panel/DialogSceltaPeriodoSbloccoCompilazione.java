@@ -101,8 +101,9 @@ public class DialogSceltaPeriodoSbloccoCompilazione extends Dialog {
 		smplcmbxSede.setEnabled(true);
 		smplcmbxSede.add("T");
 		smplcmbxSede.add("B");
+		smplcmbxSede.add("Tutti");
 		smplcmbxSede.setTriggerAction(TriggerAction.ALL);
-		smplcmbxSede.setSimpleValue("T");
+		smplcmbxSede.setSimpleValue("Tutti");
 		smplcmbxSede.setWidth(70);
 	    
 	    
@@ -123,8 +124,7 @@ public class DialogSceltaPeriodoSbloccoCompilazione extends Dialog {
 
 						@Override
 						public void onFailure(Throwable caught) {
-							Window.alert("Errore di connessione on confermaPeriodoSblocco();");
-							
+							Window.alert("Errore di connessione on confermaPeriodoSblocco();");							
 						}
 
 						@Override

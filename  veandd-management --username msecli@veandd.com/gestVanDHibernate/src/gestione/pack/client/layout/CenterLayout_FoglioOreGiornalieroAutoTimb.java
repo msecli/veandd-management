@@ -301,7 +301,6 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			frm.layout(true);
 			add(frm);
 			
-			//btnConferma.setSize(16, 46);
 			btnConferma.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.saveLittle()));
 			btnConferma.setIconAlign(IconAlign.TOP);
 			btnConferma.setToolTip("Conferma");

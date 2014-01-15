@@ -191,7 +191,7 @@ public class PanelRiepilogoStatoAvanzamentoOreCommesse extends LayoutContainer{
 		cmbxCommessa.setTriggerAction(TriggerAction.ALL);
 		cmbxCommessa.setAllowBlank(false);
 		cmbxCommessa.setDisplayField("commessa");
-		cmbxCommessa.setWidth(250);
+		cmbxCommessa.setWidth(230);
 		cmbxCommessa.addListener(Events.OnClick, new Listener<BaseEvent>(){
 			@Override
 			public void handleEvent(BaseEvent be) {	
@@ -220,6 +220,7 @@ public class PanelRiepilogoStatoAvanzamentoOreCommesse extends LayoutContainer{
 		smplcmbxPeriodo.setAllowBlank(false);
 		smplcmbxPeriodo.add("Anno");
 		smplcmbxPeriodo.add("Periodo");
+		smplcmbxPeriodo.setWidth(80);
 		smplcmbxPeriodo.addListener(Events.SelectionChange, new Listener<BaseEvent>() {
 
 			@Override

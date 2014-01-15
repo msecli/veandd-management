@@ -18,6 +18,7 @@ import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal
 import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoSituazioneMensileOreDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoStatoAvanzamentoOreCommesse;
+import gestione.pack.client.layout.panel.PanelToolAmministrativi;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
 import gestione.pack.client.utility.DatiComboBox;
@@ -829,14 +830,11 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    btnTools.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	        	
-	        	DialogSceltaPeriodoSbloccoCompilazione d= new DialogSceltaPeriodoSbloccoCompilazione();
-	        	d.show();
-	        	
-	        }
-	        	/*center.removeAll();
-	        	center.add(new PanelEditPasswordUtenti());
-	        	center.layout(true);}*/      
-	      });
+	        	center.removeAll();
+	        	center.add(new PanelToolAmministrativi());
+	        	center.layout(true);
+	       }      
+	    });
 	    btnTools.setWidth("100%");
 	    cp.add(btnTools);
 	    

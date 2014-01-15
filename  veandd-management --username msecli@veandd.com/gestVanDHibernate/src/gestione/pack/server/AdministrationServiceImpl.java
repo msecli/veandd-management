@@ -94,6 +94,7 @@ import gestione.pack.shared.DettaglioTimbrature;
 import gestione.pack.shared.Fattura;
 import gestione.pack.shared.FoglioFatturazione;
 import gestione.pack.shared.FoglioOreMese;
+import gestione.pack.shared.GiorniFestivi;
 import gestione.pack.shared.Offerta;
 import gestione.pack.shared.Ordine;
 import gestione.pack.shared.PeriodoSbloccoGiorni;
@@ -1730,13 +1731,11 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	@Override
 	public boolean closeCommessa(int idCommessa) {
 		
-		Commessa c=new Commessa();
-		
+		Commessa c=new Commessa();		
 		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
 		Transaction tx= null;	
 		
-		try {
-			
+		try {		
 			tx=session.beginTransaction();
 				
 			c=(Commessa)session.createQuery("from Commessa where cod_commessa=:idCommessa").setParameter("idCommessa", idCommessa).uniqueResult();
@@ -2635,6 +2634,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		return true;
 	}
 	
+	
 	@Override
 	public boolean insertFoglioOreGiorno(String username, Date giornoRiferimento,
 			String totOreGenerale, String delta, String oreViaggio,
@@ -3325,7 +3325,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 			
 			//controllo che la data sia presente in un periodo inserito per sbloccare la compilazione
-			sblocco=ServerUtility.confrontaDataSblocco(giornoRiferimento);
+			sblocco=ServerUtility.confrontaDataSblocco(giornoRiferimento, p.getSedeOperativa()); 
 			
 			if(foglioOre!=null){
 				String giorno= new String();
@@ -3503,7 +3503,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				tipoOrario="8";
 			else tipoOrario=p.getTipologiaOrario();
 			
-			orePrevisteMese=ServerUtility.calcolaOreLavorativeMese(giornoRiferimento, tipoOrario);
+			orePrevisteMese=ServerUtility.calcolaOreLavorativeMese(giornoRiferimento, tipoOrario, p.getSedeOperativa());
 			riepilogo=new RiepilogoOreModel("0.0", String.valueOf(orePrevisteMese), "0.0", "0.0", monteOreRecuperoTotale); //non essendoci giorni registrati le ore previste sono le ore di assenza
 			
 			foglioOre=(FoglioOreMese)session.createQuery("from FoglioOreMese where id_personale=:id and meseRiferimento=:mese")
@@ -3645,7 +3645,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					}
 								
 					//precompilo la lista di giorni con tutti i giorni lavorativi del mese in modo tale da segnalare una eventuale mancata compilazione
-					for(int i=1; i<=ServerUtility.getGiorniMese(mese, anno);i++){
+					int giorniMese=ServerUtility.getGiorniMese(mese, anno);
+					for(int i=1; i<=giorniMese;i++){
 						String g= new String();	
 						String dataCompLow=new String();
 						String dataCompUpp=new String();
@@ -3661,12 +3662,13 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							g=String.valueOf(i);
 						
 						dataCompLow=(g+"-"+meseApp+"-"+anno);
+						mese=mese.toLowerCase();
 						dataCompUpp=(anno+"-"+mese+"-"+g);
 						
 						formatter=new SimpleDateFormat("dd-MMM-yyyy",Locale.ITALIAN);
 						d=formatter.parse(dataCompLow);
 						giornoW=d.toString().substring(0,3);
-						if(giornoW.compareTo("Sun")!=0 && !ServerUtility.isFestivo(dataCompUpp)){				
+						if(giornoW.compareTo("Sun")!=0 && !ServerUtility.isFestivo(dataCompUpp, p.getSedeOperativa())){		
 							giorno= new RiepilogoFoglioOreModel(p.getUsername() , p.getCognome()+" "+p.getNome(), data, dataCompLow, false, "0"
 									,"","","","","","","","");
 							listaGiorni.add(giorno);					
@@ -3769,8 +3771,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						else i4="";
 						if(listaDtt.size()>7)
 							u4=listaDtt.get(7).getOrario();
-						else u4="";
-						
+						else u4="";			
 						
 						giorno= new RiepilogoFoglioOreModel(p.getUsername(), p.getCognome()+" "+p.getNome(), data, day, true, confermato,
 								i1,u1,i2,u2,i3,u3,i4,u4);
@@ -4700,7 +4701,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	@Override
 	public List<RiepilogoOreDipCommesseGiornaliero> getDatiOreCollaboratori(
 			String pm, Date giornoRiferimento) throws IllegalArgumentException {
-		// TODO Auto-generated method stub
 		
 		Personale p= new Personale();
 		List<RiepilogoOreDipCommesseGiornaliero> listaRiep= new ArrayList<RiepilogoOreDipCommesseGiornaliero>();
@@ -5231,24 +5231,93 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		
 		@Override
-		public boolean inserisciGiornoFestivo(Date giorno)
+		public boolean inserisciGiornoFestivo(Date giorno, String sede)
 				throws IllegalArgumentException {
-			// TODO Auto-generated method stub
-			return false;
+			GiorniFestivi g= new GiorniFestivi();
+			Session session= MyHibernateUtil.getSessionFactory().openSession();
+			Transaction tx= null;
+				
+			try {
+				tx = session.beginTransaction();
+				
+				g.setGiorno(giorno);
+				g.setSede(sede);
+				session.save(g);
+				
+				tx.commit();			
+			} catch (Exception e) {
+				if (tx != null)
+					tx.rollback();
+				e.printStackTrace();
+				return false;
+			} finally {
+				session.close();
+			}			
+			return true;
 		}
+		
 
 		@Override
 		public boolean eliminaGiornoFestivi(int idSel)
 				throws IllegalArgumentException {
-			// TODO Auto-generated method stub
-			return false;
+			GiorniFestivi g= new GiorniFestivi();
+			Session session= MyHibernateUtil.getSessionFactory().openSession();
+			Transaction tx= null;
+				
+			try {
+				tx = session.beginTransaction();
+				
+				g=(GiorniFestivi)session.createQuery("from GiorniFestivi where idgiorno=:id").setParameter("id", idSel).uniqueResult();
+					
+				session.delete(g);
+				
+				tx.commit();			
+			} catch (Exception e) {
+				if (tx != null)
+					tx.rollback();
+				e.printStackTrace();
+				return false;
+			} finally {
+				session.close();
+			}	
+			return true;
 		}
+		
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public List<GiorniFestiviModel> getGiorniFestivi()
 				throws IllegalArgumentException {
-			// TODO Auto-generated method stub
-			return null;
+			List<GiorniFestivi> listaG= new ArrayList<GiorniFestivi>();
+			List<GiorniFestiviModel> listaGM=new ArrayList<GiorniFestiviModel>();
+			GiorniFestiviModel gm;
+			Session session= MyHibernateUtil.getSessionFactory().openSession();
+			Transaction tx= null;
+			
+			try {
+				tx = session.beginTransaction();
+				
+				listaG=(List<GiorniFestivi>)session.createQuery("from GiorniFestivi").list();
+				
+				if(listaG!=null)
+					for(GiorniFestivi g: listaG){
+						gm=new GiorniFestiviModel(g.getIdGiorno(), g.getGiorno(), g.getSede());
+					
+						listaGM.add(gm);
+					}
+				
+				tx.commit();			
+			} catch (Exception e) {
+				if (tx != null)
+					tx.rollback();
+				e.printStackTrace();
+				return null;
+			} finally {
+				session.close();
+			}
+			
+			
+			return listaGM;
 		}
 
 	
@@ -8279,7 +8348,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			for(Personale p:listaP){
 				if(p.getCostoAziendas().iterator().hasNext()){
 					
-					oreAnno=ServerUtility.getOreAnno();
+					oreAnno=ServerUtility.getOreAnno(p.getSedeOperativa());
 					costo=p.getCostoAziendas().iterator().next();
 					idDip=p.getId_PERSONALE();
 					nome=p.getNome()+" "+p.getCognome();
@@ -8702,7 +8771,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						costoSw=costoSw+Float.valueOf(costoHS.getCosto());
 				}
 			
-				costoOrario= Float.valueOf(costoAzienda.getCostoAnnuo())/ServerUtility.getOreAnno();
+				costoOrario= Float.valueOf(costoAzienda.getCostoAnnuo())/ServerUtility.getOreAnno(p.getSedeOperativa());
 				costoHwSw=costoHw+costoSw;
 				incidenzaCostiAzienda=Float.valueOf(costoAzienda.getCostoStruttura())/Float.valueOf(costoOrario);
 				costoSommaHwSwOneri=costoHwSw+Float.valueOf(costoAzienda.getCostiOneri());

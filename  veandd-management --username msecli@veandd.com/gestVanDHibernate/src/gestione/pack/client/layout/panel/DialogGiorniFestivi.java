@@ -6,7 +6,6 @@ import java.util.List;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.model.GiorniFestiviModel;
-import gestione.pack.client.model.PeriodoSbloccoModel;
 import gestione.pack.client.utility.MyImages;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -43,12 +42,13 @@ public class DialogGiorniFestivi extends Dialog{
 	private CellSelectionModel<GiorniFestiviModel> cellSel;
 	
 	private DateField dtfldGiorno= new DateField();
+	private SimpleComboBox<String> smplcmbxSede;
 	private Button btnConferma;
 	private Button btnDelete;
 	
 	public DialogGiorniFestivi(){
 		
-		 setLayout(new FitLayout());
+		 	setLayout(new FitLayout());
 			setBodyBorder(true);
 			//setBodyStyle("padding: 8px; background: none");
 			setWidth(600);
@@ -89,8 +89,20 @@ public class DialogGiorniFestivi extends Dialog{
 		   	    
 		    dtfldGiorno.setEmptyText("Giorno..");
 		    dtfldGiorno.setWidth(120);
-		  	    
 		    
+		    smplcmbxSede= new SimpleComboBox<String>();
+		    smplcmbxSede.setFieldLabel("Sede");
+			smplcmbxSede.setName("sede");
+			smplcmbxSede.setEmptyText("Sede..");
+			smplcmbxSede.setAllowBlank(false);
+			smplcmbxSede.setEnabled(true);
+			smplcmbxSede.add("T");
+			smplcmbxSede.add("B");
+			smplcmbxSede.add("Tutti");
+			smplcmbxSede.setTriggerAction(TriggerAction.ALL);
+			smplcmbxSede.setSimpleValue("Tutti");
+			smplcmbxSede.setWidth(70);
+		  	    
 		    btnConferma= new Button();
 		    btnConferma.setSize(26, 26);
 		    btnConferma.setIconAlign(IconAlign.TOP);
@@ -101,18 +113,20 @@ public class DialogGiorniFestivi extends Dialog{
 				@Override
 				public void componentSelected(ButtonEvent ce) {
 						Date giorno= (Date) dtfldGiorno.getValue();
-						AdministrationService.Util.getInstance().inserisciGiornoFestivo(giorno, new AsyncCallback<Boolean>() {
+						String sede=smplcmbxSede.getRawValue().toString();
+						AdministrationService.Util.getInstance().inserisciGiornoFestivo(giorno, sede, new AsyncCallback<Boolean>() {
 
 							@Override
 							public void onFailure(Throwable caught) {
-								// TODO Auto-generated method stub
-								
+								Window.alert("Errore di connessione on inserisciGiornoFestivo();");
 							}
 
 							@Override
 							public void onSuccess(Boolean result) {
-								// TODO Auto-generated method stub
-								
+								if(result)
+									caricaTabella();
+								else
+									Window.alert("Problema riscontrato durante l'accesso ai dati!");
 							}
 						
 						});
@@ -135,24 +149,24 @@ public class DialogGiorniFestivi extends Dialog{
 
 						@Override
 						public void onFailure(Throwable caught) {
-							// TODO Auto-generated method stub
-							
+							Window.alert("Errore di connessione on eliminaGiornoFestivi();");
 						}
 
 						@Override
 						public void onSuccess(Boolean result) {
-							// TODO Auto-generated method stub
-							
+							if(result)
+								caricaTabella();
+							else
+								Window.alert("Problema riscontrato durante l'accesso ai dati!");
 						}
-
-					
 					});
 				}
-			});
-		        
+			});		        
 		    
 		    ToolBar tlbrDate= new ToolBar();
 		    tlbrDate.add(dtfldGiorno);
+		    tlbrDate.add(new SeparatorToolItem());
+		    tlbrDate.add(smplcmbxSede);
 		    tlbrDate.add(new SeparatorToolItem());
 		    tlbrDate.add(btnConferma);
 		    tlbrDate.add(new SeparatorToolItem());
@@ -166,13 +180,11 @@ public class DialogGiorniFestivi extends Dialog{
 		}
 		
 
-		private void caricaTabella() {
-			
+		private void caricaTabella() {			
 			AdministrationService.Util.getInstance().getGiorniFestivi(new AsyncCallback<List<GiorniFestiviModel>>() {
-
 				@Override
 				public void onFailure(Throwable caught) {
-					Window.alert("Errore di connessione on getDatiPeriodoSblocco();");
+					Window.alert("Errore di connessione on getGiorniFestivi();");
 				}
 
 				@Override
@@ -197,11 +209,18 @@ public class DialogGiorniFestivi extends Dialog{
 			List <ColumnConfig> configs = new ArrayList<ColumnConfig>();
 			
 			ColumnConfig column = new ColumnConfig();  
-		    
-		   
+		    		   
 		    column = new ColumnConfig();  
 		    column.setId("giorno");  
 		    column.setHeader("Giorno");  
+		    column.setWidth(140);  
+		    column.setRowHeader(true);
+		    column.setAlignment(HorizontalAlignment.RIGHT);
+		    configs.add(column);
+		    
+		    column = new ColumnConfig();  
+		    column.setId("sede");  
+		    column.setHeader("Sede");  
 		    column.setWidth(140);  
 		    column.setRowHeader(true);
 		    column.setAlignment(HorizontalAlignment.RIGHT);
