@@ -205,9 +205,11 @@ public class DatiComboBox {
 		return listaR;
 	}	
 	
+	
+		
 	public static List<String> getPeriodo() {
 		List <String> listaR=new ArrayList<String>();
-		String anno="2013";
+		String anno="2014";
 		
 		listaR.add("Gen"+anno);
 		listaR.add("Feb"+anno);

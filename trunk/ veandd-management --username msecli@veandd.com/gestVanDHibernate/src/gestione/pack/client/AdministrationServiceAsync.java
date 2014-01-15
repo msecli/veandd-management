@@ -378,7 +378,7 @@ public interface AdministrationServiceAsync {
 
 	
 	void inserisciGiornoFestivo(Date giorno,
-			AsyncCallback<Boolean> asyncCallback);
+			String sede, AsyncCallback<Boolean> asyncCallback);
 
 	void eliminaGiornoFestivi(int idSel, AsyncCallback<Boolean> asyncCallback);
 

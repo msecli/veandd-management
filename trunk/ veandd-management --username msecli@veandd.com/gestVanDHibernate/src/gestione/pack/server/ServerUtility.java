@@ -28,6 +28,7 @@ import gestione.pack.shared.DettaglioIntervalliCommesse;
 import gestione.pack.shared.DettaglioOreGiornaliere;
 import gestione.pack.shared.Fattura;
 import gestione.pack.shared.FoglioFatturazione;
+import gestione.pack.shared.GiorniFestivi;
 import gestione.pack.shared.Ordine;
 import gestione.pack.shared.PeriodoSbloccoGiorni;
 
@@ -129,7 +130,7 @@ public class ServerUtility {
 
 */
 	
-	public static int calcolaOreLavorativeMese(Date giornoRiferimento, String orePreviste) {
+	public static int calcolaOreLavorativeMese(Date giornoRiferimento, String orePreviste, String sede) {
 		String data=new String();
 		String mese=new String();
 		String anno= new String();
@@ -167,7 +168,7 @@ public class ServerUtility {
 				anno=formatter.format(date);
 				formatter = new SimpleDateFormat("MMM",Locale.ITALIAN);
 				mese=formatter.format(date);
-			    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
+			   // mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
 			    formatter= new SimpleDateFormat("dd");
 			    daydd=formatter.format(date);
 			    
@@ -177,16 +178,48 @@ public class ServerUtility {
 				e.printStackTrace();
 			}
 			
-			if(giorno.compareTo("Sun")!=0 && giorno.compareTo("Sat")!=0 && !isFestivo(dataCompleta)) 
+			if(giorno.compareTo("Sun")!=0 && giorno.compareTo("Sat")!=0 && !isFestivo(dataCompleta, sede)) 
 				oreLavorative= oreLavorative + Integer.parseInt(orePreviste);			
 		}
 		return oreLavorative;
 	}
 	
 	
-	public static Boolean isFestivo(String dataCompleta){
-		//TODO crearne una versione dinamica
+	@SuppressWarnings("unchecked")
+	public static Boolean isFestivo(String dataCompleta, String sede){
 		
+		List<GiorniFestivi> listaG= new ArrayList<GiorniFestivi>();
+		DateFormat formatter = new SimpleDateFormat("yyyy-MMM-dd", Locale.ITALIAN) ; 
+		String data= new String();
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {
+			tx = session.beginTransaction();
+			
+			listaG=(List<GiorniFestivi>)session.createQuery("from GiorniFestivi").list();
+					
+			tx.commit();	
+		} catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return false;
+		} finally {
+			session.close();
+		}		
+		
+		for(GiorniFestivi g: listaG){			
+			data=formatter.format(g.getGiorno());
+			if(data.compareTo(dataCompleta)==0)
+				if(g.getSede().compareTo("Tutti")==0)
+					return true;
+				else
+					if(g.getSede().compareTo(sede)==0)
+						return true;
+		}
+		/*
 		if(dataCompleta.compareTo("2013-Apr-01")==0)
 			return true;	
 		if(dataCompleta.compareTo("2013-Apr-25")==0)
@@ -207,7 +240,7 @@ public class ServerUtility {
 			return true;
 		if(dataCompleta.compareTo("2013-Dic-26")==0)
 			return true;
-	
+		 */
 		return false;
 	}
 	
@@ -1743,7 +1776,7 @@ public class ServerUtility {
 	}
 	
 	
-	public static int getOreAnno() {//TODO passare anno
+	public static int getOreAnno(String sede) {//TODO passare anno
 		String data=new String();
 		String mese=new String();
 		String anno= new String();
@@ -1780,7 +1813,7 @@ public class ServerUtility {
 					anno=formatter.format(date);
 					formatter = new SimpleDateFormat("MMM",Locale.ITALIAN);
 					mese=formatter.format(date);
-				    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
+				   // mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
 				    formatter= new SimpleDateFormat("dd");
 				    daydd=formatter.format(date);
 				    
@@ -1790,10 +1823,9 @@ public class ServerUtility {
 					e.printStackTrace();
 				}
 				
-				if(giorno.compareTo("Sun")!=0 && giorno.compareTo("Sat")!=0 && !isFestivo(dataCompleta)) //TODO creare uno strumento per l'aggiunta di date festive/chiusura
+				if(giorno.compareTo("Sun")!=0 && giorno.compareTo("Sat")!=0 && !isFestivo(dataCompleta, sede))
 					oreLavorative= oreLavorative + Integer.parseInt("8");			
-			}
-						
+			}					
 		}					
 		return 1760; //per 2013
 	}
@@ -1950,7 +1982,7 @@ public class ServerUtility {
 	}
 
 	
-	public static String checkTariffa(int codCommessa) {
+	/*public static String checkTariffa(int codCommessa) {
 		
 		//c'è l'ordine quale prendo se ci sono più tariffe??????????????
 		
@@ -1961,9 +1993,7 @@ public class ServerUtility {
 		try{
 			tx=session.getTransaction();
 			
-			c=(Commessa)session.get(Commessa.class, codCommessa);
-			
-			
+			c=(Commessa)session.get(Commessa.class, codCommessa);		
 			
 			tx.commit();			
 			
@@ -1976,7 +2006,7 @@ public class ServerUtility {
 			session.close();
 		}		
 		return null;
-	}
+	}*/
 
 	
 /*
@@ -2302,7 +2332,7 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 	
 
 	@SuppressWarnings("unchecked")
-	public static String confrontaDataSblocco(Date giornoRiferimento) {
+	public static String confrontaDataSblocco(Date giornoRiferimento, String sede) {
 		
 		List<PeriodoSbloccoGiorni> listaP= new ArrayList<PeriodoSbloccoGiorni>();
 		Date dataInizio= new Date();
@@ -2319,10 +2349,12 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 			for(PeriodoSbloccoGiorni p:listaP){
 				dataInizio=p.getDataInizio();
 				dataFine=p.getDataFine();
-				if(giornoRiferimento.compareTo(dataInizio)>=0 && giornoRiferimento.compareTo(dataFine)<=0){
-					sbloccata="Si";
-					return sbloccata;
-				}				
+				if(giornoRiferimento.compareTo(dataInizio)>=0 && giornoRiferimento.compareTo(dataFine)<=0)
+					if(p.getSede().compareTo("Tutti")==0)
+						return "Si";
+					else
+						if(p.getSede().compareTo(sede)==0)
+							return "Si";							
 			}			
 			tx.commit();
 			

@@ -375,7 +375,7 @@ public interface AdministrationService extends RemoteService {
 
 	boolean eliminaPeriodoSblocco(int idSel)throws IllegalArgumentException;
 
-	boolean inserisciGiornoFestivo(Date giorno)throws IllegalArgumentException;
+	boolean inserisciGiornoFestivo(Date giorno, String sede);
 
 	boolean eliminaGiornoFestivi(int idSel)throws IllegalArgumentException;
 
