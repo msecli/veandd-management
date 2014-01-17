@@ -95,6 +95,7 @@ import gestione.pack.shared.Fattura;
 import gestione.pack.shared.FoglioFatturazione;
 import gestione.pack.shared.FoglioOreMese;
 import gestione.pack.shared.GiorniFestivi;
+import gestione.pack.shared.LogErrori;
 import gestione.pack.shared.Offerta;
 import gestione.pack.shared.Ordine;
 import gestione.pack.shared.PeriodoSbloccoGiorni;
@@ -131,8 +132,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 			
 			Personale p1=new Personale();
-			Personale p = new Personale();		
-			
+			Personale p = new Personale();	
 			p.setNome(nome);
 			p.setCognome(cognome);
 			p.setNumeroBadge(nBadge);
@@ -167,7 +167,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						p1=(Personale)session.createQuery("from Personale where numeroBadge=:numeroBadge or username=:username")
 							.setParameter("numeroBadge", nBadge).setParameter("username", username).uniqueResult();
 					
-					if(p1==null){									
+					if(p1==null){		
 						session.save(p);
 						tx.commit();
 						return true;
@@ -5724,7 +5724,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 
 
-	//TODO modifiche per tariffe idAttivita
+	
 	@SuppressWarnings({ "unchecked"})
 	@Override
 	public FoglioFatturazioneModel getDatiFatturazionePerOrdine(String numeroCommessa, String mese ,int idAttivita)throws IllegalArgumentException {
@@ -5795,10 +5795,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				sommaVariazioniSal=ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, c_pa.getSalAttuale());
 				sommaVariazioniPcl=ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, c_pa.getPclAttuale());
 			
-				//TODO sostituito
-				/*f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:id and meseCorrente=:mese").setParameter("id", codCommessa)
-						.setParameter("mese", mese).uniqueResult();*/
-				
 				f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:id and meseCorrente=:mese and attivitaOrdine=:attivitaOrdine").setParameter("id", codCommessa)
 						.setParameter("mese", mese).setParameter("attivitaOrdine", idAttivita).uniqueResult();
 				if(f==null)
@@ -5841,12 +5837,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					}
 					//---
 					
-					//TODO sostituito
 					for(AttivitaOrdine a:o.getAttivitaOrdines())
 						if(a.getIdAttivitaOrdine()==idAttivita)
 							tariffaUtilizzata=a.getTariffaAttivita();					
-					//tariffaUtilizzata=o.getTariffaOraria();
-					
+										
 					String numOrdine=o.getCodiceOrdine();
 					String importo=o.getImporto();
 					if(importo==null)
@@ -5866,9 +5860,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				
 			}else{ //Non esiste la Pa
 				
-				//TODO sostituito
-				/*f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:id and meseCorrente=:mese").setParameter("id", codCommessa)
-						.setParameter("mese", mese).uniqueResult();*/
 				f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:id and meseCorrente=:mese and attivitaOrdine=:attivitaOrdine").setParameter("id", codCommessa)
 						.setParameter("mese", mese).setParameter("attivitaOrdine", idAttivita).uniqueResult();
 				if(f==null)
@@ -5923,12 +5914,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							
 				}else{	
 					
-					//TODO sostituito
 					for(AttivitaOrdine a:o.getAttivitaOrdines())
 						if(a.getIdAttivitaOrdine()==idAttivita)
 							tariffaUtilizzata=a.getTariffaAttivita();					
-					//tariffaUtilizzata=o.getTariffaOraria();
-					
+										
 					String numOrdine=o.getCodiceOrdine();
 					
 					String importo=o.getImporto();
@@ -6094,7 +6083,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}	
 	
 
-	//TODO idAttività per più tariffe
 	@Override
 	public boolean insertDatiFoglioFatturazione(String oreEseguite,
 			String salIniziale, String pclIniziale, String oreFatturare, String importoFatturare,
@@ -6135,7 +6123,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			}
 			else o=null;
 							
-			//TODO inserito condizione idAttivita
 			f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:idCommessa and meseCorrente=:mese and attivitaOrdine=:idAttivita")
 					.setParameter("idAttivita", idAttivita).setParameter("idCommessa", idCommessa).setParameter("mese", meseCorrente).uniqueResult();
 			if(f==null)
@@ -6201,7 +6188,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 
 
-	//TODO modifiche per tariffe
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<DatiFatturazioneMeseModel> getReportDatiFatturazioneMese(String mese) {
@@ -6245,9 +6231,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		try {
 			tx = session.beginTransaction();
 		
-			//393
-		//	FoglioFatturazione f2= new FoglioFatturazione();
-			//f2=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where idFoglioFatturazione=:id").setParameter("id", "398").uniqueResult();
 			listaFF=(List<FoglioFatturazione>)session.createQuery("from FoglioFatturazione where meseCorrente=:mese").setParameter("mese", mese).list();
 			for(FoglioFatturazione f: listaFF){	
 				
@@ -6274,7 +6257,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					margine=Float.valueOf(ServerUtility.getOreCentesimi(oreMargine));
 					importoEffettivo=Float.valueOf(f.getImportoRealeFatturato());
 					
-					//TODO aggiunto for if per attivitaordine
 					for(AttivitaOrdine a:o.getAttivitaOrdines())
 						if(a.getIdAttivitaOrdine()==f.getAttivitaOrdine()){
 							
@@ -6307,37 +6289,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			}			
 			
 			tx.commit();
-			
-			/*List<DatiFatturazioneMeseModel> listaApp= new ArrayList<DatiFatturazioneMeseModel>();
-			listaApp.addAll(listaDati);
-			
-			for(String pm:matricolePM){
-				for(DatiFatturazioneMeseModel df:listaApp){
-					if(df.getPM().compareTo(pm)==0){
-						totOreEseguite=ServerUtility.aggiornaTotGenerale(totOreEseguite, d.format(df.getOreEseguite()));
-						totOreFatturate=ServerUtility.aggiornaTotGenerale(totOreFatturate, d.format(df.getOreFatturate()));
-						totVarSal=ServerUtility.aggiornaTotGenerale(totVarSal, d.format(df.getVariazioneSal()));
-						totVarPcl=ServerUtility.aggiornaTotGenerale(totVarPcl, d.format(df.getVariazionePcl()));
-						totImport=totImport+Float.valueOf(df.getOreFatturate())*df.getTariffaOraria();
-						totOreScaricate=ServerUtility.aggiornaTotGenerale(totOreScaricate, d.format(df.get("oreScaricate")));
-						totOreMargine=ServerUtility.aggiornaTotGenerale(totOreMargine, d.format(df.getMargine()));
-						totImportoSal=totImportoSal+Float.valueOf(df.getVariazioneSal())*df.getTariffaOraria();
-						totImportoPcl=totImportoPcl+Float.valueOf(df.getVariazionePcl())*df.getTariffaOraria();											
-					}				
-				}	
-				datiModel=new DatiFatturazioneMeseModel(pm, "TOTALE", "", "", "",Float.valueOf(totOreEseguite), Float.valueOf(totOreFatturate), 
-						Float.valueOf("0"),totImport, Float.valueOf(totVarSal), totImportoSal, Float.valueOf(totVarPcl), totImportoPcl, 
-						Float.valueOf(totOreScaricate), Float.valueOf(totOreMargine), "");
-				
-				listaDati.add(datiModel);
-				totOreEseguite="0.00";
-				totOreFatturate="0.00";
-				totVarSal="0.00";
-				totVarPcl="0.00";
-				totImport=(float) 0;
-				totOreScaricate="0.00";
-				totOreMargine="0.00";
-			}*/
 			
 			return listaDati;
 		}catch (Exception e) {
@@ -6397,7 +6348,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 
 
-	//TODO modifiche per tariffe
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<DatiFatturazioneCommessaModel> getRiepilogoDatiFatturazioneCommessa(String commessaSelected) throws IllegalArgumentException {
@@ -6481,13 +6431,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						if(!c.getOrdines().isEmpty()){
 							o=c.getOrdines().iterator().next();
 							
-							//TODO selezione tariffa da attivitaordine
 							for(AttivitaOrdine a:o.getAttivitaOrdines())
 								if(a.getIdAttivitaOrdine()==f.getAttivitaOrdine())
 									tariffa=a.getTariffaAttivita();
 								
-							//tariffa=o.getTariffaOraria();
-													
 							if(f.getMeseCorrente().compareTo("Mag2013")==0){//se è stato compilato il mese di maggio2013 aggiungo le ore fatturate in quel mese
 								oreOrdineIniziali=ServerUtility.aggiornaTotGenerale(oreOrdineIniziali, f.getOreFatturare());
 								
@@ -6549,7 +6496,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}
 	}
 	
-	//TODO modifica per tariffe
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<RiepilogoOreTotaliCommesse> getElencoCommesseSuFoglioFatturazione(String numCommessa,
@@ -6602,10 +6549,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							oggettoOrdine=ordine.getDescrizioneAttivita();
 							listaAttOrdine.addAll(ordine.getAttivitaOrdines());
 							
-							//TODO aggiunta ricerca attivita giusta
 							for(AttivitaOrdine att:listaAttOrdine){
 							
-								//TODO controllo anche se attivita è 0 su foglio fatturazione
 								listaFF.addAll(comm.getFoglioFatturaziones());
 								if(listaFF.isEmpty())
 									flagCompilato="No";
@@ -6812,8 +6757,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			return listaRiep;
 	}
 
-	
-	//TODO modifiche per tariffe su tariffa utilizzata
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<RiepilogoSALPCLModel> getRiepilogoSalPcl(String data,
@@ -7019,8 +6963,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 								else{
 									importo=ServerUtility.calcolaImporto(tariffaUtilizzata, ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f.getVariazioneSAL()));
 									importoMese=ServerUtility.calcolaImporto(tariffaUtilizzata, f.getVariazioneSAL());
-									
-									//TODO controllare che se la variazione c'è allora devo cmq farlo vedere!
 									
 									if(Float.valueOf(ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f.getVariazioneSAL()))!=0){
 										riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
@@ -7276,8 +7218,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				}
 					
 				listaNomiCommesse.clear();
-				listaC.clear();				
-					
+				listaC.clear();								
 			}
 				
 			tx.commit();

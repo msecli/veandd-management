@@ -58,6 +58,7 @@
       <mapping class="gestione.pack.shared.Fattura"/>
       <mapping class="gestione.pack.shared.PeriodoSbloccoGiorni"/>
       <mapping class="gestione.pack.shared.GiorniFestivi"/>
+      <mapping class="gestione.pack.shared.LogErrori"/>
       
 </session-factory>
  
