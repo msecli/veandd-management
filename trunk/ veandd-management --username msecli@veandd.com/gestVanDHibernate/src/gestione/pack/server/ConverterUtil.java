@@ -42,23 +42,33 @@ public class ConverterUtil {
 	@SuppressWarnings("unchecked")
 	public static List<Personale> getPersonale()throws IllegalArgumentException{
 		
+		Boolean esito=true;
+		String errore= new String();
+		
 		List<Personale> listaP= new ArrayList<>();
 		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
 		Transaction tx= null;
 		
 		try {
-			tx=	session.beginTransaction();
-			listaP = (List<Personale>)session.createQuery("from Personale").list();
-			tx.commit();
-			
+				tx=	session.beginTransaction();
+				listaP = (List<Personale>)session.createQuery("from Personale").list();
+				tx.commit();
+				
 		    } catch (Exception e) {
-		    	if (tx!=null)
-		    		tx.rollback();		    	
-		      e.printStackTrace();
+		    	esito=false;
+		    	e.printStackTrace();
+	    		errore=e.getMessage();
+		    	if (tx!=null)		    		
+		    		tx.rollback();	    		
+		    	
 		    } finally {
-		        //session.close();
-		    }			
-		
+		    	if(!esito){
+		        	ServerLogFunction.logErrorMessage("ConverterUtil.getPersonale", new Date(), "", "Error", errore);
+		        	return null;
+		    	}
+		    	else
+		    		ServerLogFunction.logOkMessage("ConverterUtil.getPersonale", new Date(), "", "Success");
+		    }					
 		return listaP;
 	}	
 	
@@ -69,10 +79,8 @@ public class ConverterUtil {
 				p.getTipologiaOrario(), p.getTipologiaLavoratore(), p.getGruppoLavoro(), p.getCostoOrario(), p.getCostoStruttura(), p.getSede(), p.getSedeOperativa(), p.getOreDirette(), 
 				p.getOreIndirette(), p.getOrePermessi(), p.getOreFerie(), p.getOreExFest(), p.getOreRecupero());
 		
-		return pm;
-	
-	}
-	
+		return pm;	
+	}	
 	
 
 //----------------Clienti---------------------------------------
@@ -86,13 +94,13 @@ public class ConverterUtil {
 			
 		return cliente;
 	
-	}
-	
+	}	
 	
 	
 	@SuppressWarnings("unchecked")
 	public static List<Cliente> getClienti() throws IllegalArgumentException {
-		
+		Boolean esito=true;
+		String errore= new String();
 		List<Cliente> listaC= new ArrayList<>();
 		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
 		Transaction tx= null;
@@ -103,11 +111,18 @@ public class ConverterUtil {
 			tx.commit();
 			
 		    } catch (Exception e) {
-		    	if (tx!=null)
-		    		tx.rollback();		    	
-		      e.printStackTrace();
+		    	esito=false;
+		    	e.printStackTrace();
+	    		errore=e.getMessage();
+		    	if (tx!=null)		    		
+		    		tx.rollback();	 
 		    } finally {
-		        //session.close();
+		    	if(!esito){
+		        	ServerLogFunction.logErrorMessage("ConverterUtil.getClienti", new Date(), "", "Error", errore);
+		        	return null;
+		    	}
+		    	else
+		    		ServerLogFunction.logOkMessage("ConverterUtil.getClienti", new Date(), "", "Success");
 		    }			
 		
 		return listaC;
@@ -116,53 +131,74 @@ public class ConverterUtil {
 
 //--------------------RDA----------------------------------
 	
-		@SuppressWarnings("unchecked")
-		public static Set<Rda> getRda() {
+	@SuppressWarnings("unchecked")
+	public static Set<Rda> getRda() {
+		Boolean esito=true;
+		String errore= new String();
 			
-			Set<Rda> rdas=new HashSet<>();
-			List<Rda> listaApp=new ArrayList<>();	
-					
-			Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
-			Transaction tx=null;
+		Set<Rda> rdas=new HashSet<>();
+		List<Rda> listaApp=new ArrayList<>();						
+		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
+		Transaction tx=null;
 				
-			try {
-				tx=	session.beginTransaction();		
-							
-				listaApp = (List<Rda>)session.createQuery("from Rda").list();			
-				rdas.addAll(listaApp);
-				tx.commit();
+		try {
+			tx=	session.beginTransaction();								
+			listaApp = (List<Rda>)session.createQuery("from Rda").list();			
+			rdas.addAll(listaApp);
+			tx.commit();
 				
-			    } catch (Exception e) {
-			    	if (tx!=null)
-			    		tx.rollback();		    	
-			      e.printStackTrace();
-			    } 		
-			
-			return rdas;
-		}
-		
-		
-		public static RdaModel rdaToModelConverter(Rda r) {
-			
-			Cliente c=new Cliente();
-			Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
-			Transaction tx= null;
-				
-			try {
-				  tx=	session.beginTransaction();
-				  c=(Cliente)session.createQuery("from Cliente where cod_cliente=:idcliente").setParameter("idcliente", r.getCliente().getCodCliente()).uniqueResult();
-				  tx.commit();
-			     
-			    } catch (Exception e) {
-			    	if (tx!=null)
-			    		tx.rollback();		    	
-			    	e.printStackTrace();
+		    } catch (Exception e) {
+		    	esito=false;
+		    	e.printStackTrace();
+	    		errore=e.getMessage();
+		    	if (tx!=null)		    		
+		    		tx.rollback();
+		    } finally {
+		    	if(!esito){
+		        	ServerLogFunction.logErrorMessage("ConverterUtil.getRda", new Date(), "", "Error", errore);
+		        	return null;
+		    	}
+		    	else
+		    		ServerLogFunction.logOkMessage("ConverterUtil.getRda", new Date(), "", "Success");		
 			    }
+		return rdas;
+	}
+		
+	
+	public static RdaModel rdaToModelConverter(Rda r) {
+		
+		Boolean esito=true;
+		String errore= new String();
+		
+		Cliente c=new Cliente();
+		String ragioneSociale=new String();
+		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
+		Transaction tx= null;
+				
+		try {
+			  tx=session.beginTransaction();
+			  c=(Cliente)session.createQuery("from Cliente where cod_cliente=:idcliente").setParameter("idcliente", r.getCliente().getCodCliente()).uniqueResult();
+			  ragioneSociale=c.getRagioneSociale();
+			  tx.commit();
+		     
+		    } catch (Exception e) {
+		    	esito=false;
+		    	errore=e.getMessage();
+		    	e.printStackTrace();
+		    	if (tx!=null)
+		    		tx.rollback();			    	
+		    }finally{
+		    	if(!esito){
+		    		ServerLogFunction.logErrorMessage("ConverterUtil.rdaToModelConverter", new Date(), "", "Error", errore);
+		        	return null;
+		    	}
+		    	else
+		    		ServerLogFunction.logOkMessage("ConverterUtil.rdaToModelConverter", new Date(), "", "Success");	
+		    }
 			
-			RdaModel rda= new RdaModel(r.getNumeroRda(), r.getCliente().getCodCliente(), r.getCodiceRDA(), c.getRagioneSociale());
-			
-			return rda;
-		}	
+		RdaModel rda= new RdaModel(r.getNumeroRda(), r.getCliente().getCodCliente(), r.getCodiceRDA(),ragioneSociale);
+		return rda;
+	}	
 	
 	
 	
@@ -437,6 +473,9 @@ public class ConverterUtil {
 	@SuppressWarnings("unchecked")
 	public static Set<Commessa> getCommesse(String statoSelected) {
 		
+		Boolean esito=true;
+		String errore= new String();
+		
 		Set<Commessa> setCommesse=new HashSet<>();
 		List<Commessa> lista=new ArrayList<>();				
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
@@ -455,17 +494,24 @@ public class ConverterUtil {
 				lista=(List<Commessa>)session.createQuery("from Commessa").list();
 			
 			setCommesse.addAll(lista);
-			tx.commit();		
-			return setCommesse;
+			tx.commit();				
 			
 		    } catch (Exception e) {
-		    	if (tx!=null)
-		    		tx.rollback();		    	
-		      e.printStackTrace();
-		      return null;
-		    } finally{
-		     session.close();
+		    	esito=false;
+		    	e.printStackTrace();
+	    		errore=e.getMessage();
+		    	if (tx!=null)		    		
+		    		tx.rollback();
+		    } finally {
+		    	session.close();		    	
+		    	if(!esito){
+		        	ServerLogFunction.logErrorMessage("ConverterUtil.getCommesse", new Date(), "", "Error", errore);
+		        	return null;
+		    	}
+		    	else
+		    		ServerLogFunction.logOkMessage("ConverterUtil.getCommesse", new Date(), "", "Success");
 		    }
+		return setCommesse;
 	}
 
 	
@@ -473,7 +519,8 @@ public class ConverterUtil {
 	
 
 	public static List<PersonaleAssociatoModel> associazionePtoAToModelConverter(AssociazionePtoA ass) {
-		
+		Boolean esito=true;
+		String errore= new String();
 		List<PersonaleAssociatoModel> pModelList= new ArrayList<PersonaleAssociatoModel>();
 		PersonaleAssociatoModel pModel= new PersonaleAssociatoModel();
 		Attivita a= new Attivita();
@@ -498,12 +545,19 @@ public class ConverterUtil {
 			tx.commit();
 			
 		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
-			e.printStackTrace();
-			
+			esito=false;
+	    	e.printStackTrace();
+    		errore=e.getMessage();
+	    	if (tx!=null)		    		
+	    		tx.rollback();			
 		}finally{
 			session.close();
+			if(!esito){
+	        	ServerLogFunction.logErrorMessage("ConverterUtil.associazionePtoAToModelConverter", new Date(), "", "Error", errore);
+	        	return null;
+	    	}
+	    	else
+	    		ServerLogFunction.logOkMessage("ConverterUtil.associazionePtoAToModelConverter", new Date(), "", "Success");
 		}
 		
 		pModel = new PersonaleAssociatoModel(idAssociazione, commessa, nome, cognome, attivita);
@@ -532,12 +586,11 @@ public class ConverterUtil {
 			return set;
 			
 		} catch (Exception e) {
-			if (tx!=null)
-	    		tx.rollback();	
 			e.printStackTrace();
+			if (tx!=null)
+	    		tx.rollback();				
 			return null;
-		} finally{
-			
+		} finally{		
 			session.close();
 		}
 	

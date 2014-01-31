@@ -6,6 +6,7 @@ import java.util.List;
 
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.UtilityService;
+import gestione.pack.client.layout.panel.DialogRichiestaDipendente;
 import gestione.pack.client.layout.panel.DialogSceltaPeriodoSbloccoCompilazione;
 import gestione.pack.client.layout.panel.PanelAttribuzioneOreColocationCollaboratori;
 import gestione.pack.client.layout.panel.PanelEditPasswordUtenti;
@@ -837,6 +838,22 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    });
 	    btnTools.setWidth("100%");
 	    cp.add(btnTools);
+	    
+	    Button btnRichieste = new Button();
+	    btnRichieste.setToolTip("Richieste");
+	    btnRichieste.setHeight(65);
+	    btnRichieste.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.tools()));
+	    btnRichieste.setIconAlign(IconAlign.BOTTOM);
+	    btnRichieste.setWidth("100%");
+	    btnRichieste.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	    
+	        	DialogRichiestaDipendente d= new DialogRichiestaDipendente("");
+	        	d.show();
+	       }      
+	    });
+	    btnTools.setWidth("100%");
+	    cp.add(btnRichieste);
 	    
 	    panel.add(cp);
 	    	    

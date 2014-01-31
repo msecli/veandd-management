@@ -151,5 +151,8 @@ public interface MyImages extends ClientBundle{
 	
 	@Source("Icone/repair.png")
 	ImageResource tools();
+	
+	@Source("Icone/confirmBig.png")
+	ImageResource confirmBig();
 }
 
