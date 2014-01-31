@@ -59,6 +59,9 @@
       <mapping class="gestione.pack.shared.PeriodoSbloccoGiorni"/>
       <mapping class="gestione.pack.shared.GiorniFestivi"/>
       <mapping class="gestione.pack.shared.LogErrori"/>
+      <mapping class="gestione.pack.shared.RichiesteIt"/>
+      <mapping class="gestione.pack.shared.AnagraficaHardware"/>
+      <mapping class="gestione.pack.shared.AssociazionePtoHw"/>
       
 </session-factory>
  

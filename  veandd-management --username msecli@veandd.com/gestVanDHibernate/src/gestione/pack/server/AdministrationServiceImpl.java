@@ -130,7 +130,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	public boolean insertDataPersonale(String nome, String cognome, String username, String password, String nBadge, String ruolo, String tipoOrario, String tipoLavoratore,
 			String gruppoLavoro, String costoOrario,  String costoStruttura,String sede, String sedeOperativa,  String oreDirette, String oreIndirette,  String permessi, String ferie, String ext, String oreRecupero)throws IllegalArgumentException {
 		
-			
+		Boolean esito=true;
+		String errore= new String();
+		
 			Personale p1=new Personale();
 			Personale p = new Personale();	
 			p.setNome(nome);
@@ -170,36 +172,45 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					if(p1==null){		
 						session.save(p);
 						tx.commit();
+						ServerLogFunction.logOkMessage("insertDataPersonale", new Date(), "", "Success");
 						return true;
 					}
 					else{
 						tx.commit();
+						ServerLogFunction.logFailedMessage("insertDataPersonale", new Date(), "", "Fail", "Username o n°Badge già presenti!");
 						return false;
 					}
 															
 			    } catch (Exception e) {
-			    	if (tx!=null)
-			    		tx.rollback();		    	
-			      e.printStackTrace();
-			      return false;
+			    	esito=false;
+			    	errore=e.getMessage();
+		    		e.printStackTrace();
+			    	if (tx!=null)    	
+			    		tx.rollback();
+			    	return false;
 			    } finally {
-			    	//session.close();
+			    	 if(!esito){
+				        ServerLogFunction.logErrorMessage("insertDataPersonale", new Date(), "", "Error", errore);
+				        return false;
+			    	 }			    	
 			    }									
-		}
+	}
 	
 	
 	@Override
 	public void editDataPersonale(int id, String nome, String cognome, String username, String password, String nBadge, String ruolo, String tipoOrario, String tipoLavoratore, String gruppoLavoro, 
 			String costoOrario, String costoStruttura, String sede, String sedeOperativa, String oreDirette, String oreIndirette,  String permessi, String ferie, String ext, String oreRecupero) throws IllegalArgumentException {
-				
+			
+		Boolean esito=true;
+		String errore= new String();
+		
 		Personale p = new Personale();
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
 		
-		if(nome.compareTo("PSSWD")!=0){
+		if(nome.compareTo("PSSWD")!=0){//nel caso in qui viene richiamata la funzione dal modulo di modifica password soltanto
 			try {
-				tx=	session.beginTransaction();
-			
+				tx=	session.beginTransaction();			
 				p=(Personale)session.createQuery("from Personale where id_personale=:id").setParameter("id", id).uniqueResult();
 			
 				p.setNome(nome);
@@ -210,6 +221,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				p.setCostoOrario(costoOrario);
 				p.setCostoStruttura(costoStruttura);
 				p.setRuolo(ruolo);
+				
+				//TODO controllo edit username che non può già esserci?
 				p.setUsername(username);
 				//p.setPassword(password);
 				p.setGruppoLavoro(gruppoLavoro);
@@ -225,35 +238,51 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				tx.commit();
 
 			} catch (Exception e) {
-				if (tx!=null)
-					tx.rollback();		    	
+				errore=e.getMessage();
 				e.printStackTrace();
+				esito=false;
+				if (tx!=null)
+					tx.rollback();			
 			} finally {
 				session.close();
+				if(!esito)
+		        	ServerLogFunction.logErrorMessage("editDataPersonale", new Date(), username, "Error", errore);
+				else				
+					ServerLogFunction.logOkMessage("editDataPersonale", new Date(), username, "Success");
 			}
+		
 		}else{
 			try {
 				tx=	session.beginTransaction();
 			
-				p=(Personale)session.createQuery("from Personale where id_personale=:id").setParameter("id", id).uniqueResult();
-							
+				p=(Personale)session.createQuery("from Personale where id_personale=:id").setParameter("id", id).uniqueResult();						
 				p.setPassword(password);
 				
 				tx.commit();
 
 			} catch (Exception e) {
-				if (tx!=null)
-					tx.rollback();		    	
+				esito=false;
+				errore=e.getMessage();
 				e.printStackTrace();
+				if (tx!=null)
+					tx.rollback();
+					
 			} finally {
 				session.close();
+				if(!esito)
+		        	ServerLogFunction.logErrorMessage("editDataPersonale", new Date(), username, "Error", errore);
+				else				
+					ServerLogFunction.logOkMessage("editDataPersonale", new Date(), username, "Success");
 			}
 		}
 	}
 	
-	
+	//TODO boolean
 	@Override
 	public void removeDataPersonale(int id) throws IllegalArgumentException {
+		
+		Boolean esito=true;
+		String errore= new String();
 		
 		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
 		Transaction tx= null;
@@ -264,13 +293,19 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			  p=(Personale)session.get(Personale.class, id);
 			  session.delete(p);
 			  tx.commit();
-		     
+			 
 		    } catch (Exception e) {
-		    	if (tx!=null)
-		    		tx.rollback();		    	
-		    		e.printStackTrace();
+		    	esito=false;
+		    	e.printStackTrace();
+	    		errore=e.getMessage();
+		    	if (tx!=null)		    		
+		    		tx.rollback();	    		
+		    		
 		    } finally {
-		    	//session.close();		      
+		    	if(!esito)
+		        	ServerLogFunction.logErrorMessage("removeDataPersonale", new Date(), "", "Error", errore);
+				else
+					 ServerLogFunction.logOkMessage("removeDataPersonale", new Date(), "", "Success");
 		    }
 	}
 	
@@ -282,25 +317,30 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		List<PersonaleModel> listaDTO = new ArrayList<PersonaleModel>(listaP!=null ? listaP.size() : 0);  
 		    
 		     try{
-					if(listaP!=null){
-					
-						for(Personale p : listaP){	
+					if(listaP!=null){			
+						for(Personale p : listaP)	
 							listaDTO.add(ConverterUtil.personaleToModelConverter(p));
-							}
-						}
 							
-					}catch (Exception e) {
+						ServerLogFunction.logOkMessage("getAllPersonaleModel", new Date(), "", "Success");
+					}else
+						ServerLogFunction.logFailedMessage("getAllPersonaleModel", new Date(), "","Failed", "Lista Personale vuota o nulla!");
+					
+				}catch (Exception e) {
 						e.printStackTrace();
-					} 
+						ServerLogFunction.logErrorMessage("getAllPersonaleModel", new Date(), "", "Error", "Exception:"+e.getMessage());
+				} 
 		     
 			return listaDTO;
-		} 
+	} 
 		
 	
-	//TODO passare invece della ista di stringhe una lista di entity personale, in modo da usare una combobox lato view
+	//TODO passare invece della lista di stringhe una lista di entity personale, in modo da usare una combobox lato view
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<String> getNomePM() throws IllegalArgumentException {
+		
+		Boolean esito=true;
+		String errore= new String();
 		
 		List<Personale> listaP= new ArrayList<Personale>();
 		List<String> listaNomi= new ArrayList<String>();
@@ -309,28 +349,36 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Transaction tx= null;
 		
 		try {
-			  tx=	session.beginTransaction();
-			  listaP=(ArrayList<Personale>)session.createQuery("from Personale where ruolo='PM' or ruolo='DIR'").list();
-			  
+			  tx=session.beginTransaction();
+			  listaP=(ArrayList<Personale>)session.createQuery("from Personale where ruolo='PM' or ruolo='DIR'").list();			  
 			  tx.commit();
 			 
-			  for(Personale p :listaP){	
-			
+			  for(Personale p :listaP)			
 					  listaNomi.add(p.getCognome()+" "+p.getNome());			  
-			  }
-			  return listaNomi;
-		     
+			  	     
 		    } catch (Exception e) {
-		    	if (tx!=null)
+		    	esito= false;
+		    	e.printStackTrace();
+	    		errore=e.getMessage();
+		    	if (tx!=null)		    		
 		    		tx.rollback();		    	
-		    		e.printStackTrace();
+		    }finally{
+		    	if(!esito){
+		    		ServerLogFunction.logErrorMessage("getNomePM", new Date(), "", "Error",errore);
 		    		return null;
-		    }			
+		    	}else
+		    		ServerLogFunction.logOkMessage("getNomePM", new Date(), "", "Success");
+		    }		
+		
+		return listaNomi;
 	}
 	
 	
 	@SuppressWarnings("unchecked")
 	public List<String> getListaDipendenti(String ruolo)throws IllegalArgumentException{	
+		Boolean esito=true;
+		String errore= new String();
+		
 		List<String> listaNomi= new ArrayList<String>();
 		List<Personale> listaP=new ArrayList<Personale>();
 		
@@ -339,27 +387,38 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
 		try {
-			tx=	session.beginTransaction();
-			listaP = (List<Personale>)session.createQuery("from Personale").list();
-			tx.commit();
+				tx=	session.beginTransaction();
+				listaP = (List<Personale>)session.createQuery("from Personale").list();
+				tx.commit();
 			
-			  for(Personale p: listaP){
+				for(Personale p: listaP){
 				  
-				//passare Cognome Nome (ID)
-				nominativoPersonale=(p.getCognome()+" "+p.getNome()+" ("+p.getId_PERSONALE()+")");
-				if(ruolo.compareTo("PM")==0)//ruolo di chi effettua la ricerca
-					if(p.getRuolo().compareTo("DIP")==0)//se è il pm a richiederlo allora preleverò solo i dipendenti
-						listaNomi.add(nominativoPersonale);		
-				if(ruolo.compareTo("PM")!=0)//se non è un PM a richiederlo allora ci saranno tutti i nomi
-					listaNomi.add(nominativoPersonale);					
-			  }
+					//passare Cognome Nome (ID)
+					nominativoPersonale=(p.getCognome()+" "+p.getNome()+" ("+p.getId_PERSONALE()+")");
+					if(ruolo.compareTo("PM")==0)//ruolo di chi effettua la ricerca
+						if(p.getRuolo().compareTo("DIP")==0)//se è il pm a richiederlo allora preleverò solo i dipendenti
+							listaNomi.add(nominativoPersonale);		
+					if(ruolo.compareTo("PM")!=0)//se non è un PM a richiederlo allora ci saranno tutti i nomi
+						listaNomi.add(nominativoPersonale);					
+				}
+			  
 		    } catch (Exception e) {
-		    	if (tx!=null)
-		    		tx.rollback();		    	
-		      e.printStackTrace();
+		    	esito=false;
+		    	errore=e.getMessage();
+	    		e.printStackTrace();
+		    	if (tx!=null)		    		
+		    		tx.rollback();	    				    	
+		    	
 		    } finally {
-		        session.close();
-		    }			
+		    	session.close();
+		    	if(!esito){
+		    		ServerLogFunction.logErrorMessage("getListaDipendenti", new Date(), "", "Error", errore);
+		    		return null;
+		    	}else{		    		
+		    		ServerLogFunction.logOkMessage("getListaDipendenti", new Date(), "", "Success");
+		    	}
+		    }	
+		
 		return listaNomi;
 	}	
 	
@@ -372,6 +431,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		PersonaleModel personaM= new PersonaleModel();
 		List<Personale> listaP=new ArrayList<Personale>();
 		
+		Boolean esito=true;
+		String errore= new String();
+		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
 		try {
@@ -379,7 +441,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			listaP = (List<Personale>)session.createQuery("from Personale").list();
 			tx.commit();
 			
-			  for(Personale p: listaP){
+			for(Personale p: listaP){
 				personaM=new PersonaleModel(p.getId_PERSONALE(), p.getNome(), p.getCognome(), p.getUsername(), 
 						"", "", "", "", "", "", "", "", "",  "",  "",  "",  "",  "",  "",  "");
 				
@@ -388,14 +450,23 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						listaNomi.add(personaM);		
 				if(ruolo.compareTo("PM")!=0)//se non è un PM a richiederlo allora ci saranno tutti i nomi
 				*/
-					listaNomi.add(personaM);					
+				listaNomi.add(personaM);					
 			  }
 		    } catch (Exception e) {
-		    	if (tx!=null)
-		    		tx.rollback();		    	
-		      e.printStackTrace();
+		    	esito=false;
+		    	e.printStackTrace();
+	    		errore=e.getMessage();
+		    	if (tx!=null)	    		
+		    		tx.rollback();		    		
+		      
 		    } finally {
 		        session.close();
+		        if(!esito){
+		        	ServerLogFunction.logErrorMessage("getListaDipendentiModel", new Date(), "", "Error", errore);
+		        	return null;
+		        }
+		        else
+		        	ServerLogFunction.logOkMessage("getListaDipendentiModel", new Date(), "", "Success");
 		    }			
 		return listaNomi;
 	}
@@ -410,102 +481,14 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	 * A livello db il fatto che rda possa avere più offerte e ordini è dovuto al fatto che erano previste le revisioni da gestire. 
 	 * Non essendo gestite ogni rda avrà un'ordine e un'offerta.
 	 */
-		
-	/*public boolean insertDataRda(int idCliente, String numRda, String ragioneSociale){
-		
-		Rda r=new Rda();
-		Cliente c= new Cliente();
-		
-		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
-		Transaction tx= null;	
-		
-		try {
-			
-			tx=session.beginTransaction();
-			c = (Cliente)session.createQuery("from Cliente where ragioneSociale= :ragSociale").setParameter("ragSociale", ragioneSociale).uniqueResult();	
-					
-			r.setCliente(c);
-			r.setCodiceRDA(numRda);
-		    c.getRdas().add(r);
-		    
-		    session.save(c);
-		    tx.commit();
-		    return true;
-			
-		} catch (Exception e) {
-			if (tx!=null)
-	    		tx.rollback();		    	
-			e.printStackTrace();
-			
-			return false;
-		}
-	}
-	
-	public boolean editDataRda(int idRda, int idCliente, String numRda){
-		
-		Rda r=new Rda();
-				
-		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
-		Transaction tx= null;	
-		
-		try {
-			
-			tx=session.beginTransaction();
-			r = (Rda)session.get(Rda.class, idRda);	
-					
-			r.setCodiceRDA(numRda);
-		    		    
-		    tx.commit();
-			return true;
-		    
-		} catch (Exception e) {
-			if (tx!=null)
-	    		tx.rollback();		    	
-			e.printStackTrace();
-			return false;
-		}				
-	}
-	
-	
-	@Override
-	public boolean deleteDataRda(int idRda) {
-		
-		Rda r= new Rda();
-		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
-		Transaction tx= null;
-				
-		try {
-			  tx=	session.beginTransaction();
-			  r=(Rda)session.createQuery("from Rda where numero_rda =:idrda").setParameter("idrda", idRda).uniqueResult();
-			  
-			  for(Offerta o: r.getOffertas()){
-				  
-				  o.setRda(null);
-			  }
-			  
-			  for(Ordine or: r.getOrdines()){
-				  or.setRda(null);
-			  }
-			  
-			  session.delete(r);
-			  tx.commit();
-			  
-			  return true;
-		     
-		    } catch (Exception e) {
-		    	if (tx!=null)
-		    		tx.rollback();		    	
-		    		e.printStackTrace();
-		    		return false;
-		    }		
-	}
-	*/
-	
+
 	
 	@Override
 	public boolean eliminaAssociazioneOrdine(String numeroOrdine)
 			throws IllegalArgumentException {
 		
+		Boolean esito=true;
+		String errore= new String();
 		//Chiudo l'ordine e libero la commessa (non lo elimino)
 		Ordine o=new Ordine();
 		
@@ -514,51 +497,69 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		try {
 			
-			tx=session.beginTransaction();
-				
+			tx=session.beginTransaction();			
 			o=(Ordine)session.createQuery("from Ordine where codiceOrdine=:codiceOrdine")
 					.setParameter("codiceOrdine", numeroOrdine).uniqueResult();
-			
-			//o.setStatoOrdine("C");
-			o.setCommessa(null);		
+		
+			o.setCommessa(null);
 			session.save(o);
-			
-		    tx.commit();	    
-		    return true;
-			
+		    tx.commit();	
+		    
 		} catch (Exception e) {
+			esito=false;
+			e.printStackTrace();
+			errore=e.getMessage();
 			if (tx!=null)
 	    		tx.rollback();		    	
-			e.printStackTrace();
-			return false;
+		}finally{			
+			if(!esito){
+				ServerLogFunction.logErrorMessage("eliminaAssociazioneOrdine", new Date(), numeroOrdine, "Error", errore);
+				return false;
+			}else
+				ServerLogFunction.logOkMessage("eliminaAssociazioneOrdine", new Date(), numeroOrdine, "Success");
 		}
+		return true;
 	}
 	
 	
 	public List<RdaModel> getAllRdaModel() throws IllegalArgumentException {		
+		
+		Boolean esito=true;
+		String errore= new String();
+		
 		Set<Rda> listaR =  ConverterUtil.getRda();  
 		List<RdaModel> listaM = new ArrayList<RdaModel>(listaR!=null ? listaR.size() : 0);  
 				    
-		     try{
-					if(listaR!=null){
-					
-						for(Rda r : listaR){	
-							listaM.add(ConverterUtil.rdaToModelConverter(r));
-							}
-						}
-					
-					return listaM;	
-						
-				}catch (Exception e) {
-						e.printStackTrace();			
+		try{
+			
+			if(listaR!=null)
+				for(Rda r : listaR)	
+					listaM.add(ConverterUtil.rdaToModelConverter(r));				
+			else{
+					ServerLogFunction.logFailedMessage("getAllRdaModel", new Date(), "", "Failed","Lista Rda vuota o nulla!");
+					return listaM;
+			}
+															
+			}catch (Exception e) {
+				esito=false;
+				errore=e.getMessage();
+				e.printStackTrace();			
+				
+			}finally{
+				if(!esito){
+					ServerLogFunction.logErrorMessage("getAllRdaModel", new Date(), "", "Error", errore);
 					return null;
-				} 	
+				}else
+					ServerLogFunction.logOkMessage("getAllRdaModel", new Date(), "", "Success");
+			}
+		return listaM;
 	}
 	
 	
 	@SuppressWarnings("unchecked")
 	public List<String> getAllNumeroRdo() throws IllegalArgumentException {
-		
+		Boolean esito=true;
+		String errore= new String();
 		List<String> listaRdo= new ArrayList<String>();
 		List<Rda> lista=new ArrayList<Rda>();
 				
@@ -569,25 +570,33 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			  tx=	session.beginTransaction();
 			  lista=(List<Rda>)session.createQuery("from Rda").list();
 			  
-			  for(Rda r:lista){
-				  
+			  for(Rda r:lista)				  
 				  listaRdo.add(r.getCodiceRDA()+"("+r.getCliente().getRagioneSociale()+")"); //il codice che rappresenta il numero effettivo della Rdo
-			  }
 			  
 			  tx.commit();
-			  return listaRdo;	     
+			  	     
 		    } catch (Exception e) {
-		    	if (tx!=null)
-		    		tx.rollback();		    	
+		    	esito=false;
+		    	errore=e.getMessage();
 		    	e.printStackTrace();
-		    	return null;
+		    	if (tx!=null)
+		    		tx.rollback();	    	
+		    }finally{
+		    	if(!esito){
+		    		ServerLogFunction.logErrorMessage("getAllNumeroRdo", new Date(), "", "Error", errore);
+					return null;
+		    	}else
+		    		ServerLogFunction.logOkMessage("getAllNumeroRdo", new Date(), "", "Success");
 		    }
+		return listaRdo;
 	}
 	
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<RdoCompletaModel> getAllRdoCompletaModel()	throws IllegalArgumentException {
+		Boolean esito=true;
+		String errore= new String();
 		List<Rda> lista=new ArrayList<Rda>();
 		List<RdoCompletaModel> listaM= new ArrayList<RdoCompletaModel>();
 		RdoCompletaModel rdoM= new RdoCompletaModel();
@@ -689,69 +698,33 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				  statoOrdine="N";					  
 			  }  
 			  
-			  tx.commit();
-			  return listaM;
+			  tx.commit();		  
 			  
 		    } catch (Exception e) {
-		    	if (tx!=null)
-		    		tx.rollback();		    	
+		    	esito=false;
 		    	e.printStackTrace();
-		    	return null;
+		    	errore=e.getMessage();
+		    	if (tx!=null)
+		    		tx.rollback();		    		    	
 		    }finally{
 		    	session.close();
+		    	if(!esito){
+		    		ServerLogFunction.logErrorMessage("getAllRdoCompletaModel", new Date(), "", "Error", errore);
+			    	return null;
+		    	}else
+		    		ServerLogFunction.logOkMessage("getAllRdoCompletaModel", new Date(), "", "Success");
 		    }		
+		return listaM;
 	}
 	
 	
-	@Override//TODO 1 modifica per più tariffe
+	@Override
 	public boolean saveRdoCompleta(String numRdo, String cliente,
 			String numOfferta, Date dataOfferta, String importo,
 			String numOrdine, String descrizione, String elementoWbs, String conto, 
 			String prCenter, String bem, Date dataInizio,
 			Date dataFine, String tariffa, String numRisorse, String oreDisp,
 			String oreRes, List<TariffaOrdineModel>listaTar, String importoOrdine, String importoResiduoOrdine) throws IllegalArgumentException {
-		/*
-		Rda r=new Rda();
-		Cliente c= new Cliente();
-		
-		int id;
-				
-		Session session= MyHibernateUtil.getSessionFactory().openSession();
-		Transaction tx= null;	
-		
-		try {
-			//non potendo fare riferimento al numero Rdo come identificatore univoco, prelevo l'ultimo id e 
-			tx=session.beginTransaction();
-			c = (Cliente)session.createQuery("from Cliente where ragioneSociale= :ragSociale").setParameter("ragSociale", cliente).uniqueResult();	
-			
-			//Per le query native usare i nomi reali delle tabelle
-			if(session.createSQLQuery("SELECT MAX(NUMERO_RDA) from rda ").uniqueResult()!=null)
-				id=(int)session.createSQLQuery("SELECT MAX(NUMERO_RDA) from rda ").uniqueResult();	
-			else id=1;
-			
-			r.setCliente(c);
-			r.setCodiceRDA(numRdo);
-			r.setNumeroRda(id+1);
-			
-			c.getRdas().add(r);
-			
-			session.save(c);
-			
-			tx.commit();
-			
-			insertDataOfferta(numOfferta, id+1, dataOfferta, descrizione, importo);
-			insertDataOrdine(numOrdine, id+1, dataInizio, dataFine, descrizione, tariffa, numRisorse, oreDisp, oreRes);
-			
-		    return true;
-			
-		} catch (Exception e) {
-			if (tx!=null)
-	    		tx.rollback();		    	
-			e.printStackTrace();		
-			return false;
-		}finally{
-			session.close();
-		}	*/
 		
 		Rda r=new Rda();
 		Cliente c= new Cliente();
@@ -781,6 +754,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 			tx.commit();
 			
+			//TODO aggiungere dei check o boolean
 			insertDataOfferta(numOfferta, id+1, dataOfferta, descrizione, importo);
 			insertDataOrdine(numOrdine, id+1, dataInizio, dataFine, descrizione, "0.00", numRisorse, oreDisp, oreRes, importoOrdine, importoResiduoOrdine);
 			
@@ -790,24 +764,24 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				att.setTariffaAttivita((String)trf.get("tariffaAttivita"));
 				
 				insertTariffeOrdine(numOrdine, att);
-			}
-		    
-			return true;
+			}		
 			
 		} catch (Exception e) {
+			e.printStackTrace();
 			if (tx!=null)
-	    		tx.rollback();		    	
-			e.printStackTrace();		
+	    		tx.rollback();					
 			return false;
 		}finally{
 			session.close();
-		}
+		}		
+		return true;
 	}
 
 	
 	private void insertTariffeOrdine(String numOrdine,
 			AttivitaOrdine attivita) {
-		
+		Boolean esito=true;
+		String errore= new String();
 		Ordine ordine= new Ordine();	
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;	
@@ -824,12 +798,17 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			tx.commit();
 			
 		} catch (Exception e) {
+			esito=false;
+			errore=e.getMessage();
+			e.printStackTrace();	
 			if (tx!=null)
-	    		tx.rollback();		    	
-			e.printStackTrace();		
-			
+	    		tx.rollback();			
 		}finally{
 			session.close();
+			if(!esito)
+				ServerLogFunction.logErrorMessage("insertTariffeOrdine", new Date(), "", "Error", errore);
+	    	else
+	    		ServerLogFunction.logOkMessage("insertTariffeOrdine", new Date(), "", "Success");				
 		}
 	}
 		
@@ -837,6 +816,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	private void insertDataOrdine(String numOrdine, int id,
 			Date dataInizio, Date dataFine, String descrizione, String tariffa,
 			String numRisorse, String oreDisp, String oreRes, String importoOrdine, String importoResiduoOrdine) {
+		Boolean esito=true;
+		String errore= new String();
 		
 		Rda r=new Rda();
 		Ordine o= new Ordine();
@@ -878,16 +859,26 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		    tx.commit();		  
 		    		
 		} catch (Exception e) {
+			esito=false;
+			errore=e.getMessage();
+			e.printStackTrace();	
 			if (tx!=null)
-	    		tx.rollback();		    	
-			e.printStackTrace();
-			
-		}			
+	    		tx.rollback();				
+		}finally{
+			//session.close();
+			if(!esito)
+				ServerLogFunction.logErrorMessage("insertDataOrdine", new Date(), "", "Error", errore);
+	    	else
+	    		ServerLogFunction.logOkMessage("insertDataOrdine", new Date(), "", "Success");				
+		}	
 	}
 
 
 	private void insertDataOfferta(String numOfferta, int i, Date dataOfferta,
 			String descrizione, String importo) {
+		Boolean esito=true;
+		String errore= new String();
+		
 		Rda r=new Rda();
 		Offerta o= new Offerta();
 		
@@ -911,14 +902,21 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		    tx.commit();
 			
 		} catch (Exception e) {
+			esito=false;
+			errore=e.getMessage();
+			e.printStackTrace();	
 			if (tx!=null)
-	    		tx.rollback();		    	
-			e.printStackTrace();
-		}		
+	    		tx.rollback();	
+		}finally{
+			//session.close();
+			if(!esito)
+				ServerLogFunction.logErrorMessage("insertDataOfferta", new Date(), "", "Error", errore);
+	    	else
+	    		ServerLogFunction.logOkMessage("insertDataOfferta", new Date(), "", "Success");				
+		}			
 	}
 	
 	
-	//TODO modifica 2 per più tariffe
 	@Override
 	public boolean editRdoCompleta(int idRdo, String numRdo, String cliente,
 			String numOfferta, Date dataOfferta, String importo,
@@ -927,38 +925,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			Date dataFine, String tariffa, String numRisorse, String oreDisp,
 			String oreRes, List<TariffaOrdineModel>listaTar, String importoOrdine, String importoResiduoOrdine) throws IllegalArgumentException {
 		
-		/*
-		Rda r=new Rda();
-				
-		Session session= MyHibernateUtil.getSessionFactory().openSession();
-		Transaction tx= null;	
-		
-		try {
-			
-			tx=session.beginTransaction();
-				
-			r=(Rda)session.createQuery("from Rda where numero_rda=:idrdo").setParameter("idrdo", idRdo).uniqueResult();
-			
-			r.setCodiceRDA(numRdo);
-			
-			tx.commit();
-			
-			editDataOfferta(numOfferta, idRdo, dataOfferta, descrizione, importo);
-			editDataOrdine(numOrdine, idRdo, dataInizio, dataFine, descrizione, tariffa, numRisorse, oreDisp, oreRes);
-			
-			
-			
-		    return true;
-			
-		} catch (Exception e) {
-			if (tx!=null)
-	    		tx.rollback();		    	
-			e.printStackTrace();		
-			return false;
-		}finally{
-			session.close();
-		}*/
-		
+		Boolean esito=true;
+		String errore= new String();
 		Rda r=new Rda();
 		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
@@ -987,20 +955,32 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				editTariffeOrdine(idRdo, Integer.valueOf(idAtt), tariffaAtt, descrizioneAtt);
 			}			
 			
-		    return true;
+		   
 			
 		} catch (Exception e) {
+			esito=false;
+			errore=e.getMessage();
+			e.printStackTrace();	
 			if (tx!=null)
-	    		tx.rollback();		    	
-			e.printStackTrace();		
-			return false;
+	    		tx.rollback();	
 		}finally{
 			session.close();
+			if(!esito){
+				ServerLogFunction.logErrorMessage("editRdoCompleta", new Date(), "", "Error", errore);
+				return false;
+			}
+	    	else
+	    		ServerLogFunction.logOkMessage("editRdoCompleta", new Date(), "", "Success");	
 		}
+		
+		 return true;
 	}
 	
 
 	private void editTariffeOrdine(int idRdo, int idAtt, String tariffaAtt, String descrizioneAtt) {
+		Boolean esito=true;
+		String errore= new String();
+		
 		Ordine ordine= new Ordine();
 		Rda rda= new Rda();
 		AttivitaOrdine att= new AttivitaOrdine();
@@ -1034,12 +1014,17 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			}
 						
 		} catch (Exception e) {
+			esito=false;
+			errore=e.getMessage();
+			e.printStackTrace();			
 			if (tx!=null)
-	    		tx.rollback();		    	
-			e.printStackTrace();		
-			
+	    		tx.rollback();			
 		}finally{
 			session.close();
+			if(!esito)
+				ServerLogFunction.logErrorMessage("editTariffeOrdine", new Date(), "", "Error", errore);		
+	    	else
+	    		ServerLogFunction.logOkMessage("editTariffeOrdine", new Date(), "", "Success");
 		}
 	}
 
@@ -1047,7 +1032,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	private void editDataOrdine(String numOrdine, int idRdo, Date dataInizio,
 			Date dataFine, String descrizione, String tariffa,
 			String numRisorse, String oreDisp, String oreRes, String importoOrdine, String importoResiduoOrdine) {
-	
+		Boolean esito=true;
+		String errore= new String();
 		Ordine o= new Ordine();
 		//AttivitaOrdine att;
 		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
@@ -1067,7 +1053,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			o.setOreResidueBudget(oreRes);
 			o.setImporto(importoOrdine);
 			o.setImportoResiduo(importoResiduoOrdine);
-	  /*
+			/*
 			List<AttivitaOrdine> listaAttO= new ArrayList<AttivitaOrdine>();
 			listaAttO.addAll(o.getAttivitaOrdines());
 			for(AttivitaOrdine attO:listaAttO){
@@ -1079,18 +1065,26 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			tx.commit();		  
 	    		
 		} catch (Exception e) {
+			esito=false;
+			errore=e.getMessage();
+			e.printStackTrace();			
 			if (tx!=null)
-				tx.rollback();		    	
-			e.printStackTrace();
+	    		tx.rollback();		
+		}finally{
+			if(!esito)
+				ServerLogFunction.logErrorMessage("editDataOrdine", new Date(), numOrdine, "Error", errore);		
+	    	else
+	    		ServerLogFunction.logOkMessage("editDataOrdine", new Date(), numOrdine, "Success");
 		}			
 	}
 
 
 	private void editDataOfferta(String numOfferta, int idRdo,
 			Date dataOfferta, String descrizione, String importo) {
+		Boolean esito=true;
+		String errore= new String();
 		
 		Offerta o = new Offerta();
-
 		Session session = MyHibernateUtil.getSessionFactory()
 				.getCurrentSession();
 		Transaction tx = null;
@@ -1107,15 +1101,24 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			tx.commit();
 
 		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
-			e.printStackTrace();
-		}
+			esito=false;
+			errore=e.getMessage();
+			e.printStackTrace();			
+			if (tx!=null)
+	    		tx.rollback();	
+		}finally{
+			if(!esito)
+				ServerLogFunction.logErrorMessage("editDataOfferta", new Date(), "", "Error", errore);		
+	    	else
+	    		ServerLogFunction.logOkMessage("editDataOfferta", new Date(), "", "Success");
+		}	
 	}
 	
 	
 	@Override
 	public boolean deleteRdoCompleta(int idRdo) throws IllegalArgumentException {
+		Boolean esito=true;
+		String errore= new String();
 		Rda r= new Rda();
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
@@ -1124,32 +1127,40 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			  tx=	session.beginTransaction();
 			  	  
 			  r=(Rda)session.createQuery("from Rda where numero_rda =:idrda").setParameter("idrda", idRdo).uniqueResult();
-			  for(Offerta o: r.getOffertas()){		  
+			  for(Offerta o: r.getOffertas())
 				  session.delete(o);
-			  }
 			  
-			  for(Ordine or: r.getOrdines()){
+			  for(Ordine or: r.getOrdines())
 				  session.delete(or);
-			  }
+			  
 			  session.delete(r);
 			  tx.commit();	  
-			  
-			  return true;
-		     
+	     
 		   } catch (Exception e) {
-		    	if (tx!=null)
-		    		tx.rollback();		    	
-		    		e.printStackTrace();
-		    		return false;
+			   esito=false;
+			   errore=e.getMessage();
+			   e.printStackTrace();			
+			   if (tx!=null)
+				   tx.rollback();	
 		    }finally{
 		    	session.close();
+		    	if(!esito){
+					ServerLogFunction.logErrorMessage("deleteRdoCompleta", new Date(), "", "Error", errore);
+					return false;
+		    	}
+		    	else
+		    		ServerLogFunction.logOkMessage("deleteRdoCompleta", new Date(), "", "Success");
 		    }
+		 return true;
 	}
 
 	
 	@Override
 	public List<TariffaOrdineModel> loadTariffePerOrdine(int idRdo)
 			throws IllegalArgumentException {
+		Boolean esito=true;
+		String errore= new String();
+		
 		List<TariffaOrdineModel> listaTariffe= new ArrayList<TariffaOrdineModel>();
 		List<AttivitaOrdine> listaAtt=new ArrayList<AttivitaOrdine>();
 		Rda rda= new Rda();
@@ -1164,10 +1175,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			  	 
 			  rda=(Rda)session.get(Rda.class, idRdo);
 			  if(rda!=null){
-				  
 				  ordine=rda.getOrdines().iterator().next();
-				  listaAtt.addAll(ordine.getAttivitaOrdines());
-				  
+				  listaAtt.addAll(ordine.getAttivitaOrdines());			  
 			  }
 			  
 			  for(AttivitaOrdine a:listaAtt){
@@ -1177,12 +1186,19 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			  tx.commit();	  
 			   
 		   } catch (Exception e) {
-		    	if (tx!=null)
-		    		tx.rollback();		    	
-		    		e.printStackTrace();
-		    		return null;
+			   esito=false;
+			   errore=e.getMessage();
+			   e.printStackTrace();			
+			   if (tx!=null)
+				   tx.rollback();	
 		    }finally{
 		    	session.close();
+		    	if(!esito){
+					ServerLogFunction.logErrorMessage("loadTariffePerOrdine", new Date(), "", "Error", errore);
+					return null;
+		    	}
+		    	else
+		    		ServerLogFunction.logOkMessage("loadTariffePerOrdine", new Date(), "", "Success");
 		    }
 		
 		return listaTariffe;
@@ -1198,6 +1214,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	public void insertDataCliente(int codCliente, String ragSociale, String codFiscale, String partitaIVA, String codRaggr,	String codFornitore, 
 			String comune, String provincia, String stato, String indirizzo,
 			String cap, String telefono, String fax, String email) throws IllegalArgumentException {
+		Boolean esito=true;
+		String errore= new String();
 		
 		Cliente c = new Cliente();
 		
@@ -1220,12 +1238,21 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Transaction tx= null;		
 		
 		try {
-			tx=	session.beginTransaction();
-			session.save(c);
-			tx.commit();
+				tx=	session.beginTransaction();
+				session.save(c);
+				tx.commit();
 		    } catch (Exception e) {
-		    	e.printStackTrace();
-		    } 
+		    	 esito=false;
+				 errore=e.getMessage();
+				 e.printStackTrace();			
+				 if (tx!=null)
+					 tx.rollback();	
+		    }finally{
+		    	if(!esito)
+					ServerLogFunction.logErrorMessage("insertDataCliente", new Date(), "", "Error", errore);
+		    	else
+		    		ServerLogFunction.logOkMessage("insertDataCliente", new Date(), "", "Success");
+		    }
 	}
 
 
@@ -1233,7 +1260,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	public void editDataCliente(int codCliente, String ragSociale, String codFiscale, String partitaIVA, String codRaggr, String codFornitore,
 			String comune, String provincia, String stato, String indirizzo,
 			String cap, String telefono, String fax, String email) throws IllegalArgumentException {
-										
+			
+		Boolean esito=true;
+		String errore= new String();
 		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
 		Transaction tx= null;
 		
@@ -1259,16 +1288,24 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 			tx.commit();		
 		    } catch (Exception e) {
-		    	if (tx!=null)
-		    		tx.rollback();		    	
-		      e.printStackTrace();
+		    	 esito=false;
+				 errore=e.getMessage();
+				 e.printStackTrace();			
+				 if (tx!=null)
+					 tx.rollback();	
+		    }finally{
+		    	if(!esito)
+					ServerLogFunction.logErrorMessage("editDataCliente", new Date(), "", "Error", errore);
+		    	else
+		    		ServerLogFunction.logOkMessage("editDataCliente", new Date(), "", "Success");
 		    } 			
 	}
 
 
 	@Override
 	public void removeDataCliente(int id) throws IllegalArgumentException {
-		
+		Boolean esito=true;
+		String errore= new String();
 		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
 		Transaction tx= null;
 		Cliente c= new Cliente();
@@ -1280,27 +1317,45 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			  tx.commit();
 		     
 		    } catch (Exception e) {
-		    	if (tx!=null)
-		    		tx.rollback();		    	
-		    		e.printStackTrace();
-		    } 
+		    	 esito=false;
+				 errore=e.getMessage();
+				 e.printStackTrace();			
+				 if (tx!=null)
+					 tx.rollback();	
+		    } finally{
+		    	if(!esito)
+					ServerLogFunction.logErrorMessage("removeDataCliente", new Date(), "", "Error", errore);
+		    	else
+		    		ServerLogFunction.logOkMessage("removeDataCliente", new Date(), "", "Success");
+		    } 	
 	}
 	
 	
 	@Override
 	public List<ClienteModel> getAllClientiModel() throws IllegalArgumentException {
-		
+		Boolean esito=true;
+		String errore= new String();
 		List<Cliente> listaC = (ArrayList<Cliente>) ConverterUtil.getClienti();  
 		List<ClienteModel> listaDTO = new ArrayList<ClienteModel>(listaC!=null ? listaC.size() : 0);  	    
-		     try{
-					if(listaC!=null){
-						for(Cliente c : listaC){	
-							listaDTO.add(ConverterUtil.clienteToModelConverter(c));
-							}
-						}						
-					}catch (Exception e) {
-						e.printStackTrace();
-					} 
+		
+		try{		
+			if(listaC!=null){
+				for(Cliente c : listaC)
+					listaDTO.add(ConverterUtil.clienteToModelConverter(c));
+					
+				ServerLogFunction.logOkMessage("getAllClientiModel", new Date(), "", "Success");
+			}else{
+				ServerLogFunction.logFailedMessage("getAllClientiModel", new Date(), "", "Failed", "Lista Clienti vuota o nulla!");
+				return null;
+			}
+			
+			}catch (Exception e) {
+				 esito=false;
+				 errore=e.getMessage();
+				 e.printStackTrace();	
+				 ServerLogFunction.logErrorMessage("getAllClientiModel", new Date(), "", "Error", errore);
+				 return null;
+			} 
 			return listaDTO;		
 	}
 	
@@ -1319,19 +1374,16 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			  tx=	session.beginTransaction();
 			  listaC=(List<Cliente>)session.createQuery("from Cliente").list();
 			  
-			  for(Cliente c:listaC){
-				  
+			  for(Cliente c:listaC)				  
 				  listaRS.add(c.getRagioneSociale()); //il codice che rappresenta il numero effettivo della Rdo
-			  }
-			  
+			  			  
 			  tx.commit();
 		     
 		    } catch (Exception e) {
+		    	e.printStackTrace();
 		    	if (tx!=null)
 		    		tx.rollback();		    	
-		    	e.printStackTrace();
-		    }
-		
+		    }	
 		return listaRS;
 	}
 	
@@ -1367,15 +1419,15 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				session.close();
 			}
 		
-		return listaCM;
-		
+		return listaCM;		
 	}
 	
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<String> getAllListaOrdini() throws IllegalArgumentException {
-		
+		Boolean esito=true;
+		String errore= new String();
 		List<String> listaOrdini= new ArrayList<String>();
 		List<Ordine> lista=new ArrayList<Ordine>();
 				
@@ -1390,17 +1442,23 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				  if(o.getCommessa()==null && o.getCodiceOrdine().compareTo("#")!=0) //se il codice ordine è # significa che è stata creata la entry nel db ma
 					  																 //non c'è un ordine reale
 				  listaOrdini.add(o.getCodiceOrdine()); //il codice che rappresenta il numero effettivo dell'Ordine
-			  }
-			  
-			  tx.commit();
-			  return listaOrdini;
+			  }		  
+			  tx.commit();			  
 		     
 		    } catch (Exception e) {
-		    	if (tx!=null)
-		    		tx.rollback();		    	
-		    	e.printStackTrace();
-		    	return null;
+		    	 esito=false;
+				 errore=e.getMessage();
+				 e.printStackTrace();	
+				 if (tx != null)
+						tx.rollback();
+		    }finally{
+		    	if(!esito){
+		    		ServerLogFunction.logErrorMessage("getAllListaOrdini", new Date(), "", "Error", errore);
+				    return null;
+		    	}else
+		    		ServerLogFunction.logOkMessage("getAllListaOrdini", new Date(), "", "Success");	    	
 		    }
+		return listaOrdini;
 	}
 
 	
@@ -1409,31 +1467,46 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	@Override
 	public List<CommessaModel> getAllCommesseModel(String pm, String statoSelected) throws IllegalArgumentException {
 
+		Boolean esito=true;
+		String errore= new String();
+		
 		Set<Commessa> listaC = ConverterUtil.getCommesse(statoSelected);
 		List<CommessaModel> listaDTO = new ArrayList<CommessaModel>(listaC != null ? listaC.size() : 0);
 		Ordine o= new Ordine();
 
 		try {
 			if (listaC != null) {
-
-				for (Commessa c : listaC) {
-								
+				for (Commessa c : listaC) {							
 						o=getOrdineByCommessa(c.getCodCommessa());
 					    listaDTO.add(ConverterUtil.commesseToModelConverter(c,o));					    
-				
 				}
-			}
-
-			return listaDTO;
+			}else{
+				ServerLogFunction.logFailedMessage("getAllCommesseModel", new Date(), "", "Failed", errore);
+				return null;
+			}			
 
 		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
+			 esito=false;
+			 errore=e.getMessage();
+			 e.printStackTrace();
+		}finally{
+			if(!esito){
+				ServerLogFunction.logErrorMessage("getAllCommesseModel", new Date(), "", "Error", errore);
+				return null;
+			}
+			else
+				ServerLogFunction.logOkMessage("getAllCommesseModel", new Date(), "", "Success");								
+		}	
+		return listaDTO;
 	}
+	
 	
 	@Override
 	public List<CommessaModel> getAllCommesseModelByPm(String cognomePm) {
+		
+		Boolean esito=true;
+		String errore= new String();
+		
 		Set<Commessa> listaC = ConverterUtil.getCommesse("Tutte");
 		List<CommessaModel> listaDTO = new ArrayList<CommessaModel>(listaC != null ? listaC.size() : 0);
 		Ordine o= new Ordine();
@@ -1457,16 +1530,26 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					}				
 				}
 			}
-			return listaDTO;
+			
 		} catch (Exception e) {
+			esito=false;
+			errore=e.getMessage();
 			e.printStackTrace();
-			return null;
-		}
+		}finally{
+			if(!esito){
+				ServerLogFunction.logErrorMessage("getAllCommesseModelByPm", new Date(), "", "Error", errore);
+				return null;
+			}
+			else
+				ServerLogFunction.logOkMessage("getAllCommesseModelByPm", new Date(), "", "Success");			
+		}		
+		return listaDTO;
 	}
 
 	
 	private Ordine getOrdineByCommessa(int idCommessa) {
-		
+		Boolean esito=true;
+		String errore= new String();
 		Ordine o = new Ordine();
 		Commessa c= new Commessa();
 
@@ -1479,20 +1562,28 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			  
 			  if(c.getOrdines().iterator().hasNext())
 				  o=c.getOrdines().iterator().next();
-			  else o=null;
+			  else
+				  o=null;
 			  
 			  tx.commit();
-			  
-			  return o;
 		     
 		    } catch (Exception e) {
+		    	esito=false;
+				errore=e.getMessage();
+				e.printStackTrace();
 		    	if (tx!=null)
-		    		tx.rollback();		    	
-		    		e.printStackTrace();
-		    		
-		    		return null;
+		    		tx.rollback();		    		    		
+		    }finally{
+		    	if(!esito){
+					ServerLogFunction.logErrorMessage("getOrdineByCommessa", new Date(), String.valueOf("ID commessa ricercata: "+idCommessa), "Error", errore);
+					return null;
+				}
+				/*else
+					ServerLogFunction.logOkMessage("getOrdineByCommessa", new Date(), "", "Success");*/			    	
 		    }
-		}
+		
+		 return o;
+	}
 
 	
 	//Verifica che il record non sia già presente
@@ -1511,6 +1602,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 		} catch (Exception e) {
 			e.printStackTrace();
+			if (tx!=null)
+	    		tx.rollback();
 			return null;
 		}	
 	}
@@ -1520,7 +1613,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	public boolean insertDataCommessa(String numCommessa, String estensione, String tipoCommessa, String pM, String statoCommessa, 
 			/*Date dataInizio,*/String oreLavoro, String oreLavoroResidue, String tariffaSal, String salAttuale, String pclAttuale,
 			String descrizione, String note) {
-		
+		Boolean esito=true;
+		String errore= new String();
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;	
 		Commessa c= new Commessa();
@@ -1548,17 +1642,23 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				tx = session.beginTransaction();
 				session.save(c);
 				tx.commit();
-				return true;
 
 			} catch (Exception e) {
-				if (tx != null)
-					tx.rollback();
+				esito=false;
+				errore=e.getMessage();
 				e.printStackTrace();
-				return false;
+				if (tx != null)
+					tx.rollback();			
 			} finally{
 				session.close();
-			}
-
+				if(!esito){
+					ServerLogFunction.logErrorMessage("insertDataCommessa", new Date(), String.valueOf("Commessa: "+numCommessa), "Error", errore);
+					return false;
+				}
+				else
+					ServerLogFunction.logOkMessage("insertDataCommessa", new Date(), "", "Success");
+			}		
+			return true;
 		} else
 			return false;
 	}
@@ -1569,7 +1669,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			String tipoCommessa, String pM, String statoCommessa, String oreLavoro,String oreLavoroResidue,
 			/*Date dataInizio,*/ String tariffaSal, String salAttuale, String pclAttuale, String descrizione, String note)
 			throws IllegalArgumentException {
-		
+		Boolean esito=true;
+		String errore= new String();
 		Commessa c= new Commessa();
 		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
@@ -1600,24 +1701,31 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			c.setNote(note);
 		    		    
 		    tx.commit();
-		    
-		    return true;
-			
+		
 		} catch (Exception e) {
-			if (tx!=null)
-	    		tx.rollback();		    	
+			esito=false;
+			errore=e.getMessage();
 			e.printStackTrace();
+			if (tx != null)
+				tx.rollback();	
 			
-			return false;
 		} finally{
 			session.close();
-		}		
+			if(!esito){
+				ServerLogFunction.logErrorMessage("editDataCommessa", new Date(), String.valueOf("Commessa: "+numCommessa), "Error", errore);
+				return false;
+			}
+			else
+				ServerLogFunction.logOkMessage("editDataCommessa", new Date(), "", "Success");
+		}	
+		return true;
 	}
 
 
 	@Override
 	public boolean deleteDataCommessa(int idCommessa)	throws IllegalArgumentException {
-		
+		Boolean esito=true;
+		String errore= new String();
 		Commessa c= new Commessa();
 		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
 		Transaction tx= null;
@@ -1631,15 +1739,23 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			  }
 			  
 			  session.delete(c);
-			  tx.commit();		  
-			  return true;
+			  tx.commit();		  		 
 		     
 		    } catch (Exception e) {
-		    	if (tx!=null)
-		    		tx.rollback();		    	
-		    		e.printStackTrace();    		
-		    	return false;
-		    }
+		    	esito=false;
+				errore=e.getMessage();
+				e.printStackTrace();
+				if (tx != null)
+					tx.rollback();	  			    	
+		    }finally{				
+				if(!esito){
+					ServerLogFunction.logErrorMessage("deleteDataCommessa", new Date(), String.valueOf("Commessa: "+String.valueOf(idCommessa)), "Error", errore);
+					return false;
+				}
+				else
+					ServerLogFunction.logOkMessage("deleteDataCommessa", new Date(), "", "Success");
+			}
+		 return true;
 	}
 
 
@@ -1650,6 +1766,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			String descrizione, String tariffaOraria, String numeroRisorse,
 			String numeroOre) {
 		
+		Boolean esito=true;
+		String errore= new String();
 		Rda r=new Rda();
 		Ordine o= new Ordine();
 		Commessa c=new Commessa();
@@ -1675,30 +1793,38 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			o.setOreBudget(numeroOre);
 			o.setOreBudget(numeroOre);
 			
-			r.getOrdines().add(o);
-			
+			r.getOrdines().add(o);			
 			c.getOrdines().add(o);
 		    
 		    session.save(r);
 		    session.save(c);
 		    
 		    tx.commit();
-		    
-		    return true;
 			
 		} catch (Exception e) {
-			if (tx!=null)
-	    		tx.rollback();		    	
+			esito=false;
+			errore=e.getMessage();
 			e.printStackTrace();
-			return false;
+			if (tx != null)
+				tx.rollback();	
+		}finally{				
+			if(!esito){
+				ServerLogFunction.logErrorMessage("associaOrdineCommessa", new Date(), String.valueOf("Commessa: "+String.valueOf(idCommessa)), "Error", errore);
+				return false;
+			}
+			else
+				ServerLogFunction.logOkMessage("associaOrdineCommessa", new Date(), "", "Success");
 		}
+		
+		return true;
 	}
 
 
 	//Associazione su un ordine già presente
 	@Override
 	public boolean associaOrdinePresenteCommessa(String idCommessa,	String numOrdine) {		
-		
+		Boolean esito=true;
+		String errore= new String();
 		Ordine o= new Ordine();
 		Commessa c=new Commessa();
 		
@@ -1716,21 +1842,30 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					
 			session.save(c);			
 		    tx.commit();
-		    
-		    return true;
-			
+	
 		} catch (Exception e) {
-			if (tx!=null)
-	    		tx.rollback();		    	
+			esito=false;
+			errore=e.getMessage();
 			e.printStackTrace();
-			return false;
+			if (tx != null)
+				tx.rollback();
+		}finally{				
+			if(!esito){
+				ServerLogFunction.logErrorMessage("associaOrdineCommessa", new Date(), String.valueOf("Commessa: "+String.valueOf(idCommessa)), "Error", errore);
+				return false;
+			}
+			else
+				ServerLogFunction.logOkMessage("associaOrdineCommessa", new Date(), "", "Success");
 		}
+		
+		 return true;
 	}
 
 
 	@Override
 	public boolean closeCommessa(int idCommessa) {
-		
+		Boolean esito=true;
+		String errore= new String();
 		Commessa c=new Commessa();		
 		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
 		Transaction tx= null;	
@@ -1745,22 +1880,29 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			session.save(c);
 			
 		    tx.commit();
-		    
-		    return true;
-			
 		} catch (Exception e) {
-			if (tx!=null)
-	    		tx.rollback();		    	
+			esito=false;
+			errore=e.getMessage();
 			e.printStackTrace();
-			return false;
-		}
+			if (tx != null)
+				tx.rollback();
+		}finally{				
+			if(!esito){
+				ServerLogFunction.logErrorMessage("closeCommessa", new Date(), String.valueOf("Commessa: "+String.valueOf(idCommessa)), "Error", errore);
+				return false;
+			}
+			else
+				ServerLogFunction.logOkMessage("closeCommessa", new Date(), "", "Success");
+		}		
+		 return true;
 	}
 
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<String> getCommesse() throws IllegalArgumentException {
-		
+		Boolean esito=true;
+		String errore= new String();
 		List<String> listaCommesse= new ArrayList<String>();
 		List<Commessa> lista=new ArrayList<Commessa>();
 				
@@ -1778,20 +1920,30 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				   
 			  }		  
 			  tx.commit();
-			  return listaCommesse;
-		     
+	     
 		    } catch (Exception e) {
-		    	if (tx!=null)
-		    		tx.rollback();		    	
-		    	e.printStackTrace();
-		    	return null;
-		    }
+		    	esito=false;
+				errore=e.getMessage();
+				e.printStackTrace();
+				if (tx != null)
+					tx.rollback();
+		    }finally{				
+				if(!esito){
+					ServerLogFunction.logErrorMessage("getCommesse", new Date(), "", "Error", errore);
+					return null;
+				}
+				else
+					ServerLogFunction.logOkMessage("getCommesse", new Date(), "", "Success");
+			}	
+		 return listaCommesse;
 	}
+	
 	
 	//Richiamata se ad accedere è un PM
 	@SuppressWarnings("unchecked")
 	public List<CommessaModel> getCommesseByPM(String nome, String cognome) throws IllegalArgumentException {
-		
+		Boolean esito=true;
+		String errore= new String();
 		List<CommessaModel> listaCommesse= new ArrayList<CommessaModel>();
 		List<Commessa> lista=new ArrayList<Commessa>();
 		String app=new String();		
@@ -1811,30 +1963,38 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				  else{
 					  app=c.getMatricolaPM();
 					  
-					  //TODO inserito il controllo sulla indexof al 15/11
 					  if(app.indexOf(" ")!=-1){
 						  app=app.substring(0,app.indexOf(" "));//prendo il cognome del pm
 					  if((!c.getAttivitas().iterator().hasNext())&&(app.compareTo(cognome)==0))
 						  listaCommesse.add(new CommessaModel(c.getCodCommessa(), c.getNumeroCommessa(), c.getEstensione(), c.getDenominazioneAttivita()));
-					  }
-					 
+					  }					 
 				  }
 			  }
 			  tx.commit();
-			  return listaCommesse;
-		     
+	     
 		    } catch (Exception e) {
-		    	if (tx!=null)
-		    		tx.rollback();		    	
-		    	e.printStackTrace();
-		    	return null;
-		    }
+		    	esito=false;
+				errore=e.getMessage();
+				e.printStackTrace();
+				if (tx != null)
+					tx.rollback();
+		    }finally{				
+				if(!esito){
+					ServerLogFunction.logErrorMessage("getCommesseByPM", new Date(), nome+" "+cognome, "Error", errore);
+					return null;
+				}
+				else
+					ServerLogFunction.logOkMessage("getCommesseByPM", new Date(), "", "Success");
+			}			
+		return listaCommesse;
 	}
+	
 	
 	//Richiamata se ad accedere è AMM o DIR
 	@SuppressWarnings("unchecked")
 	public List<CommessaModel> getCommesseAperte() throws IllegalArgumentException {
-		
+		Boolean esito=true;
+		String errore= new String();
 		List<CommessaModel> listaCommesse= new ArrayList<CommessaModel>();
 		List<Commessa> listaTutteCommesse=new ArrayList<Commessa>();
 		
@@ -1868,20 +2028,31 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			  listaCommesse.add(new CommessaModel(0, String.valueOf(maxCommessa), "0", ""));
 			  
 			  tx.commit();
-			  return listaCommesse;
-		     
+   
 		    } catch (Exception e) {
-		    	if (tx!=null)
-		    		tx.rollback();		    	
-		    	e.printStackTrace();
-		    	return null;
-		    }
+		    	esito=false;
+				errore=e.getMessage();
+				e.printStackTrace();
+				if (tx != null)
+					tx.rollback();
+		    }finally{				
+				if(!esito){
+					ServerLogFunction.logErrorMessage("getCommesseAperte", new Date(), "", "Error", errore);
+					return null;
+				}
+				else
+					ServerLogFunction.logOkMessage("getCommesseAperte", new Date(), "", "Success");
+			}	
+		 return listaCommesse;
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<CommessaModel> getCommesseByPmConAssociazioni(String nome,
 			String cognome) throws IllegalArgumentException {
+		Boolean esito=true;
+		String errore= new String();		
 		List<CommessaModel> listaCommesse= new ArrayList<CommessaModel>();
 		List<Commessa> lista=new ArrayList<Commessa>();
 		String app=new String();		
@@ -1909,20 +2080,31 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				  }
 			  }
 			  tx.commit();
-			  return listaCommesse;
-		     
+     
 		    } catch (Exception e) {
-		    	if (tx!=null)
-		    		tx.rollback();		    	
-		    	e.printStackTrace();
-		    	return null;
-		    }
+		    	esito=false;
+				errore=e.getMessage();
+				e.printStackTrace();
+				if (tx != null)
+					tx.rollback();
+		    }finally{				
+				if(!esito){
+					ServerLogFunction.logErrorMessage("getCommesseByPmConAssociazioni", new Date(), "", "Error", errore);
+					return null;
+				}
+				else
+					ServerLogFunction.logOkMessage("getCommesseByPmConAssociazioni", new Date(), "", "Success");
+			}	
+		
+		return listaCommesse;
 	}
 
 	
 	@Override
 	public List<CommessaModel> getCommesseAperteConAssociazioni()
 			throws IllegalArgumentException {
+		Boolean esito=true;
+		String errore= new String();	
 		List<CommessaModel> listaCommesse= new ArrayList<CommessaModel>();
 		List<Commessa> listaTutteCommesse=new ArrayList<Commessa>();
 		
@@ -1956,14 +2138,22 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			  listaCommesse.add(new CommessaModel(0, String.valueOf(maxCommessa), "0", ""));
 			  
 			  tx.commit();
-			  return listaCommesse;
-		     
+			 		     
 		    } catch (Exception e) {
-		    	if (tx!=null)
-		    		tx.rollback();		    	
-		    	e.printStackTrace();
-		    	return null;
-		    }
+		    	esito=false;
+				errore=e.getMessage();
+				e.printStackTrace();
+				if (tx != null)
+					tx.rollback();
+		    }finally{				
+				if(!esito){
+					ServerLogFunction.logErrorMessage("getCommesseAperteConAssociazioni", new Date(), "", "Error", errore);
+					return null;
+				}
+				else
+					ServerLogFunction.logOkMessage("getCommesseAperteConAssociazioni", new Date(), "", "Success");
+			}
+		return listaCommesse;
 	}
 	
 	
@@ -1971,6 +2161,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	@Override
 	public List<CommessaModel> getCommesseAperteSenzaOrdine()
 			throws IllegalArgumentException {
+		Boolean esito=true;
+		String errore= new String();
 		List<CommessaModel> listaCommesse= new ArrayList<CommessaModel>();
 		List<Commessa> listaTutteCommesse=new ArrayList<Commessa>();
 		CommessaModel cm= new CommessaModel();
@@ -1991,21 +2183,30 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					}
 			  }		  
 			 			  
-			  tx.commit();
-			  return listaCommesse;
-		     
+			  tx.commit();		     
 		    } catch (Exception e) {
-		    	if (tx!=null)
-		    		tx.rollback();		    	
-		    	e.printStackTrace();
-		    	return null;
-		    }
+		    	esito=false;
+				errore=e.getMessage();
+				e.printStackTrace();
+				if (tx != null)
+					tx.rollback();
+		    }finally{				
+				if(!esito){
+					ServerLogFunction.logErrorMessage("getCommesseAperteSenzaOrdine", new Date(), "", "Error", errore);
+					return null;
+				}
+				else
+					ServerLogFunction.logOkMessage("getCommesseAperteSenzaOrdine", new Date(), "", "Success");
+			}		
+		return listaCommesse;
 	}	
 
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<GestioneRdoCommesse> getAllRdoCommesse() {
+		Boolean esito=true;
+		String errore= new String();
 		List<GestioneRdoCommesse> listaM= new ArrayList<GestioneRdoCommesse>();
 		//List<FoglioFatturazione> listaFF= new ArrayList<FoglioFatturazione>();
 		List<Commessa> listaC= new ArrayList<Commessa>();
@@ -2034,8 +2235,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String pclAttuale="0.0";
 		String oreRes="0.0";
 		*/
-		
-		
 		String numRdo="#";
 		String numOfferta="#";
 		String numOrdine="#";	
@@ -2151,17 +2350,24 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				  listaM.add(rdoM);
 			  }  
 			  
-			  tx.commit();
-			  return listaM;
-			  
+			  tx.commit();			  
 		    } catch (Exception e) {
-		    	if (tx!=null)
-		    		tx.rollback();		    	
-		    	e.printStackTrace();
-		    	return null;
+		    	esito=false;
+				errore=e.getMessage();
+				e.printStackTrace();
+				if (tx != null)
+					tx.rollback();
 		    }finally{
 		    	session.close();
-		    }				
+		    	if(!esito){
+					ServerLogFunction.logErrorMessage("getCommesseAperteSenzaOrdine", new Date(), "", "Error", errore);
+					return null;
+				}
+				else
+					ServerLogFunction.logOkMessage("getCommesseAperteSenzaOrdine", new Date(), "", "Success");
+		    }		
+		
+		 return listaM;
 	}
 	
 	
@@ -2176,25 +2382,27 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String app=new String();
 		String numeroCommessa= new String();
 		String estensione=new String();
-				
+		Boolean result=false;
+		
 		app=commessa;
 		int index = app.indexOf('.');
 		numeroCommessa = app.substring(0, index);
 		estensione=app.substring(index+1,app.length());
 		
-		createAttivita(numeroCommessa, estensione);
+		result=createAttivita(numeroCommessa, estensione);
 		
-		for(String dipendente:listaDipendenti){
-			
-			createAssociazionePtoA(numeroCommessa, estensione, dipendente);
-		
-		}
-		
-		return true;
+		if(result){
+			for(String dipendente:listaDipendenti)			
+				createAssociazionePtoA(numeroCommessa, estensione, dipendente);
+			return true;
+		}else
+			return false;
 	}
 
 
-	private void createAttivita(String numeroCommessa, String estensione) {
+	private Boolean createAttivita(String numeroCommessa, String estensione) {
+		Boolean esito=true;
+		String errore= new String();
 		
 		Attivita a= new Attivita();
 		Commessa c= new Commessa();
@@ -2217,16 +2425,27 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			tx.commit();			
 			
 		} catch (Exception e) {
-			if (tx!=null)
-	    		tx.rollback();	
+			esito=false;
+			errore=e.getMessage();
 			e.printStackTrace();
+			if (tx != null)
+				tx.rollback();
 		}finally{
 			session.close();
+			if(!esito){
+				ServerLogFunction.logErrorMessage("createAttivita", new Date(), numeroCommessa+" "+estensione, "Error", errore);
+				return false;
+			}
+			else
+				ServerLogFunction.logOkMessage("createAttivita", new Date(), "", "Success");
 		}		
+		return true;
 	}	
 	
 	
 	private void createAssociazionePtoA(String numeroCommessa, String estensione, String dipendente) {		
+		Boolean esito=true;
+		String errore= new String();
 		Commessa c= new Commessa();
 		Attivita a= new Attivita();
 		Personale p= new Personale();
@@ -2251,14 +2470,19 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				
 				session.save(c);
 				tx.commit();
-				
 			
 		} catch (Exception e) {
-			if (tx!=null)
-	    		tx.rollback();	
+			esito=false;
+			errore=e.getMessage();
 			e.printStackTrace();
+			if (tx != null)
+				tx.rollback();
 		}finally{
 			session.close();
+			if(!esito)
+				ServerLogFunction.logErrorMessage("createAssociazionePtoA", new Date(), numeroCommessa+" "+estensione, "Error", errore);			
+			else
+				ServerLogFunction.logOkMessage("createAssociazionePtoA", new Date(), "", "Success");
 		}		
 	}
 	
@@ -2276,11 +2500,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			numeroCommessa = app.substring(0, index);
 			estensione=app.substring(index+1,app.length());
 			
-			for(String dipendente:listaDipendenti){
-				
+			for(String dipendente:listaDipendenti)				
 				createAssociazionePtoA(numeroCommessa, estensione, dipendente);
 			
-			}	
 			return true;
 			
 		} catch (Exception e) {
@@ -2292,24 +2514,26 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 	@Override//MODEL
 	public List<PersonaleAssociatoModel> getAssociazioniPersonaleCommessa()throws IllegalArgumentException {
-						
+		
 		Set<AssociazionePtoA> listaC = ConverterUtil.getAssociazioniPtoA();
 		List<PersonaleAssociatoModel> listaDTO = new ArrayList<PersonaleAssociatoModel>();
 		
 		try {
 			if (listaC != null) {
 
-				for (AssociazionePtoA a : listaC) {								
+				for (AssociazionePtoA a : listaC)						
 					    listaDTO.addAll(ConverterUtil.associazionePtoAToModelConverter(a));					    			
-				}
-			}
-
-			return listaDTO;
+				
+				ServerLogFunction.logOkMessage("getAssociazioniPersonaleCommessa", new Date(), "", "Success");
+			}else
+				ServerLogFunction.logFailedMessage("getAssociazioniPersonaleCommessa", new Date(), "","Failed", "Lista Associazioni vuota o nulla!");
 
 		} catch (Exception e) {			
 			e.printStackTrace();
+			ServerLogFunction.logErrorMessage("getAssociazioniPersonaleCommessa", new Date(), "", "Error", "Exception:"+e.getMessage());
 			return null;
 		}
+		return listaDTO;
 	}
 	
 	
@@ -2457,6 +2681,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		return false;
 	}
+	
+	//TODO LOG FIN QUA
 	
 //-------------------------------------------------FOGLIO ORE----------------------------------------------
 
@@ -2778,7 +3004,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						dettOreGiornaliero.setStatoRevisione(revisione);
 						//foglioOre.getDettaglioOreGiornalieres().add(dettOreGiornaliero);
 								
-						//TODO aggiunta per controllo duplicati
 						for(DettaglioOreGiornaliere dtt:foglioOre.getDettaglioOreGiornalieres())
 							if(dettOreGiornaliero.equals(dtt))
 								duplicato=true;
@@ -2859,7 +3084,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			dettOreGiornaliero.setNoteAggiuntive(noteAggiuntive);
 			dettOreGiornaliero.setStatoRevisione(revisione);
 				
-			//TODO modifiche per controlli dati duplicati
 			for(DettaglioOreGiornaliere dtt:foglioOre.getDettaglioOreGiornalieres())
 				if(dettOreGiornaliero.equals(dtt))
 					duplicato=true;
@@ -3640,8 +3864,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				if(!p.getFoglioOreMeses().isEmpty()){
 					listaMesi.addAll(p.getFoglioOreMeses());
 					for(FoglioOreMese f:listaMesi){
-						if(f.getMeseRiferimento().compareTo(data)==0)
+						if(f.getMeseRiferimento().compareTo(data)==0){
 							listaDettGiorno.addAll(f.getDettaglioOreGiornalieres());
+							break;
+						}
 					}
 								
 					//precompilo la lista di giorni con tutti i giorni lavorativi del mese in modo tale da segnalare una eventuale mancata compilazione
@@ -3654,7 +3880,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						String meseApp= new String();
 						Date d= new Date();
 						
-						meseApp=(mese.substring(0,1).toLowerCase()+mese.substring(1,3));
+						meseApp=mese.toLowerCase();
 						
 						if(i<10)
 							g="0"+String.valueOf(i);
@@ -3662,8 +3888,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							g=String.valueOf(i);
 						
 						dataCompLow=(g+"-"+meseApp+"-"+anno);
-						mese=mese.toLowerCase();
-						dataCompUpp=(anno+"-"+mese+"-"+g);
+						//mese=mese.toLowerCase();
+						dataCompUpp=(anno+"-"+meseApp+"-"+g);
 						
 						formatter=new SimpleDateFormat("dd-MMM-yyyy",Locale.ITALIAN);
 						d=formatter.parse(dataCompLow);
@@ -6442,7 +6668,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							oreMargine=ServerUtility.aggiornaTotGenerale(String.valueOf(f.getOreFatturare()), String.valueOf(f.getVariazioneSAL()));
 							oreMargine=ServerUtility.getDifference(oreMargine, String.valueOf(f.getVariazionePCL()));
 							oreMargine=ServerUtility.getDifference(oreMargine, String.valueOf(f.getOreEseguite()));
-							margine=Float.valueOf(oreMargine);
+							margine=Float.valueOf(ServerUtility.getOreCentesimi(oreMargine));
 							importo=Float.valueOf(o.getTariffaOraria())*Float.valueOf(f.getOreFatturare());
 							
 							if(Float.valueOf(f.getOreFatturare())!=0)
@@ -6451,19 +6677,23 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 								numeroOrdine="#";
 								
 							datiModel=new DatiFatturazioneCommessaModel(commessa, estensione, numeroOrdine, numMese,
-									f.getMeseCorrente(), tariffa, Float.valueOf(f.getOreEseguite()), Float.valueOf(f.getOreFatturare())*-1, Float.valueOf(f.getImportoRealeFatturato())*-1,
-									importo, Float.valueOf(f.getVariazioneSAL()), Float.valueOf(f.getVariazionePCL()), margine);
+									f.getMeseCorrente(), tariffa, Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), 
+									Float.valueOf(ServerUtility.getOreCentesimi(f.getOreFatturare()))*-1, Float.valueOf(f.getImportoRealeFatturato())*-1,
+									importo, Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL()))
+									, margine);
 						}
 						else{
 							tariffa=c.getTariffaSal();
 							oreMargine=ServerUtility.aggiornaTotGenerale(String.valueOf(f.getOreFatturare()), String.valueOf(f.getVariazioneSAL()));
 							oreMargine=ServerUtility.getDifference(oreMargine, String.valueOf(f.getVariazionePCL()));
 							oreMargine=ServerUtility.getDifference(oreMargine, String.valueOf(f.getOreEseguite()));
-							margine=Float.valueOf(oreMargine);
+							margine=Float.valueOf(ServerUtility.getOreCentesimi(oreMargine));
 							
-							datiModel=new DatiFatturazioneCommessaModel(commessa, estensione, "", numMese, f.getMeseCorrente(), tariffa, Float.valueOf(f.getOreEseguite()), 
-									Float.valueOf(f.getOreFatturare()),  Float.valueOf(f.getImportoRealeFatturato()),
-									(float)0.0, Float.valueOf(f.getVariazioneSAL()), Float.valueOf(f.getVariazionePCL()), margine);
+							datiModel=new DatiFatturazioneCommessaModel(commessa, estensione, "", numMese, f.getMeseCorrente(), tariffa, 
+									Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf(ServerUtility.getOreCentesimi(f.getOreFatturare())),
+									Float.valueOf(f.getImportoRealeFatturato()),	(float)0.0, 
+									Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())),
+									margine);
 						}
 						listaDati.add(datiModel);
 					}	
@@ -6479,8 +6709,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				pclIniziale=c_pa.getPclAttuale();
 			}				
 				
-			datiModel=new DatiFatturazioneCommessaModel(commessa,"", "", "",".INIZIALI", "", (float)0.0, Float.valueOf(oreOrdineIniziali), 
-					 Float.valueOf(importoOrdineIniziale), (float)0.0 , Float.valueOf(salIniziale), Float.valueOf(pclIniziale), (float)0.0);
+			datiModel=new DatiFatturazioneCommessaModel(commessa,"", "", "",".INIZIALI", "", (float)0.0, Float.valueOf(ServerUtility.getOreCentesimi(oreOrdineIniziali)), 
+					 Float.valueOf(importoOrdineIniziale), (float)0.0 , Float.valueOf(ServerUtility.getOreCentesimi(salIniziale)), 
+					 Float.valueOf(ServerUtility.getOreCentesimi(pclIniziale)), (float)0.0);
 			listaDati.add(datiModel);
 			
 			tx.commit();	

@@ -61,7 +61,7 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 				Window.alert("error: Problema createColumns().");			
 		}
 		
-		store.groupBy("numeroCommessa");
+		store.groupBy("commessa");
 		store.setSortField("numeroMese");
 		//store.setSortDir(SortDir.ASC);
 			    
@@ -99,18 +99,18 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 		final NumberFormat number= NumberFormat.getFormat("0.00");
 		SummaryColumnConfig<Double> column=new SummaryColumnConfig<Double>();		
-	    column.setId("numeroCommessa");  
+	    column.setId("commessa");  
 	    column.setHeader("Commessa");  
 	    column.setWidth(140);  
 	    column.setRowHeader(true);  
 	    configs.add(column); 
 	    
-	    column=new SummaryColumnConfig<Double>();		
+	  /*  column=new SummaryColumnConfig<Double>();		
 	    column.setId("estensione");  
 		column.setHeader("Estens.");  
 		column.setWidth(60);  
 		column.setRowHeader(true);
-		configs.add(column);
+		configs.add(column);*/
 				
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("mese");  
@@ -143,15 +143,15 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 	    columnOreLavoro.setSummaryRenderer(new SummaryRenderer() {  
 	   			@Override
 			public String render(Number value, Map<String, Number> data) {
-	   				GroupingStore<DatiFatturazioneCommessaModel>store1 = new GroupingStore<DatiFatturazioneCommessaModel>();
+	   			/*	GroupingStore<DatiFatturazioneCommessaModel>store1 = new GroupingStore<DatiFatturazioneCommessaModel>();
 	   				String tot="0.00";
 	   				store1.add(store.getModels());
 	   				for(DatiFatturazioneCommessaModel riep: store1.getModels()){
 	   					tot=ClientUtility.aggiornaTotGenerale(tot, number.format(riep.getOreEseguite()));
 	   				}
 	   				
-	   				Float n=Float.valueOf(tot);
-					return number.format(n);
+	   				Float n=Float.valueOf(tot);*/
+					return number.format(value);
 			}  
 	      });  
 	    configs.add(columnOreLavoro); 	
@@ -174,15 +174,15 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 	    columnOreFatturate.setSummaryRenderer(new SummaryRenderer() {  
 	   			@Override
 			public String render(Number value, Map<String, Number> data) {
-	   				GroupingStore<DatiFatturazioneCommessaModel>store1 = new GroupingStore<DatiFatturazioneCommessaModel>();
+	   				/*GroupingStore<DatiFatturazioneCommessaModel>store1 = new GroupingStore<DatiFatturazioneCommessaModel>();
 	   				String tot="0.00";
 	   				store1.add(store.getModels());
 	   				for(DatiFatturazioneCommessaModel riep: store1.getModels()){
 	   					tot=ClientUtility.aggiornaTotGenerale(tot, number.format(riep.getOreFatturate()));
 	   				}
 	   				
-	   				Float n=Float.valueOf(tot);
-					return number.format(n);
+	   				Float n=Float.valueOf(tot);*/
+					return number.format(value);
 			}  
 	      });      
 	    configs.add(columnOreFatturate);
@@ -205,15 +205,15 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 	    columnImportoFatturare.setSummaryRenderer(new SummaryRenderer() {  
 	   			@Override
 			public String render(Number value, Map<String, Number> data) {
-	   				GroupingStore<DatiFatturazioneCommessaModel>store1 = new GroupingStore<DatiFatturazioneCommessaModel>();
+	   			/*	GroupingStore<DatiFatturazioneCommessaModel>store1 = new GroupingStore<DatiFatturazioneCommessaModel>();
 	   				String tot="0.00";
 	   				store1.add(store.getModels());
 	   				for(DatiFatturazioneCommessaModel riep: store1.getModels()){
 	   					tot=ClientUtility.aggiornaTotGenerale(tot, number.format((Float)riep.get("importoFatturare")));
 	   				}
 	   				
-	   				Float n=Float.valueOf(tot);
-					return number.format(n);
+	   				Float n=Float.valueOf(tot);*/
+					return number.format(value);
 			}  
 	      });      
 	    configs.add(columnImportoFatturare); 		
@@ -244,15 +244,15 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 	    variazioneSal.setSummaryRenderer(new SummaryRenderer() {  
 	   			@Override
 			public String render(Number value, Map<String, Number> data) {
-	   				GroupingStore<DatiFatturazioneCommessaModel>store1 = new GroupingStore<DatiFatturazioneCommessaModel>();
+	   				/*GroupingStore<DatiFatturazioneCommessaModel>store1 = new GroupingStore<DatiFatturazioneCommessaModel>();
 	   				String tot="0.00";
 	   				store1.add(store.getModels());
 	   				for(DatiFatturazioneCommessaModel riep: store1.getModels()){
 	   					tot=ClientUtility.aggiornaTotGenerale(tot, number.format(riep.getVariazioneSal()));
 	   				}
 	   				
-	   				Float n=Float.valueOf(tot);
-					return number.format(n);
+	   				Float n=Float.valueOf(tot);*/
+					return number.format(value);
 			}  
 	      });  
 	    configs.add(variazioneSal); 	    
@@ -275,15 +275,15 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 	    variazionePcl.setSummaryRenderer(new SummaryRenderer() {  
 	   			@Override
 			public String render(Number value, Map<String, Number> data) {
-	   				GroupingStore<DatiFatturazioneCommessaModel>store1 = new GroupingStore<DatiFatturazioneCommessaModel>();
+	   				/*GroupingStore<DatiFatturazioneCommessaModel>store1 = new GroupingStore<DatiFatturazioneCommessaModel>();
 	   				String tot="0.00";
 	   				store1.add(store.getModels());
 	   				for(DatiFatturazioneCommessaModel riep: store1.getModels()){
 	   					tot=ClientUtility.aggiornaTotGenerale(tot, number.format(riep.getVariazionePcl()));
 	   				}
 	   				
-	   				Float n=Float.valueOf(tot);
-					return number.format(n);
+	   				Float n=Float.valueOf(tot);*/
+					return number.format(value);
 			}  
 	      });  
 	    configs.add(variazionePcl);     
