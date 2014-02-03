@@ -8,6 +8,7 @@ import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.UtilityService;
 import gestione.pack.client.layout.panel.DialogRichiestaDipendente;
 import gestione.pack.client.layout.panel.DialogSceltaPeriodoSbloccoCompilazione;
+import gestione.pack.client.layout.panel.PanelAnagraficaHardware;
 import gestione.pack.client.layout.panel.PanelAttribuzioneOreColocationCollaboratori;
 import gestione.pack.client.layout.panel.PanelEditPasswordUtenti;
 import gestione.pack.client.layout.panel.PanelGestioneCostiDipendenti;
@@ -17,6 +18,7 @@ import gestione.pack.client.layout.panel.PanelRiepilogoAnnualeOreDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoCostiDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
 import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
+import gestione.pack.client.layout.panel.PanelRiepilogoRichiesteHardware;
 import gestione.pack.client.layout.panel.PanelRiepilogoSituazioneMensileOreDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoStatoAvanzamentoOreCommesse;
 import gestione.pack.client.layout.panel.PanelToolAmministrativi;
@@ -816,11 +818,11 @@ public class BodyLayout_Administration extends LayoutContainer {
 						
 						Window.alert("Errore di connessione on generateAttivitaOrdine();");
 					}
-				});	    	            	
-	        ;}        	
+				});
+	        ;}
 	    });
 	    btnTmp.setWidth("100%");*/
-	   // cp.add(btnTmp);
+	    //cp.add(btnTmp);
 	    	        
 	    Button btnTools = new Button();
 	    btnTools.setToolTip("Strumenti Utili");
@@ -854,6 +856,42 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    });
 	    btnTools.setWidth("100%");
 	    cp.add(btnRichieste);
+	    
+	    panel.add(cp);
+	    
+	    Button btnAnagraficaHardware = new Button();
+	    btnAnagraficaHardware.setToolTip("Anagrafica Hardware");
+	    btnAnagraficaHardware.setHeight(65);
+	    btnAnagraficaHardware.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.tools()));
+	    btnAnagraficaHardware.setIconAlign(IconAlign.BOTTOM);
+	    btnAnagraficaHardware.setWidth("100%");
+	    btnAnagraficaHardware.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	    
+	        	center.removeAll();
+	        	center.add(new PanelAnagraficaHardware());
+	        	center.layout(true);
+	       }      
+	    });
+	    btnTools.setWidth("100%");
+	    cp.add(btnAnagraficaHardware);
+	    
+	    Button btnRiepRichiesteHardware = new Button();
+	    btnRiepRichiesteHardware.setToolTip("Riepilogo Richieste");
+	    btnRiepRichiesteHardware.setHeight(65);
+	    btnRiepRichiesteHardware.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.tools()));
+	    btnRiepRichiesteHardware.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepRichiesteHardware.setWidth("100%");
+	    btnRiepRichiesteHardware.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	    
+	        	center.removeAll();
+	        	center.add(new PanelRiepilogoRichiesteHardware());
+	        	center.layout(true);
+	       }      
+	    });
+	    btnTools.setWidth("100%");
+	    cp.add(btnRiepRichiesteHardware);
 	    
 	    panel.add(cp);
 	    	    
