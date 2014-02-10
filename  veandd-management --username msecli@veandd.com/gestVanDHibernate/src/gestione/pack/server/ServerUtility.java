@@ -1472,7 +1472,7 @@ public class ServerUtility {
 	
 	
 	//TODO modifiche per tariffe ordine
-	@SuppressWarnings("unchecked")
+	/*@SuppressWarnings("unchecked")
 	public static List<DatiFatturazioneMeseJavaBean> PrintRiepilogoDatiFatturazione(
 			String anno, String mese) {
 		List<DatiFatturazioneMeseJavaBean> listaDati= new ArrayList<DatiFatturazioneMeseJavaBean>();
@@ -1588,6 +1588,7 @@ public class ServerUtility {
 			session.close();
 		}
 	}
+	*/
 	
 	
 	private static boolean exsistMatricolaPM(String matricolaPM,
@@ -1728,13 +1729,32 @@ public class ServerUtility {
 		for(DatiFatturazioneMeseModel r:lista){
 			
 			rB= new DatiFatturazioneMeseJavaBean(r.getPM(), (String)r.get("numeroCommessa"), (String)r.get("cliente"), (String)r.get("numeroOrdine"), (String)r.get("oggettoAttivita"), 
-					(Float)r.get("oreEseguite"), (Float)r.get("oreFatturate"), (Float)r.get("tariffaOraria"), (Float)r.get("importo"), (float)0, (float)0, (float)0, (float)0, (float)0, (float)0, "");
+					(Float)r.get("oreEseguite"), (Float)r.get("oreFatturate"), (Float)r.get("tariffaOraria"), (Float)r.get("importo"), 
+					(Float)r.get("importoEffettivo"), (float)0, (float)0, (float)0, (float)0, (float)0, (float)0, 
+					(String)r.get("note"));
 			listaB.add(rB);
 		}
 		
 		return listaB;
 	}
 
+	
+	public static List<DatiFatturazioneMeseJavaBean> traduciDatiFatturazioneCompletiModelToBean(
+			List<DatiFatturazioneMeseModel> lista) {
+		List<DatiFatturazioneMeseJavaBean> listaB= new ArrayList<DatiFatturazioneMeseJavaBean>();
+		DatiFatturazioneMeseJavaBean rB;
+		
+		for(DatiFatturazioneMeseModel r:lista){
+			
+			rB= new DatiFatturazioneMeseJavaBean(r.getPM(), (String)r.get("numeroCommessa"), (String)r.get("cliente"), (String)r.get("numeroOrdine"), (String)r.get("oggettoAttivita"), 
+					(Float)r.get("oreEseguite"), (Float)r.get("oreFatturate"), (Float)r.get("tariffaOraria"), (Float)r.get("importo"), (Float)r.get("importoEffettivo"), 
+					(Float)r.get("variazioneSal"), (Float)r.get("importoSal"), 
+					(Float)r.get("variazionePcl"), (Float)r.get("importoPcl"), (Float)r.get("oreScaricate"), (Float)r.get("margine"), (String)r.get("note"));
+			listaB.add(rB);
+		}
+		
+		return listaB;
+	}
 	
 	
 	

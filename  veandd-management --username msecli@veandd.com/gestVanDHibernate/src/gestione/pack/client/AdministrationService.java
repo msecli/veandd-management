@@ -17,6 +17,7 @@ package gestione.pack.client;
 import java.util.Date;
 import java.util.List;
 
+import gestione.pack.client.model.AnagraficaHardwareModel;
 import gestione.pack.client.model.ClienteModel;
 import gestione.pack.client.model.CommentiModel;
 import gestione.pack.client.model.CommessaModel;
@@ -48,6 +49,7 @@ import gestione.pack.client.model.RiepilogoOreDipCommesseGiornaliero;
 import gestione.pack.client.model.RiepilogoOreDipFatturazione;
 import gestione.pack.client.model.RiepilogoOreModel;
 import gestione.pack.client.model.RiepilogoOreTotaliCommesse;
+import gestione.pack.client.model.RiepilogoRichiesteModel;
 import gestione.pack.client.model.RiepilogoSALPCLModel;
 import gestione.pack.client.model.TariffaOrdineModel;
 
@@ -421,8 +423,24 @@ public interface AdministrationService extends RemoteService {
 			String anno, String string, String string2, String string3,
 			String pm, List<CommessaModel> listaCommesseSel)throws IllegalArgumentException;
 
-
+	
+	//------------------------STRUMENTI AMMINISTRATIVI
+	
+	List<AnagraficaHardwareModel> getRiepilogoAnagraficaHardware() throws IllegalArgumentException;
 
 	
+	boolean editDataAnagraficaHardware(Integer idHardware, String username,
+			String gruppoLavoro, String assistenza, String codiceModello,
+			String cpu, String fornitoreAssistenza, String hardware, String hd,
+			String ip, String ipFiat, String modello, String nodo, String note,
+			String ram, Date scadenzaControllo, String sede, String serialId,
+			String serialNumber, String sistemaOperativo, String stato,
+			String svga, String tipologia, String utilizzo)
+			throws IllegalArgumentException;
+
+	boolean insertRichiestaIt(String username, Date dataR, String ora, String pc);
+
+	List<RiepilogoRichiesteModel> getRiepilogoRichiesteItUtente(String username);
+
 
 }

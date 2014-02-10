@@ -37,7 +37,7 @@ public interface SessionManagementServiceAsync {
 			String operazione, AsyncCallback<Boolean> asyncCallback);
 
 	void setDataReportDatiFatturazioneInSession(String anno, String mese,
-			String string, AsyncCallback<Boolean> asyncCallback);
+			List<DatiFatturazioneMeseModel> lista, String string, AsyncCallback<Boolean> asyncCallback);
 
 	void setNomeReport(String string, List<RiepilogoOreNonFatturabiliModel> list, AsyncCallback<Boolean> asyncCallback);
 

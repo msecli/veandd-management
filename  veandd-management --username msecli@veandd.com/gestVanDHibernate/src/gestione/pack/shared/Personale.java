@@ -100,6 +100,11 @@ public class Personale  extends LightEntity implements IsSerializable {
 	@OneToMany(mappedBy="personale", fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	private Set<RichiesteIt> richiesteIts;
+	
+	//bi-directional many-to-one association to AssociazionePtohwsw
+	@OneToMany(mappedBy="personale", fetch=FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	private Set<AssociazionePtoHw> associazionePtoHw;
 
     public Personale() {
     }
@@ -328,6 +333,14 @@ public class Personale  extends LightEntity implements IsSerializable {
 
 	public void setRichiesteIts(Set<RichiesteIt> richiesteIts) {
 		this.richiesteIts = richiesteIts;
+	}
+
+	public Set<AssociazionePtoHw> getAssociazionePtoHw() {
+		return associazionePtoHw;
+	}
+
+	public void setAssociazionePtoHw(Set<AssociazionePtoHw> associazionePtoHw) {
+		this.associazionePtoHw = associazionePtoHw;
 	}
 
 	

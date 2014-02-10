@@ -15,12 +15,13 @@ public class DatiFatturazioneMeseJavaBean {
 	private Float variazionePcl;
 	private Float importoPcl;
 	private Float importo;
+	private Float importoEffettivo;
 	private Float oreScaricate;
 	private Float margine;
 	private String note;
 	
 	public  DatiFatturazioneMeseJavaBean(String pm, String commessa, String cliente, String numeroOrdine, String oggettoAttivita, Float oreEseguite, 
-			Float oreFatturate, Float tariffaOraria, Float importo, Float variazioneSal, Float importoSal, Float variazionePcl,
+			Float oreFatturate, Float tariffaOraria, Float importo, Float importoEffettivo, Float variazioneSal, Float importoSal, Float variazionePcl,
 			Float importoPcl, Float oreScaricate, Float margine, String note){
 		
 		this.pm=pm;
@@ -36,15 +37,16 @@ public class DatiFatturazioneMeseJavaBean {
 		this.variazionePcl=variazionePcl;
 		this.importoPcl=importoPcl;
 		this.importo=importo;
+		this.importoEffettivo= importoEffettivo;
 		this.oreScaricate=oreScaricate;
 		this.margine=margine;
 		this.note=note;
 	}
 	
+	
 	public String getNumeroOrdine(){
 		return numeroOrdine;
-	}
-	
+	}	
 	public String getPm() {
 		return pm;
 	}
@@ -117,6 +119,11 @@ public class DatiFatturazioneMeseJavaBean {
 	public void setImporto(Float importo) {
 		this.importo = importo;
 	}
+	
+	public Float getImportoEffettivo() {
+		return importoEffettivo;
+	}
+	
 	public Float getOreScaricate() {
 		return oreScaricate;
 	}
@@ -134,9 +141,5 @@ public class DatiFatturazioneMeseJavaBean {
 	}
 	public void setNote(String note) {
 		this.note = note;
-	}
-	
-	
-	
-	
+	}	
 }

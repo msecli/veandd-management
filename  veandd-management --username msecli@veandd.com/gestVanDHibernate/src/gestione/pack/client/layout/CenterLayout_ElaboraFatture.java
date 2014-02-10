@@ -212,7 +212,7 @@ public class CenterLayout_ElaboraFatture extends LayoutContainer{
 					String anno=smplcmbxAnno.getRawValue().toString();
 					mese=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
 					
-					SessionManagementService.Util.getInstance().setDataReportDatiFatturazioneInSession(anno, mese, "RIEP.FATT",
+					SessionManagementService.Util.getInstance().setDataReportDatiFatturazioneInSession(anno, mese, null, "RIEP.FATT",
 							new AsyncCallback<Boolean>() {
 
 						@Override

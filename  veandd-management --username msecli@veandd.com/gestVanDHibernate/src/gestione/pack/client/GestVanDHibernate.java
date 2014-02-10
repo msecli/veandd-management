@@ -3,6 +3,7 @@ package gestione.pack.client;
 import gestione.pack.client.layout.BodyLayout_Administration;
 import gestione.pack.client.layout.BodyLayout_Dipendente;
 import gestione.pack.client.layout.BodyLayout_Direzione;
+import gestione.pack.client.layout.BodyLayout_Dirigente;
 import gestione.pack.client.layout.BodyLayout_PersonalManager;
 import gestione.pack.client.layout.BodyLayout_UffAmministrazione;
 import gestione.pack.client.layout.BodyLayout_GestionePersonale;
@@ -221,6 +222,14 @@ public class GestVanDHibernate implements EntryPoint {
 		  
 		  if(ruolo.equals("AMM")){		  
 			  BodyLayout_Administration bl=new BodyLayout_Administration();
+			  bl.txtfldUsername.setValue(userName.getValue().toString());
+			  bl.txtfldRuolo.setValue(ruolo);
+			  RootPanel.get().add(bl); 
+			  LoginDialog.this.hide();  
+		   }
+		  
+		  if(ruolo.equals("AU")){		  
+			  BodyLayout_Dirigente bl=new BodyLayout_Dirigente();
 			  bl.txtfldUsername.setValue(userName.getValue().toString());
 			  bl.txtfldRuolo.setValue(ruolo);
 			  RootPanel.get().add(bl); 
