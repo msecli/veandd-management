@@ -142,7 +142,6 @@ public class PanelRiepilogoDatiPerFatturazione extends LayoutContainer{
 		gridRiepilogo.setStripeRows(true);
 		gridRiepilogo.addPlugin((ComponentPlugin) sm);
 		
-		
 		cpGrid.add(gridRiepilogo);
 		layoutContainer.add(cpGrid);
 	    add(layoutContainer);		

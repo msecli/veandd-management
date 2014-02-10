@@ -283,11 +283,16 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	                    int colIndex, ListStore<RiepilogoSALPCLModel> store, Grid<RiepilogoSALPCLModel> grid) {
 					
 					Float variazione=model.get("variazione");
-															
+					String commessa=model.get("numeroCommessa");
+					
 	            	if(variazione!=(float)0)
 	            			config.style = config.style + ";background-color:#d2f5af;" +"font-weight:bold;" ;
 	            	else
-	            		config.style = config.style + ";background-color:#FFFFFF;" +"font-weight:normal;";    	
+	            		config.style = config.style + ";background-color:#FFFFFF;" +"font-weight:normal;";  
+	            	
+	            	if(commessa.compareTo("TOTALE")==0)
+	            		config.style = config.style + ";background-color:#fefe67;" +"font-weight:bold;" ;
+	            	
 					return model.get(property);				
 	            }};
 		
@@ -296,11 +301,15 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
                     int colIndex, ListStore<RiepilogoSALPCLModel> store, Grid<RiepilogoSALPCLModel> grid) {
 				
             	Float variazione=model.get("variazione");
+            	String commessa=model.get("numeroCommessa");
 				
             	if(variazione!=0)
-            			config.style = config.style + ";background-color:#d2f5af;" +"font-weight:bold;" ;
+            			config.style = config.style + ";background-color:#d2f5af;" +"font-weight:bold;" ;//verde
             	else
             		config.style = config.style + ";background-color:#FFFFFF;" +"font-weight:normal;" ;
+            	
+            	if(commessa.compareTo("TOTALE")==0)
+            		config.style = config.style + ";background-color:#fefe67;" +"font-weight:bold;" ;//giallo
             	
             	final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
 				Float n=model.get(property);

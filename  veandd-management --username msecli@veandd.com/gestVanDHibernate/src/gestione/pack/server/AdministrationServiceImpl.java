@@ -2762,7 +2762,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 														
 					if(dettOreGiornaliero.getDettaglioIntervalliCommesses().isEmpty())
 						intervalliCommPresenti=false;
-					else intervalliCommPresenti=true;
+					else 
+						intervalliCommPresenti=true;
 					
 					tx.commit();
 					
@@ -7003,8 +7004,12 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	public List<RiepilogoSALPCLModel> getRiepilogoSalPcl(String data,
 			String tabSelected) throws IllegalArgumentException {
 		
-		List<RiepilogoSALPCLModel> listaM= new ArrayList<RiepilogoSALPCLModel>();
+		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+	    formatSymbols.setDecimalSeparator('.');
+	    String pattern="0.00";
+	    DecimalFormat d= new DecimalFormat(pattern,formatSymbols);
 		
+		List<RiepilogoSALPCLModel> listaM= new ArrayList<RiepilogoSALPCLModel>();
 		String commessa= new String();
 		//String estensione= new String();
 		String tariffaUtilizzata= new String();
@@ -7326,6 +7331,49 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				importo=(float)0.00;
 				importoMese=(float)0.00;
 			}
+			
+			List<String> listaPM= new ArrayList<String>();
+			List<RiepilogoSALPCLModel> listaTot= new ArrayList<RiepilogoSALPCLModel>();
+			List<String> listaComm= new ArrayList<String>();
+			listaPM=getNomePM();
+			String pm=new String();
+			
+			String totVarMese="0.00";
+			String totAttuale="0.00";
+			String totPrecedente="0.00";
+			Float totTotEuro=(float)0.00;
+			Float totVarEuro=(float)0.00;
+			
+			for(String nome:listaPM){
+				for(RiepilogoSALPCLModel r:listaM){
+					pm=(String)r.get("pm");
+					
+					if(nome.compareTo(pm)==0)
+						
+						if(!isIncluded(listaComm, (String)r.get("numeroCommessa"))){
+							listaComm.add((String)r.get("numeroCommessa"));
+							totPrecedente=ServerUtility.aggiornaTotGenerale(String.valueOf(totPrecedente),d.format((Float) r.get("precedente")));
+							totVarMese=ServerUtility.aggiornaTotGenerale(String.valueOf(totVarMese),d.format((Float) r.get("variazione")));
+							totAttuale=ServerUtility.aggiornaTotGenerale(String.valueOf(totAttuale),d.format((Float) r.get("attuale")));
+							
+							totTotEuro=totTotEuro + (Float) r.get("importoComplessivo");
+							totVarEuro=totVarEuro+ (Float) r.get("importoMese");
+						}			
+				}	
+				
+				riepM=new RiepilogoSALPCLModel(nome, "TOTALE", "", "", "",Float.valueOf(totPrecedente) , Float.valueOf(totVarMese), 
+						Float.valueOf(totAttuale), "", totTotEuro, (float)0.00, (float)0.00, totVarEuro);
+				listaTot.add(riepM);
+				listaComm.clear();
+				totVarMese="0.00";
+				totAttuale="0.00";
+				totPrecedente="0.00";
+				totTotEuro=(float)0.00;
+				totVarEuro=(float)0.00;
+			}
+			
+			listaM.addAll(listaTot);
+			
 			tx.commit();
 			return listaM;
 			
@@ -7340,16 +7388,28 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 	
 	
+	private boolean isIncluded(List<String> listaComm, String commessa) {	
+		for(String c:listaComm){
+			if(c.compareTo(commessa)==0)
+				return true;			
+		}
+		return false;		
+	}
+	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<RiepilogoSALPCLModel> getRiepilogoSalPclRiassunto(String data,
 			String tabSelected) throws IllegalArgumentException {
 		List<RiepilogoSALPCLModel> listaM= new ArrayList<RiepilogoSALPCLModel>();
 		
-		String commessa= new String();
+		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+	    formatSymbols.setDecimalSeparator('.');
+	    String pattern="0.00";
+	    DecimalFormat d= new DecimalFormat(pattern,formatSymbols);
 		
+		String commessa= new String();	
 		String cliente="";
-		
 		Boolean esistePa= false; //controllo l'esistenza di una eventuale commessa madre .pa
 		
 		List<Commessa> listaC= new ArrayList<Commessa>();
@@ -7362,6 +7422,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				
 		Float importoSal=(float) 0.00;
 		Float importoPcl=(float) 0.00;
+		Float oreSal=(float) 0.00;
+		Float orePcl=(float) 0.00;
 		
 		List<Personale> listaP= new ArrayList<Personale>();
 		//FoglioFatturazione ff= new FoglioFatturazione();
@@ -7378,8 +7440,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			for(Personale p:listaP){
 				String matricolaPM=p.getCognome()+" "+p.getNome();
 				
-				listaC=(List<Commessa>)session.createQuery("from Commessa where estensione<>:estensione and matricolaPM=:pm")
-						.setParameter("estensione", "pa").setParameter("pm", matricolaPM).list();
+				listaC=(List<Commessa>)session.createQuery("from Commessa where estensione<>:estensione and matricolaPM=:pm and statoCommessa=:stato")
+						.setParameter("estensione", "pa").setParameter("pm", matricolaPM).setParameter("stato", "Aperta").list();
 				
 				for(Commessa c:listaC){
 					//if(c.getNumeroCommessa().compareTo("9005")==0)
@@ -7393,23 +7455,32 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						cliente="#";
 					c_pa=(Commessa)session.createQuery("from Commessa where numeroCommessa=:commessa and estensione=:estensione").setParameter("commessa", commessa)
 							.setParameter("estensione", "pa").uniqueResult();
+					
 					if(c_pa==null)
 						esistePa=false;
 					else
 						esistePa=true;
-									
+					
 					if(esistePa){
 						
 							listaNomiCommesse.add(c.getNumeroCommessa());
-							listaCPa=(List<Commessa>)session.createQuery("from Commessa where numeroCommessa=:commessa " +
+							/*listaCPa=(List<Commessa>)session.createQuery("from Commessa where numeroCommessa=:commessa " +
 									"and estensione<>:estensione and matricolaPM=:pm").setParameter("commessa", commessa)
-									.setParameter("estensione", "pa").setParameter("pm", matricolaPM).list();
+									.setParameter("estensione", "pa").setParameter("pm", matricolaPM).list();*/
+							
+							listaCPa=(List<Commessa>)session.createQuery("from Commessa where numeroCommessa=:commessa " +
+									"and estensione<>:estensione").setParameter("commessa", commessa)
+									.setParameter("estensione", "pa").list();
 							
 							for(Commessa c1:listaCPa)
 								listaFF.addAll(c1.getFoglioFatturaziones());			
 							
 							for(FoglioFatturazione f1:listaFF){ 					
 								if(ServerUtility.isPrecedente(f1.getMeseCorrente(), data)){
+									
+									oreSal= oreSal + Float.valueOf(ServerUtility.getOreCentesimi(f1.getVariazioneSAL()));
+									orePcl= orePcl + Float.valueOf(ServerUtility.getOreCentesimi(f1.getVariazionePCL()));
+									
 									importoSal= importoSal + ServerUtility.calcolaImporto(c_pa.getTariffaSal(), f1.getVariazioneSAL());
 									importoPcl= importoPcl + ServerUtility.calcolaImporto(c_pa.getTariffaSal(), f1.getVariazionePCL());
 								}
@@ -7419,15 +7490,23 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							importoSal= importoSal +ServerUtility.calcolaImporto(c_pa.getTariffaSal(), c_pa.getSalAttuale());
 							importoPcl= importoPcl+ServerUtility.calcolaImporto(c_pa.getTariffaSal(), c_pa.getPclAttuale());
 							
-													
+							oreSal= oreSal + Float.valueOf(ServerUtility.getOreCentesimi(c_pa.getSalAttuale()));
+							orePcl= orePcl + Float.valueOf(ServerUtility.getOreCentesimi(c_pa.getPclAttuale())); 
+																		
 							if(importoSal!=(float)0.00 || importoPcl!=(float)0.00){
-								riepM= new RiepilogoSALPCLModel(matricolaPM, commessa, "", cliente, "", (float)0.00, (float)0.00, 
-									(float)0.00, "", importoSal, importoPcl, (float)0.00, (float)0.00);
+								riepM= new RiepilogoSALPCLModel(matricolaPM, commessa, "", cliente, "", (float)0.00, (oreSal), 
+									orePcl, "", importoSal, importoPcl, (float)0.00, (float)0.00);
 								listaM.add(riepM);	
 								importoSal=(float)0.00;
 								importoPcl=(float)0.00;								
-													
-						}	
+								oreSal=(float)0.00;
+								orePcl=(float)0.00;
+							}	
+							
+							importoSal=(float)0.00;
+							importoPcl=(float)0.00;								
+							oreSal=(float)0.00;
+							orePcl=(float)0.00;
 																		
 					}else{
 					  
@@ -7438,21 +7517,34 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							if(ServerUtility.isPrecedente(f1.getMeseCorrente(), data)){
 								//sommaVariazioniPcl=ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, f1.getVariazionePCL());
 								//sommaVariazioniSal=ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f1.getVariazioneSAL());
+								oreSal= oreSal + Float.valueOf(ServerUtility.getOreCentesimi(f1.getVariazioneSAL()));
+								orePcl= orePcl + Float.valueOf(ServerUtility.getOreCentesimi(f1.getVariazionePCL()));
+								
 								importoSal= importoSal +ServerUtility.calcolaImporto(c.getTariffaSal(), f1.getVariazioneSAL());
 								importoPcl= importoPcl+ServerUtility.calcolaImporto(c.getTariffaSal(), f1.getVariazionePCL());								
 							}
 						}
-						listaFF.clear();						
+						listaFF.clear();	
+						oreSal= oreSal + Float.valueOf(ServerUtility.getOreCentesimi(c.getSalAttuale()));
+						orePcl= orePcl + Float.valueOf(ServerUtility.getOreCentesimi(c.getPclAttuale())); 
+						
 						importoSal= importoSal +ServerUtility.calcolaImporto(c.getTariffaSal(), c.getSalAttuale());
 						importoPcl= importoPcl+ServerUtility.calcolaImporto(c.getTariffaSal(), c.getPclAttuale());
 					  
 						if(importoSal!=(float)0.00 || importoPcl!=(float)0.00){
-							riepM= new RiepilogoSALPCLModel(matricolaPM, commessa, "", cliente, "", (float)0.00, (float)0.00, 
-								(float)0.00, "", importoSal, importoPcl, (float)0.00, (float)0.00);
+							riepM= new RiepilogoSALPCLModel(matricolaPM, commessa, "", cliente, "", (float)0.00, oreSal, 
+								orePcl, "", importoSal, importoPcl, (float)0.00, (float)0.00);
 							listaM.add(riepM);	
 							importoSal=(float)0.00;
 							importoPcl=(float)0.00;
-						}					  
+							oreSal=(float)0.00;
+							orePcl=(float)0.00;
+						}		
+						
+						importoSal=(float)0.00;
+						importoPcl=(float)0.00;								
+						oreSal=(float)0.00;
+						orePcl=(float)0.00;
 					  }					  
 				 	}
 				}

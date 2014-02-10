@@ -1662,24 +1662,29 @@ public class ServerUtility {
 	
 	
 	public static String getOreCentesimi(String totOreCommMese) {	
-		String ore=totOreCommMese.substring(0, totOreCommMese.indexOf("."));
-		String decimali=totOreCommMese.substring(totOreCommMese.indexOf(".")+1,totOreCommMese.length());
 		
-		if(decimali.compareTo("00")==0)
-			return totOreCommMese;		
-		if(decimali.compareTo("15")==0){
-			decimali="25";
-			return ore+"."+decimali;
-		}		
-		if(decimali.compareTo("30")==0){
-			decimali="50";
-			return ore+"."+decimali;
-		}
-		if(decimali.compareTo("45")==0){
-			decimali="75";
-			return ore+"."+decimali;
-		}	
-		return totOreCommMese;
+		if(totOreCommMese.indexOf(".")!=-1)
+		{	
+			String ore=totOreCommMese.substring(0, totOreCommMese.indexOf("."));
+			String decimali=totOreCommMese.substring(totOreCommMese.indexOf(".")+1,totOreCommMese.length());
+		
+			if(decimali.compareTo("00")==0)
+				return totOreCommMese;		
+			if(decimali.compareTo("15")==0){
+				decimali="25";
+				return ore+"."+decimali;
+			}		
+			if(decimali.compareTo("30")==0){
+				decimali="50";
+				return ore+"."+decimali;
+			}
+			if(decimali.compareTo("45")==0){
+				decimali="75";
+				return ore+"."+decimali;
+			}	
+			return totOreCommMese;
+		}else
+			return totOreCommMese;
 	}
 	
 	
