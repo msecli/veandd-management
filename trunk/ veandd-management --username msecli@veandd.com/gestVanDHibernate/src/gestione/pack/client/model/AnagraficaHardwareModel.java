@@ -1,11 +1,6 @@
 package gestione.pack.client.model;
 
-import gestione.pack.shared.Personale;
-
 import java.util.Date;
-
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import com.extjs.gxt.ui.client.data.BaseModel;
 
@@ -16,18 +11,18 @@ public class AnagraficaHardwareModel extends BaseModel{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private Personale p;
-	
 	public AnagraficaHardwareModel(){
 		
 	}
 	
 	
-	public AnagraficaHardwareModel(int idHardware, Personale utente, String assistenza, String codiceModello,  String cpu, String fornitoreAssistenza, String hardware,
+	public AnagraficaHardwareModel(int idHardware, String username, String gruppoLavoro, String assistenza, String codiceModello,  String cpu, String fornitoreAssistenza, String hardware,
 			String hd, String ip, String ipFiat, String modello, String nodo, String note, String ram, Date scadenzaControllo,  String sede,
 			String serialId, String serialNumber, String sistemaOperativo, String stato, String svga, String tipologia, String utilizzo){
 		
 		set("idHardware", idHardware);
+		set("username", username);
+		set("gruppoLavoro", gruppoLavoro);
 		set("assistenza", assistenza);
 		set("codiceModello", codiceModello);
 		set("cpu", cpu);
@@ -49,16 +44,6 @@ public class AnagraficaHardwareModel extends BaseModel{
 		set("svga",svga);
 		set("tipologia", tipologia);
 		set("utilizzo", utilizzo);
-		
-	}
-	
-	public void setUtente(Personale p){
-		this.p=p;
-	}
-	
-	public Personale getUtente(){
-		return p;
-	}
-	
-	
+	}	
+
 }

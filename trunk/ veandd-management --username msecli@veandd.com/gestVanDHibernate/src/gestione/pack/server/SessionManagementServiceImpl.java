@@ -221,7 +221,7 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 
 	@Override
 	public boolean setDataReportDatiFatturazioneInSession(String anno,
-			String mese, String operazione) throws IllegalArgumentException {
+			String mese, List<DatiFatturazioneMeseModel> listaD,String operazione) throws IllegalArgumentException {
 		try {
 			 HttpServletRequest request = this.getThreadLocalRequest();
 		   	 HttpSession httpSession = request.getSession();
@@ -229,6 +229,7 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 		   	 httpSession.setAttribute("anno", anno);
 		   	 httpSession.setAttribute("mese", mese);
 		     httpSession.setAttribute("operazione", operazione);
+		     httpSession.setAttribute("listaDati", listaD);
 		     
 			 return true;
 		} catch (Exception e) {

@@ -6,7 +6,7 @@ import java.util.List;
 
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.UtilityService;
-import gestione.pack.client.layout.panel.DialogRichiestaDipendente;
+import gestione.pack.client.layout.panel.DialogRichiestaHardwareDipendente;
 import gestione.pack.client.layout.panel.DialogSceltaPeriodoSbloccoCompilazione;
 import gestione.pack.client.layout.panel.PanelAnagraficaHardware;
 import gestione.pack.client.layout.panel.PanelAttribuzioneOreColocationCollaboratori;
@@ -850,7 +850,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    btnRichieste.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	    
-	        	DialogRichiestaDipendente d= new DialogRichiestaDipendente("");
+	        	DialogRichiestaHardwareDipendente d= new DialogRichiestaHardwareDipendente("");
 	        	d.show();
 	       }      
 	    });

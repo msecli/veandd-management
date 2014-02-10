@@ -271,11 +271,13 @@ public class PrintDataServlet extends HttpServlet  {
 			else
 				if(operazione.compareTo("RIEP.FATT")==0){
 					
-					String anno=(String) httpSession.getAttribute("anno");
-					String mese=(String) httpSession.getAttribute("mese");
+					List<DatiFatturazioneMeseModel> lista= new ArrayList<DatiFatturazioneMeseModel>();
+					List<DatiFatturazioneMeseJavaBean> listaR= new ArrayList<DatiFatturazioneMeseJavaBean>();
 					
-					List<DatiFatturazioneMeseJavaBean> listaR= new ArrayList<DatiFatturazioneMeseJavaBean> ();
-					listaR = ServerUtility.PrintRiepilogoDatiFatturazione(anno, mese);
+					lista= (List<DatiFatturazioneMeseModel>) httpSession.getAttribute("listaDati");
+					
+					listaR.addAll(ServerUtility.traduciDatiFatturazioneCompletiModelToBean(lista));
+									
 					
 					Map parameters = new HashMap();
 					/*parameters.put(JRHibernateQueryExecuterFactory.PARAMETER_HIBERNATE_SESSION,
@@ -364,7 +366,7 @@ public class PrintDataServlet extends HttpServlet  {
 							exporterXLS.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
 							exporterXLS.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
 							exporterXLS.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
-							exporterXLS.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, Constanti.PATHAmazon+"FileStorage/DatiFatturazione.xls");
+							exporterXLS.setParameter(JRExporterParameter.OUTPUT_FILE_NAME,Constanti.PATHAmazon+"FileStorage/DatiFatturazione.xls");
 							exporterXLS.exportReport();
 								
 							File f=new File(Constanti.PATHAmazon+"FileStorage/DatiFatturazione.xls");

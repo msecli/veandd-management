@@ -73,8 +73,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		LayoutContainer layoutContainer= new LayoutContainer();
 		layoutContainer.setBorders(false);
 		layoutContainer.setLayout(fl);
-		
-	   				
+			   				
 		layoutContainer.add(new CntpnlRiepilogoMese(), new FitData(3, 3, 3, 3));
 		add(layoutContainer);
 	}
@@ -107,9 +106,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			setLayout(new FitLayout());
 			
 			Resizable r=new Resizable(this);
-		    r.setMinWidth(w-200);
-		    r.setMinHeight(h-80);
-			
+		   			
 		    Date d= new Date();
 			String data= d.toString();
 			String mese= ClientUtility.meseToLong(ClientUtility.traduciMeseToIt(data.substring(4, 7)));
@@ -208,7 +205,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					String anno=smplcmbxAnno.getRawValue().toString();
 					mese=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
 					
-					SessionManagementService.Util.getInstance().setDataReportDatiFatturazioneInSession(anno, mese, "RIEP.FATT",
+					SessionManagementService.Util.getInstance().setDataReportDatiFatturazioneInSession(anno, mese, store.getModels(), "RIEP.FATT",
 							new AsyncCallback<Boolean>() {
 
 						@Override

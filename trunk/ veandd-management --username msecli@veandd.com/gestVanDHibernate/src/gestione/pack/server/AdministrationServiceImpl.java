@@ -14,6 +14,8 @@ F * Copyright 2011 Google Inc. All Rights Reserved.
  *******************************************************************************/
 package gestione.pack.server;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -38,7 +40,10 @@ import net.sf.gilead.gwt.PersistentRemoteService;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import com.google.gwt.i18n.client.DateTimeFormat;
+
 import gestione.pack.client.AdministrationService;
+import gestione.pack.client.model.AnagraficaHardwareModel;
 import gestione.pack.client.model.AttivitaFatturateModel;
 import gestione.pack.client.model.ClienteModel;
 import gestione.pack.client.model.CommentiModel;
@@ -71,6 +76,7 @@ import gestione.pack.client.model.RiepilogoOreDipFatturazione;
 import gestione.pack.client.model.RiepilogoOreModel;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 import gestione.pack.client.model.RiepilogoOreTotaliCommesse;
+import gestione.pack.client.model.RiepilogoRichiesteModel;
 import gestione.pack.client.model.RiepilogoSALPCLModel;
 import gestione.pack.client.model.TariffaOrdineModel;
 import gestione.pack.shared.AssociazionePtoA;
@@ -78,6 +84,8 @@ import gestione.pack.shared.Attivita;
 import gestione.pack.shared.Cliente;
 import gestione.pack.shared.Commessa;
 //import gestione.pack.shared.DatiTimbratriceExt;
+import gestione.pack.shared.AnagraficaHardware;
+import gestione.pack.shared.AssociazionePtoHw;
 import gestione.pack.shared.AssociazionePtohwsw;
 import gestione.pack.shared.AttivitaFatturata;
 import gestione.pack.shared.AttivitaOrdine;
@@ -101,6 +109,7 @@ import gestione.pack.shared.Ordine;
 import gestione.pack.shared.PeriodoSbloccoGiorni;
 import gestione.pack.shared.Personale;
 import gestione.pack.shared.Rda;
+import gestione.pack.shared.RichiesteIt;
 
 
 /*
@@ -9351,5 +9360,303 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}				
 	}
 	
+	
+	//----------------------------------STRUMENTI AMMINISTRATIVI
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<AnagraficaHardwareModel> getRiepilogoAnagraficaHardware()
+			throws IllegalArgumentException {
+		Boolean esito=true;
+		String errore= new String();
+		
+		List<AnagraficaHardwareModel> listaAM= new ArrayList<AnagraficaHardwareModel>();
+		List<AnagraficaHardware> listaA=new ArrayList<AnagraficaHardware>();
+		AnagraficaHardwareModel aModel;
+		String username="";
+		String gruppoLavoro="";
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {
+			
+			tx=session.beginTransaction();
+			
+			listaA=(List<AnagraficaHardware>)session.createQuery("from AnagraficaHardware").list();
+			
+			for(AnagraficaHardware an:listaA){
+				if(an.getAssociazionePtohws().iterator().hasNext()){
+					username=an.getAssociazionePtohws().iterator().next().getPersonale().getUsername();
+					gruppoLavoro=an.getAssociazionePtohws().iterator().next().getPersonale().getUsername();
+				}
+							
+				aModel= new AnagraficaHardwareModel(an.getIdHardware(), username, gruppoLavoro, an.getAssistenza(), an.getCodiceModello(), an.getCpu(), an.getFornitoreAssistenza(),
+						an.getHardware(), an.getHd(), an.getIp(), an.getIpFiat(), an.getModello(), an.getNodo(), an.getNote(), an.getRam(), an.getScadenzaControllo()
+						, an.getSede(), an.getSerialId(), an.getSerialNumber(), an.getSistemaOperativo(), an.getStato(), an.getSvga(), an.getTipologia(), an.getUtilizzo());
+				
+				listaAM.add(aModel);			
+			}
+			
+			tx.commit();
+			
+		} catch (Exception e) {
+			esito=false;
+			e.printStackTrace();
+			errore=e.getMessage();
+			if (tx!=null)
+				tx.rollback();				
+			return null;		
+		}finally{
+			session.close();
+			if(!esito){
+	        	ServerLogFunction.logErrorMessage("getRiepilogoAnagraficaHardware", new Date(), "", "Error", errore);
+	        	return null;
+			}
+			else				
+				ServerLogFunction.logOkMessage("getRiepilogoAnagraficaHardware", new Date(), "", "Success");
+		}		
+		return listaAM;
+	}	
+
+	
+	@Override
+	public boolean editDataAnagraficaHardware(Integer idHardware, String username, String gruppoLavoro, String assistenza, String codiceModello,  String cpu, String fornitoreAssistenza, String hardware,
+			String hd, String ip, String ipFiat, String modello, String nodo, String note, String ram, Date scadenzaControllo,  String sede,
+			String serialId, String serialNumber, String sistemaOperativo, String stato, String svga, String tipologia, String utilizzo) throws IllegalArgumentException {
+		
+		Boolean esito=true;
+		String errore= new String();
+		
+		AnagraficaHardware an;
+		Personale p = new Personale();
+		AssociazionePtoHw ass= new AssociazionePtoHw();
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {
+			
+			tx=session.beginTransaction();
+			//discrimino idHardware che se 0 o "" ne inserisco uno nuovo altrimenti edito
+			if(idHardware!=null){
+				an=(AnagraficaHardware)session.createQuery("from AnagraficaHardware where idHardware=:idHardware").setParameter("idHardware", idHardware).uniqueResult();				
+				
+				if(username.compareTo("")!=0)
+					p=(Personale)session.createQuery("from Personale where username=:username").setParameter("username", username).uniqueResult();
+				
+				an.setAssistenza(assistenza);
+				an.setCodiceModello(codiceModello);
+				an.setCpu(cpu);
+				an.setFornitoreAssistenza(fornitoreAssistenza);
+				an.setHardware(hardware);
+				an.setHd(hd);
+				an.setIp(ip);
+				an.setIpFiat(ipFiat);
+				an.setModello(modello);
+				an.setNodo(nodo);
+				an.setNote(note);
+				an.setRam(ram);
+				an.setScadenzaControllo(scadenzaControllo);
+				an.setSede(sede);
+				an.setSerialId(serialId);
+				an.setSerialNumber(serialNumber);
+				an.setSistemaOperativo(sistemaOperativo);
+				an.setStato(stato);
+				an.setSvga(svga);
+				an.setTipologia(tipologia);
+				an.setUtilizzo(utilizzo);
+								
+				if(an.getAssociazionePtohws().iterator().hasNext()){//c'è un'associazione con un utente
+					Personale p2= new Personale();
+					ass=an.getAssociazionePtohws().iterator().next();	
+					p2=ass.getPersonale();
+					
+					if(p2.getUsername().compareTo(username)!=0){//se il nuovo username è diverso da quello già assegnato
+						ass.setPersonale(p);	
+						p.getAssociazionePtoHw().add(ass);
+						session.save(p);
+					}
+				}else //creao associazione
+				{
+					if(username.compareTo("")!=0){
+						ass.setPersonale(p);
+						ass.setAnagraficaHardware(an);
+						p.getAssociazionePtoHw().add(ass);
+						an.getAssociazionePtohws().add(ass);
+						session.save(an);
+						session.save(p);
+					}									
+				}	
+				
+				tx.commit();
+				session.close();
+							
+			}else{
+				//creo il record per l'anagrafica e l'associazione se c'è un username selezionato
+				
+				an= new AnagraficaHardware();
+				an.setAssistenza(assistenza);
+				an.setCodiceModello(codiceModello);
+				an.setCpu(cpu);
+				an.setFornitoreAssistenza(fornitoreAssistenza);
+				an.setHardware(hardware);
+				an.setHd(hd);
+				an.setIp(ip);
+				an.setIpFiat(ipFiat);
+				an.setModello(modello);
+				an.setNodo(nodo);
+				an.setNote(note);
+				an.setRam(ram);
+				an.setScadenzaControllo(scadenzaControllo);
+				an.setSede(sede);
+				an.setSerialId(serialId);
+				an.setSerialNumber(serialNumber);
+				an.setSistemaOperativo(sistemaOperativo);
+				an.setStato(stato);
+				an.setSvga(svga);
+				an.setTipologia(tipologia);
+				an.setUtilizzo(utilizzo);				
+				
+				session.save(an);
+				
+				tx.commit();
+				session.close();
+				
+				if(username.compareTo("")!=0) //l'associazione la creo solo se c'è un utente selezionato							
+					creaAssociazionePtoHW(username, nodo);					
+			}
+		} catch (Exception e) {
+			esito=false;
+			e.printStackTrace();
+			errore=e.getMessage();
+			if (tx!=null)
+				tx.rollback();				
+			return false;		
+		}finally{			
+			if(!esito){
+				session.close();
+	        	ServerLogFunction.logErrorMessage("editDataAnagraficaHardware", new Date(), username, "Error", errore);
+	        	return false;
+			}
+			else				
+				ServerLogFunction.logOkMessage("editDataAnagraficaHardware", new Date(), username, "Success");
+		}	
+		return true;
+	}
+	
+
+	private void creaAssociazionePtoHW(String username, String nodo) {
+		Boolean esito=true;
+		String errore= new String();
+		
+		AnagraficaHardware an= new AnagraficaHardware();
+		Personale p = new Personale();
+		AssociazionePtoHw ass= new AssociazionePtoHw();
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {
+			
+			tx=session.beginTransaction();
+			
+			an=(AnagraficaHardware)session.createQuery("from AnagraficaHardware where nodo=:nodo").setParameter("nodo", nodo).uniqueResult();				
+			p=(Personale)session.createQuery("from Personale where username=:username").setParameter("username", username).uniqueResult();
+			
+			ass.setAnagraficaHardware(an);
+			ass.setPersonale(p);
+			
+			p.getAssociazionePtoHw().add(ass);
+			an.getAssociazionePtohws().add(ass);
+			
+			session.save(p);
+			session.save(an);
+			
+			tx.commit();
+			
+		} catch (Exception e) {
+			esito=false;
+			e.printStackTrace();
+			errore=e.getMessage();
+			if (tx!=null)
+				tx.rollback();				
+					
+		}finally{
+			session.close();
+			if(!esito)
+	        	ServerLogFunction.logErrorMessage("creaAssociazionePtoHW", new Date(), username+" "+nodo, "Error", errore);
+			else				
+				ServerLogFunction.logOkMessage("creaAssociazionePtoHW", new Date(), username, "Success");
+		}	
+	}
+
+	@Override
+	public boolean insertRichiestaIt(String username, Date dataR, String ora,
+			String pc) {
+		
+		
+		
+		return false;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<RiepilogoRichiesteModel> getRiepilogoRichiesteItUtente(
+			String username) {
+		
+		Boolean esito=true;
+		String errore= new String();
+		
+		List<RiepilogoRichiesteModel> listaRM= new ArrayList<RiepilogoRichiesteModel>();
+		List<RichiesteIt> listaR= new ArrayList<RichiesteIt>();
+		Personale p= new Personale();
+		RiepilogoRichiesteModel rM;
+		
+		int idUtente;
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {
+			
+			tx=session.beginTransaction();
+		
+			p=(Personale)session.createQuery("from Personale where username=:username ").setParameter("username", username).uniqueResult();
+			idUtente=p.getId_PERSONALE();
+			
+			listaR=(List<RichiesteIt>)session.createQuery("from RichiesteIt where idPersonale=:id").setParameter("id", idUtente).list();
+									
+			tx.commit();
+			
+			for(RichiesteIt r:listaR){
+				long timeRich=r.getDataRichiesta().getTime();
+				long timeEvasR= r. getDataEvasioneRichiesta().getTime();
+				Time tRich= new Time(timeRich);
+				Time tEv= new Time(timeEvasR);				
+				
+				rM= new RiepilogoRichiesteModel(r.getIdRichiesta(), r.getAnagraficaHardware().getIdHardware(), idUtente, username, 
+						r.getAnagraficaHardware().getNodo(), r.getDataRichiesta(), tRich.toString(), r.getDataEvasioneRichiesta(), tEv.toString(), r.getStato(), r.getGuasto());
+				
+				listaRM.add(rM);				
+			}
+			
+		} catch (Exception e) {
+			esito=false;
+			e.printStackTrace();
+			errore=e.getMessage();
+			if (tx!=null)
+				tx.rollback();				
+					
+		}finally{
+			session.close();
+			if(!esito){
+	        	ServerLogFunction.logErrorMessage("getRiepilogoRichiesteItUtente", new Date(), username, "Error", errore);
+	        	return null;
+			}
+	        else				
+				ServerLogFunction.logOkMessage("getRiepilogoRichiesteItUtente", new Date(), username, "Success");
+		}	
+		return listaRM;
+	}
 }

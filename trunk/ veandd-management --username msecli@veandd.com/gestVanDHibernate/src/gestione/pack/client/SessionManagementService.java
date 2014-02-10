@@ -66,7 +66,7 @@ public interface SessionManagementService extends RemoteService {
 			String operazione)throws IllegalArgumentException;
 
 	boolean setDataReportDatiFatturazioneInSession(String anno, String mese,
-			String string)throws IllegalArgumentException;
+			List<DatiFatturazioneMeseModel> lista, String string);
 
 	boolean setNomeReport(String string,
 			List<RiepilogoOreNonFatturabiliModel> list);

@@ -1,10 +1,7 @@
 package gestione.pack.client.layout.panel;
 
-import gestione.pack.client.model.AnagraficaHardwareModel;
-import gestione.pack.client.model.CommentiModel;
 import gestione.pack.client.model.RiepilogoRichiesteModel;
 import gestione.pack.client.utility.MyImages;
-import gestione.pack.shared.RichiesteIt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,11 +120,10 @@ public class PanelRiepilogoRichiesteHardware extends LayoutContainer{
 		expander.setTemplate(tpl); 
 		expander.setWidth(20);
 				
-		configs.add(expander);
-		
-		
+		configs.add(expander);		
 		sm.setSelectionMode(SelectionMode.SIMPLE);
 		configs.add(sm.getColumn());
+		
 		ColumnConfig column=new ColumnConfig();		
 	    column.setId("idRichiesta");  
 	    column.setHeader("ID");  
