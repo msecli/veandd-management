@@ -225,10 +225,35 @@ public class PanelRiepilogoSalPclRiassunto  extends LayoutContainer{
 		column.setRowHeader(true); 
 	    configs.add(column); 
 	    
-	    //TODO sistemare le colonne sal pcl
-	    
+	    column=new SummaryColumnConfig<Double>();		
+	    column.setId("variazione");  //usata come appoggio la variabile indicata
+		column.setHeader("Ore SAL");  
+		column.setWidth(100);  
+		column.setRowHeader(true); 
+		column.setAlignment(HorizontalAlignment.RIGHT);
+		//column.setStyle("color:#e71d2b;");
+		column.setSummaryType(SummaryType.SUM);  
+		column.setRenderer(new GridCellRenderer<RiepilogoSALPCLModel>() {
+			@Override
+			public Object render(RiepilogoSALPCLModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoSALPCLModel> store,
+				Grid<RiepilogoSALPCLModel> grid) {	
+					final NumberFormat num= NumberFormat.getFormat("0.00");
+					Float n=model.get(property);
+					return num.format(n);
+				}  	
+		});  
+		column.setSummaryRenderer(new SummaryRenderer() {  
+	   		@Override
+	   		public String render(Number value, Map<String, Number> data) {
+	   				final NumberFormat number= NumberFormat.getFormat("0.00"); 				
+	   				
+					return number.format(value);
+	   			}  
+	        });  
+		configs.add(column);    	    
+	     
 	    SummaryColumnConfig<Double> columnImporto=new SummaryColumnConfig<Double>();		
-	    columnImporto.setId("importoComplessivo");  
+	    columnImporto.setId("importoComplessivo");  //usata come appoggio la variabile indicata
 	    columnImporto.setHeader("Tot.Euro Sal");  
 	    columnImporto.setWidth(100);    
 	    columnImporto.setRowHeader(true); 
@@ -239,7 +264,9 @@ public class PanelRiepilogoSalPclRiassunto  extends LayoutContainer{
 			@Override
 			public Object render(RiepilogoSALPCLModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoSALPCLModel> store,
 					Grid<RiepilogoSALPCLModel> grid) {	
-				final NumberFormat num= NumberFormat.getFormat("0.00");
+				
+				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
+				
 				Float n=model.get(property);
 				return num.format(n);
 			}  	
@@ -247,15 +274,41 @@ public class PanelRiepilogoSalPclRiassunto  extends LayoutContainer{
 	    columnImporto.setSummaryRenderer(new SummaryRenderer() {  
    			@Override
    			public String render(Number value, Map<String, Number> data) {
-   				final NumberFormat number= NumberFormat.getFormat("0.00"); 				
-   				
-				return number.format(value);
+   				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
+				return num.format(value);
    			}  
         });  
 	    configs.add(columnImporto);
 	    
+	    column=new SummaryColumnConfig<Double>();		
+	    column.setId("attuale");  //usata come appoggio la variabile indicata
+		column.setHeader("Ore PCL");  
+		column.setWidth(100);  
+		column.setRowHeader(true); 
+		column.setAlignment(HorizontalAlignment.RIGHT);
+		//column.setStyle("color:#e71d2b;");
+		column.setSummaryType(SummaryType.SUM);  
+		column.setRenderer(new GridCellRenderer<RiepilogoSALPCLModel>() {
+			@Override
+			public Object render(RiepilogoSALPCLModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoSALPCLModel> store,
+				Grid<RiepilogoSALPCLModel> grid) {	
+					final NumberFormat num= NumberFormat.getFormat("0.00");
+					Float n=model.get(property);
+					return num.format(n);
+				}  	
+		});  
+		column.setSummaryRenderer(new SummaryRenderer() {  
+	   		@Override
+	   		public String render(Number value, Map<String, Number> data) {
+	   				final NumberFormat number= NumberFormat.getFormat("0.00"); 				
+	   				
+					return number.format(value);
+	   			}  
+	        });  
+		configs.add(column);		    
+	    
 	    SummaryColumnConfig<Double> columnImportoPcl=new SummaryColumnConfig<Double>();		
-	    columnImportoPcl.setId("oreEseguite");  
+	    columnImportoPcl.setId("oreEseguite");  //usata come appoggio la variabile indicata
 	    columnImportoPcl.setHeader("Tot.Euro Pcl");  
 	    columnImportoPcl.setWidth(100);    
 	    columnImportoPcl.setRowHeader(true); 
@@ -266,7 +319,7 @@ public class PanelRiepilogoSalPclRiassunto  extends LayoutContainer{
 			@Override
 			public Object render(RiepilogoSALPCLModel model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoSALPCLModel> store,
 					Grid<RiepilogoSALPCLModel> grid) {	
-				final NumberFormat num= NumberFormat.getFormat("0.00");
+				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
 				Float n=model.get(property);
 				return num.format(n);
 			}  	
@@ -274,8 +327,8 @@ public class PanelRiepilogoSalPclRiassunto  extends LayoutContainer{
 	    columnImportoPcl.setSummaryRenderer(new SummaryRenderer() {  
    			@Override
    			public String render(Number value, Map<String, Number> data) {
-   				final NumberFormat number= NumberFormat.getFormat("0.00"); 		//#,##0.0#;-#				
-				return number.format(value);
+   				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");			
+				return num.format(value);
    			}  
       });  
 	    configs.add(columnImportoPcl);	    
