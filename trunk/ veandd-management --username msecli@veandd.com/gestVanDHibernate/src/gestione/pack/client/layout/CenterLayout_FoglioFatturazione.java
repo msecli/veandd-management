@@ -74,7 +74,7 @@ public CenterLayout_FoglioFatturazione(){}
 	private int w=Window.getClientWidth();
 	private SimpleComboBox<String> smplcmbxMese= new SimpleComboBox<String>();
 	private SimpleComboBox<String> smplcmbxAnno=new SimpleComboBox<String>();
-	private SimpleComboBox<String> smplcmbxPM=new SimpleComboBox<String>();
+	private SimpleComboBox<String> smplcmbxPM;
 	private Button btnSelect;
 	private TextField<String> txtfldUsername= new TextField<String>();
 	private Text txtRuolo= new Text("AMM");
@@ -159,7 +159,7 @@ public CenterLayout_FoglioFatturazione(){}
 		 for(String l : DatiComboBox.getAnno()){
 			 smplcmbxAnno.add(l);
 			 smplcmbxAnno.select(1);
-		 }
+		}
 		smplcmbxAnno.setTriggerAction(TriggerAction.ALL);
 		smplcmbxAnno.setSimpleValue(anno);
 		
@@ -272,8 +272,8 @@ public CenterLayout_FoglioFatturazione(){}
 	
 	private class CntpnlRiepilogoOreDipFatturazione extends ContentPanel{
 		
-		private GroupingStore<RiepilogoOreDipFatturazione>store = new GroupingStore<RiepilogoOreDipFatturazione>();
-		
+		private Text txtfldOreTotali= new Text();
+		private GroupingStore<RiepilogoOreDipFatturazione>store = new GroupingStore<RiepilogoOreDipFatturazione>();		
 		private Grid<RiepilogoOreDipFatturazione> gridRiepilogo;
 		private ColumnModel cm;
 		private boolean nuovo=true;	
@@ -455,6 +455,11 @@ public CenterLayout_FoglioFatturazione(){}
 		    tlbrRiepilogoOre.add(btnShowDettaglioOre);
 		    tlbrRiepilogoOre.add(btnEditOreDip);
 		    
+		    txtfldOreTotali.setWidth(150);	
+		    txtfldOreTotali.setHeight(30);
+		    txtfldOreTotali.setStyleAttribute("font-size", "14px");
+		    txtfldOreTotali.setStyleAttribute("padding-top", "5px");
+		    
 		    ContentPanel cntpnlGrid= new ContentPanel();
 		    cntpnlGrid.setBodyBorder(false);  
 		    cntpnlGrid.setBorders(false);
@@ -467,6 +472,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    
 		    cntpnlGrid.setTopComponent(tlbrRiepilogoOre);
 		    cntpnlGrid.add(gridRiepilogo);
+		    cntpnlGrid.setBottomComponent(txtfldOreTotali);
 		    
 		    if(!smplcmbxMese.getRawValue().isEmpty()&&!smplcmbxPM.getRawValue().isEmpty()&&!smplcmbxAnno.getRawValue().isEmpty()){
 		    	String meseRif= new String(); 
@@ -642,7 +648,18 @@ public CenterLayout_FoglioFatturazione(){}
 				store.removeAll();
 				store.add(result);
 				store.groupBy("numeroCommessa");
-				gridRiepilogo.reconfigure(store, cm);				
+				gridRiepilogo.reconfigure(store, cm);	
+				
+				String totale="0.00";
+				NumberFormat number = NumberFormat.getFormat("0.00");
+				
+				for(RiepilogoOreDipFatturazione r:result){
+					if(r.getDipendente().compareTo(".TOTALE")==0){
+						totale=ClientUtility.aggiornaTotGenerale(totale, number.format(r.getOreTotali()));
+						txtfldOreTotali.setText("Ore totali lavorate: "+totale);
+					}
+				}
+				
 			} catch (NullPointerException e) {
 				Window.alert("error: Impossibile effettuare il caricamento dati in tabella.");
 					e.printStackTrace();
@@ -738,9 +755,9 @@ public CenterLayout_FoglioFatturazione(){}
 					/*if(!checkOreImportoOrdine())
 						Window.alert("I valori di ore residue e importo residuo sull'ordine sono discordanti! Effettuare eventuali modifiche se necessario.");
 					else*/					
-					if(i>a)
+					/*if(i>a)
 						Window.alert("L'importo da fatturare non puo' essere maggiore dell' importo residuo!");
-					else
+					else*/
 					if(Float.valueOf(txtfldOreDaFatturare.getValue().toString())!=0 && Float.valueOf(txtfldImportoDaFatturare.getValue().toString())==0
 							&& Float.valueOf(txtfldImportoOrdine.getValue().toString())!=0)
 						Window.alert("L'importo da fatturare non puo' essere 0!");
@@ -1756,8 +1773,6 @@ public CenterLayout_FoglioFatturazione(){}
 				meseR=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
 				data=meseR+anno;
 				
-				//TODO aggiunta idAttivita per più tariffe			
-				
 				AdministrationService.Util.getInstance().getDatiFatturazionePerOrdine(commessa, data, idAttivita, new AsyncCallback<FoglioFatturazioneModel>() {
 					@Override
 					public void onSuccess(FoglioFatturazioneModel result) {
@@ -1779,7 +1794,10 @@ public CenterLayout_FoglioFatturazione(){}
 						caught.printStackTrace();		
 					}
 				}); //AsyncCallback	  		
-			}else{Window.alert("error: Dati selezionati non corretti.");}
+			}else
+			{
+				Window.alert("error: Dati selezionati non corretti.");
+			}
 		}
 		
 		
@@ -1814,7 +1832,7 @@ public CenterLayout_FoglioFatturazione(){}
 					
 				//prendo il numero di ore eseguite dalla commessa selezionata
 				for(RiepilogoOreDipFatturazione riep: lista){
-					ncommessa=riep.getNumeroCommessa().substring(0,riep.getNumeroCommessa().indexOf("(")-1);			
+					ncommessa=riep.getNumeroCommessa().substring(0,riep.getNumeroCommessa().indexOf("(")-1).toLowerCase();			
 					if(ncommessa.compareTo(numeroCommessa)==0 &&
 							(ncommessa.substring(ncommessa.length()-2, ncommessa.length()).compareTo("pa")!=0) &&
 								(riep.getDipendente().compareTo(".TOTALE")==0)){
@@ -1858,24 +1876,19 @@ public CenterLayout_FoglioFatturazione(){}
 					txtfldOreScaricate.setValue(scaricate);
 					txtfldOreDaFatturare.setValue(result.getOreFatturate());
 	    	  		
-					//totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldOreDaFatturare.getValue().toString()));
 					totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldOreDaFatturare.getValue().toString()));
 	    	  		txtOreDaFatturare.setText("("+totaleEuro+")");
 					
-	    	  		//totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldOreScaricate.getValue().toString()));
 	    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldOreScaricate.getValue().toString()));
 	    	  		txtOreScaricate.setText("("+totaleEuro+")");
 	    	  		
-	    	  		//totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldDiffScaricateEseguite.getValue().toString()));
 	    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldDiffScaricateEseguite.getValue().toString()));
 	    	  		txtMargine.setText("("+totaleEuro+")");
 	    	  		
 	    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldVariazioneSAL.getValue().toString()));
-	    	  		//totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldVariazioneSAL.getValue().toString()));
 	    	  		txtVariazioneSal.setText("("+totaleEuro+")");
 	    	  		
 	    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldVariazionePCL.getValue().toString()));
-	    	  		//totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldVariazionePCL.getValue().toString()));
 	    	  		txtVariazionePcl.setText("("+totaleEuro+")");
 	    	  		
 	    	  		String chbxValue= result.get("flagSalDaButtare");
@@ -1908,26 +1921,28 @@ public CenterLayout_FoglioFatturazione(){}
 					
 					txtfldOreEseguiteRegistrate.setValue(totOre);
 					//txtfldOreEseguiteRegistrate.setValue(result.getOreEseguiteRegistrate());
-					
+	    	  		delta=ClientUtility.calcoloDelta("0.00", txtfldOreEseguiteRegistrate.getValue().toString());
+	    	  		txtfldDiffScaricateEseguite.setValue(delta);
+	    	  		
 					txtfldTotFatturato.setValue("0.00");
-					txtfldDiffScaricateEseguite.setValue("0.00");
+					//txtfldDiffScaricateEseguite.setValue("0.00");
 					txtfldOreScaricate.setValue("0.00");
 					txtfldOreDaFatturare.setValue("0.00");
 					txtfldImportoDaFatturare.setValue("0.00");					
 					
-					totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldOreDaFatturare.getValue().toString()));
+					totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldOreDaFatturare.getValue().toString()));
 	    	  		txtOreDaFatturare.setText("("+totaleEuro+")");
 					
-	    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldOreScaricate.getValue().toString()));
+	    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldOreScaricate.getValue().toString()));
 	    	  		txtOreScaricate.setText("("+totaleEuro+")");
 	    	  		
-	    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldDiffScaricateEseguite.getValue().toString()));
+	    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldDiffScaricateEseguite.getValue().toString()));
 	    	  		txtMargine.setText("("+totaleEuro+")");
 	    	  		
-	    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldVariazioneSAL.getValue().toString()));
+	    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldVariazioneSAL.getValue().toString()));
 	    	  		txtVariazioneSal.setText("("+totaleEuro+")");
 	    	  		
-	    	  		totaleEuro=number.format(Float.valueOf(txtfldCostoOrario.getValue().toString())*Float.valueOf(txtfldVariazionePCL.getValue().toString()));
+	    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldVariazionePCL.getValue().toString()));
 	    	  		txtVariazionePcl.setText("("+totaleEuro+")");	
 	    	  		
 	    	  		chbxSalButtare.setValue(false);

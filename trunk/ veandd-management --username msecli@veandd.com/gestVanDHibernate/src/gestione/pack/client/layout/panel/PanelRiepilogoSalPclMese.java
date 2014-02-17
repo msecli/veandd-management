@@ -291,7 +291,7 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	            		config.style = config.style + ";background-color:#FFFFFF;" +"font-weight:normal;";  
 	            	
 	            	if(commessa.compareTo("TOTALE")==0)
-	            		config.style = config.style + ";background-color:#fefe67;" +"font-weight:bold;" ;
+	            		config.style = config.style + ";background-color:#ffeeee;" +"font-weight:bold;" ;
 	            	
 					return model.get(property);				
 	            }};
@@ -309,7 +309,7 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
             		config.style = config.style + ";background-color:#FFFFFF;" +"font-weight:normal;" ;
             	
             	if(commessa.compareTo("TOTALE")==0)
-            		config.style = config.style + ";background-color:#fefe67;" +"font-weight:bold;" ;//giallo
+            		config.style = config.style + ";background-color:#ffeeee;" +"font-weight:bold;" ;//rosso
             	
             	final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
 				Float n=model.get(property);

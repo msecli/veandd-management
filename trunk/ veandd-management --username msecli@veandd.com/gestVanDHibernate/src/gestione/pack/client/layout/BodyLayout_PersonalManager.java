@@ -343,7 +343,7 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	    Button btnRiepilogoMesePerCommessa = new Button();
 	    btnRiepilogoMesePerCommessa.setToolTip("Riepilogo Ore Su Commesse");
 	    btnRiepilogoMesePerCommessa.setHeight(65);
-	    btnRiepilogoMesePerCommessa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnRiepilogoMesePerCommessa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.presenzeDip()));
 	    btnRiepilogoMesePerCommessa.setIconAlign(IconAlign.BOTTOM);
 	    btnRiepilogoMesePerCommessa.setWidth("100%");
 	    btnRiepilogoMesePerCommessa.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -358,7 +358,22 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	    	Image loadingImage = new Image(MyImages.INSTANCE.logoEnzo());
 	    	cp.add(loadingImage);
 		}    
-	    panel.add(cp);
+	    
+	    Button btnRiepiloghiSalPcl = new Button();
+	    btnRiepiloghiSalPcl.setToolTip("Riepilogo Sal/Pcl");
+	    btnRiepiloghiSalPcl.setHeight(65);
+	    btnRiepiloghiSalPcl.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnRiepiloghiSalPcl.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepiloghiSalPcl.setWidth("100%");
+	    btnRiepiloghiSalPcl.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new CenterLayout_RiepiloghiSalPcl());
+	        	center.layout(true);}        
+	      });
+	    cp.add(btnRiepiloghiSalPcl);
+	    
+	    panel.add(cp);	    
 
 	    
 	    
@@ -420,9 +435,21 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	    btnReportDatiFatt.setWidth("100%");
 	    btnReportDatiFatt.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
-	        	center.removeAll();
+	        	/*center.removeAll();
 	        	center.add(new CenterLayout_RiepilogoDatiFatturazione());
-	        	center.layout(true);}      
+	        	center.layout(true);*/
+	        	int h=Window.getClientHeight();
+	        	int w=Window.getClientWidth();
+	        	Dialog d= new Dialog();
+	        	d.setSize(w-130, h-75);
+	        	d.add(new CenterLayout_RiepilogoDatiFatturazione());
+	        	d.setHeading("Riepilogo Dati Fatturazione");
+	        	d.setCollapsible(true);
+	        	d.setScrollMode(Scroll.AUTO);
+	        	d.setButtons("");
+	        	d.setConstrain(false);
+	        	d.show();
+	        }
 	    });
 	    cp.add(btnReportDatiFatt);
 	    

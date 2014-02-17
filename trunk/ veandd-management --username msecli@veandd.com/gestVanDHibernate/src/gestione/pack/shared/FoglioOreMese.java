@@ -83,5 +83,38 @@ public class FoglioOreMese extends LightEntity implements IsSerializable {
 	public void setPersonale(Personale personale) {
 		this.personale = personale;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((meseRiferimento == null) ? 0 : meseRiferimento.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FoglioOreMese other = (FoglioOreMese) obj;
+		if (meseRiferimento == null) {
+			if (other.meseRiferimento != null)
+				return false;
+		} else if (!meseRiferimento.equals(other.meseRiferimento))
+			return false;
+		return true;
+	}
+	
 	
 }

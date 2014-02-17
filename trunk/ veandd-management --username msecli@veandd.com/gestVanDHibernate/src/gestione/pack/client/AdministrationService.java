@@ -362,7 +362,7 @@ public interface AdministrationService extends RemoteService {
 			String data, String groupBy)throws IllegalArgumentException;
 
 	List<RiepilogoOreDipFatturazione> getRiepilogoTotCommessePerDipendenti(
-			String mese, String sede)throws IllegalArgumentException;
+			String mese, String sede, String pm);
 
 	List<RiepilogoOreDipFatturazione> getRiepilogoOreCommesseDettDipendenti(
 			String data, String sede)throws IllegalArgumentException;
