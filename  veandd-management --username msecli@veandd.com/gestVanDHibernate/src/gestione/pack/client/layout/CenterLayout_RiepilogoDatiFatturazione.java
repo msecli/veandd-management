@@ -19,6 +19,7 @@ import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.core.XTemplate;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -41,6 +42,7 @@ import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GroupSummaryView;
+import com.extjs.gxt.ui.client.widget.grid.RowExpander;
 import com.extjs.gxt.ui.client.widget.grid.SummaryColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.SummaryRenderer;
 import com.extjs.gxt.ui.client.widget.grid.SummaryType;
@@ -88,6 +90,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		private GroupingStore<DatiFatturazioneMeseModel>store = new GroupingStore<DatiFatturazioneMeseModel>();
 		private EditorGrid<DatiFatturazioneMeseModel> gridRiepilogo;
 		private ColumnModel cm;
+		private RowExpander expander;
 		
 		private Button btnSelect;
 		private Button btnPrint;
@@ -101,7 +104,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			setBorders(false);
 			setFrame(true);
 			setScrollMode(Scroll.AUTO);
-			setSize(w-140, h-50);
+			setSize(w-140, h-120);
 		//	setPosition(3, 3);
 			setLayout(new FitLayout());
 			
@@ -285,6 +288,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		    gridRiepilogo.setStripeRows(true);
 		    gridRiepilogo.setView(summary);  
 		    gridRiepilogo.getView().setShowDirtyCells(false);
+		   // gridRiepilogo.addPlugin(expander); 
 		    			   		   	    	   
 		  	add(gridRiepilogo);			
 		}
@@ -324,6 +328,13 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		private List<ColumnConfig> createColumns() {
 			List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 			final NumberFormat number= NumberFormat.getFormat("0.00");
+			
+			/*XTemplate tpl = XTemplate.create("<p><b>Note:</b> {note}</p><br>");  
+			expander = new RowExpander();
+			expander.setTemplate(tpl); 
+			expander.setWidth(20);	
+			
+			configs.add(expander);*/
 			
 			SummaryColumnConfig<Double> column=new SummaryColumnConfig<Double>();		
 		    column.setId("sede");  
@@ -668,7 +679,8 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		   note.setRowHeader(true);  
 		   note.setAlignment(HorizontalAlignment.RIGHT);  	
 		   configs.add(note);
-		return configs;
+		   
+		   return configs;
 		}
 
 		

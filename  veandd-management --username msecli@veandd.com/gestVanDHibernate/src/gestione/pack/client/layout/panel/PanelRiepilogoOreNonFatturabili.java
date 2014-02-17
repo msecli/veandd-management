@@ -236,9 +236,17 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 		GridCellRenderer<RiepilogoOreNonFatturabiliModel> renderer = new GridCellRenderer<RiepilogoOreNonFatturabiliModel>() {
             public String render(RiepilogoOreNonFatturabiliModel model, String property, ColumnData config, int rowIndex,
                     int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store, Grid<RiepilogoOreNonFatturabiliModel> grid) {
-				    	
-            	config.style = config.style + ";background-color:#FFFF99;" +"font-weight:bold;" ;  	
-				return model.get(property);				
+            	Float n=model.get(property);
+				
+            	if(((property.compareTo("m1")==0)||(property.compareTo("m2")==0)||(property.compareTo("m3")==0)||(property.compareTo("m4")==0)||
+            			(property.compareTo("m5")==0)||(property.compareTo("m6")==0)||(property.compareTo("m7")==0)||(property.compareTo("m8")==0)||
+            			(property.compareTo("m9")==0)||(property.compareTo("m10")==0)||(property.compareTo("m11")==0)||(property.compareTo("m12")==0))
+            			&& (Float)model.get(property)!=0)
+            		config.style = config.style +"font-weight:bold;" ;  
+            	else
+            		config.style = config.style +"font-weight:normal;" ;  
+            	
+            	return number.format(n);				
         }};
 		
 		SummaryColumnConfig<Double> column=new SummaryColumnConfig<Double>();		
@@ -276,14 +284,7 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 	    column.setRowHeader(true);  
 	    column.setSummaryType(SummaryType.SUM);  
 	    column.setAlignment(HorizontalAlignment.RIGHT);
-	    column.setRenderer(new GridCellRenderer<RiepilogoOreNonFatturabiliModel>() {
-			@Override
-			public Object render(RiepilogoOreNonFatturabiliModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store,
-					Grid<RiepilogoOreNonFatturabiliModel> grid) {
-				Float n=model.get(property);
-				return number.format(n);
-			}  	
-		});
+	    column.setRenderer(renderer);
 	    column.setSummaryRenderer(new SummaryRenderer() {  
    			@Override
    			public String render(Number value, Map<String, Number> data) {
@@ -299,14 +300,7 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 	    column.setRowHeader(true);  
 	    column.setSummaryType(SummaryType.SUM);  
 	    column.setAlignment(HorizontalAlignment.RIGHT);
-	    column.setRenderer(new GridCellRenderer<RiepilogoOreNonFatturabiliModel>() {
-			@Override
-			public Object render(RiepilogoOreNonFatturabiliModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store,
-					Grid<RiepilogoOreNonFatturabiliModel> grid) {
-				Float n=model.get(property);
-				return number.format(n);
-			}  	
-		});
+	    column.setRenderer(renderer);
 	    column.setSummaryRenderer(new SummaryRenderer() {  
    			@Override
    			public String render(Number value, Map<String, Number> data) {
@@ -322,14 +316,7 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 	    column.setRowHeader(true);  
 	    column.setSummaryType(SummaryType.SUM);  
 	    column.setAlignment(HorizontalAlignment.RIGHT);
-	    column.setRenderer(new GridCellRenderer<RiepilogoOreNonFatturabiliModel>() {
-			@Override
-			public Object render(RiepilogoOreNonFatturabiliModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store,
-					Grid<RiepilogoOreNonFatturabiliModel> grid) {
-				Float n=model.get(property);
-				return number.format(n);
-			}  	
-		});
+	    column.setRenderer(renderer);
 	    column.setSummaryRenderer(new SummaryRenderer() {  
    			@Override
    			public String render(Number value, Map<String, Number> data) {
@@ -345,14 +332,7 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 	    column.setRowHeader(true);  
 	    column.setSummaryType(SummaryType.SUM);  
 	    column.setAlignment(HorizontalAlignment.RIGHT);
-	    column.setRenderer(new GridCellRenderer<RiepilogoOreNonFatturabiliModel>() {
-			@Override
-			public Object render(RiepilogoOreNonFatturabiliModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store,
-					Grid<RiepilogoOreNonFatturabiliModel> grid) {
-				Float n=model.get(property);
-				return number.format(n);
-			}  	
-		});
+	    column.setRenderer(renderer);
 	    column.setSummaryRenderer(new SummaryRenderer() {  
    			@Override
    			public String render(Number value, Map<String, Number> data) {
@@ -368,14 +348,7 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 	    column.setRowHeader(true);  
 	    column.setSummaryType(SummaryType.SUM);  
 	    column.setAlignment(HorizontalAlignment.RIGHT);
-	    column.setRenderer(new GridCellRenderer<RiepilogoOreNonFatturabiliModel>() {
-			@Override
-			public Object render(RiepilogoOreNonFatturabiliModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store,
-					Grid<RiepilogoOreNonFatturabiliModel> grid) {
-				Float n=model.get(property);
-				return number.format(n);
-			}  	
-		});
+	    column.setRenderer(renderer);
 	    column.setSummaryRenderer(new SummaryRenderer() {  
    			@Override
    			public String render(Number value, Map<String, Number> data) {
@@ -391,14 +364,7 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 	    column.setRowHeader(true);  
 	    column.setSummaryType(SummaryType.SUM);  
 	    column.setAlignment(HorizontalAlignment.RIGHT);
-	    column.setRenderer(new GridCellRenderer<RiepilogoOreNonFatturabiliModel>() {
-			@Override
-			public Object render(RiepilogoOreNonFatturabiliModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store,
-					Grid<RiepilogoOreNonFatturabiliModel> grid) {
-				Float n=model.get(property);
-				return number.format(n);
-			}  	
-		});
+	    column.setRenderer(renderer);
 	    column.setSummaryRenderer(new SummaryRenderer() {  
    			@Override
    			public String render(Number value, Map<String, Number> data) {
@@ -414,14 +380,7 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 	    column.setRowHeader(true);  
 	    column.setSummaryType(SummaryType.SUM);  
 	    column.setAlignment(HorizontalAlignment.RIGHT);
-	    column.setRenderer(new GridCellRenderer<RiepilogoOreNonFatturabiliModel>() {
-			@Override
-			public Object render(RiepilogoOreNonFatturabiliModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store,
-					Grid<RiepilogoOreNonFatturabiliModel> grid) {
-				Float n=model.get(property);
-				return number.format(n);
-			}  	
-		});
+	    column.setRenderer(renderer);
 	    column.setSummaryRenderer(new SummaryRenderer() {  
    			@Override
    			public String render(Number value, Map<String, Number> data) {
@@ -437,14 +396,7 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 	    column.setRowHeader(true);  
 	    column.setSummaryType(SummaryType.SUM);  
 	    column.setAlignment(HorizontalAlignment.RIGHT);
-	    column.setRenderer(new GridCellRenderer<RiepilogoOreNonFatturabiliModel>() {
-			@Override
-			public Object render(RiepilogoOreNonFatturabiliModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store,
-					Grid<RiepilogoOreNonFatturabiliModel> grid) {
-				Float n=model.get(property);
-				return number.format(n);
-			}  	
-		});
+	    column.setRenderer(renderer);
 	    column.setSummaryRenderer(new SummaryRenderer() {  
    			@Override
    			public String render(Number value, Map<String, Number> data) {
@@ -460,14 +412,7 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 	    column.setRowHeader(true);  
 	    column.setSummaryType(SummaryType.SUM);  
 	    column.setAlignment(HorizontalAlignment.RIGHT);
-	    column.setRenderer(new GridCellRenderer<RiepilogoOreNonFatturabiliModel>() {
-			@Override
-			public Object render(RiepilogoOreNonFatturabiliModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store,
-					Grid<RiepilogoOreNonFatturabiliModel> grid) {
-				Float n=model.get(property);
-				return number.format(n);
-			}  	
-		});
+	    column.setRenderer(renderer);
 	    column.setSummaryRenderer(new SummaryRenderer() {  
    			@Override
    			public String render(Number value, Map<String, Number> data) {   				  				
@@ -483,14 +428,7 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 	    column.setRowHeader(true);  
 	    column.setSummaryType(SummaryType.SUM);  
 	    column.setAlignment(HorizontalAlignment.RIGHT);
-	    column.setRenderer(new GridCellRenderer<RiepilogoOreNonFatturabiliModel>() {
-			@Override
-			public Object render(RiepilogoOreNonFatturabiliModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store,
-					Grid<RiepilogoOreNonFatturabiliModel> grid) {
-				Float n=model.get(property);
-				return number.format(n);
-			}  	
-		});
+	    column.setRenderer(renderer);
 	    column.setSummaryRenderer(new SummaryRenderer() {  
    			@Override
    			public String render(Number value, Map<String, Number> data) {
@@ -506,14 +444,7 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 	    column.setRowHeader(true);  
 	    column.setSummaryType(SummaryType.SUM);  
 	    column.setAlignment(HorizontalAlignment.RIGHT);
-	    column.setRenderer(new GridCellRenderer<RiepilogoOreNonFatturabiliModel>() {
-			@Override
-			public Object render(RiepilogoOreNonFatturabiliModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store,
-					Grid<RiepilogoOreNonFatturabiliModel> grid) {
-				Float n=model.get(property);
-				return number.format(n);
-			}  	
-		});
+	    column.setRenderer(renderer);
 	    column.setSummaryRenderer(new SummaryRenderer() {  
    			@Override
    			public String render(Number value, Map<String, Number> data) {
@@ -529,14 +460,7 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 	    column.setRowHeader(true);  
 	    column.setSummaryType(SummaryType.SUM);  
 	    column.setAlignment(HorizontalAlignment.RIGHT);
-	    column.setRenderer(new GridCellRenderer<RiepilogoOreNonFatturabiliModel>() {
-			@Override
-			public Object render(RiepilogoOreNonFatturabiliModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreNonFatturabiliModel> store,
-					Grid<RiepilogoOreNonFatturabiliModel> grid) {
-				Float n=model.get(property);
-				return number.format(n);
-			}  	
-		});
+	    column.setRenderer(renderer);
 	    column.setSummaryRenderer(new SummaryRenderer() {  
    			@Override
    			public String render(Number value, Map<String, Number> data) {

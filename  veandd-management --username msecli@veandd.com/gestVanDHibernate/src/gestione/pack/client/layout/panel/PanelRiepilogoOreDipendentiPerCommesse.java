@@ -14,6 +14,7 @@ import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -55,6 +56,7 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 	private SimpleComboBox<String> smplcmbxMese;
 	private SimpleComboBox<String> smplcmbxAnno;
 	private SimpleComboBox<String> smplcmbxSede;
+	private SimpleComboBox<String> smplcmbxPM;
 	
 	private Button btnSelect;
 	private Button btnShowDettaglioOre;
@@ -129,23 +131,37 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 		smplcmbxSede.setTriggerAction(TriggerAction.ALL);
 		smplcmbxSede.setSimpleValue("T");	
 		smplcmbxSede.setWidth(70);
+		
+		smplcmbxPM = new SimpleComboBox<String>();
+		smplcmbxPM.setFieldLabel("Project Manager");
+		smplcmbxPM.setName("pm");
+		smplcmbxPM.setTriggerAction(TriggerAction.ALL);
+		smplcmbxPM.setEmptyText("Project Manager..");
+		smplcmbxPM.setAllowBlank(false);
+		smplcmbxPM.addListener(Events.OnClick, new Listener<BaseEvent>(){
+			@Override
+			public void handleEvent(BaseEvent be) {					
+					getNomePM();				
+			}		
+		});		
 			
 		btnSelect= new Button();
 		btnSelect.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.reload()));
-		btnSelect.setToolTip("Load");
+		btnSelect.setToolTip("Aggiorna");
 		btnSelect.setIconAlign(IconAlign.TOP);
 		btnSelect.setSize(26, 26);
 		btnSelect.addSelectionListener(new SelectionListener<ButtonEvent>() {		
 			@Override
 			public void componentSelected(ButtonEvent ce) {		
-				if(smplcmbxMese.isValid()&&smplcmbxAnno.isValid()){
+				if(smplcmbxMese.isValid()&&smplcmbxAnno.isValid()&&smplcmbxPM.isValid()){
 					String meseRif= new String();
 					String anno= smplcmbxAnno.getRawValue().toString();
 					String sede=smplcmbxSede.getRawValue().toString();
+					String pm=smplcmbxPM.getRawValue().toString();
 					String data;
 					meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
 					data=meseRif+anno;
-					caricaTabellaDati(data,sede);			
+					caricaTabellaDati(data,sede, pm);			
 				}else Window.alert("Controllare i dati selezionati!");
 			}			
 		});			
@@ -194,7 +210,7 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 	    btnShowDettaglioOre= new Button();
 	    btnShowDettaglioOre.setEnabled(false);
 	    btnShowDettaglioOre.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.datiTimb()));
-	    btnShowDettaglioOre.setToolTip("Riepilogo Mesi Precedenti");
+	    btnShowDettaglioOre.setToolTip("Dettaglio Giornaliero");
 	    btnShowDettaglioOre.setIconAlign(IconAlign.TOP);
 	    btnShowDettaglioOre.setSize(26, 26);
 	    btnShowDettaglioOre.addSelectionListener(new SelectionListener<ButtonEvent>() {			
@@ -215,6 +231,7 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 	    tlbrRiepilogoOre.add(smplcmbxAnno);
 	    tlbrRiepilogoOre.add(smplcmbxMese);
 	    tlbrRiepilogoOre.add(smplcmbxSede);
+	   // tlbrRiepilogoOre.add(smplcmbxPM);
 	    tlbrRiepilogoOre.add(btnSelect);
 	    tlbrRiepilogoOre.add(new SeparatorToolItem());
 	    tlbrRiepilogoOre.add(btnShowDettaglioOre);
@@ -232,6 +249,27 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 	}
 	
 	
+	private void getNomePM() {
+			AdministrationService.Util.getInstance().getNomePM(new AsyncCallback<List<String>>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					Window.alert("Errore connessione on getNomePM();");
+					caught.printStackTrace();
+				}
+
+				@Override
+				public void onSuccess(List<String> result) {
+					if(result!=null){
+						smplcmbxPM.add(result);
+						smplcmbxPM.recalculate();
+									
+					}else Window.alert("error: Errore durante l'accesso ai dati PM.");			
+				}
+			});				
+		}
+
+
 	private List<ColumnConfig> createColumns() {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 		final NumberFormat number = NumberFormat.getFormat("0.00");
@@ -363,9 +401,8 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 	}
 
 	
-	private void caricaTabellaDati(String data, String sede) {
-			
-		AdministrationService.Util.getInstance().getRiepilogoTotCommessePerDipendenti(data, sede, new AsyncCallback<List<RiepilogoOreDipFatturazione>>() {	
+	private void caricaTabellaDati(String data, String sede, String pm) {		
+		AdministrationService.Util.getInstance().getRiepilogoTotCommessePerDipendenti(data, sede, "", new AsyncCallback<List<RiepilogoOreDipFatturazione>>() {	
 			@Override
 			public void onSuccess(List<RiepilogoOreDipFatturazione> result) {
 				if(result==null)
@@ -375,8 +412,7 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 						Window.alert("Nessun dato (ore lavoro) rilevato in base ai criteri di ricerca selezionati.");
 					}
 					else loadTable(result);			
-			}
-			
+			}		
 			@Override
 			public void onFailure(Throwable caught) {
 				Window.alert("Errore connessione on getRiepilogoOreDipFatturazione();");
@@ -384,6 +420,7 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 			}
 		}); //AsyncCallback	  			
 	}
+	
 		
 	private void loadTable(List<RiepilogoOreDipFatturazione> result) {
 		

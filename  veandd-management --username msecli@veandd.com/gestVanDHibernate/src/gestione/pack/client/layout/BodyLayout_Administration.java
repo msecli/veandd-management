@@ -647,9 +647,21 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    btnReportDatiFatt.setWidth("100%");
 	    btnReportDatiFatt.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
-	        	center.removeAll();
+	        	/*center.removeAll();
 	        	center.add(new CenterLayout_RiepilogoDatiFatturazione());
-	        	center.layout(true);}      
+	        	center.layout(true);*/
+	        	int h=Window.getClientHeight();
+	        	int w=Window.getClientWidth();
+	        	Dialog d= new Dialog();
+	        	d.setSize(w-130, h-75);
+	        	d.add(new CenterLayout_RiepilogoDatiFatturazione());
+	        	d.setHeading("Riepilogo Dati Fatturazione");
+	        	d.setCollapsible(true);
+	        	d.setScrollMode(Scroll.AUTO);
+	        	d.setButtons("");
+	        	d.setConstrain(false);
+	        	d.show();
+	        }      
 	    });
 	    cp.add(btnReportDatiFatt);
 	    

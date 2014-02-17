@@ -361,7 +361,7 @@ public interface AdministrationServiceAsync {
 			AsyncCallback<List<RiepilogoOreNonFatturabiliModel>> asyncCallback);
 
 	void getRiepilogoTotCommessePerDipendenti(String mese, String sede,
-			AsyncCallback<List<RiepilogoOreDipFatturazione>> callback);
+			String pm, AsyncCallback<List<RiepilogoOreDipFatturazione>> callback);
 
 	void getRiepilogoOreCommesseDettDipendenti(String data, String sede,
 			AsyncCallback<List<RiepilogoOreDipFatturazione>> asyncCallback);
