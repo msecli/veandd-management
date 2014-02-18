@@ -6,6 +6,7 @@ import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.DatiComboBox;
 import gestione.pack.client.utility.MyImages;
 
+import gestione.pack.client.layout.panel.PanelRiepilogoOreIndiretti;
 import gestione.pack.client.layout.panel.PanelRiepilogoOreNonFatturabili;
 import gestione.pack.client.layout.panel.PanelRiepilogoSalPclMese;
 import gestione.pack.client.layout.panel.PanelRiepilogoSalPclRiassunto;
@@ -46,6 +47,7 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 	private TabItem tbPcl = new TabItem("PCL");
 	private TabItem tbRiassunto= new TabItem("Riassunto");
 	private TabItem tbNonFatturabili= new TabItem("Non Fatturabili");
+	private TabItem tbIndiretti= new TabItem("Indiretti");
 	private TabPanel tabpnlRiepSalPcl; 
 	private ContentPanel cpnlContainTab;
 	private Button btnSelect;	
@@ -246,11 +248,31 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 				data=meseRif+anno;*/
 				
 	        	tbNonFatturabili.removeAll();
-	        	tbNonFatturabili.add(new PanelRiepilogoOreNonFatturabili(anno));
+	        	tbNonFatturabili.add(new PanelRiepilogoOreIndiretti(anno));//PanelRiepilogoOreNonFatturate
 	        	tbNonFatturabili.layout(true);
 			}
 		});
 	    tabpnlRiepSalPcl.add(tbNonFatturabili);
+	    
+	    tbIndiretti.setTitle("Indiretti");
+	    tbIndiretti.setScrollMode(Scroll.AUTO);
+	    tbIndiretti.addListener(Events.Select, new Listener<ComponentEvent>() {
+
+			@Override
+			public void handleEvent(ComponentEvent be) {
+				//String meseRif= new String(); 
+		    	String anno= new String();
+		    				    				    	
+		    	anno= smplcmbxAnno.getRawValue().toString();
+				/*meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
+				data=meseRif+anno;*/
+				
+		    	tbIndiretti.removeAll();
+		    	tbIndiretti.add(new PanelRiepilogoOreIndiretti(anno));
+	        	tbIndiretti.layout(true);
+			}
+		});
+	    //tabpnlRiepSalPcl.add(tbIndiretti);
 	    
 	    cpnlContainTab.setTopComponent(tlbScelte);
 	    cpnlContainTab.setBottomComponent(tabpnlRiepSalPcl);

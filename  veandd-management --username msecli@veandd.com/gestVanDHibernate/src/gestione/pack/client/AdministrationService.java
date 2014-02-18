@@ -360,6 +360,9 @@ public interface AdministrationService extends RemoteService {
 
 	List<RiepilogoOreNonFatturabiliModel> getRiepilogoOreNonFatturate(
 			String data, String groupBy)throws IllegalArgumentException;
+	
+	List<RiepilogoOreNonFatturabiliModel> getRiepilogoOreIndiretti(String data,
+			String string)throws IllegalArgumentException;
 
 	List<RiepilogoOreDipFatturazione> getRiepilogoTotCommessePerDipendenti(
 			String mese, String sede, String pm);
@@ -442,5 +445,6 @@ public interface AdministrationService extends RemoteService {
 
 	List<RiepilogoRichiesteModel> getRiepilogoRichiesteItUtente(String username);
 
+	
 
 }

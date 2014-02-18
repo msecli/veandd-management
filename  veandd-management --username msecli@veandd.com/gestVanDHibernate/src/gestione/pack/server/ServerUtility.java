@@ -2393,6 +2393,23 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 		}		
 		return sbloccata;
 		
+	}
+
+	public static boolean isNotIncludedPersonale(List<Personale> listaP,
+			Personale personale) {
+		
+		if(listaP.isEmpty())
+			return true;
+		
+		for(Personale p:listaP){
+			int id=p.getId_PERSONALE();		
+						
+			if(id==personale.getId_PERSONALE()){
+				return false;
+			}
+		}
+		
+		return true;
 	}	
 }
 
