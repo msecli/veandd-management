@@ -359,6 +359,10 @@ public interface AdministrationServiceAsync {
 
 	void getRiepilogoOreNonFatturate(String data, String groupBy,
 			AsyncCallback<List<RiepilogoOreNonFatturabiliModel>> asyncCallback);
+	
+	void getRiepilogoOreIndiretti(String data, String string,
+			AsyncCallback<List<RiepilogoOreNonFatturabiliModel>> asyncCallback);
+
 
 	void getRiepilogoTotCommessePerDipendenti(String mese, String sede,
 			String pm, AsyncCallback<List<RiepilogoOreDipFatturazione>> callback);
@@ -448,8 +452,6 @@ public interface AdministrationServiceAsync {
 
 	void getRiepilogoRichiesteItUtente(String username,
 			AsyncCallback<List<RiepilogoRichiesteModel>> asyncCallback);
-
-	
 
 	
 			
