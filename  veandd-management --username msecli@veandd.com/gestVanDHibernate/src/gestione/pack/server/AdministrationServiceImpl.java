@@ -6498,6 +6498,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			listaFF=(List<FoglioFatturazione>)session.createQuery("from FoglioFatturazione where meseCorrente=:mese").setParameter("mese", mese).list();
 			for(FoglioFatturazione f: listaFF){	
 				
+				if(f.getCommessa().getNumeroCommessa().compareTo("10008")==0)
+					System.out.print("");
+				
 				fattura=(Fattura)session.createQuery("from Fattura where idFoglioFatturazione=:id").setParameter("id", f.getIdFoglioFatturazione()).uniqueResult();
 				if(fattura!=null)
 					statoFattura="S";
@@ -6510,6 +6513,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				cognome=cognome.substring(0,cognome.indexOf(" "));
 				
 				p=(Personale)session.createQuery("from Personale where cognome=:cognome").setParameter("cognome", cognome).uniqueResult();
+				
 				
 				if(!f.getCommessa().getOrdines().isEmpty()){
 					o=f.getCommessa().getOrdines().iterator().next();
@@ -6528,7 +6532,14 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							importoSal=ServerUtility.calcolaImporto(a.getTariffaAttivita(),f.getVariazioneSAL());
 							importoPcl=ServerUtility.calcolaImporto(a.getTariffaAttivita(),f.getVariazionePCL());
 							attivitaOrdine=a.getDescrizioneAttivita();
-						}
+						}else
+							if(f.getAttivitaOrdine()==0){
+								importo=ServerUtility.calcolaImporto(f.getTariffaUtilizzata(),f.getOreFatturare());
+								importoSal=ServerUtility.calcolaImporto(f.getTariffaUtilizzata(),f.getVariazioneSAL());
+								importoPcl=ServerUtility.calcolaImporto(f.getTariffaUtilizzata(),f.getVariazionePCL());
+								attivitaOrdine="";
+							}				
+					
 					datiModel=new DatiFatturazioneMeseModel(f.getIdFoglioFatturazione(), p.getSedeOperativa(),f.getCommessa().getMatricolaPM(), f.getCommessa().getNumeroCommessa()+"."+f.getCommessa().getEstensione(), o.getRda().getCliente().getRagioneSociale(), 
 							numeroOrdine, o.getCommessa().getDenominazioneAttivita(),attivitaOrdine , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf(ServerUtility.getOreCentesimi(f.getOreFatturare()))
 							, Float.valueOf(f.getTariffaUtilizzata()),	importo, importoEffettivo, Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), importoSal, 
@@ -6550,6 +6561,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							importoPcl, Float.valueOf(ServerUtility.getOreCentesimi(oreScaricate)),margine, f.getNote(), statoFattura);	
 				}
 				listaDati.add(datiModel);
+				
+				importoSal= (float) 0;
+				importoPcl= (float) 0;
 			}			
 			
 			tx.commit();
