@@ -254,8 +254,7 @@ public class PanelRichiesteDipendenti extends LayoutContainer{
 		expander.setTemplate(tpl); 
 		expander.setWidth(20);
 				
-		configs.add(expander);
-		
+		configs.add(expander);	
 		
 		sm.setSelectionMode(SelectionMode.SIMPLE);
 		configs.add(sm.getColumn());

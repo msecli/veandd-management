@@ -40,6 +40,7 @@ import gestione.pack.client.model.PersonaleModel;
 import gestione.pack.client.model.RdaModel;
 import gestione.pack.client.model.RdoCompletaModel;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
+import gestione.pack.client.model.RiepilogoMensileOrdiniModel;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoOreAnnualiDipendente;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
@@ -76,19 +77,20 @@ public interface AdministrationService extends RemoteService {
 	//--------------------PERSONALE
 	
 	boolean insertDataPersonale(String nome, String cognome, String username,
-			String password, String nBadge, String ruolo, String tipoOrario,
-			String tipoLavoratore, String gruppoLavoro, String costoOrario,
-			String costoStruttura, String sede, String oreDirette,
-			String oreIndirette, String permessi, String ferie, String ext,
-			String oreRecupero, String oreRecupero2);
+			String username2, String statoRapporto, String badge, String ruolo,
+			String tipoO, String tipoL, String gruppoL, String costoO,
+			String costoS, String sede, String sedeOperativa,
+			String oreDirette, String oreIndirette, String permessi,
+			String ferie, String ext, String oreRecupero)throws IllegalArgumentException;
 
 	void editDataPersonale(int id, String nome, String cognome,
-			String username, String password, String nBadge, String ruolo,
-			String tipoOrario, String tipoLavoratore, String gruppoLavoro,
-			String costoOrario, String costoStruttura, String sede,
+			String username, String string, String statoRapporto, String badge,
+			String ruolo, String tipoO, String tipoL, String gruppoL,
+			String costoO, String costoS, String sede, String sedeOperativa,
 			String oreDirette, String oreIndirette, String permessi,
-			String ferie, String ext, String oreRecupero, String oreRecupero2);
-
+			String ferie, String ex_fest, String oreRecupero)throws IllegalArgumentException;
+	
+	
 	void removeDataPersonale(int id) throws IllegalArgumentException;
 
 	List<PersonaleModel> getAllPersonaleModel() throws IllegalArgumentException;
@@ -156,6 +158,8 @@ public interface AdministrationService extends RemoteService {
 	boolean eliminaAssociazioneOrdine(String numeroOrdine) throws IllegalArgumentException;
 
 	List<TariffaOrdineModel> loadTariffePerOrdine(int idRdo)throws IllegalArgumentException;
+	
+	boolean chiudiOrdine(String numeroOrdine)throws IllegalArgumentException;
 	
 	//----------------------OFFERTA
 /*
@@ -438,13 +442,15 @@ public interface AdministrationService extends RemoteService {
 			String ip, String ipFiat, String modello, String nodo, String note,
 			String ram, Date scadenzaControllo, String sede, String serialId,
 			String serialNumber, String sistemaOperativo, String stato,
-			String svga, String tipologia, String utilizzo)
-			throws IllegalArgumentException;
+			String svga, String tipologia, String utilizzo)	throws IllegalArgumentException;
 
 	boolean insertRichiestaIt(String username, Date dataR, String ora, String pc);
 
 	List<RiepilogoRichiesteModel> getRiepilogoRichiesteItUtente(String username);
 
-	
+	List<RiepilogoMensileOrdiniModel> getRiepilogoOrdini(String stato);
+
+	List<RiepilogoMensileOrdiniModel> getDettaglioMensileOrdine(
+			String numeroOrdine)throws IllegalArgumentException;
 
 }

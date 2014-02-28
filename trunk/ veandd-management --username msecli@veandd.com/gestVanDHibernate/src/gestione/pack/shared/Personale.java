@@ -70,6 +70,8 @@ public class Personale  extends LightEntity implements IsSerializable {
 	
 	private String nomeFile;
 	
+	private String statoRapporto; //attivo, cessato
+	
 	//bi-directional many-to-one association to AssociazionePtoa
 	@OneToMany(mappedBy="personale", fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
@@ -341,6 +343,14 @@ public class Personale  extends LightEntity implements IsSerializable {
 
 	public void setAssociazionePtoHw(Set<AssociazionePtoHw> associazionePtoHw) {
 		this.associazionePtoHw = associazionePtoHw;
+	}
+
+	public String getStatoRapporto() {
+		return statoRapporto;
+	}
+
+	public void setStatoRapporto(String statoRapporto) {
+		this.statoRapporto = statoRapporto;
 	}
 
 	

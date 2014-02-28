@@ -65,6 +65,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	private TextField<String> txtfldUsername;
 	private TextField<String> txtfldPassword;
 	private TextField<String> txtfldBadge;
+	private SimpleComboBox <String> smplcmbxStatoRapporto;
 	private SimpleComboBox <String> smplcmbxTipoOrario;
 	private SimpleComboBox <String> smplcmbxTipoLavoratore;
 	private SimpleComboBox <String> smplcmbxRuolo;
@@ -321,13 +322,15 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    		String costoO= new String();
 	    		String costoS= new String();
 	    		String oreRecupero=new String();
+	    		String statoRapporto= "";
 	    	
 	    		try{
 	    			if(txtfldNome.getRawValue().isEmpty()){ nome="";}else{nome=txtfldNome.getValue().toString();}
 	    			if(txtfldCognome.getRawValue().isEmpty()){ cognome="";}else{cognome=txtfldCognome.getValue().toString();};
 	    			if(txtfldBadge.getRawValue().isEmpty()){  badge = "";}else{badge=txtfldBadge.getValue().toString();};
 	    			if(txtfldUsername.getRawValue().isEmpty()){  username = "";}else{username=txtfldUsername.getValue().toString();};
-	    			//if(txtfldPassword.getRawValue().isEmpty()){  password = "";}else{password=txtfldPassword.getValue().toString();};
+	    			
+	    			if(!smplcmbxStatoRapporto.getRawValue().isEmpty()){statoRapporto=smplcmbxStatoRapporto.getRawValue().toString();};
 	    			if(smplcmbxTipoLavoratore.getRawValue().isEmpty()){  tipoL = "";}else{tipoL=smplcmbxTipoLavoratore.getRawValue().toString();};
 	    			if(smplcmbxTipoOrario.getRawValue().isEmpty()){  tipoO = "";}else{tipoO=smplcmbxTipoOrario.getRawValue().toString();};
 	    			if(smplcmbxRuolo.getRawValue().isEmpty()){  ruolo = "";}else{ruolo=smplcmbxRuolo.getRawValue().toString();};
@@ -345,7 +348,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    			if(txtfldOreRecupero.getRawValue().isEmpty()){ oreRecupero="";}else{oreRecupero=txtfldOreRecupero.getValue().toString();}
 	    			 
 	    			//Al momento dell'inserimento la password sarà uguale all'username
-	    			AdministrationService.Util.getInstance().insertDataPersonale(nome, cognome, username, username, badge, ruolo, tipoO, tipoL, gruppoL, costoO,  costoS, 
+	    			AdministrationService.Util.getInstance().insertDataPersonale(nome, cognome, username, username, statoRapporto, badge, ruolo, tipoO, tipoL, gruppoL, costoO,  costoS, 
 	    						sede, sedeOperativa, oreDirette, oreIndirette, permessi, ferie, ext, oreRecupero, new AsyncCallback<Boolean>() {
 
 							@Override
@@ -403,6 +406,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    		String costoO;
 	    		String costoS;
 	    		String oreRecupero=new String();
+	    		String statoRapporto=new String();
 	    	
 	    		try{
 	    			/*if(txtfldNome.getRawValue().isEmpty()){ nome="";}else{nome=txtfldNome.getValue().toString();}
@@ -449,8 +453,9 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 						ferie=p.get("ferie");
 						ex_fest="0.0";
 						oreRecupero=p.get("oreRecupero");
+						statoRapporto=p.get("rapporto");
 						
-						AdministrationService.Util.getInstance().editDataPersonale(id, nome, cognome, username, "", 
+						AdministrationService.Util.getInstance().editDataPersonale(id, nome, cognome, username, "", statoRapporto,
 		    					badge, ruolo, tipoO, tipoL, gruppoL, costoO,  costoS, sede, sedeOperativa, oreDirette, oreIndirette, permessi,
 		    					ferie, ex_fest, oreRecupero, new AsyncCallback<Void>() {
 
@@ -458,15 +463,13 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 								public void onFailure(
 										Throwable caught) {
 									Window.alert("Errore connessione on EditPersonale();");
-									caught.printStackTrace();
-									
+									caught.printStackTrace();				
 								}
 
 								@Override
 								public void onSuccess(Void result) {
 									//Window.alert("OK Modifica Effettuata.");
-									caricaTabellaDati();
-										
+									caricaTabellaDati();							
 								}
 							}); //edit data
 					}
@@ -668,6 +671,15 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    txtfldBadge.setRegex("[0-9]*");
 	    txtfldBadge.getMessages().setRegexText("Deve essere formato da cifre 0-9");
 	  
+	    smplcmbxStatoRapporto=new SimpleComboBox<String>();
+	    smplcmbxStatoRapporto.setFieldLabel("Rapporto");
+	    smplcmbxStatoRapporto.setName("rapporto");
+	    smplcmbxStatoRapporto.setTriggerAction(TriggerAction.ALL);
+	    smplcmbxStatoRapporto.add("Attivo");
+	    smplcmbxStatoRapporto.add("Cessato");
+	    smplcmbxStatoRapporto.setSimpleValue("Attivo");
+	    frmpnlAnagrPersonale.add(smplcmbxStatoRapporto, new FormData("65%"));
+	    
 	    smplcmbxRuolo = new SimpleComboBox<String>();
 	    smplcmbxRuolo.setFieldLabel("Ruolo");
 	    smplcmbxRuolo.setName("ruolo");

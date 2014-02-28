@@ -26,6 +26,7 @@ import gestione.pack.client.model.PersonaleModel;
 import gestione.pack.client.model.RdaModel;
 import gestione.pack.client.model.RdoCompletaModel;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
+import gestione.pack.client.model.RiepilogoMensileOrdiniModel;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoOreAnnualiDipendente;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
@@ -72,18 +73,21 @@ public interface AdministrationServiceAsync {
 
 //-------------------Personale
 	void insertDataPersonale(String nome, String cognome, String username,
-			String password, String nBadge, String ruolo, String tipoOrario,
-			String tipoLavoratore, String gruppoLavoro, String costoOrario,
-			String costoStruttura, String sede, String oreDirette,
-			String oreIndirette, String permessi, String ferie, String ext,String oreRecupero,
-			String oreRecupero2, AsyncCallback<Boolean> asyncCallback);
-
-	void editDataPersonale(int id, String nome, String cognome,
-			String username, String password, String nBadge, String ruolo,
-			String tipoOrario, String tipoLavoratore, String gruppoLavoro,
-			String costoOrario, String costoStruttura, String sede,
+			String username2, String statoRapporto, String badge, String ruolo,
+			String tipoO, String tipoL, String gruppoL, String costoO,
+			String costoS, String sede, String sedeOperativa,
 			String oreDirette, String oreIndirette, String permessi,
-			String ferie, String ext,String oreRecupero, String oreRecupero2, AsyncCallback<Void> callback);
+			String ferie, String ext, String oreRecupero,
+			AsyncCallback<Boolean> asyncCallback);
+	
+	void editDataPersonale(int id, String nome, String cognome,
+			String username, String string, String statoRapporto, String badge,
+			String ruolo, String tipoO, String tipoL, String gruppoL,
+			String costoO, String costoS, String sede, String sedeOperativa,
+			String oreDirette, String oreIndirette, String permessi,
+			String ferie, String ex_fest, String oreRecupero,
+			AsyncCallback<Void> asyncCallback);
+	
 
 	void removeDataPersonale(int id, AsyncCallback<Void> callback);
 
@@ -127,6 +131,7 @@ public interface AdministrationServiceAsync {
 	void loadTariffePerOrdine(int idRdo,
 			AsyncCallback<List<TariffaOrdineModel>> asyncCallback);
 	
+	void chiudiOrdine(String numeroOrdine, AsyncCallback<Boolean> asyncCallback);
 /*	
 //--------------------------Offerta
 	void insertDataOfferta(String numOfferta, String numRda,
@@ -453,6 +458,12 @@ public interface AdministrationServiceAsync {
 	void getRiepilogoRichiesteItUtente(String username,
 			AsyncCallback<List<RiepilogoRichiesteModel>> asyncCallback);
 
+	void getRiepilogoOrdini(
+			String stato, AsyncCallback<List<RiepilogoMensileOrdiniModel>> asyncCallback);
+
+	void getDettaglioMensileOrdine(String numeroOrdine,
+			AsyncCallback<List<RiepilogoMensileOrdiniModel>> asyncCallback);
+
 	
-			
+
 }

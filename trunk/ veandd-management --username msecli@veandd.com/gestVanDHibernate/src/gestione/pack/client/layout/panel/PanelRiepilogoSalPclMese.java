@@ -23,6 +23,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -47,6 +48,7 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	private GroupingStore<RiepilogoSALPCLModel>store = new GroupingStore<RiepilogoSALPCLModel>();
 	private Grid<RiepilogoSALPCLModel> gridRiepilogo;
 	private ColumnModel cmRiepilogo;
+	private CellSelectionModel<RiepilogoSALPCLModel> cs;
 	
 	private String tabSelected="";
 	private String data;
@@ -57,6 +59,7 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	private int h=Window.getClientHeight();
 	private int w=Window.getClientWidth();
 	
+	private Button btnRiep;
 	private Button btnPrint;
 	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
 	private static String url= "/gestvandhibernate/PrintDataServlet";
@@ -125,6 +128,23 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 		
 		ToolBar tlbrPrint= new ToolBar();
 		
+		btnRiep= new Button();
+		btnRiep.setEnabled(true);
+		btnRiep.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.datiTimb()));
+		btnRiep.setIconAlign(IconAlign.TOP);
+		btnRiep.setToolTip("Mostra riepilogo variazioni mensili");
+		btnRiep.setSize(26, 26);
+		btnRiep.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				String commessaSelezionata=cs.getSelectedItem().get("commessa");
+				DialogRiepilogoDatiFoglioFatturazione d= new DialogRiepilogoDatiFoglioFatturazione(commessaSelezionata);
+				d.setCollapsible(true);
+				d.show();
+			}		
+		});
+
+		
 		btnPrint= new Button();
 		btnPrint.setEnabled(true);
 		btnPrint.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.print24()));
@@ -162,13 +182,16 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 		cp.setHeaderVisible(false);
 		cp.add(fp);
 		tlbrPrint.add(cp);
+		tlbrPrint.add(btnRiep);
 		
 	    store.groupBy("pm");
 	    
 	    GroupSummaryView summary = new GroupSummaryView();  
 	    summary.setForceFit(false);  
 	    summary.setShowGroupedColumn(false);  
-		      		    
+		      		  
+	    cs= new CellSelectionModel<RiepilogoSALPCLModel>();
+	    
 	    gridRiepilogo= new EditorGrid<RiepilogoSALPCLModel>(store, cmRiepilogo);  
 	    gridRiepilogo.setBorders(false);  
 	    gridRiepilogo.setView(summary);  
@@ -176,6 +199,7 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	    gridRiepilogo.setColumnLines(true);  
 	    gridRiepilogo.setColumnReordering(true);
 	    gridRiepilogo.getView().setShowDirtyCells(false);
+	    gridRiepilogo.setSelectionModel(cs);
 		    
 	    cpGrid.add(gridRiepilogo);
 	    cpGrid.setTopComponent(tlbrPrint);

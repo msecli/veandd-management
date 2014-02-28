@@ -1,6 +1,7 @@
 package gestione.pack.client.layout;
 
 import gestione.pack.client.SessionManagementService;
+import gestione.pack.client.layout.panel.PanelMensileOrdini;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
 import gestione.pack.client.utility.MyImages;
@@ -264,6 +265,30 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 	      });
 	    btnGestioneRdo.setWidth("100%");
 	    cp.add(btnGestioneRdo);
+	    
+	    Button btnRiepilogoMensile = new Button();
+	    btnRiepilogoMensile.setToolTip("Riepilogo Mensile");
+	    btnRiepilogoMensile.setHeight(65);
+	    btnRiepilogoMensile.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnRiepilogoMensile.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoMensile.setWidth("100%");
+	    btnRiepilogoMensile.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	
+	        	int h=Window.getClientHeight();
+	        	int w=Window.getClientWidth();
+	        	Dialog d= new Dialog();
+	        	d.setSize(w-130, h-65);
+	        	d.add(new PanelMensileOrdini("UA"));
+	        	d.setHeading("Mensile");
+	        	d.setCollapsible(true);
+	        	d.setScrollMode(Scroll.AUTO);
+	        	d.setButtons("");
+	        	d.setConstrain(false);
+	        	d.show();
+	        }	        
+	      });
+	    cp.add(btnRiepilogoMensile);	    
 	    panel.add(cp);
 	    
 	    cp = new ContentPanel();

@@ -11,6 +11,8 @@ import gestione.pack.client.model.RiepilogoCostiDipendentiBean;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoDatiOreMeseJavaBean;
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
+import gestione.pack.client.model.RiepilogoMensileOrdiniJavaBean;
+import gestione.pack.client.model.RiepilogoMensileOrdiniModel;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroJavaBean;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliJavaBean;
@@ -28,6 +30,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.sql.Connection;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
@@ -640,6 +643,71 @@ public class PrintDataServlet extends HttpServlet  {
 			}								
 		}
 		else
+			if(operazione.compareTo("STAMPAMENSILE")==0){
+				List<RiepilogoMensileOrdiniModel> lista= new ArrayList<RiepilogoMensileOrdiniModel>();
+				List<RiepilogoMensileOrdiniModel> listaMesi= new ArrayList<RiepilogoMensileOrdiniModel>();
+				List<RiepilogoMensileOrdiniJavaBean> listaR= new ArrayList<RiepilogoMensileOrdiniJavaBean>();
+				String anno= new String();
+				
+				anno=(String) httpSession.getAttribute("anno");
+				lista= (List<RiepilogoMensileOrdiniModel>) httpSession.getAttribute("listaM");
+				listaMesi=ServerUtility.getRiepilogoMensileOrdini(anno, lista);
+				
+				listaR.addAll(ServerUtility.traduciMensileModelToBean(listaMesi));
+				
+				
+				Map parameters = new HashMap();
+										
+				JasperPrint jasperPrint;
+				FileInputStream fis;
+				BufferedInputStream bufferedInputStream;
+				try {
+
+					fis = new FileInputStream(Constanti.PATHAmazon+"JasperReport/ReportMensileOrdini.jasper");
+											
+					bufferedInputStream = new BufferedInputStream(fis);
+
+					JasperReport jasperReport = (JasperReport) JRLoader
+								.loadObject(bufferedInputStream);
+
+					jasperPrint = JasperFillManager.fillReport(jasperReport,
+								parameters, getDataSourceMensileOrdini(listaR));
+					
+					JRXlsExporter exporterXLS = new JRXlsExporter();
+					exporterXLS.setParameter(JRXlsExporterParameter.JASPER_PRINT, jasperPrint);
+					exporterXLS.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
+					exporterXLS.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
+					exporterXLS.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+					exporterXLS.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
+					exporterXLS.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, Constanti.PATHAmazon+"FileStorage/ReportMensileOrdini.xls");
+					exporterXLS.exportReport();
+						
+					File f=new File(Constanti.PATHAmazon+"FileStorage/ReportMensileOrdini.xls");
+					FileInputStream fin = new FileInputStream(f);
+					ServletOutputStream outStream = response.getOutputStream();
+					// SET THE MIME TYPE.
+					response.setContentType("application/vnd.ms-excel");
+					// set content dispostion to attachment in with file name.
+					// case the open/save dialog needs to appear.
+					response.setHeader("Content-Disposition", "attachment;filename=ReportMensileOrdini.xls");
+
+					byte[] buffer = new byte[1024];
+					int n = 0;
+					while ((n = fin.read(buffer)) != -1) {
+					outStream.write(buffer, 0, n);
+					System.out.println(buffer);
+					}
+					
+					outStream.flush();
+					fin.close();
+					outStream.close();
+					
+				} catch (JRException e) {
+						e.printStackTrace();
+				}	
+			}
+		
+		else
 			if(operazione.compareTo("STAMPAFATTURA")==0){
 				
 				Map parameters = new HashMap();	
@@ -762,8 +830,6 @@ public class PrintDataServlet extends HttpServlet  {
 		}
 	}
 
-	
-	
 	private List<AttivitaFatturateJavaBean> elaboraListaAttivita(
 			List<AttivitaFatturateModel> listaA) {
 		List<AttivitaFatturateJavaBean>listaJB=new ArrayList<AttivitaFatturateJavaBean>();
@@ -776,7 +842,13 @@ public class PrintDataServlet extends HttpServlet  {
 		return listaJB;
 	}
 
-
+	
+	private static JRDataSource getDataSourceMensileOrdini(List<RiepilogoMensileOrdiniJavaBean> listaR) {
+		Collection<RiepilogoMensileOrdiniJavaBean> riep= new ArrayList<RiepilogoMensileOrdiniJavaBean>();
+		for(RiepilogoMensileOrdiniJavaBean r: listaR)
+			riep.add(r);		
+		return new JRBeanCollectionDataSource(riep);
+	}
 
 	private static JRDataSource getDataSourceFatture(List<FatturaJavaBean> listaO) {
 		Collection<FatturaJavaBean> riep= new ArrayList<FatturaJavaBean>();
@@ -784,8 +856,6 @@ public class PrintDataServlet extends HttpServlet  {
 			riep.add(r);		
 		return new JRBeanCollectionDataSource(riep);
 	}
-
-
 
 	private static JRDataSource getDataSourceSalPcl(List<RiepilogoSALPCLJavaBean> listaR) {
 		Collection<RiepilogoSALPCLJavaBean> riep= new ArrayList<RiepilogoSALPCLJavaBean>();

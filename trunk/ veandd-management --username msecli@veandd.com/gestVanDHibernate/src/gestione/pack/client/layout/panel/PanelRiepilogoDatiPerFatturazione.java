@@ -52,8 +52,7 @@ public class PanelRiepilogoDatiPerFatturazione extends LayoutContainer{
 	private Button btnPrint;
 	
 	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
-	private static String url= "/gestvandhibernate/PrintDataServlet";
-	
+	private static String url= "/gestvandhibernate/PrintDataServlet";	
 	
 	List<DatiFatturazioneMeseModel> listaDati= new ArrayList<DatiFatturazioneMeseModel>();
 	
