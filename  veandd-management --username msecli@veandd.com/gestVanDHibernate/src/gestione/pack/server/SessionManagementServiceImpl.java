@@ -33,6 +33,7 @@ import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.FatturaModel;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
+import gestione.pack.client.model.RiepilogoMensileOrdiniModel;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 import gestione.pack.client.model.RiepilogoSALPCLModel;
@@ -383,6 +384,25 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 		     httpSession.setAttribute("operazione", operazione);
 		     httpSession.setAttribute("fatturaModel", fM);
 		     httpSession.setAttribute("listaA", listaA);
+		   	 
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+
+	@Override
+	public boolean setDatiMensileInSession(String operazione, String anno,
+			List<RiepilogoMensileOrdiniModel> models) {
+		try {
+			 HttpServletRequest request = this.getThreadLocalRequest();
+		   	 HttpSession httpSession = request.getSession();
+		   	
+		     httpSession.setAttribute("operazione", operazione);
+		     httpSession.setAttribute("anno", anno);
+		     httpSession.setAttribute("listaM", models);
 		   	 
 			return true;
 		} catch (Exception e) {

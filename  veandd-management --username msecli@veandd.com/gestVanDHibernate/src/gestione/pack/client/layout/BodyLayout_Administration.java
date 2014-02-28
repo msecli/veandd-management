@@ -13,6 +13,7 @@ import gestione.pack.client.layout.panel.PanelAttribuzioneOreColocationCollabora
 import gestione.pack.client.layout.panel.PanelEditPasswordUtenti;
 import gestione.pack.client.layout.panel.PanelGestioneCostiDipendenti;
 import gestione.pack.client.layout.panel.PanelGestioneCosting;
+import gestione.pack.client.layout.panel.PanelMensileOrdini;
 import gestione.pack.client.layout.panel.PanelPrintAll;
 import gestione.pack.client.layout.panel.PanelRiepilogoAnnualeOreDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoCostiDipendenti;
@@ -438,12 +439,12 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    cp = new ContentPanel();
 	    cp.setAnimCollapse(false);
 	    cp.setBodyStyleName("pad-text");
-	    cp.setHeading("Gestione Rdo");
+	    cp.setHeading("Gestione Ordini");
 	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
             	center.removeAll();
 	        	center.add(new CenterLayout_GestioneRdoCompleta());
-	        	center.layout(true);               
+	        	center.layout(true);
             }
         });
 	    Button btnGestioneRdo = new Button();
@@ -461,8 +462,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	      });
 	    btnGestioneRdo.setWidth("100%");
 	    cp.add(btnGestioneRdo);
-	    
-	    
+	    	    
 	    Button btnGestioneRdoAll = new Button();
 	    btnGestioneRdoAll.setToolTip("All Toghether");
 	    btnGestioneRdoAll.setHeight(65);
@@ -477,6 +477,31 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        
 	      });
 	    cp.add(btnGestioneRdoAll);
+	    
+	    Button btnRiepilogoMensile = new Button();
+	    btnRiepilogoMensile.setToolTip("Riepilogo Mensile");
+	    btnRiepilogoMensile.setHeight(65);
+	    btnRiepilogoMensile.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnRiepilogoMensile.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoMensile.setWidth("100%");
+	    btnRiepilogoMensile.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	
+	        	int h=Window.getClientHeight();
+	        	int w=Window.getClientWidth();
+	        	Dialog d= new Dialog();
+	        	d.setSize(w-130, h-65);
+	        	d.add(new PanelMensileOrdini("AMM"));
+	        	d.setHeading("Mensile");
+	        	d.setCollapsible(true);
+	        	d.setScrollMode(Scroll.AUTO);
+	        	d.setButtons("");
+	        	d.setConstrain(false);
+	        	d.show();
+	        	
+	        	}	        
+	      });
+	    cp.add(btnRiepilogoMensile);
 	    
 	    panel.add(cp);
 	    

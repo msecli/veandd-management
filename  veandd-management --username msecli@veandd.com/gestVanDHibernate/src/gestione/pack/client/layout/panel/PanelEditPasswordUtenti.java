@@ -97,7 +97,7 @@ public class PanelEditPasswordUtenti  extends LayoutContainer{
 		    		  PersonaleModel p = new PersonaleModel();
 		    		  p=(PersonaleModel) record.getModel();
 		    		  
-		    		  AdministrationService.Util.getInstance().editDataPersonale(p.getIdPersonale(), "PSSWD", "", "", (String)p.get("password"), "", "", 
+		    		  AdministrationService.Util.getInstance().editDataPersonale(p.getIdPersonale(), "PSSWD", "", "", (String)p.get("password"), "","", "", 
 		    				  "", "", "", "", "", "", "", "", "", "", "", "", "", new AsyncCallback<Void>() {
 
 								@Override

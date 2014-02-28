@@ -68,6 +68,7 @@ import gestione.pack.client.model.RdaModel;
 import gestione.pack.client.model.RdoCompletaModel;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
+import gestione.pack.client.model.RiepilogoMensileOrdiniModel;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoOreAnnualiDipendente;
 import gestione.pack.client.model.RiepilogoOreDipCommesse;
@@ -136,8 +137,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 //------------------Gestione Personale-----------------------------------------------------------------------------------------
 	@Override
-	public boolean insertDataPersonale(String nome, String cognome, String username, String password, String nBadge, String ruolo, String tipoOrario, String tipoLavoratore,
-			String gruppoLavoro, String costoOrario,  String costoStruttura,String sede, String sedeOperativa,  String oreDirette, String oreIndirette,  String permessi, String ferie, String ext, String oreRecupero)throws IllegalArgumentException {
+	public boolean insertDataPersonale(String nome, String cognome, String username, String password, String statoRapporto, String nBadge, String ruolo, String tipoOrario, String tipoLavoratore,
+			String gruppoLavoro, String costoOrario,  String costoStruttura,String sede, String sedeOperativa,  String oreDirette, String oreIndirette,  String permessi, 
+			String ferie, String ext, String oreRecupero)throws IllegalArgumentException {
 		
 		Boolean esito=true;
 		String errore= new String();
@@ -163,6 +165,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			p.setOreFerie(ferie);
 			p.setOreExFest(ext);
 			p.setOreRecupero(oreRecupero);
+			p.setStatoRapporto(statoRapporto);
 			
 			Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
 			Transaction tx= null;		
@@ -207,8 +210,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	
 	
 	@Override
-	public void editDataPersonale(int id, String nome, String cognome, String username, String password, String nBadge, String ruolo, String tipoOrario, String tipoLavoratore, String gruppoLavoro, 
-			String costoOrario, String costoStruttura, String sede, String sedeOperativa, String oreDirette, String oreIndirette,  String permessi, String ferie, String ext, String oreRecupero) throws IllegalArgumentException {
+	public void editDataPersonale(int id, String nome, String cognome, String username, String password, String statoRapporto, 
+			String nBadge, String ruolo, String tipoOrario, String tipoLavoratore, String gruppoLavoro, 
+			String costoOrario, String costoStruttura, String sede, String sedeOperativa, String oreDirette, String oreIndirette,  
+			String permessi, String ferie, String ext, String oreRecupero) throws IllegalArgumentException {
 			
 		Boolean esito=true;
 		String errore= new String();
@@ -230,6 +235,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				p.setCostoOrario(costoOrario);
 				p.setCostoStruttura(costoStruttura);
 				p.setRuolo(ruolo);
+				p.setStatoRapporto(statoRapporto);
 				
 				//TODO controllo edit username che non può già esserci?
 				p.setUsername(username);
@@ -1214,6 +1220,34 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 
 
+	@Override
+	public boolean chiudiOrdine(String numeroOrdine)
+			throws IllegalArgumentException {
+		Boolean esito=true;
+		Ordine o= new Ordine();
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;	
+		
+		try {
+			tx=	session.beginTransaction();
+			
+			o=(Ordine)session.createQuery("from Ordine where codiceOrdine=:numeroOrdine").setParameter("numeroOrdine", numeroOrdine).uniqueResult();
+			o.setStatoOrdine("C");
+			
+			tx.commit();
+	    } catch (Exception e) {
+	    	 esito=false;
+			 e.printStackTrace();			
+			 if (tx!=null)
+				 tx.rollback();	
+	    }finally{
+	    	session.close();
+	    	if(!esito)
+				return false;	    	
+	    }
+		
+		return true;
+	}
 //---------------------------------------------------------------------------------------
 	
 	
@@ -6641,8 +6675,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		float margine;
 		boolean esistePa=false;
 		String commessa= new String();
-		
 		String estensione= new String();
+		String attivita=new String();
 		
 		String oreMargine= new String();
 		String nCommessa=commessaSelected.substring(0, commessaSelected.indexOf("."));
@@ -6681,6 +6715,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			for(Commessa c:listaC){
 				commessa=c.getNumeroCommessa();//+"."+c.getEstensione();
 				estensione=c.getEstensione();
+				attivita=c.getDenominazioneAttivita();
 				
 				if(c.getFoglioFatturaziones().size()>=0){
 					listaFF.addAll(c.getFoglioFatturaziones());								
@@ -6728,7 +6763,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							else
 								numeroOrdine="#";
 								
-							datiModel=new DatiFatturazioneCommessaModel(commessa, estensione, numeroOrdine, numMese,
+							datiModel=new DatiFatturazioneCommessaModel(commessa, estensione, attivita, numeroOrdine, numMese,
 									f.getMeseCorrente(), tariffa, Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), 
 									Float.valueOf(ServerUtility.getOreCentesimi(f.getOreFatturare()))*-1, Float.valueOf(f.getImportoRealeFatturato())*-1,
 									importo, Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL()))
@@ -6741,7 +6776,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							oreMargine=ServerUtility.getDifference(oreMargine, String.valueOf(f.getOreEseguite()));
 							margine=Float.valueOf(ServerUtility.getOreCentesimi(oreMargine));
 							
-							datiModel=new DatiFatturazioneCommessaModel(commessa, estensione, "", numMese, f.getMeseCorrente(), tariffa, 
+							datiModel=new DatiFatturazioneCommessaModel(commessa, estensione, attivita, "", numMese, f.getMeseCorrente(), tariffa, 
 									Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf(ServerUtility.getOreCentesimi(f.getOreFatturare())),
 									Float.valueOf(f.getImportoRealeFatturato()),	(float)0.0, 
 									Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())),
@@ -6761,7 +6796,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				pclIniziale=c_pa.getPclAttuale();
 			}				
 				
-			datiModel=new DatiFatturazioneCommessaModel(commessa,"", "", "",".INIZIALI", "", (float)0.0, Float.valueOf(ServerUtility.getOreCentesimi(oreOrdineIniziali)), 
+			datiModel=new DatiFatturazioneCommessaModel(commessa,"", "","", "",".INIZIALI", "", (float)0.0, Float.valueOf(ServerUtility.getOreCentesimi(oreOrdineIniziali)), 
 					 Float.valueOf(importoOrdineIniziale), (float)0.0 , Float.valueOf(ServerUtility.getOreCentesimi(salIniziale)), 
 					 Float.valueOf(ServerUtility.getOreCentesimi(pclIniziale)), (float)0.0);
 			listaDati.add(datiModel);
@@ -8578,6 +8613,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<RiepilogoOreDipFatturazione> getRiepilogoOreCommesseDettDipendenti(
 			String mese, String sede) throws IllegalArgumentException {
@@ -10319,6 +10355,140 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}	
 		return listaRM;
 	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<RiepilogoMensileOrdiniModel> getRiepilogoOrdini(String statoOrdini)
+			throws IllegalArgumentException {
+		
+		Boolean esito=true;
+		List<RiepilogoMensileOrdiniModel> listaRM= new ArrayList<RiepilogoMensileOrdiniModel>();
+		List<Ordine> listaO=new ArrayList<Ordine>();
+		List<FoglioFatturazione> listaFF= new ArrayList<FoglioFatturazione>();
+		RiepilogoMensileOrdiniModel riep;
+		
+		String commessa= new String();
+		Float importoRes= (float)0.0;
+		String oreResidue="0.00";
+		
+		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+	    formatSymbols.setDecimalSeparator('.');
+	    String pattern="0.00";
+	    DecimalFormat d= new DecimalFormat(pattern,formatSymbols);
+		
+	    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd",Locale.ITALIAN);
+		String formattedDate ;
+	    
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {		
+			
+			tx=session.beginTransaction();
+			
+			if(statoOrdini.compareTo("Tutti")==0)
+				listaO=session.createQuery("from Ordine").list();
+			else
+				listaO=session.createQuery("from Ordine where statoOrdine=:stato").setParameter("stato", statoOrdini.substring(0, 1)).list();			
+			
+			for(Ordine o:listaO){
+				
+				commessa=o.getCommessa().getNumeroCommessa()+"."+o.getCommessa().getEstensione();
+				importoRes=Float.valueOf(o.getImportoResiduo());
+				oreResidue=o.getOreResidueBudget();
+				if(o.getDataInizio()!=null)
+					formattedDate = formatter.format(o.getDataInizio());
+				else
+					formattedDate="#";
+				
+				listaFF.addAll(o.getCommessa().getFoglioFatturaziones());
+						
+				for(FoglioFatturazione ff:listaFF){
+					importoRes=importoRes- Float.valueOf(ff.getImportoRealeFatturato());
+					oreResidue=ServerUtility.getDifference(oreResidue, ff.getOreFatturare());
+				}
+				
+				for(AttivitaOrdine a:o.getAttivitaOrdines()){
+					riep= new RiepilogoMensileOrdiniModel(o.getRda().getCliente().getRagioneSociale(), o.getCommessa().getMatricolaPM(), 
+						o.getCodiceOrdine(), formattedDate, commessa, o.getRda().getCodiceRDA(), o.getDescrizioneAttivita(), o.getRda().getOffertas().iterator().next().getCodiceOfferta(), 
+						a.getTariffaAttivita(), Float.valueOf(o.getImporto()),Float.valueOf(ServerUtility.getOreCentesimi(o.getOreBudget())), Float.valueOf(importoRes), 
+						Float.valueOf(ServerUtility.getOreCentesimi(oreResidue)), o.getStatoOrdine());
+					listaRM.add(riep);
+				}
+				
+				listaFF.clear();
+				importoRes=(float)0;
+				oreResidue="0.00";
+			}
+			
+			tx.commit();
+			
+		}catch (Exception e) {
+			esito=false;
+			e.printStackTrace();
+			if (tx!=null)
+				tx.rollback();				
+					
+		}finally{
+			session.close();
+			if(!esito)	        	
+	        	return null;
+		}
+		return listaRM;
+	}
 
 	
+	@Override
+	public List<RiepilogoMensileOrdiniModel> getDettaglioMensileOrdine(
+			String numeroOrdine) throws IllegalArgumentException {
+		
+		Boolean esito=true;
+		List<RiepilogoMensileOrdiniModel> listaRM= new ArrayList<RiepilogoMensileOrdiniModel>();
+		List<FoglioFatturazione> listaFF= new ArrayList<FoglioFatturazione>();
+		RiepilogoMensileOrdiniModel riep= new RiepilogoMensileOrdiniModel();
+		Ordine o= new Ordine();
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {		
+			
+			tx=session.beginTransaction();
+			
+			o=(Ordine) session.createQuery("from Ordine where codiceOrdine=:no").setParameter("no", numeroOrdine).uniqueResult();
+			
+			listaFF.addAll(o.getCommessa().getFoglioFatturaziones());
+			for(AttivitaOrdine a:o.getAttivitaOrdines()){
+				for(FoglioFatturazione ff:listaFF){
+					if(ff.getAttivitaOrdine()==a.getIdAttivitaOrdine()){
+					
+						riep= new RiepilogoMensileOrdiniModel(ff.getMeseCorrente(), o.getCommessa().getMatricolaPM(),	"", "", "", "", "", "", 
+							"", Float.valueOf(ff.getImportoRealeFatturato()), Float.valueOf(ServerUtility.getOreCentesimi(ff.getOreFatturare())), 
+							(float)0, (float)0,"");
+						listaRM.add(riep);
+						
+					}
+				}							
+			}			
+			
+			
+			
+			tx.commit();
+			
+		}catch (Exception e) {
+			esito=false;
+			e.printStackTrace();
+			if (tx!=null)
+				tx.rollback();				
+					
+		}finally{
+			session.close();
+			if(!esito)	        	
+	        	return null;
+		}
+		return listaRM;
+	}
+
+		
 }

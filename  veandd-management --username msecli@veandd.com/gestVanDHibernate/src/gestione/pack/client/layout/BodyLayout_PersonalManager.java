@@ -3,6 +3,7 @@ package gestione.pack.client.layout;
 //import gestione.pack.client.utility.RecuperoParametriSessione;
 
 import gestione.pack.client.SessionManagementService;
+import gestione.pack.client.layout.panel.PanelMensileOrdini;
 import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
 import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoStatoAvanzamentoOreCommesse;
@@ -308,7 +309,7 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	        	center.layout(true);               
             }
         });	    
-	    Button btnGestioneCommessa = new Button();
+	   /* Button btnGestioneCommessa = new Button();
 	    btnGestioneCommessa.setToolTip("Gestione Dati Commessa");
 	    btnGestioneCommessa.setHeight(65);
 	    btnGestioneCommessa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.anagrafica()));
@@ -322,7 +323,7 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	        
 	      });
 	    btnGestioneCommessa.setWidth("100%");
-	    cp.add(btnGestioneCommessa);
+	    cp.add(btnGestioneCommessa);*/
 	    
 	    Button btnAssociaPersonale = new Button();
 	    btnAssociaPersonale.setToolTip("Associazione Dipendenti Commessa");
@@ -453,11 +454,38 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	    });
 	    cp.add(btnReportDatiFatt);
 	    
+	    Button btnRiepilogoMensile = new Button();
+	    btnRiepilogoMensile.setToolTip("Riepilogo Ordini Mensile");
+	    btnRiepilogoMensile.setHeight(65);
+	    btnRiepilogoMensile.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.presenze()));
+	    btnRiepilogoMensile.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoMensile.setWidth("100%");
+	    btnRiepilogoMensile.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	
+	        	int h=Window.getClientHeight();
+	        	int w=Window.getClientWidth();
+	        	Dialog d= new Dialog();
+	        	d.setSize(w-130, h-65);
+	        	d.add(new PanelMensileOrdini("PM"));
+	        	d.setHeading("Mensile");
+	        	d.setCollapsible(true);
+	        	d.setScrollMode(Scroll.AUTO);
+	        	d.setButtons("");
+	        	d.setConstrain(false);
+	        	d.show();
+	        	
+	        }	        
+	    });
+	    cp.add(btnRiepilogoMensile);
+	    
 	    if(txtfldUsername.getValue().toString().compareTo("enzo.cardano")==0){
 	    	Image loadingImage = new Image(MyImages.INSTANCE.logoEnzo());
 	    	cp.add(loadingImage);
 		}
 	    panel.add(cp);
+	    
+	    
 
 	    panel.setSize(180,Window.getClientHeight()-70);
 	    west.add(panel);

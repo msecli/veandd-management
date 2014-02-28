@@ -61,7 +61,7 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 				Window.alert("error: Problema createColumns().");			
 		}
 		
-		store.groupBy("commessa");
+		store.groupBy("commessaAttivita");
 		store.setSortField("numeroMese");
 		//store.setSortDir(SortDir.ASC);
 			    
@@ -82,7 +82,7 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 		cntpnlGrid.setFrame(true);
 		cntpnlGrid.setLayout(new FitLayout());  
 		cntpnlGrid.setHeaderVisible(false);
-		cntpnlGrid.setWidth(950);
+		cntpnlGrid.setWidth(970);
 		cntpnlGrid.setHeight(510);
 		cntpnlGrid.setScrollMode(Scroll.AUTOY);
 		cntpnlGrid.add(gridRiepilogo);
@@ -99,7 +99,7 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 		final NumberFormat number= NumberFormat.getFormat("0.00");
 		SummaryColumnConfig<Double> column=new SummaryColumnConfig<Double>();		
-	    column.setId("commessa");  
+	    column.setId("commessaAttivita");  
 	    column.setHeader("Commessa");  
 	    column.setWidth(140);  
 	    column.setRowHeader(true);  
@@ -128,7 +128,7 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 	    SummaryColumnConfig<Double> columnOreLavoro=new SummaryColumnConfig<Double>();		
 	    columnOreLavoro.setId("oreEseguite");  
 	    columnOreLavoro.setHeader("Ore Eseguite");  
-	    columnOreLavoro.setWidth(100);    
+	    columnOreLavoro.setWidth(120);    
 	    columnOreLavoro.setRowHeader(true); 
 	    columnOreLavoro.setSummaryType(SummaryType.SUM);  
 	    columnOreLavoro.setAlignment(HorizontalAlignment.RIGHT);  	
@@ -159,7 +159,7 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 	    SummaryColumnConfig<Double> columnOreFatturate=new SummaryColumnConfig<Double>();		
 	    columnOreFatturate.setId("oreFatturate");  
 	    columnOreFatturate.setHeader("Ore da Fatturare");  
-	    columnOreFatturate.setWidth(100);    
+	    columnOreFatturate.setWidth(120);    
 	    columnOreFatturate.setRowHeader(true); 
 	    columnOreFatturate.setSummaryType(SummaryType.SUM);  
 	    columnOreFatturate.setAlignment(HorizontalAlignment.RIGHT);    
@@ -221,7 +221,7 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("numeroOrdine");  
 		column.setHeader("Ordine.");  
-		column.setWidth(70);  
+		column.setWidth(90);  
 		column.setRowHeader(true);
 		column.setAlignment(HorizontalAlignment.RIGHT);  
 		configs.add(column);	    	    	    
@@ -229,7 +229,7 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 	    SummaryColumnConfig<Double> variazioneSal=new SummaryColumnConfig<Double>();		
 	    variazioneSal.setId("variazioneSal");  
 	    variazioneSal.setHeader("Variazione SAL");  
-	    variazioneSal.setWidth(100);    
+	    variazioneSal.setWidth(110);    
 	    variazioneSal.setRowHeader(true); 
 	    variazioneSal.setSummaryType(SummaryType.SUM);  
 	    variazioneSal.setAlignment(HorizontalAlignment.RIGHT);  	
@@ -260,7 +260,7 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 	    SummaryColumnConfig<Double> variazionePcl=new SummaryColumnConfig<Double>();		
 	    variazionePcl.setId("variazionePcl");  
 	    variazionePcl.setHeader("Variazione PCL");  
-	    variazionePcl.setWidth(100);    
+	    variazionePcl.setWidth(110);    
 	    variazionePcl.setRowHeader(true); 
 	    variazionePcl.setSummaryType(SummaryType.SUM);  
 	    variazionePcl.setAlignment(HorizontalAlignment.RIGHT);  	
@@ -291,7 +291,7 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 	    SummaryColumnConfig<Double> margine=new SummaryColumnConfig<Double>();		
 	    margine.setId("margine");  
 	    margine.setHeader("Margine");  
-	    margine.setWidth(100);    
+	    margine.setWidth(110);    
 	    margine.setRowHeader(true); 
 	    margine.setSummaryType(SummaryType.SUM);  
 	    margine.setAlignment(HorizontalAlignment.RIGHT);  	

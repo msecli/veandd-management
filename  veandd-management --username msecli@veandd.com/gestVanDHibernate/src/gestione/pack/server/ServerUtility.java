@@ -11,6 +11,8 @@ import gestione.pack.client.model.RiepilogoCostiDipendentiBean;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoDatiOreMeseJavaBean;
 import gestione.pack.client.model.RiepilogoMensileDatiIntervalliCommesseJavaBean;
+import gestione.pack.client.model.RiepilogoMensileOrdiniJavaBean;
+import gestione.pack.client.model.RiepilogoMensileOrdiniModel;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroJavaBean;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoOreDipFatturazione;
@@ -42,6 +44,7 @@ import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -1760,8 +1763,7 @@ public class ServerUtility {
 		
 		return listaB;
 	}
-	
-	
+
 	
 	public static List<RiepilogoSALPCLJavaBean> traduciSALPCLModelToBean(
 			List<RiepilogoSALPCLModel> lista) {
@@ -1800,6 +1802,20 @@ public class ServerUtility {
 		return listaJB;
 	}
 	
+	public static List<RiepilogoMensileOrdiniJavaBean> traduciMensileModelToBean(
+			List<RiepilogoMensileOrdiniModel> listaMesi) {
+		List<RiepilogoMensileOrdiniJavaBean> listaJB=new ArrayList<RiepilogoMensileOrdiniJavaBean>();
+		RiepilogoMensileOrdiniJavaBean rB;
+		for(RiepilogoMensileOrdiniModel r:listaMesi){
+			rB=new RiepilogoMensileOrdiniJavaBean((String)r.get("cliente"), (String)r.get("pm"), (String)r.get("numeroOrdine"), (String)r.get("dataOrdine"), 
+					(String)r.get("commessa"), (String)r.get("numeroRda"), (String)r.get("attivita"), (String)r.get("numeroOfferta"), (String)r.get("tariffa"), 
+					(Float)r.get("importoOrdine"), (Float)r.get("oreOrdine"), (Float)r.get("m1"), (Float)r.get("m2"), (Float)r.get("m3"), (Float)r.get("m4"), 
+					(Float)r.get("m5"), (Float)r.get("m6"), (Float)r.get("m7"), (Float)r.get("m8"), (Float)r.get("m9"), (Float)r.get("m10"), 
+					(Float)r.get("m11"), (Float)r.get("m12"), (Float)r.get("oreResidue"), (Float)r.get("importoResiduo"), (String)r.get("stato"));
+			listaJB.add(rB);
+		}		
+		return listaJB;
+	}	
 	
 	public static int getOreAnno(String sede) {//TODO passare anno
 		String data=new String();
@@ -2410,6 +2426,74 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 		}
 		
 		return true;
-	}	
+	}
+
+	public static List<RiepilogoMensileOrdiniModel> getRiepilogoMensileOrdini(
+			String anno, List<RiepilogoMensileOrdiniModel> lista) {
+		
+		List<RiepilogoMensileOrdiniModel> listaM= new ArrayList<RiepilogoMensileOrdiniModel>();
+		Ordine o= new Ordine();
+		List<FoglioFatturazione> listaFF= new ArrayList<FoglioFatturazione>();
+		List<String> listaMesiConsiderati=new ArrayList<String>();
+		RiepilogoMensileOrdiniModel riep= new RiepilogoMensileOrdiniModel();
+		String oreMese[]= new String[12];
+				
+		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+	    formatSymbols.setDecimalSeparator('.');
+	    String pattern="0.00";
+	    DecimalFormat d= new DecimalFormat(pattern,formatSymbols);
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		listaMesiConsiderati=getListaMesiPerAnno(anno);
+		for(int i=0;i<12;i++)
+			oreMese[i]="0.00";
+	
+		try{
+			tx=session.beginTransaction();
+			
+			for(RiepilogoMensileOrdiniModel r:lista){
+				String oreOrdine=getOreCentesimi(d.format((r.get("oreOrdine"))));
+				String oreResidue=getOreCentesimi(d.format((r.get("oreResidue"))));
+				
+				o=(Ordine)session.createQuery("from Ordine where codiceOrdine=:nOrdine").setParameter("nOrdine", r.get("numeroOrdine")).uniqueResult();
+				listaFF.addAll(o.getCommessa().getFoglioFatturaziones());
+				
+				for(FoglioFatturazione ff:listaFF)
+					for(String mese:listaMesiConsiderati){
+						if(ff.getMeseCorrente().compareTo(mese)==0){							
+							oreMese[listaMesiConsiderati.indexOf(mese)]=getOreCentesimi(ff.getOreFatturare());
+							break;
+						}					
+					}//mesi
+				
+				riep=new RiepilogoMensileOrdiniModel((String)r.get("cliente"), (String)r.get("pm"), (String)r.get("numeroOrdine"), (String)r.get("dataOrdine"), 
+						(String)r.get("commessa"), (String)r.get("numeroRda"), (String)r.get("attivita"), (String)r.get("numeroOfferta"), (String)r.get("tariffa"), 
+						(Float)r.get("importoOrdine"), Float.valueOf(oreOrdine),
+						Float.valueOf(oreMese[0]), Float.valueOf(oreMese[1]), Float.valueOf(oreMese[2]), Float.valueOf(oreMese[3]), Float.valueOf(oreMese[4]), 
+						Float.valueOf(oreMese[5]), Float.valueOf(oreMese[6]), Float.valueOf(oreMese[7]), Float.valueOf(oreMese[8]), Float.valueOf(oreMese[9]), 
+						Float.valueOf(oreMese[10]), Float.valueOf(oreMese[11]), (Float)r.get("importoResiduo"), Float.valueOf(oreResidue), (String)r.get("statoOrdine"));
+				
+				listaM.add(riep);
+				listaFF.clear();	
+				for(int i=0;i<12;i++)
+					oreMese[i]="0.00";
+				
+			}
+			
+			tx.commit();
+		}catch (Exception e) {
+			e.printStackTrace();
+			if (tx != null)
+				tx.rollback();
+			return null;
+		}finally{
+			session.close();
+		}	
+		
+		return listaM;
+	}
+	
 }
 

@@ -5,6 +5,7 @@ import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.FatturaModel;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
+import gestione.pack.client.model.RiepilogoMensileOrdiniModel;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 import gestione.pack.client.model.RiepilogoSALPCLModel;
@@ -67,6 +68,10 @@ public interface SessionManagementServiceAsync {
 
 	void setDataFattura(String numeroOrdine, int idFoglioFatturazione,
 			FatturaModel fM, List<AttivitaFatturateModel> listaAM, String operazione, AsyncCallback<Boolean> asyncCallback);
+
+	void setDatiMensileInSession(String string,
+			String anno, List<RiepilogoMensileOrdiniModel> models,
+			AsyncCallback<Boolean> asyncCallback);
 	
 
 }

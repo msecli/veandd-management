@@ -17,6 +17,7 @@ public class RiepilogoSALPCLModel extends BaseModel implements IsSerializable{
 			Float importoComplessivo, Float oreEseguite, Float margine, Float importoMese){
 		
 		set("pm",pm);
+		set("commessa",numeroCommessa+"."+estensione);
 		set("numeroCommessa", numeroCommessa);	
 		set("estensione", estensione);
 		set("cliente",cliente);
