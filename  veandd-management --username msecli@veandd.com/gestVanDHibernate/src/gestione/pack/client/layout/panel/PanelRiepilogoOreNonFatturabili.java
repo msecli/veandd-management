@@ -174,6 +174,7 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 		cpGrid.setTopComponent(tlBar);
 						
 	    store.groupBy("sede");
+	    store.setSortField("gruppoLavoro");
 	    
 	    GroupSummaryView summary = new GroupSummaryView();  
 	    summary.setForceFit(false);  

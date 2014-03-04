@@ -248,7 +248,7 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 				data=meseRif+anno;*/
 				
 	        	tbNonFatturabili.removeAll();
-	        	tbNonFatturabili.add(new PanelRiepilogoOreIndiretti(anno));//PanelRiepilogoOreNonFatturate
+	        	tbNonFatturabili.add(new PanelRiepilogoOreNonFatturabili(anno));//PanelRiepilogoOreNonFatturate
 	        	tbNonFatturabili.layout(true);
 			}
 		});
@@ -272,7 +272,7 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 	        	tbIndiretti.layout(true);
 			}
 		});
-	    //tabpnlRiepSalPcl.add(tbIndiretti);
+	    tabpnlRiepSalPcl.add(tbIndiretti);
 	    
 	    cpnlContainTab.setTopComponent(tlbScelte);
 	    cpnlContainTab.setBottomComponent(tabpnlRiepSalPcl);

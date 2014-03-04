@@ -7,12 +7,7 @@ import java.util.Map;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
-import gestione.pack.client.model.CommentiModel;
-import gestione.pack.client.model.CostingModel;
-import gestione.pack.client.model.CostingRisorsaModel;
 import gestione.pack.client.model.RiepilogoMensileOrdiniModel;
-import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
-import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.DatiComboBox;
 import gestione.pack.client.utility.MyImages;
 
@@ -35,12 +30,9 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
-import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
@@ -54,7 +46,6 @@ import com.extjs.gxt.ui.client.widget.grid.SummaryRenderer;
 import com.extjs.gxt.ui.client.widget.grid.SummaryType;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.i18n.client.NumberFormat;
@@ -70,7 +61,6 @@ public class PanelMensileOrdini extends LayoutContainer{
 	private int w=Window.getClientWidth();
 	
 	private ListStore<RiepilogoMensileOrdiniModel> storeRiepOrdini=new ListStore<RiepilogoMensileOrdiniModel>();
-	private ListStore<RiepilogoMensileOrdiniModel>storeApp = new ListStore<RiepilogoMensileOrdiniModel>();
 	private ListStore<RiepilogoMensileOrdiniModel>storeRes = new ListStore<RiepilogoMensileOrdiniModel>();
 	private ColumnModel cmRiepOrdini;
 	
@@ -134,6 +124,11 @@ public class PanelMensileOrdini extends LayoutContainer{
 		cpGridRiepMensile.setLayout(new FitLayout());
 		cpGridRiepMensile.setButtonAlign(HorizontalAlignment.CENTER);  
 		
+		GroupSummaryView summary = new GroupSummaryView();  
+		summary.setForceFit(false);  
+		summary.setShowGroupedColumn(false);
+		
+		//storeRiepOrdini.groupBy("statoOrdine");
 		storeRiepOrdini.setDefaultSort("cliente", SortDir.ASC);
 		cmRiepOrdini = new ColumnModel(createColumnsOrdini());		
 		gridRiepOrdini= new EditorGrid<RiepilogoMensileOrdiniModel>(storeRiepOrdini, cmRiepOrdini);  
@@ -143,7 +138,7 @@ public class PanelMensileOrdini extends LayoutContainer{
 		gridRiepOrdini.setStripeRows(true);
 		gridRiepOrdini.addPlugin(sm);
 		gridRiepOrdini.setSelectionModel(sm);
-		gridRiepOrdini.getView().setShowDirtyCells(false);	
+		//gridRiepOrdini.setView(summary);
 		gridRiepOrdini.addListener(Events.CellDoubleClick, new Listener<ComponentEvent>() {
 			@Override
 			public void handleEvent(ComponentEvent be) {
@@ -163,12 +158,11 @@ public class PanelMensileOrdini extends LayoutContainer{
 					}				
 				});			
 			}
-		});
+		});		
 		
-		
-		GroupSummaryView summary = new GroupSummaryView();  
-		summary.setForceFit(false);  
-		summary.setShowGroupedColumn(false);
+		GroupSummaryView summary1 = new GroupSummaryView();  
+		summary1.setForceFit(false);  
+		summary1.setShowGroupedColumn(false);				
 		storeRiepMensile.groupBy("pm");
 		cmRiepMensile=new ColumnModel(createColumnsMesi());
 		gridRiepMensile= new EditorGrid<RiepilogoMensileOrdiniModel>(storeRiepMensile, cmRiepMensile);
@@ -176,7 +170,7 @@ public class PanelMensileOrdini extends LayoutContainer{
 		gridRiepMensile.setItemId("grid");
 		gridRiepMensile.setStripeRows(true); 
 		gridRiepMensile.setColumnLines(true);
-		gridRiepMensile.setView(summary);		
+		gridRiepMensile.setView(summary1);		
 		
 		ToolBar tlbrScelte= new ToolBar();
 		
@@ -403,7 +397,9 @@ public class PanelMensileOrdini extends LayoutContainer{
 
 	void loadTable(List<RiepilogoMensileOrdiniModel> result){
 		storeRiepOrdini.removeAll();
-		storeRiepOrdini.add(result);	
+		storeRiepOrdini.add(result);
+		storeRes.removeAll();
+		storeRes.add(result);
 		gridRiepOrdini.reconfigure(storeRiepOrdini, cmRiepOrdini);
 	}
 
@@ -473,6 +469,9 @@ public class PanelMensileOrdini extends LayoutContainer{
 	private List<ColumnConfig> createColumnsOrdini() {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 		final NumberFormat number= NumberFormat.getFormat("0.00");
+		
+		//TODO se metto la selezione con check box non fa il summary!
+		
 		GridCellRenderer<RiepilogoMensileOrdiniModel> renderer = new GridCellRenderer<RiepilogoMensileOrdiniModel>() {
             public String render(RiepilogoMensileOrdiniModel model, String property, ColumnData config, int rowIndex,
                     int colIndex, ListStore<RiepilogoMensileOrdiniModel> store, Grid<RiepilogoMensileOrdiniModel> grid) {
@@ -482,10 +481,16 @@ public class PanelMensileOrdini extends LayoutContainer{
 		
         sm.setSelectionMode(SelectionMode.MULTI);
 		configs.add(sm.getColumn());
-        
-		ColumnConfig column = new ColumnConfig();  
-	 
-	    column = new ColumnConfig();  
+     
+		ColumnConfig /*column = new ColumnConfig();  
+	    column.setId("statoOrdine");  
+	    column.setHeader("Stato");  
+	    column.setWidth(30);  
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    configs.add(column);*/		
+		
+		column = new ColumnConfig();  
 	    column.setId("cliente");  
 	    column.setHeader("Cliente");  
 	    column.setWidth(180);  
@@ -501,7 +506,7 @@ public class PanelMensileOrdini extends LayoutContainer{
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
 	    
-	    column = new ColumnConfig();  
+	    column = new SummaryColumnConfig<Double>();  
 	    column.setId("numeroOrdine");  
 	    column.setHeader("Ordine");  
 	    column.setWidth(100);  
@@ -564,6 +569,14 @@ public class PanelMensileOrdini extends LayoutContainer{
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    column.setRenderer(renderer);
+	   /* column.setSummaryType(SummaryType.SUM); 
+	    column.setSummaryRenderer(new SummaryRenderer() {
+			
+			@Override
+			public String render(Number value, Map<String, Number> data) {
+				return number.format(value);
+			}
+		});*/
 	    configs.add(column);
 	    
 	    column = new ColumnConfig();  
@@ -573,6 +586,14 @@ public class PanelMensileOrdini extends LayoutContainer{
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    column.setRenderer(renderer);
+	    /*column.setSummaryType(SummaryType.SUM); 
+	    column.setSummaryRenderer(new SummaryRenderer() {
+			
+			@Override
+			public String render(Number value, Map<String, Number> data) {
+				return number.format(value);
+			}
+		});*/
 	    configs.add(column);
 	    
 	    column = new ColumnConfig();  
@@ -582,6 +603,14 @@ public class PanelMensileOrdini extends LayoutContainer{
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    column.setRenderer(renderer);
+	    /*column.setSummaryType(SummaryType.SUM); 
+	    column.setSummaryRenderer(new SummaryRenderer() {
+			
+			@Override
+			public String render(Number value, Map<String, Number> data) {
+				return number.format(value);
+			}
+		});*/
 	    configs.add(column);
 	    
 	    column = new ColumnConfig();  
@@ -591,6 +620,13 @@ public class PanelMensileOrdini extends LayoutContainer{
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    column.setRenderer(renderer);
+	    /*column.setSummaryType(SummaryType.SUM); 
+	    column.setSummaryRenderer(new SummaryRenderer() {			
+			@Override
+			public String render(Number value, Map<String, Number> data) {
+				return number.format(value);
+			}
+		});*/
 	    configs.add(column);
 		
 		return configs;
@@ -631,8 +667,7 @@ public class PanelMensileOrdini extends LayoutContainer{
 					java.util.Collections.sort(result);
 					smplcmbxCliente.add(result);
 					smplcmbxCliente.recalculate();
-					smplcmbxCliente.add("Tutti");
-					
+					smplcmbxCliente.add("Tutti");				
 				}
 				else Window.alert("error: Errorre durante l'accesso ai dati Clienti.");					
 			}

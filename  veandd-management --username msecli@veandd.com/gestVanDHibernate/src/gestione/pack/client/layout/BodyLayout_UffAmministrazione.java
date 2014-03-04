@@ -242,7 +242,7 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 	    cp = new ContentPanel();
 	    cp.setAnimCollapse(false);
 	    cp.setBodyStyleName("pad-text");
-	    cp.setHeading("Gestione Rdo");   
+	    cp.setHeading("Gestione Ordini");   
 	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
             	center.removeAll();

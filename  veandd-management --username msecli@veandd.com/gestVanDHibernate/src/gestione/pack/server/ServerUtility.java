@@ -2465,8 +2465,8 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 						if(ff.getMeseCorrente().compareTo(mese)==0){							
 							oreMese[listaMesiConsiderati.indexOf(mese)]=getOreCentesimi(ff.getOreFatturare());
 							break;
-						}					
-					}//mesi
+					}					
+				}//mesi
 				
 				riep=new RiepilogoMensileOrdiniModel((String)r.get("cliente"), (String)r.get("pm"), (String)r.get("numeroOrdine"), (String)r.get("dataOrdine"), 
 						(String)r.get("commessa"), (String)r.get("numeroRda"), (String)r.get("attivita"), (String)r.get("numeroOfferta"), (String)r.get("tariffa"), 
