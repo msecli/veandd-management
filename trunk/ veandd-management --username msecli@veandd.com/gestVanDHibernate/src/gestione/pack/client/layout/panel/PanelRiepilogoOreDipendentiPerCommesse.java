@@ -153,7 +153,7 @@ public class PanelRiepilogoOreDipendentiPerCommesse extends LayoutContainer{
 		btnSelect.addSelectionListener(new SelectionListener<ButtonEvent>() {		
 			@Override
 			public void componentSelected(ButtonEvent ce) {		
-				if(smplcmbxMese.isValid()&&smplcmbxAnno.isValid()&&smplcmbxPM.isValid()){
+				if(smplcmbxMese.isValid()&&smplcmbxAnno.isValid()/*&&smplcmbxPM.isValid()*/){
 					String meseRif= new String();
 					String anno= smplcmbxAnno.getRawValue().toString();
 					String sede=smplcmbxSede.getRawValue().toString();

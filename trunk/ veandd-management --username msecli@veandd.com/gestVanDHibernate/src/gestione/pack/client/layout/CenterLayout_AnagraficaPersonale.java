@@ -355,8 +355,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 							public void onFailure(
 									Throwable caught) {
 								Window.alert("Errore connessione on InsertData;");
-								caught.printStackTrace();
-								
+								caught.printStackTrace();						
 							}
 
 							@Override
@@ -368,8 +367,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 									
 									Window.alert("Errore: Probabile valore gia' presente per Username o Numero Badge!");
 								}								
-							}
-							
+							}						
 						}); //insert data
 	    			
 	    		}catch(Exception e)
