@@ -25,7 +25,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="24" splitType="Stretch">
+		<band height="23" splitType="Stretch">
 			<staticText>
 				<reportElement uuid="ed5cf267-eeae-469e-90d4-a24430c37680" x="0" y="0" width="113" height="20"/>
 				<textElement>
@@ -34,64 +34,64 @@
 				<text><![CDATA[Project Manager]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="ae5afa23-925a-47ac-ac83-d152c1fbb113" x="115" y="0" width="96" height="20"/>
+				<reportElement uuid="ae5afa23-925a-47ac-ac83-d152c1fbb113" x="113" y="0" width="96" height="20"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Commessa]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="411830ae-8f6d-4a18-a5bc-d2800ac1be1c" x="213" y="0" width="148" height="20"/>
+				<reportElement uuid="411830ae-8f6d-4a18-a5bc-d2800ac1be1c" x="209" y="0" width="148" height="20"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Cliente]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="eccb4c12-4520-4bbb-897e-7fd7c59fa038" x="473" y="0" width="160" height="20"/>
+				<reportElement uuid="eccb4c12-4520-4bbb-897e-7fd7c59fa038" x="462" y="0" width="160" height="20"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Attivita]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e2c90992-d83a-4391-b678-fc60a415bf90" x="645" y="0" width="57" height="20"/>
+				<reportElement uuid="e2c90992-d83a-4391-b678-fc60a415bf90" x="622" y="0" width="69" height="20"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Tariffa]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="c135c712-21a3-46a9-8c58-dc3848abda7c" x="734" y="0" width="101" height="20"/>
-				<textElement>
+				<reportElement uuid="c135c712-21a3-46a9-8c58-dc3848abda7c" x="691" y="0" width="112" height="20"/>
+				<textElement textAlignment="Right">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Ore Eseg.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="b119dcf7-6ff1-4471-978c-94f38b057c9c" x="837" y="0" width="97" height="20"/>
-				<textElement>
+				<reportElement uuid="b119dcf7-6ff1-4471-978c-94f38b057c9c" x="803" y="0" width="97" height="20"/>
+				<textElement textAlignment="Right">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Ore Fattur.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="6ff89e13-73b5-41d4-8729-0ee9612ea0d0" x="936" y="0" width="104" height="20"/>
-				<textElement>
+				<reportElement uuid="6ff89e13-73b5-41d4-8729-0ee9612ea0d0" x="900" y="0" width="104" height="20"/>
+				<textElement textAlignment="Right">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Importo]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="d8585ca5-d86d-4a46-a1fd-d7ccbe952d93" x="365" y="0" width="105" height="20"/>
+				<reportElement uuid="d8585ca5-d86d-4a46-a1fd-d7ccbe952d93" x="357" y="0" width="105" height="20"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Ordine]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="8d5fe8e6-8362-48d8-ae8a-12e3f3abc0da" x="1042" y="0" width="106" height="20"/>
-				<textElement>
+				<reportElement uuid="8d5fe8e6-8362-48d8-ae8a-12e3f3abc0da" x="1004" y="0" width="125" height="20"/>
+				<textElement textAlignment="Right">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Importo Effettivo]]></text>
@@ -99,61 +99,61 @@
 		</band>
 	</title>
 	<detail>
-		<band height="45" splitType="Stretch">
+		<band height="42" splitType="Stretch">
 			<textField>
 				<reportElement uuid="47cbae96-2d5c-46ec-826b-28ab53c08cd8" isPrintRepeatedValues="false" x="0" y="0" width="113" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{pm}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="b18e209d-b2c4-4d08-ac60-58fdc6600d00" x="115" y="0" width="96" height="20"/>
+				<reportElement uuid="b18e209d-b2c4-4d08-ac60-58fdc6600d00" x="113" y="0" width="96" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{commessa}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="428a7670-2cda-401e-a9a2-4e68d3c7f8b7" x="213" y="0" width="148" height="20"/>
+				<reportElement uuid="428a7670-2cda-401e-a9a2-4e68d3c7f8b7" x="209" y="0" width="148" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{cliente}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="fdfdcad3-0160-4f97-8bd2-3a9c20dbdf64" x="473" y="0" width="160" height="20"/>
+				<reportElement uuid="fdfdcad3-0160-4f97-8bd2-3a9c20dbdf64" x="462" y="0" width="160" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{oggettoAttivita}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
-				<reportElement uuid="c6b0f461-e3df-48bd-b640-d1c81034dbff" x="645" y="0" width="57" height="20"/>
+				<reportElement uuid="c6b0f461-e3df-48bd-b640-d1c81034dbff" x="622" y="0" width="69" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{tariffaOraria}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
-				<reportElement uuid="fc103b5e-4179-4f56-88fb-be66da6255f0" x="734" y="0" width="101" height="20"/>
-				<textElement/>
+				<reportElement uuid="fc103b5e-4179-4f56-88fb-be66da6255f0" x="691" y="0" width="112" height="20"/>
+				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{oreEseguite}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
-				<reportElement uuid="226cfa2a-b75f-4be9-a327-98ce2a7cbfd0" x="837" y="0" width="97" height="20"/>
-				<textElement/>
+				<reportElement uuid="226cfa2a-b75f-4be9-a327-98ce2a7cbfd0" x="803" y="0" width="97" height="20"/>
+				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{oreFatturate}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" pattern="#,##0.00">
-				<reportElement uuid="c571d2e7-b02c-477f-9fa7-4cd91d54443a" mode="Transparent" x="936" y="0" width="104" height="20" forecolor="#000000" backcolor="#F2F3F4"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{importo}]]></textFieldExpression>
-			</textField>
 			<textField>
-				<reportElement uuid="ccb4806e-0c36-48fc-9bc8-47d596309620" x="365" y="0" width="105" height="20"/>
+				<reportElement uuid="ccb4806e-0c36-48fc-9bc8-47d596309620" x="357" y="0" width="105" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{numeroOrdine}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
-				<reportElement uuid="1deb2ac3-5a58-42d9-9922-5203e6c6e359" mode="Transparent" x="1042" y="0" width="106" height="20" forecolor="#FF0000" backcolor="#F2F3F4"/>
-				<textElement/>
+				<reportElement uuid="1deb2ac3-5a58-42d9-9922-5203e6c6e359" mode="Transparent" x="1004" y="0" width="125" height="20" forecolor="#FF0000" backcolor="#F2F3F4"/>
+				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{importoEffettivo}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
-				<reportElement uuid="883a6ab4-9c34-465a-bc47-9489dd19ca34" mode="Transparent" x="473" y="25" width="675" height="20" forecolor="#000000" backcolor="#F2F3F4"/>
-				<textElement/>
+				<reportElement uuid="883a6ab4-9c34-465a-bc47-9489dd19ca34" mode="Transparent" x="0" y="22" width="691" height="20" forecolor="#000000" backcolor="#F2F3F4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{note}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="c571d2e7-b02c-477f-9fa7-4cd91d54443a" mode="Transparent" x="900" y="0" width="104" height="20" forecolor="#000000" backcolor="#F2F3F4"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{importo}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
