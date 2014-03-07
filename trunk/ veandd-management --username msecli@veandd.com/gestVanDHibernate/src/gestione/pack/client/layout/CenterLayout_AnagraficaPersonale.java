@@ -135,14 +135,15 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    cntpnlGrid.setLayout(new FitLayout());  
 	    cntpnlGrid.setHeaderVisible(false);
 	    cntpnlGrid.setBorders(false);
-	    cntpnlGrid.setWidth(655);
+	    cntpnlGrid.setWidth(695);
 	    cntpnlGrid.setHeight(760);
 	    cntpnlGrid.setScrollMode(Scroll.AUTOY);   
 	    cntpnlGrid.setBottomComponent(toolBar);
 
 	    caricaTabellaDati();
 	    
-	    ToolBar tlbrSearch= new ToolBar();	    
+	    ToolBar tlbrSearch= new ToolBar();	 
+	    
 	    final TextField<String> txtfldsearch= new TextField<String>();
 		txtfldsearch.setEmptyText("Cerca cognome...");
 		txtfldsearch.addKeyListener(new KeyListener(){
@@ -208,7 +209,8 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    formBindings.addFieldBinding(new SimpleComboBoxFieldBinding(smplcmbxTipoLavoratore, "tipologiaLavoratore"));
 	    formBindings.addFieldBinding(new SimpleComboBoxFieldBinding(smplcmbxSede, "sede"));
 	    formBindings.addFieldBinding(new SimpleComboBoxFieldBinding(smplcmbxSedeOperativa, "sedeOperativa"));
-	    formBindings.addFieldBinding(new SimpleComboBoxFieldBinding(smplcmbxGruppolavoro, "gruppoLavoro"));    
+	    formBindings.addFieldBinding(new SimpleComboBoxFieldBinding(smplcmbxGruppolavoro, "gruppoLavoro"));
+	    formBindings.addFieldBinding(new SimpleComboBoxFieldBinding(smplcmbxStatoRapporto, "rapporto"));
 	    formBindings.setStore((Store<PersonaleModel>) grid.getStore());
 //	    
 		
@@ -272,7 +274,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 		cpLayout.setHeading("Dettaglio Dipendente.");
 		//cpLayout.setStyleAttribute("padding-left", "7px");
 		//cpLayout.setStyleAttribute("margin-top", "5px");
-		cpLayout.setWidth(1030);
+		cpLayout.setWidth(1070);
 		cpLayout.setHeight(850);
 		
 		ToolBar tlbr= new ToolBar();
@@ -568,16 +570,11 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 		
 		ColumnConfig column = new ColumnConfig();  
-		/*column.setId("idPersonale");  
-	    column.setHeader("ID");  
-	    column.setWidth(30);  
-	    column.setRowHeader(true);  
-	    configs.add(column); */ 
-	    
+			    
 	    column=new ColumnConfig();		
 	    column.setId("nome");  
 	    column.setHeader("Nome");  
-	    column.setWidth(140);  
+	    column.setWidth(120);  
 	    column.setRowHeader(true);  
 	    configs.add(column);  
 	  
@@ -594,6 +591,12 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    configs.add(column);
 	    
 	    column = new ColumnConfig();  
+	    column.setId("rapporto");  
+	    column.setHeader("Rapporto");  
+	    column.setWidth(80);  
+	    configs.add(column);
+	    
+	    column = new ColumnConfig();  
 	    column.setId("nBadge");  
 	    column.setHeader("Badge");  
 	    column.setWidth(60);  
@@ -603,7 +606,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    column = new ColumnConfig();  
 	    column.setId("gruppoLavoro");  
 	    column.setHeader("Gruppo di Lavoro");  
-	    column.setWidth(160);  
+	    column.setWidth(140);  
 	    configs.add(column);  
 	
 	    return configs;

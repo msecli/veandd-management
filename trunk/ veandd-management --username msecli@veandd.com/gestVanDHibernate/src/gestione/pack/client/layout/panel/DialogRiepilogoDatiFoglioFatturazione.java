@@ -46,7 +46,7 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 		setBodyBorder(true);
 		setBodyStyle("padding: 8px; background: none");
 		setWidth(1000);
-		setHeight(560);
+		setHeight(800);
 		setResizable(true);
 		setClosable(true);
 		setButtons("");
@@ -83,7 +83,7 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 		cntpnlGrid.setLayout(new FitLayout());  
 		cntpnlGrid.setHeaderVisible(false);
 		cntpnlGrid.setWidth(970);
-		cntpnlGrid.setHeight(510);
+		cntpnlGrid.setHeight(750);
 		cntpnlGrid.setScrollMode(Scroll.AUTOY);
 		cntpnlGrid.add(gridRiepilogo);
 		   	    
@@ -306,15 +306,15 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 	    margine.setSummaryRenderer(new SummaryRenderer() {		
 			@Override
 			public String render(Number value, Map<String, Number> data) {				
-				GroupingStore<DatiFatturazioneCommessaModel>store1 = new GroupingStore<DatiFatturazioneCommessaModel>();
+				/*GroupingStore<DatiFatturazioneCommessaModel>store1 = new GroupingStore<DatiFatturazioneCommessaModel>();
    				String tot="0.00";
    				store1.add(store.getModels());
    				for(DatiFatturazioneCommessaModel riep: store1.getModels()){
    					tot=ClientUtility.aggiornaTotGenerale(tot, number.format(riep.getMargine()));
    				}
    				
-   				Float n=Float.valueOf(tot);
-				return number.format(n);
+   				Float n=Float.valueOf(tot);*/
+				return number.format(value);
 			}
 		});
 	   configs.add(margine);

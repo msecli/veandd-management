@@ -259,8 +259,8 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			tlbOperazioni.add(btnSelect);
 			tlbOperazioni.add(new SeparatorToolItem());
 			tlbOperazioni.add(cp);
-			tlbOperazioni.add(new SeparatorToolItem());
-			tlbOperazioni.add(btnRiepDatiFatt);
+			//tlbOperazioni.add(new SeparatorToolItem());
+			//tlbOperazioni.add(btnRiepDatiFatt);
 			tlbOperazioni.add(new SeparatorToolItem());
 			tlbOperazioni.add(txtGroup);
 			tlbOperazioni.add(smplcmbxOrderBy);
@@ -645,8 +645,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					return number.format(value);
 				}
 			});
-		    configs.add(oreScaricate);
-		    
+		    configs.add(oreScaricate);		    
 		    
 		    SummaryColumnConfig<Double> margine=new SummaryColumnConfig<Double>();		
 		    margine.setId("margine");  
@@ -670,12 +669,47 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					return number.format(value);
 				}
 			});
-		    configs.add(margine);	
-		   
+		    configs.add(margine);			    
+		    
+		    SummaryColumnConfig<Double> efficienza=new SummaryColumnConfig<Double>();		
+		    efficienza.setId("efficienza");  
+		    efficienza.setHeader("Eff.");  
+		    efficienza.setWidth(55);    
+		    efficienza.setRowHeader(true);  
+		    efficienza.setAlignment(HorizontalAlignment.RIGHT);
+		    efficienza.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
+				@Override
+				public Object render(DatiFatturazioneMeseModel model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
+						Grid<DatiFatturazioneMeseModel> grid) {					
+					
+					String efficienza=model.get("efficienza");
+					String numeroCommessa=model.get("numeroCommessa");
+					if(numeroCommessa.compareTo("TOTALE")!=0)
+						if(efficienza.length()>2)
+						//if(!Float.valueOf(efficienza).isInfinite()&&!Float.valueOf(efficienza).isNaN())
+							if(Float.valueOf(efficienza)<1.20)
+							{
+								String color = "#f0f080";
+								config.style = config.style + ";background-color:" + color + ";";									
+							}
+							else{
+								String color = "#90EE90"; 
+								config.style = config.style + ";background-color:" + color + ";";
+							}	
+						else
+							return "0.00";
+					else
+						config.style = config.style + ";background-color:" + "#FFFFFF" + ";";
+					
+					return model.get(property);
+				}  	
+			});
+		    configs.add(efficienza);	
+		   		   		    
 		   SummaryColumnConfig<Double> note=new SummaryColumnConfig<Double>();		
 		   note.setId("note");  
 		   note.setHeader("Note");  
-		   note.setWidth(200);    
+		   note.setWidth(250);    
 		   note.setRowHeader(true);  
 		   note.setAlignment(HorizontalAlignment.RIGHT);  	
 		   configs.add(note);

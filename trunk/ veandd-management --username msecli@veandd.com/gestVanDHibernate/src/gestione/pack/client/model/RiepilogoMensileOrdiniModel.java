@@ -36,7 +36,7 @@ public class RiepilogoMensileOrdiniModel extends BaseModel implements IsSerializ
 	public RiepilogoMensileOrdiniModel(String cliente, String pm, String numeroOrdine, String dataOrdine, String commessa, String numeroRda, String attivita,
 			String numeroOfferta, String tariffa, Float importoOrdine, Float oreOrdine,  
 			 Float m1, Float m2, Float m3, Float m4, Float m5, Float m6, Float m7, Float m8, Float m9, Float m10, Float m11, Float m12,
-			Float oreResidue, Float importoResiduo, String stato){
+			Float importoResiduo, Float oreResidue, String stato){
 		
 		set("cliente",cliente);
 		set("pm",pm);

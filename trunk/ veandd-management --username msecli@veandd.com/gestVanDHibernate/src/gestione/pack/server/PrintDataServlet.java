@@ -113,10 +113,8 @@ public class PrintDataServlet extends HttpServlet  {
 					JasperExportManager.exportReportToPdfFile(jasperPrint,Constanti.PATHAmazon+"FileStorage/RiepilogoTotali.pdf");
 
 				} catch (JRException e) {
-
 					e.printStackTrace();
-				}
-			
+				}			
 		}else
 		
 		if(operazione.compareTo("COMM")==0){
@@ -178,8 +176,7 @@ public class PrintDataServlet extends HttpServlet  {
 				exporterXLS.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
 				exporterXLS.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
 				exporterXLS.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, Constanti.PATHAmazon+"FileStorage/RiepiloghiCommesse/"+nomeFile);
-				exporterXLS.exportReport();*/
-				
+				exporterXLS.exportReport();*/				
 				
 				File f=new File(Constanti.PATHAmazon+"FileStorage/RiepiloghiCommesse/"+nomeFile);
 				FileInputStream fin = new FileInputStream(f);

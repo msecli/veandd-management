@@ -635,8 +635,8 @@ public class ServerUtility {
 		try {
 			tx = session.beginTransaction();
 			
-			listaPers=(List<Personale>)session.createQuery("from Personale where sedeOperativa=:sede order by cognome")
-					.setParameter("sede", sedeOperativa).list();
+			listaPers=(List<Personale>)session.createQuery("from Personale where sedeOperativa=:sede and statoRapporto=:stato order by cognome")
+					.setParameter("sede", sedeOperativa).setParameter("stato", "Attivo").list();
 						
 		    for(Personale p:listaPers){
 			  		
@@ -1738,7 +1738,7 @@ public class ServerUtility {
 			
 			rB= new DatiFatturazioneMeseJavaBean(r.getPM(), (String)r.get("numeroCommessa"), (String)r.get("cliente"), (String)r.get("numeroOrdine"), (String)r.get("oggettoAttivita"), 
 					(Float)r.get("oreEseguite"), (Float)r.get("oreFatturate"), (Float)r.get("tariffaOraria"), (Float)r.get("importo"), 
-					(Float)r.get("importoEffettivo"), (float)0, (float)0, (float)0, (float)0, (float)0, (float)0, 
+					(Float)r.get("importoEffettivo"), (float)0, (float)0, (float)0, (float)0, (float)0, (float)0, "",
 					(String)r.get("note"));
 			listaB.add(rB);
 		}
@@ -1757,7 +1757,8 @@ public class ServerUtility {
 			rB= new DatiFatturazioneMeseJavaBean(r.getPM(), (String)r.get("numeroCommessa"), (String)r.get("cliente"), (String)r.get("numeroOrdine"), (String)r.get("oggettoAttivita"), 
 					(Float)r.get("oreEseguite"), (Float)r.get("oreFatturate"), (Float)r.get("tariffaOraria"), (Float)r.get("importo"), (Float)r.get("importoEffettivo"), 
 					(Float)r.get("variazioneSal"), (Float)r.get("importoSal"), 
-					(Float)r.get("variazionePcl"), (Float)r.get("importoPcl"), (Float)r.get("oreScaricate"), (Float)r.get("margine"), (String)r.get("note"));
+					(Float)r.get("variazionePcl"), (Float)r.get("importoPcl"), (Float)r.get("oreScaricate"), (Float)r.get("margine"), (String) r.get("efficienza"),
+					(String)r.get("note"));
 			listaB.add(rB);
 		}
 		

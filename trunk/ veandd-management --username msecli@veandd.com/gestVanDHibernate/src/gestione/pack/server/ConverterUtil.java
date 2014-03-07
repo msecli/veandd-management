@@ -77,7 +77,7 @@ public class ConverterUtil {
 		
 		PersonaleModel pm= new PersonaleModel(p.getId_PERSONALE(),p.getNome(), p.getCognome(), p.getUsername(), p.getPassword(), p.getNumeroBadge(),p.getRuolo(), 
 				p.getTipologiaOrario(), p.getTipologiaLavoratore(), p.getGruppoLavoro(), p.getCostoOrario(), p.getCostoStruttura(), p.getSede(), p.getSedeOperativa(), p.getOreDirette(), 
-				p.getOreIndirette(), p.getOrePermessi(), p.getOreFerie(), p.getOreExFest(), p.getOreRecupero());
+				p.getOreIndirette(), p.getOrePermessi(), p.getOreFerie(), p.getOreExFest(), p.getOreRecupero(), p.getStatoRapporto());
 		
 		return pm;	
 	}	
