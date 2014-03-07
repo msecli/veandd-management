@@ -208,12 +208,11 @@ public class CenterLayout_ElaboraFatture extends LayoutContainer{
 			btnPrint.addSelectionListener(new SelectionListener<ButtonEvent>() {		
 				@Override
 				public void componentSelected(ButtonEvent ce) {
-					String mese=smplcmbxMese.getRawValue().toString();
-					String anno=smplcmbxAnno.getRawValue().toString();
-					mese=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
+					//String mese=smplcmbxMese.getRawValue().toString();
+					//String anno=smplcmbxAnno.getRawValue().toString();
+					//mese=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
 					
-					SessionManagementService.Util.getInstance().setDataReportDatiFatturazioneInSession(anno, mese, null, "RIEP.FATT",
-							new AsyncCallback<Boolean>() {
+					SessionManagementService.Util.getInstance().setDataReportDatiFatturazioneInSession("RIEPDATIFATT", store.getModels(), new AsyncCallback<Boolean>() {
 
 						@Override
 						public void onFailure(Throwable caught) {

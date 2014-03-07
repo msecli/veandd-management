@@ -418,7 +418,59 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 	    });
 	    cp.add(btnElaboraFattura);
 	    
+	    Button btnRiepilogoMensile1 = new Button();
+	    btnRiepilogoMensile1.setToolTip("Riepilogo Mensile");
+	    btnRiepilogoMensile1.setHeight(65);
+	    btnRiepilogoMensile1.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.presenzeDip()));
+	    btnRiepilogoMensile1.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoMensile1.setWidth("100%");
+	    btnRiepilogoMensile1.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	
+	        	int h=Window.getClientHeight();
+	        	int w=Window.getClientWidth();
+	        	Dialog d= new Dialog();
+	        	d.setSize(w-130, h-65);
+	        	d.add(new PanelMensileOrdini("UA"));
+	        	d.setHeading("Mensile");
+	        	d.setCollapsible(true);
+	        	d.setScrollMode(Scroll.AUTO);
+	        	d.setButtons("");
+	        	d.setConstrain(false);
+	        	d.show();
+	        }	        
+	    });
+	    cp.add(btnRiepilogoMensile1);	
+	    
+	    Button btnRiepiloghiSalPcl1 = new Button();
+	    btnRiepiloghiSalPcl1.setToolTip("Riepilogo SAL/PCL/Non Fatturabili");
+	    btnRiepiloghiSalPcl1.setHeight(65);
+	    btnRiepiloghiSalPcl1.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnRiepiloghiSalPcl1.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepiloghiSalPcl1.setWidth("100%");
+	    btnRiepiloghiSalPcl1.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	/*center.removeAll();
+	        	center.add(new CenterLayout_RiepiloghiSalPcl());
+	        	center.layout(true);*/
+	        	int h=Window.getClientHeight();
+	        	int w=Window.getClientWidth();
+	        	Dialog d= new Dialog();
+	        	d.setSize(w-130, h-65);
+	        	d.add(new CenterLayout_RiepiloghiSalPcl());
+	        	d.setHeading("Riepilogo SAL/PCL/NonFatturabili");
+	        	d.setCollapsible(true);
+	        	d.setScrollMode(Scroll.AUTO);
+	        	d.setButtons("");
+	        	d.setConstrain(false);
+	        	d.show();
+	        	
+	        }        
+	    });
+	    cp.add(btnRiepiloghiSalPcl1);
+	    
 	    panel.add(cp);    
+	    
 	    panel.setSize(180, Window.getClientHeight()-70);
 	    west.add(panel);
 	        

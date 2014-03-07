@@ -7,6 +7,7 @@ import java.util.Map;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
+import gestione.pack.client.model.RdoCompletaModel;
 import gestione.pack.client.model.RiepilogoMensileOrdiniModel;
 import gestione.pack.client.utility.DatiComboBox;
 import gestione.pack.client.utility.MyImages;
@@ -16,9 +17,11 @@ import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
@@ -28,10 +31,12 @@ import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
+import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -61,6 +66,7 @@ public class PanelMensileOrdini extends LayoutContainer{
 	private int w=Window.getClientWidth();
 	
 	private ListStore<RiepilogoMensileOrdiniModel> storeRiepOrdini=new ListStore<RiepilogoMensileOrdiniModel>();
+	private ListStore<RiepilogoMensileOrdiniModel> storeCompleto=new ListStore<RiepilogoMensileOrdiniModel>();
 	private ListStore<RiepilogoMensileOrdiniModel>storeRes = new ListStore<RiepilogoMensileOrdiniModel>();
 	private ColumnModel cmRiepOrdini;
 	
@@ -119,7 +125,7 @@ public class PanelMensileOrdini extends LayoutContainer{
 		cpGridRiepMensile.setBorders(false);
 		cpGridRiepMensile.setFrame(true);
 		cpGridRiepMensile.setHeight((h-55)/2-130);
-		cpGridRiepMensile.setWidth(w-200);
+		cpGridRiepMensile.setWidth(w-700);
 		cpGridRiepMensile.setScrollMode(Scroll.AUTO);
 		cpGridRiepMensile.setLayout(new FitLayout());
 		cpGridRiepMensile.setButtonAlign(HorizontalAlignment.CENTER);  
@@ -129,7 +135,7 @@ public class PanelMensileOrdini extends LayoutContainer{
 		summary.setShowGroupedColumn(false);
 		
 		//storeRiepOrdini.groupBy("statoOrdine");
-		storeRiepOrdini.setDefaultSort("cliente", SortDir.ASC);
+		storeRiepOrdini.setDefaultSort("commessa", SortDir.ASC);
 		cmRiepOrdini = new ColumnModel(createColumnsOrdini());		
 		gridRiepOrdini= new EditorGrid<RiepilogoMensileOrdiniModel>(storeRiepOrdini, cmRiepOrdini);  
 		gridRiepOrdini.setBorders(false);
@@ -233,6 +239,26 @@ public class PanelMensileOrdini extends LayoutContainer{
 					for(RiepilogoMensileOrdiniModel r:storeRiepOrdini.getModels())
 						if(smplcmbxPM.getRawValue().toString().compareTo((String) r.get("pm"))==0)
 							storeRes.add(r);
+					storeRes.setSortField("commessa");
+					storeRes.setSortDir(SortDir.ASC);
+					gridRiepOrdini.reconfigure(storeRes, cmRiepOrdini);
+				}
+			}
+		});
+		smplcmbxPM.addListener(Events.Select, new Listener<BaseEvent>() {
+
+			@Override
+			public void handleEvent(BaseEvent be) {
+				if(smplcmbxPM.getRawValue().toString().compareTo("Tutti")==0)
+					gridRiepOrdini.reconfigure(storeRiepOrdini, cmRiepOrdini);
+					
+				else{
+					storeRes.removeAll();
+					for(RiepilogoMensileOrdiniModel r:storeRiepOrdini.getModels())
+						if(smplcmbxPM.getRawValue().toString().compareTo((String) r.get("pm"))==0)
+							storeRes.add(r);
+					storeRes.setSortField("commessa");
+					storeRes.setSortDir(SortDir.ASC);
 					gridRiepOrdini.reconfigure(storeRes, cmRiepOrdini);
 				}
 			}
@@ -257,8 +283,28 @@ public class PanelMensileOrdini extends LayoutContainer{
 					for(RiepilogoMensileOrdiniModel r:storeRiepOrdini.getModels())
 						if(smplcmbxCliente.getRawValue().toString().compareTo((String) r.get("cliente"))==0)
 							storeRes.add(r);
+					storeRes.setSortField("commessa");
+					storeRes.setSortDir(SortDir.ASC);
 					gridRiepOrdini.reconfigure(storeRes, cmRiepOrdini);
 				}						
+			}
+		});
+		smplcmbxCliente.addListener(Events.Select, new Listener<BaseEvent>() {
+
+			@Override
+			public void handleEvent(BaseEvent be) {
+				if(smplcmbxCliente.getRawValue().toString().compareTo("Tutti")==0)
+					gridRiepOrdini.reconfigure(storeRiepOrdini, cmRiepOrdini);
+					
+				else{
+					storeRes.removeAll();
+					for(RiepilogoMensileOrdiniModel r:storeRiepOrdini.getModels())
+						if(smplcmbxCliente.getRawValue().toString().compareTo((String) r.get("cliente"))==0)
+							storeRes.add(r);
+					storeRes.setSortField("commessa");
+					storeRes.setSortDir(SortDir.ASC);
+					gridRiepOrdini.reconfigure(storeRes, cmRiepOrdini);
+				}	
 			}
 		});
 		getClienti();
@@ -349,17 +395,46 @@ public class PanelMensileOrdini extends LayoutContainer{
 			btnPrint.setVisible(false);
 			smplcmbxAnno.setVisible(false);
 		}
-				
+			
+		Text txtFiltri= new Text();
+		txtFiltri.setText("Filtri: ");
+		Text txtCerca= new Text();
+		txtCerca.setText("Cerca: ");
+		Text txtStampa= new Text();
+		txtStampa.setText("Stampa: ");
+		final TextField<String> txtfldsearch= new TextField<String>();
+		txtfldsearch.setEmptyText("Digita Ordine..");
+		txtfldsearch.addKeyListener(new KeyListener(){
+			public void componentKeyUp(ComponentEvent event) {
+				if(txtfldsearch.getRawValue().isEmpty()){
+		    		 storeRes.removeAll();
+		    		 gridRiepOrdini.reconfigure(storeRiepOrdini, cmRiepOrdini);
+		    	}else{
+		    		 String numOrdine;		 	    		 
+		    		 String campo= txtfldsearch.getValue().toString();	    			 		    		 
+		    		 storeRes.removeAll();
+		    		 for(RiepilogoMensileOrdiniModel r:storeRiepOrdini.getModels()){
+		    			 numOrdine=(String)r.get("numeroOrdine");
+		    			 if(numOrdine.contains(campo))
+		    				 storeRes.add(r);	    			 
+		    		 }	    		 
+		    		 gridRiepOrdini.reconfigure(storeRes, cmRiepOrdini);			 
+		    	 } 
+		     }	    	  	 
+		});		   
+		
+		tlbrScelte.add(txtCerca);
 		tlbrScelte.add(smplcmbxStatoOrdini);
-		tlbrScelte.add(new SeparatorToolItem());
-		tlbrScelte.add(smplcmbxCliente);
-		tlbrScelte.add(new SeparatorToolItem());
-		tlbrScelte.add(smplcmbxPM);
-		tlbrScelte.add(new SeparatorToolItem());
 		tlbrScelte.add(btnAggiorna);
 		tlbrScelte.add(new SeparatorToolItem());
+		tlbrScelte.add(txtFiltri);
+		tlbrScelte.add(smplcmbxCliente);
+		tlbrScelte.add(smplcmbxPM);
+		tlbrScelte.add(txtfldsearch);
+		tlbrScelte.add(new SeparatorToolItem());		
 		tlbrScelte.add(btnChiudi);
 		tlbrScelte.add(new SeparatorToolItem());
+		tlbrScelte.add(txtStampa);
 		tlbrScelte.add(smplcmbxAnno);
 		tlbrScelte.add(cp);
 			
@@ -411,9 +486,15 @@ public class PanelMensileOrdini extends LayoutContainer{
 	
 	private List<ColumnConfig> createColumnsMesi() {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
-		final NumberFormat number= NumberFormat.getFormat("0.00");
+		final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
 		SummaryColumnConfig<Double> column = new SummaryColumnConfig<Double>();  
-	    
+		GridCellRenderer<RiepilogoMensileOrdiniModel> renderer = new GridCellRenderer<RiepilogoMensileOrdiniModel>() {
+            public String render(RiepilogoMensileOrdiniModel model, String property, ColumnData config, int rowIndex,
+                    int colIndex, ListStore<RiepilogoMensileOrdiniModel> store, Grid<RiepilogoMensileOrdiniModel> grid) {
+            	Float n=model.get(property);
+            	return num.format(n);				
+        }};
+        
 		column = new SummaryColumnConfig<Double>();  
 	    column.setId("pm");  
 	    column.setHeader("Project Manager");  
@@ -436,12 +517,14 @@ public class PanelMensileOrdini extends LayoutContainer{
 	    column.setWidth(160);  
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
-	    column.setSummaryType(SummaryType.SUM); 
+	    column.setSummaryType(SummaryType.SUM);
+	    column.setRenderer(renderer);
 	    column.setSummaryRenderer(new SummaryRenderer() {
 			
 			@Override
 			public String render(Number value, Map<String, Number> data) {
-				return number.format(value);
+				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
+				return num.format(value);
 			}
 		});
 	    configs.add(column);
@@ -453,11 +536,13 @@ public class PanelMensileOrdini extends LayoutContainer{
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    column.setSummaryType(SummaryType.SUM); 
+	    column.setRenderer(renderer);
 	    column.setSummaryRenderer(new SummaryRenderer() {
 			
 			@Override
 			public String render(Number value, Map<String, Number> data) {
-				return number.format(value);
+				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
+				return num.format(value);
 			}
 		});
 	    configs.add(column);
@@ -512,6 +597,24 @@ public class PanelMensileOrdini extends LayoutContainer{
 	    column.setWidth(100);  
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    column.setRenderer(new GridCellRenderer<RiepilogoMensileOrdiniModel>() {
+
+			@Override
+			public Object render(RiepilogoMensileOrdiniModel model, String property,
+					ColumnData config, int rowIndex, int colIndex,
+					ListStore<RiepilogoMensileOrdiniModel> store, Grid<RiepilogoMensileOrdiniModel> grid) {
+				Float importoResiduo=model.get("importoResiduo");
+				if(importoResiduo>0)
+				{
+					String color = "#90EE90";					                    
+					config.style = config.style + ";background-color:" + color + ";";									
+				}
+				else
+					config.style = config.style + ";background-color:" + "#FFFFFF" + ";";
+				
+				return model.get(property);
+			}
+		});
 	    configs.add(column);
 	    
 	    column = new ColumnConfig();  
@@ -525,7 +628,7 @@ public class PanelMensileOrdini extends LayoutContainer{
 	    column = new ColumnConfig();  
 	    column.setId("commessa");  
 	    column.setHeader("Commessa");  
-	    column.setWidth(140);  
+	    column.setWidth(100);  
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
@@ -549,7 +652,7 @@ public class PanelMensileOrdini extends LayoutContainer{
 	    column = new ColumnConfig();  
 	    column.setId("numeroOfferta");  
 	    column.setHeader("Offerta");  
-	    column.setWidth(100);  
+	    column.setWidth(80);  
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
@@ -565,7 +668,7 @@ public class PanelMensileOrdini extends LayoutContainer{
 	    column = new ColumnConfig();  
 	    column.setId("importoOrdine");  
 	    column.setHeader("Importo");  
-	    column.setWidth(160);  
+	    column.setWidth(100);  
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    column.setRenderer(renderer);
@@ -582,10 +685,11 @@ public class PanelMensileOrdini extends LayoutContainer{
 	    column = new ColumnConfig();  
 	    column.setId("oreOrdine");  
 	    column.setHeader("Ore");  
-	    column.setWidth(120);  
+	    column.setWidth(80);  
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    column.setRenderer(renderer);
+	    column.setStyle("background-color:#FFFF7E;");
 	    /*column.setSummaryType(SummaryType.SUM); 
 	    column.setSummaryRenderer(new SummaryRenderer() {
 			
@@ -599,10 +703,10 @@ public class PanelMensileOrdini extends LayoutContainer{
 	    column = new ColumnConfig();  
 	    column.setId("importoResiduo");  
 	    column.setHeader("Importo Residuo");  
-	    column.setWidth(160);  
+	    column.setWidth(100);  
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
-	    column.setRenderer(renderer);
+	    column.setRenderer(renderer);	    
 	    /*column.setSummaryType(SummaryType.SUM); 
 	    column.setSummaryRenderer(new SummaryRenderer() {
 			
@@ -616,10 +720,27 @@ public class PanelMensileOrdini extends LayoutContainer{
 	    column = new ColumnConfig();  
 	    column.setId("oreResidue");  
 	    column.setHeader("Ore Residue");  
-	    column.setWidth(120);  
+	    column.setWidth(80);  
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
-	    column.setRenderer(renderer);
+	    column.setRenderer(new GridCellRenderer<RiepilogoMensileOrdiniModel>() {
+
+			@Override
+			public Object render(RiepilogoMensileOrdiniModel model,
+					String property, ColumnData config, int rowIndex,
+					int colIndex, ListStore<RiepilogoMensileOrdiniModel> store,
+					Grid<RiepilogoMensileOrdiniModel> grid) {
+				
+				if((Float)model.get(property)>0)
+					config.style = config.style +"font-weight:bold;" ;  
+            	else
+            		config.style = config.style +"font-weight:normal;" ;
+				
+				Float n=model.get(property);
+            	return number.format(n);
+			}
+		});
+	    column.setStyle("background-color:#FFFF7E;");
 	    /*column.setSummaryType(SummaryType.SUM); 
 	    column.setSummaryRenderer(new SummaryRenderer() {			
 			@Override
