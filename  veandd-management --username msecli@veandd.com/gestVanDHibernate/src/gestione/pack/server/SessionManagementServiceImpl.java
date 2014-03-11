@@ -410,5 +410,27 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 			return false;
 		}
 	}
-	
+
+
+	@Override
+	public boolean setDataRtv(String numeroOrdine, String meseRif, String importo,
+			String tipoModulo, String operazione) throws IllegalArgumentException {
+		
+		try {
+			 HttpServletRequest request = this.getThreadLocalRequest();
+		   	 HttpSession httpSession = request.getSession();
+		   	
+		     httpSession.setAttribute("operazione", operazione);
+		     httpSession.setAttribute("importo", importo);
+		     httpSession.setAttribute("meseRif", meseRif);
+		     httpSession.setAttribute("tipoModulo", tipoModulo);
+		     httpSession.setAttribute("numeroOrdine", numeroOrdine);
+		   	 
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+				
+	}
 }

@@ -7,7 +7,6 @@ import java.util.Map;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
-import gestione.pack.client.model.RdoCompletaModel;
 import gestione.pack.client.model.RiepilogoMensileOrdiniModel;
 import gestione.pack.client.utility.DatiComboBox;
 import gestione.pack.client.utility.MyImages;
@@ -30,6 +29,7 @@ import com.extjs.gxt.ui.client.fx.Resizable;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
@@ -66,7 +66,6 @@ public class PanelMensileOrdini extends LayoutContainer{
 	private int w=Window.getClientWidth();
 	
 	private ListStore<RiepilogoMensileOrdiniModel> storeRiepOrdini=new ListStore<RiepilogoMensileOrdiniModel>();
-	private ListStore<RiepilogoMensileOrdiniModel> storeCompleto=new ListStore<RiepilogoMensileOrdiniModel>();
 	private ListStore<RiepilogoMensileOrdiniModel>storeRes = new ListStore<RiepilogoMensileOrdiniModel>();
 	private ColumnModel cmRiepOrdini;
 	
@@ -86,10 +85,13 @@ public class PanelMensileOrdini extends LayoutContainer{
 	private Button btnChiudi;
 	private Button btnPrint;
 	
+	private PanelRtv pnlRtv= new PanelRtv();
+	
 	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
 	private static String url= "/gestvandhibernate/PrintDataServlet";
 	
 	private String ruolo= new String();
+	private String numeroOrdine= new String();
 	
 	public PanelMensileOrdini(String ruolo){
 		this.ruolo=ruolo;
@@ -106,6 +108,9 @@ public class PanelMensileOrdini extends LayoutContainer{
 		
 		VerticalPanel vp= new VerticalPanel();
 		vp.setSpacing(3);
+		
+		HorizontalPanel hp= new HorizontalPanel();
+		hp.setSpacing(2);
 				
 		ContentPanel cpGridRiepOrdini= new ContentPanel();
 		cpGridRiepOrdini.setHeaderVisible(true);
@@ -124,8 +129,8 @@ public class PanelMensileOrdini extends LayoutContainer{
 		cpGridRiepMensile.setHeading("Dettaglio Mensile");
 		cpGridRiepMensile.setBorders(false);
 		cpGridRiepMensile.setFrame(true);
-		cpGridRiepMensile.setHeight((h-55)/2-130);
-		cpGridRiepMensile.setWidth(w-700);
+		cpGridRiepMensile.setHeight((h-55)/2-140);
+		cpGridRiepMensile.setWidth((w-155)/2);
 		cpGridRiepMensile.setScrollMode(Scroll.AUTO);
 		cpGridRiepMensile.setLayout(new FitLayout());
 		cpGridRiepMensile.setButtonAlign(HorizontalAlignment.CENTER);  
@@ -148,8 +153,11 @@ public class PanelMensileOrdini extends LayoutContainer{
 		gridRiepOrdini.addListener(Events.CellDoubleClick, new Listener<ComponentEvent>() {
 			@Override
 			public void handleEvent(ComponentEvent be) {
-				String numeroOrdine=sm.getSelectedItem().get("numeroOrdine");
+				numeroOrdine=sm.getSelectedItem().get("numeroOrdine");
+				pnlRtv.setNumeroOrdine(numeroOrdine);
 				
+				//TODO caricare RTV eventuali nel panelRtv
+								
 				AdministrationService.Util.getInstance().getDettaglioMensileOrdine(numeroOrdine, new AsyncCallback<List<RiepilogoMensileOrdiniModel>>() {
 
 					@Override
@@ -442,8 +450,11 @@ public class PanelMensileOrdini extends LayoutContainer{
 		cpGridRiepOrdini.add(gridRiepOrdini);
 		cpGridRiepMensile.add(gridRiepMensile);
 		
+		hp.add(cpGridRiepMensile);
+		hp.add(pnlRtv);
+		
 		vp.add(cpGridRiepOrdini);
-		vp.add(cpGridRiepMensile);
+		vp.add(hp);
 		   
 		layoutContainer.add(vp, new FitData(0, 3, 3, 0));
 					

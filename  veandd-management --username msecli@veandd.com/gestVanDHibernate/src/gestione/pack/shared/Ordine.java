@@ -96,6 +96,10 @@ public class Ordine extends LightEntity implements IsSerializable {
 	@OneToMany(mappedBy="ordine", fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	private Set<Fattura> fatturas;
+	
+	@OneToMany(mappedBy="ordine", fetch=FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	private Set<Rtv> rtvs;
 
     public Ordine() {
     }
@@ -315,7 +319,13 @@ public class Ordine extends LightEntity implements IsSerializable {
 	public void setFatturas(Set<Fattura> fatturas) {
 		this.fatturas = fatturas;
 	}
-	
-	
+
+	public Set<Rtv> getRtvs() {
+		return rtvs;
+	}
+
+	public void setRtvs(Set<Rtv> rtvs) {
+		this.rtvs = rtvs;
+	}
 	
 }

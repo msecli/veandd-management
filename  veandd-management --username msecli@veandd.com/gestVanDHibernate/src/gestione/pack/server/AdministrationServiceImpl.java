@@ -10485,8 +10485,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						riep= new RiepilogoMensileOrdiniModel(ff.getMeseCorrente(), o.getCommessa().getMatricolaPM(),	"", "", "", "", "", "", 
 							"", Float.valueOf(ff.getImportoRealeFatturato()), Float.valueOf(ServerUtility.getOreCentesimi(ff.getOreFatturare())), 
 							(float)0, (float)0,"");
-						listaRM.add(riep);
-						
+						listaRM.add(riep);					
 					}
 				}							
 			}			
