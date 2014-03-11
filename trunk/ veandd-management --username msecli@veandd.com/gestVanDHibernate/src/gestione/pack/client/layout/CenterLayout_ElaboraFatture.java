@@ -208,9 +208,6 @@ public class CenterLayout_ElaboraFatture extends LayoutContainer{
 			btnPrint.addSelectionListener(new SelectionListener<ButtonEvent>() {		
 				@Override
 				public void componentSelected(ButtonEvent ce) {
-					//String mese=smplcmbxMese.getRawValue().toString();
-					//String anno=smplcmbxAnno.getRawValue().toString();
-					//mese=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
 					
 					SessionManagementService.Util.getInstance().setDataReportDatiFatturazioneInSession("RIEPDATIFATT", store.getModels(), new AsyncCallback<Boolean>() {
 
@@ -317,7 +314,6 @@ public class CenterLayout_ElaboraFatture extends LayoutContainer{
 			          }		          
 			}); 		
 			gridRiepilogo.addListener(Events.CellDoubleClick, new Listener<BaseEvent>() {
-
 				@Override
 				public void handleEvent(BaseEvent be) {
 					final String numeroOrdine=sm.getSelectedItem().get("numeroOrdine");

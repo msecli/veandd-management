@@ -95,6 +95,9 @@ public interface SessionManagementService extends RemoteService {
 
 	boolean setDatiMensileInSession(String string, String anno,
 			List<RiepilogoMensileOrdiniModel> models);
+
+	boolean setDataRtv(String numeroOrdine, String meseRif, String importo,
+			String tipoModulo, String operazione);
 	
 	
 }

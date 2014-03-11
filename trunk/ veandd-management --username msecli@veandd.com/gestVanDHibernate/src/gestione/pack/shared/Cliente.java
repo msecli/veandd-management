@@ -79,6 +79,11 @@ public class Cliente extends LightEntity implements IsSerializable {
 	@OneToMany(mappedBy="cliente", fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	private Set<Rda> rdas;
+	
+	//bi-directional many-to-one association to RiferimentiRtv
+	@OneToMany(mappedBy="cliente", fetch=FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	private Set<RiferimentiRtv> riferimentiRtvs;
 
     public Cliente() {
     }
@@ -281,6 +286,14 @@ public class Cliente extends LightEntity implements IsSerializable {
 
 	public void setCodFornitore(String codFornitore) {
 		this.codFornitore = codFornitore;
+	}
+
+	public Set<RiferimentiRtv> getRiferimentiRtvs() {
+		return riferimentiRtvs;
+	}
+
+	public void setRiferimentiRtvs(Set<RiferimentiRtv> riferimentiRtvs) {
+		this.riferimentiRtvs = riferimentiRtvs;
 	}
 	
 }

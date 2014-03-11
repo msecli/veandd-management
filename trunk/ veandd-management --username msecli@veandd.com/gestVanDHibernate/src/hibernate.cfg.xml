@@ -63,6 +63,7 @@
       <mapping class="gestione.pack.shared.RichiesteIt"/>
       <mapping class="gestione.pack.shared.AnagraficaHardware"/>
       <mapping class="gestione.pack.shared.AssociazionePtoHw"/>
+      <mapping class="gestione.pack.shared.Rtv"/>
  	
 </session-factory>
  

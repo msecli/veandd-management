@@ -72,6 +72,9 @@ public interface SessionManagementServiceAsync {
 	void setDatiMensileInSession(String string,
 			String anno, List<RiepilogoMensileOrdiniModel> models,
 			AsyncCallback<Boolean> asyncCallback);
+
+	void setDataRtv(String numeroOrdine, String meseRif, String importo,
+			String tipoModulo, String operazione, AsyncCallback<Boolean> asyncCallback);
 	
 
 }

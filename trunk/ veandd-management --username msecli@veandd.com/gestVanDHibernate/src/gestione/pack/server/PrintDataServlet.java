@@ -795,7 +795,64 @@ public class PrintDataServlet extends HttpServlet  {
 					e.printStackTrace();
 				}				
 			}
-			else
+		if (operazione.compareTo("STAMPARTV") == 0) {
+
+			Map parameters = new HashMap();
+			JasperPrint jasperPrint;
+			FileInputStream fis;
+			BufferedInputStream bufferedInputStream;
+			byte[] rtfResume = null;
+	
+			DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+			formatSymbols.setDecimalSeparator('.');
+			String pattern = "0.00";
+			DecimalFormat d = new DecimalFormat(pattern, formatSymbols);
+
+			String tipoModulo=(String) httpSession.getAttribute("tipoModulo");
+			String numeroOrdine=(String) httpSession.getAttribute("numeroOrdine");
+			String meseRfi=(String) httpSession.getAttribute("meseRif");
+			String importo=(String) httpSession.getAttribute("importo");
+
+			try {
+
+				fis = new FileInputStream(Constanti.PATHAmazon+ "JasperReport/ReportRtv"+tipoModulo+".jasper");
+
+				bufferedInputStream = new BufferedInputStream(fis);
+
+				JasperReport jasperReport = (JasperReport) JRLoader
+						.loadObject(bufferedInputStream);
+
+				//TODO passare la lista rtvjavabean che conterrà comque un unico entry
+				//jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, getDataSourceFatture(listaO));
+
+				final JRRtfExporter rtfExporter = new JRRtfExporter();
+				final ByteArrayOutputStream rtfStream = new ByteArrayOutputStream();
+				//rtfExporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+				rtfExporter.setParameter(JRExporterParameter.OUTPUT_STREAM,	rtfStream);
+				rtfExporter.exportReport();
+				rtfResume = rtfStream.toByteArray();
+
+				ServletOutputStream outStream = response.getOutputStream();
+				response.setContentType("application/rtf");
+				// response.setContentType("application/vnd.ms-excel");
+				// set content dispostion to attachment in with file name.
+				// case the open/save dialog needs to appear.
+
+				response.setHeader("Content-Disposition",
+						"attachment;filename=" + "Fattura_");
+
+				for (int i = 0; i < rtfResume.length; i++) {
+					outStream.write(rtfResume[i]);
+				}
+
+				outStream.flush();
+				outStream.close();
+
+			} catch (JRException e) {
+				e.printStackTrace();
+			}
+		}
+		else
 			{
 			//operazione ONE
 				
