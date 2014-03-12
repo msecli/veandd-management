@@ -79,6 +79,8 @@ import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 import gestione.pack.client.model.RiepilogoOreTotaliCommesse;
 import gestione.pack.client.model.RiepilogoRichiesteModel;
 import gestione.pack.client.model.RiepilogoSALPCLModel;
+import gestione.pack.client.model.RiferimentiRtvModel;
+import gestione.pack.client.model.RtvModel;
 import gestione.pack.client.model.TariffaOrdineModel;
 import gestione.pack.shared.AssociazionePtoA;
 import gestione.pack.shared.Attivita;
@@ -111,6 +113,8 @@ import gestione.pack.shared.PeriodoSbloccoGiorni;
 import gestione.pack.shared.Personale;
 import gestione.pack.shared.Rda;
 import gestione.pack.shared.RichiesteIt;
+import gestione.pack.shared.RiferimentiRtv;
+import gestione.pack.shared.Rtv;
 
 
 /*
@@ -10506,5 +10510,84 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		return listaRM;
 	}
 
+	
+	@Override
+	public List<RiferimentiRtvModel> getDatiReferenti()	throws IllegalArgumentException {
+		List<RiferimentiRtvModel> listaRM= new ArrayList<RiferimentiRtvModel>();
+		List<RiferimentiRtv> listaR= new ArrayList<RiferimentiRtv>();
+		RiferimentiRtvModel rtvM;		
 		
+		Boolean esito=true;				
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {		
+			
+			tx=session.beginTransaction();
+			
+			listaR=(List<RiferimentiRtv>)session.createQuery("from RiferimentiRtv").list();
+			
+			for(RiferimentiRtv r:listaR){
+				rtvM=new RiferimentiRtvModel(r.getIdRiferimentiRtv(), 0, r.getCliente().getRagioneSociale(), 
+						r.getSezione(), r.getReparto(), r.getIndirizzo(), r.getRiferimento(), r.getTelefono(), r.getEmail());
+				listaRM.add(rtvM);
+			}
+					
+			tx.commit();
+			
+		}catch (Exception e) {
+			esito=false;
+			e.printStackTrace();
+			if (tx!=null)
+				tx.rollback();				
+					
+		}finally{
+			session.close();
+			if(!esito)	        	
+	        	return null;
+		}
+		return listaRM;
+	}
+
+	
+	@Override
+	public List<RtvModel> getDatiRtv(String numeroO) {
+		List<RtvModel> listaRM= new ArrayList<RtvModel>();
+		List<Rtv> listaR= new ArrayList<Rtv>();
+		RtvModel rtvM;	
+		Ordine o;
+		
+		Boolean esito=true;				
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {		
+			
+			tx=session.beginTransaction();
+			
+			o=(Ordine)session. createQuery("from Ordine where codiceOrdine=:nOrdine").setParameter("nOrdine", numeroO).uniqueResult();
+			int idOrdine=o.getNumeroOrdine();
+			
+			listaR=(List<Rtv>)session.createQuery("from Rtv where idOrdine=:idOrdine").setParameter("idOrdine", idOrdine).list();
+			
+			for(Rtv r:listaR){
+				rtvM=new RtvModel();
+				listaRM.add(rtvM);
+			}
+					
+			tx.commit();
+			
+		}catch (Exception e) {
+			esito=false;
+			e.printStackTrace();
+			if (tx!=null)
+				tx.rollback();				
+					
+		}finally{
+			session.close();
+			if(!esito)	        	
+	        	return null;
+		}
+		return listaRM;
+	}
 }

@@ -19,6 +19,9 @@ import gestione.pack.client.model.RiepilogoOreNonFatturabiliJavaBean;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 import gestione.pack.client.model.RiepilogoSALPCLJavaBean;
 import gestione.pack.client.model.RiepilogoSALPCLModel;
+import gestione.pack.client.model.RiferimentiRtvModel;
+import gestione.pack.client.model.RtvJavaBean;
+import gestione.pack.client.model.RtvModel;
 import gestione.pack.shared.AttivitaFatturata;
 import gestione.pack.shared.Fattura;
 import gestione.pack.shared.FoglioFatturazione;
@@ -803,19 +806,22 @@ public class PrintDataServlet extends HttpServlet  {
 			BufferedInputStream bufferedInputStream;
 			byte[] rtfResume = null;
 	
-			DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+			/*DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
 			formatSymbols.setDecimalSeparator('.');
 			String pattern = "0.00";
-			DecimalFormat d = new DecimalFormat(pattern, formatSymbols);
+			DecimalFormat d = new DecimalFormat(pattern, formatSymbols);*/
 
+			List<RtvJavaBean> listaO= new ArrayList<RtvJavaBean>();
+						
 			String tipoModulo=(String) httpSession.getAttribute("tipoModulo");
-			String numeroOrdine=(String) httpSession.getAttribute("numeroOrdine");
-			String meseRfi=(String) httpSession.getAttribute("meseRif");
-			String importo=(String) httpSession.getAttribute("importo");
+			RtvModel rtv=(RtvModel) httpSession.getAttribute("rtv");
+			RiferimentiRtvModel rifM=(RiferimentiRtvModel) httpSession.getAttribute("rifM");
+			
+			listaO.add(ServerUtility.createRtvJavaBeanEntry(rtv, rifM));
 
 			try {
 
-				fis = new FileInputStream(Constanti.PATHAmazon+ "JasperReport/ReportRtv"+tipoModulo+".jasper");
+				fis = new FileInputStream(/*Constanti.PATHAmazon+ */"JasperReport/ReportRtv"+tipoModulo.trim()+".jasper");
 
 				bufferedInputStream = new BufferedInputStream(fis);
 
@@ -823,11 +829,11 @@ public class PrintDataServlet extends HttpServlet  {
 						.loadObject(bufferedInputStream);
 
 				//TODO passare la lista rtvjavabean che conterrà comque un unico entry
-				//jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, getDataSourceFatture(listaO));
+				jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, getDataSourceRtv(listaO));
 
 				final JRRtfExporter rtfExporter = new JRRtfExporter();
 				final ByteArrayOutputStream rtfStream = new ByteArrayOutputStream();
-				//rtfExporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+				rtfExporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
 				rtfExporter.setParameter(JRExporterParameter.OUTPUT_STREAM,	rtfStream);
 				rtfExporter.exportReport();
 				rtfResume = rtfStream.toByteArray();
@@ -882,6 +888,13 @@ public class PrintDataServlet extends HttpServlet  {
 				e.printStackTrace();
 			}				
 		}
+	}
+
+	private static JRDataSource getDataSourceRtv(List<RtvJavaBean> listaO) {
+		Collection<RtvJavaBean> riep= new ArrayList<RtvJavaBean>();
+		for(RtvJavaBean r: listaO)
+			riep.add(r);		
+		return new JRBeanCollectionDataSource(riep);
 	}
 
 	private List<AttivitaFatturateJavaBean> elaboraListaAttivita(

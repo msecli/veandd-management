@@ -38,6 +38,8 @@ import gestione.pack.client.model.RiepilogoOreModel;
 import gestione.pack.client.model.RiepilogoOreTotaliCommesse;
 import gestione.pack.client.model.RiepilogoRichiesteModel;
 import gestione.pack.client.model.RiepilogoSALPCLModel;
+import gestione.pack.client.model.RiferimentiRtvModel;
+import gestione.pack.client.model.RtvModel;
 import gestione.pack.client.model.TariffaOrdineModel;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -463,6 +465,10 @@ public interface AdministrationServiceAsync {
 
 	void getDettaglioMensileOrdine(String numeroOrdine,
 			AsyncCallback<List<RiepilogoMensileOrdiniModel>> asyncCallback);
+
+	void getDatiReferenti(AsyncCallback<List<RiferimentiRtvModel>> asyncCallback);
+
+	void getDatiRtv(String numeroO, AsyncCallback<List<RtvModel>> asyncCallback);
 
 	
 

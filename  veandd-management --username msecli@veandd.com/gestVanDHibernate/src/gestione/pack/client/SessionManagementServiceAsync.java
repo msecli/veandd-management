@@ -9,6 +9,8 @@ import gestione.pack.client.model.RiepilogoMensileOrdiniModel;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 import gestione.pack.client.model.RiepilogoSALPCLModel;
+import gestione.pack.client.model.RiferimentiRtvModel;
+import gestione.pack.client.model.RtvModel;
 
 import java.util.List;
 
@@ -73,8 +75,8 @@ public interface SessionManagementServiceAsync {
 			String anno, List<RiepilogoMensileOrdiniModel> models,
 			AsyncCallback<Boolean> asyncCallback);
 
-	void setDataRtv(String numeroOrdine, String meseRif, String importo,
-			String tipoModulo, String operazione, AsyncCallback<Boolean> asyncCallback);
+	void setDataRtv(RtvModel rtv, RiferimentiRtvModel rifModel, String tipoModulo, String operazione, AsyncCallback<Boolean> asyncCallback);
+
 	
 
 }

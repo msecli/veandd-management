@@ -4,13 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import gestione.pack.client.AdministrationService;
 import gestione.pack.client.model.RiepilogoMensileOrdiniModel;
+import gestione.pack.client.model.RiferimentiRtvModel;
+import gestione.pack.client.model.RtvModel;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.MyImages;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -18,6 +22,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.TextField;
@@ -36,14 +41,15 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public class PanelRtv extends ContentPanel{
 
 	//uso il grouping per fare la somma del fatturato
-	private GroupingStore<RiepilogoMensileOrdiniModel> storeRtv=new GroupingStore<RiepilogoMensileOrdiniModel>();
+	private GroupingStore<RtvModel> storeRtv=new GroupingStore<RtvModel>();
 	private ColumnModel cmRiepRtv;
-	private EditorGrid<RiepilogoMensileOrdiniModel> gridRiepRtv;
+	private EditorGrid<RtvModel> gridRiepRtv;
 	
 	private Button btnAddRtv;
 	private int w=Window.getClientWidth();
@@ -69,7 +75,7 @@ public class PanelRtv extends ContentPanel{
 		
 		storeRtv.groupBy("numeroOrdine");
 		cmRiepRtv=new ColumnModel(createColumnsRTV());
-		gridRiepRtv= new EditorGrid<RiepilogoMensileOrdiniModel>(storeRtv, cmRiepRtv);
+		gridRiepRtv= new EditorGrid<RtvModel>(storeRtv, cmRiepRtv);
 		gridRiepRtv.setBorders(false);
 		gridRiepRtv.setItemId("grid");
 		gridRiepRtv.setStripeRows(true); 
@@ -87,7 +93,7 @@ public class PanelRtv extends ContentPanel{
 			@Override
 			public void componentSelected(ButtonEvent ce) {	
 				DialogFormInserimentoDatiRtv dp= new DialogFormInserimentoDatiRtv(numeroO);
-				dp.setSize(630, 240);
+				dp.setSize(630, 550);
 				dp.setButtons("");
 				dp.setHeading("Dati per l'RTV.");
 				dp.setConstrain(false);
@@ -97,11 +103,9 @@ public class PanelRtv extends ContentPanel{
 				     
 					@Override
 					public void handleEvent(ComponentEvent be) {
-						
-						
-				    }
-				});			
-				
+						caricaDatiTabellaRtv(numeroO);						
+				    }				
+				});				
 			}				
 		});	
 		tlbrRtv.add(btnAddRtv);
@@ -132,7 +136,7 @@ public class PanelRtv extends ContentPanel{
 		
 	    column = new SummaryColumnConfig<Double>();  
 	    column.setId("meseRiferimento");  
-	    column.setHeader("Mese");  
+	    column.setHeader("Data Emissione RTV");  
 	    column.setWidth(140);  
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
@@ -140,7 +144,7 @@ public class PanelRtv extends ContentPanel{
 		
 	    column = new SummaryColumnConfig<Double>();  
 	    column.setId("importo");  
-	    column.setHeader("Importo da Fatturare");  
+	    column.setHeader("Importo RTV");  
 	    column.setWidth(160);  
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
@@ -163,6 +167,22 @@ public class PanelRtv extends ContentPanel{
 		numeroO=numeroOrdine;
 	}
 	
-	
-		
+	public void caricaDatiTabellaRtv(String numeroO) {
+		AdministrationService.Util.getInstance().getDatiRtv(numeroO, new AsyncCallback<List<RtvModel>>(){
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("Problemi di connessione on getDatiReferenti();");
+			}
+
+			@Override
+			public void onSuccess(List<RtvModel> result) {
+				if(result!=null){
+					storeRtv.add(result);
+					gridRiepRtv.reconfigure(storeRtv, cmRiepRtv);
+				}	
+			}
+			
+		});
+	}		
 }

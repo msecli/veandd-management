@@ -37,6 +37,8 @@ import gestione.pack.client.model.RiepilogoMensileOrdiniModel;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 import gestione.pack.client.model.RiepilogoSALPCLModel;
+import gestione.pack.client.model.RiferimentiRtvModel;
+import gestione.pack.client.model.RtvModel;
 import gestione.pack.shared.Personale;
 
 
@@ -413,19 +415,18 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 
 
 	@Override
-	public boolean setDataRtv(String numeroOrdine, String meseRif, String importo,
+	public boolean setDataRtv(RtvModel rtv, RiferimentiRtvModel rifM,
 			String tipoModulo, String operazione) throws IllegalArgumentException {
 		
 		try {
 			 HttpServletRequest request = this.getThreadLocalRequest();
 		   	 HttpSession httpSession = request.getSession();
 		   	
+		   	 httpSession.setAttribute("rtv", rtv);
+		   	 httpSession.setAttribute("rifM", rifM);
 		     httpSession.setAttribute("operazione", operazione);
-		     httpSession.setAttribute("importo", importo);
-		     httpSession.setAttribute("meseRif", meseRif);
 		     httpSession.setAttribute("tipoModulo", tipoModulo);
-		     httpSession.setAttribute("numeroOrdine", numeroOrdine);
-		   	 
+		    		   	 
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();

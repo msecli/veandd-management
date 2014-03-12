@@ -39,7 +39,7 @@ public class Rtv  extends LightEntity implements IsSerializable{
 	
 	private String statoLavori;
 	
-	private String cdcCliente;
+	private String cdcRichiedente;
 	
 	private String commessaCliente;
 	
@@ -175,14 +175,14 @@ public class Rtv  extends LightEntity implements IsSerializable{
 	 * @return the cdcCliente
 	 */
 	public String getCdcCliente() {
-		return cdcCliente;
+		return cdcRichiedente;
 	}
 
 	/**
 	 * @param cdcCliente the cdcCliente to set
 	 */
 	public void setCdcCliente(String cdcCliente) {
-		this.cdcCliente = cdcCliente;
+		this.cdcRichiedente = cdcCliente;
 	}
 
 	/**

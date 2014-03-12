@@ -155,8 +155,7 @@ public class PanelMensileOrdini extends LayoutContainer{
 			public void handleEvent(ComponentEvent be) {
 				numeroOrdine=sm.getSelectedItem().get("numeroOrdine");
 				pnlRtv.setNumeroOrdine(numeroOrdine);
-				
-				//TODO caricare RTV eventuali nel panelRtv
+				pnlRtv.caricaDatiTabellaRtv(numeroOrdine);				
 								
 				AdministrationService.Util.getInstance().getDettaglioMensileOrdine(numeroOrdine, new AsyncCallback<List<RiepilogoMensileOrdiniModel>>() {
 
