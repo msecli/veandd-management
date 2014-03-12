@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReportRtvTipo1" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9b69285d-2b52-4ec6-869d-65a5181e705e">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="ragioneSociale" class="java.lang.String"/>
+	<field name="sezione" class="java.lang.String"/>
+	<field name="reparto" class="java.lang.String"/>
+	<field name="indirizzo" class="java.lang.String"/>
+	<field name="referente" class="java.lang.String"/>
+	<field name="telefono" class="java.lang.String"/>
+	<field name="email" class="java.lang.String"/>
+	<field name="cdcRichiedente" class="java.lang.String"/>
+	<field name="numeroOrdine" class="java.lang.String"/>
+	<field name="numeroRtv" class="java.lang.String"/>
+	<field name="importo" class="java.lang.String"/>
+	<field name="dataEmissione" class="java.lang.String"/>
+	<field name="commessaCliente" class="java.lang.String"/>
+	<field name="attivita" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="603" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="d766859b-1554-48fb-afaf-d98a5a7c520f" x="18" y="23" width="144" height="14"/>
+				<textElement>
+					<font size="10"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[Ve&D S.r.l.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="504ad4cd-ad9b-44b5-a9c3-f40a7feee69d" x="18" y="37" width="144" height="14"/>
+				<textElement>
+					<font size="10"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[Via Filadelfia 226]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ba2ce3de-618a-4228-985c-b1717337413e" x="18" y="51" width="144" height="14"/>
+				<textElement>
+					<font size="10"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[10137 Torino]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4f545e3d-5ad8-4f0c-966d-cf9446260984" x="18" y="65" width="144" height="14"/>
+				<textElement>
+					<font size="10"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[Rif. Patrizia Petrungaro]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c8ac6152-a3f7-4746-8ffc-1c03c0c759df" x="18" y="79" width="144" height="14"/>
+				<textElement>
+					<font size="10"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[Tel. +39 011 3240 510]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b20613d6-bef2-495c-b3e2-4e155ecd4aec" x="18" y="93" width="174" height="14"/>
+				<textElement>
+					<font size="10"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[e-mail: ppetrungaro@veandd.com]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6bbd3189-e11f-4bca-9763-a75033c68f44" x="18" y="173" width="499" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font size="14" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Oggetto: Rapporto Tecnico Valorizzato (RTV)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="876e21fb-df3f-4dcb-8f45-ed171aac3f5d" x="18" y="137" width="63" height="21"/>
+				<textElement verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RTV N°]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8db2663e-581b-444f-b515-a7638d9131b4" x="323" y="137" width="50" height="21"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Torino,]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="743b2e58-969b-42ef-9f7c-e9a9e9637b04" x="18" y="377" width="305" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Riepilogo delle attività svolte nel mese precedente]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="695c15c3-284c-43db-8737-1cb4a857e70a" x="323" y="107" width="209" height="14"/>
+				<textElement textAlignment="Right">
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c64a4674-6d85-4f66-80b1-6a6e765ba42f" x="323" y="23" width="209" height="14"/>
+				<textElement textAlignment="Right">
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ragioneSociale}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bc6c0fbc-0bf0-448b-8473-97e6401de8d1" x="323" y="65" width="209" height="14"/>
+				<textElement textAlignment="Right">
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{indirizzo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="24ad593c-72eb-437b-bc47-b36204d0e9d8" x="323" y="37" width="209" height="14"/>
+				<textElement textAlignment="Right">
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sezione}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="92e46f40-817e-4a7b-a98c-beeebe4e6911" x="323" y="79" width="209" height="14"/>
+				<textElement textAlignment="Right">
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{referente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="424a1adb-f745-4a0f-9640-312a9ee2602d" x="323" y="93" width="209" height="14"/>
+				<textElement textAlignment="Right">
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{telefono}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="089fcefd-d76d-4001-8b82-d0da0c9f71ff" x="323" y="51" width="209" height="14"/>
+				<textElement textAlignment="Right">
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{reparto}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="708889c6-06f8-4baa-8b95-f0c96836f1a1" x="81" y="137" width="242" height="21"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numeroRtv}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4d6b2caa-4175-42ec-9d2a-3f2fe91fd3aa" x="373" y="137" width="159" height="21"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dataEmissione}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ec842bce-b563-4f70-b9b7-2944d7455b4c" x="162" y="236" width="242" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cdcRichiedente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="035eca75-8c9e-45ad-85b8-22b2a6987a35" x="162" y="256" width="242" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{commessaCliente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1f70888b-ff73-4487-a980-84f263e21602" x="162" y="276" width="242" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numeroOrdine}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e4036fb3-574d-46a6-ab85-c5d8308204d4" x="162" y="296" width="242" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{importo}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement uuid="7cb9e35d-23dc-48e4-9894-b11c4025bbe5" x="18" y="397" width="514" height="105"/>
+			</rectangle>
+			<textField>
+				<reportElement uuid="599ce5fd-82d8-45e0-b0ea-b74e617e1c8b" x="18" y="397" width="514" height="105"/>
+				<textElement>
+					<font size="12"/>
+					<paragraph leftIndent="10" spacingBefore="10" spacingAfter="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{attivita}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement uuid="5a49a04d-b3b7-468f-bf0e-cbece7ecc6e5" x="18" y="502" width="514" height="45"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="e14c8ac6-7028-48df-ba33-1a566b2df5bb" x="18" y="513" width="63" height="20"/>
+				<textElement>
+					<font size="12"/>
+					<paragraph leftIndent="10"/>
+				</textElement>
+				<text><![CDATA[Allegati]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="de44bdae-ecbf-42c3-981f-5626f1b1f262" x="18" y="236" width="144" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cdc Richiedente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f2f1bacc-c905-486d-9817-b10cc4581cde" x="18" y="256" width="144" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Commessa Fiat Auto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3f96af82-5d9f-4c74-a9d4-e3c12e5c6e9e" x="18" y="276" width="144" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Numero Ordine]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a536be2b-2016-4bbc-a75a-8a340231c984" x="18" y="296" width="144" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Importo da Fatturare]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>
