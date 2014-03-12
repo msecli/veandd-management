@@ -18,7 +18,7 @@ public class RtvModel extends BaseModel implements IsSerializable{
 	
 	public RtvModel(int idRtv, int idOrdine, String numeroOrdine, String numeroRtv, String codiceFornitore, String nomeResponsabile,
 			Date dataOrdine, Date dataEmissione, float importo, String importoOrdine, String importoAvanzamenti, String meseRiferimento, String attivita, String statoLavori, 
-			String cdcRichiedente, String commessaCliente, String ente, String dataInizioAttivita, String dataFineAttivita){
+			String cdcRichiedente, String commessaCliente, String ente, Date dataInizioAttivita, Date dataFineAttivita){
 		set("idRtv",idRtv);
 		set("idOrdine",idOrdine);
 		set("numeroOrdine", numeroOrdine);
@@ -39,4 +39,7 @@ public class RtvModel extends BaseModel implements IsSerializable{
 		set("dataInizioAttivita", dataInizioAttivita);
 		set("dataFineAttivita", dataFineAttivita);
 	}
+	
+	
+	
 }

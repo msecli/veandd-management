@@ -52,6 +52,8 @@ import gestione.pack.client.model.RiepilogoOreModel;
 import gestione.pack.client.model.RiepilogoOreTotaliCommesse;
 import gestione.pack.client.model.RiepilogoRichiesteModel;
 import gestione.pack.client.model.RiepilogoSALPCLModel;
+import gestione.pack.client.model.RiferimentiRtvModel;
+import gestione.pack.client.model.RtvModel;
 import gestione.pack.client.model.TariffaOrdineModel;
 
 import com.google.gwt.core.client.GWT;
@@ -452,5 +454,9 @@ public interface AdministrationService extends RemoteService {
 
 	List<RiepilogoMensileOrdiniModel> getDettaglioMensileOrdine(
 			String numeroOrdine)throws IllegalArgumentException;
+
+	List<RiferimentiRtvModel> getDatiReferenti()throws IllegalArgumentException;
+
+	List<RtvModel> getDatiRtv(String numeroO);
 
 }

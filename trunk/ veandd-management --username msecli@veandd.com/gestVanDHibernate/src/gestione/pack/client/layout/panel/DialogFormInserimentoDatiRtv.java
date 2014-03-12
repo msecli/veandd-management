@@ -1,24 +1,40 @@
 package gestione.pack.client.layout.panel;
 
+import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
+import gestione.pack.client.model.PersonaleModel;
+import gestione.pack.client.model.RiferimentiRtvModel;
+import gestione.pack.client.model.RtvModel;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.DatiComboBox;
 import gestione.pack.client.utility.MyImages;
+import gestione.pack.shared.RiferimentiRtv;
 
 import java.util.Date;
+import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.data.DataField;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
@@ -38,9 +54,21 @@ import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 public class DialogFormInserimentoDatiRtv extends Dialog{
 
 	private TextField<String> txtfldNumeroOrdine;
+	private TextField<String> txtfldNumeroRtv;
+	private TextField<String> txtfldCodiceFornitore;
+	private TextArea txtarAttivita;
 	private TextField<String> txtfldImporto;
-	private SimpleComboBox<String> smplcmbxMese;
-	private SimpleComboBox<String> smplcmbxAnno;
+	private DateField dtfldDataOrdine;
+	private DateField dtfldDataEmissione;
+	private DateField dtfldDataInizioAttivita;
+	private DateField dtfldDataFineAttivita;
+	private TextField<String> txtfldCdcRichiedente;
+	private TextField<String> txtfldCommessaCliente;
+	private TextField<String> txtfldEnte;
+	
+	//scelta del referente
+	private ComboBox<RiferimentiRtvModel> cmbxReferente;
+	
 	private SimpleComboBox<String> smplcmbxTipoModulo;
 	
 	private Button btnPrintToRTF;
@@ -50,6 +78,10 @@ public class DialogFormInserimentoDatiRtv extends Dialog{
 	
 	public DialogFormInserimentoDatiRtv(final String numeroOrdine){
   
+		
+		//TODO callback per vedere se c'è un mese precedente e precompilare alcuni campi
+		
+		
 	    final FitLayout fl= new FitLayout();
 		LayoutContainer layoutContainer= new LayoutContainer();
 		layoutContainer.setBorders(false);
@@ -59,7 +91,7 @@ public class DialogFormInserimentoDatiRtv extends Dialog{
 		cntpnlLayout.setHeaderVisible(false);
 		cntpnlLayout.setBorders(false);
 		cntpnlLayout.setFrame(true);
-		cntpnlLayout.setHeight(400);
+		cntpnlLayout.setHeight(520);
 		cntpnlLayout.setWidth(600);
 		cntpnlLayout.setScrollMode(Scroll.NONE);
 				
@@ -68,7 +100,7 @@ public class DialogFormInserimentoDatiRtv extends Dialog{
 		cntpnlDatiAggiuntivi.setLayout(new FitLayout());
 		cntpnlDatiAggiuntivi.setBorders(false);
 		cntpnlDatiAggiuntivi.setFrame(true);
-		cntpnlDatiAggiuntivi.setHeight(160);
+		cntpnlDatiAggiuntivi.setHeight(490);
 		cntpnlDatiAggiuntivi.setWidth(590);
 		cntpnlDatiAggiuntivi.setScrollMode(Scroll.NONE);
 		cntpnlDatiAggiuntivi.setLayout(new RowLayout(Orientation.HORIZONTAL));
@@ -78,61 +110,96 @@ public class DialogFormInserimentoDatiRtv extends Dialog{
 		layout.setLabelWidth(160);
 		layout.setLabelAlign(LabelAlign.LEFT);
 		layoutCol1.setLayout(layout);
+					
+		Date d= new Date();
+		String dt= d.toString();
+		final String anno= dt.substring(dt.length()-4, dt.length());
+		final String mese= ClientUtility.meseToLong(ClientUtility.traduciMeseToIt(dt.substring(4, 7)));
+						
+		smplcmbxTipoModulo= new SimpleComboBox<String>();
+		smplcmbxTipoModulo.setFieldLabel("Tipo Modulo");
+		smplcmbxTipoModulo.setName("tipoModulo");
+		smplcmbxTipoModulo.setEmptyText("Tipo Modulo...");
+		smplcmbxTipoModulo.setAllowBlank(false);
+		smplcmbxTipoModulo.add("Tipo1(FGA)");
+		smplcmbxTipoModulo.add("Tipo2(FGA-Rid)");
+		smplcmbxTipoModulo.add("Tipo3(FPT)");
+		smplcmbxTipoModulo.setTriggerAction(TriggerAction.ALL);
+		layoutCol1.add(smplcmbxTipoModulo, new FormData("80%"));		
 		
+		ListStore<RiferimentiRtvModel> listaR= new ListStore<RiferimentiRtvModel>();
+		cmbxReferente= new ComboBox<RiferimentiRtvModel>();
+		cmbxReferente.setStore(listaR);
+		cmbxReferente.setFieldLabel("Referente");
+		cmbxReferente.setName("referente");
+		cmbxReferente.setEmptyText("Referente...");
+		cmbxReferente.setAllowBlank(false);
+		cmbxReferente.setTriggerAction(TriggerAction.ALL);
+		cmbxReferente.setDisplayField("referente");
+		cmbxReferente.addListener(Events.OnClick, new Listener<BaseEvent>(){
+			@Override
+			public void handleEvent(BaseEvent be) {					
+					caricaDatiReferenti();					
+			}		
+		});		
+		layoutCol1.add(cmbxReferente, new FormData("80%"));
+				
 		txtfldNumeroOrdine= new TextField<String>();
 		txtfldNumeroOrdine.setEnabled(false);
 		txtfldNumeroOrdine.setFieldLabel("Numero Ordine");
 		txtfldNumeroOrdine.setValue(numeroOrdine);
 		layoutCol1.add(txtfldNumeroOrdine, new FormData("80%"));
 		
+		dtfldDataOrdine= new DateField();
+		dtfldDataOrdine.setFieldLabel("Data Ordine");
+		layoutCol1.add(dtfldDataOrdine, new FormData("80%"));
+		
+		txtfldNumeroRtv= new TextField<String>();
+		txtfldNumeroRtv.setFieldLabel("Numero RTV");
+		layoutCol1.add(txtfldNumeroRtv, new FormData("80%"));
+		
+		txtfldCodiceFornitore= new TextField<String>();
+		txtfldCodiceFornitore.setFieldLabel("Codice Fornitore");
+		layoutCol1.add(txtfldCodiceFornitore, new FormData("80%"));
+		
+		txtfldEnte= new TextField<String>();
+		txtfldEnte.setFieldLabel("Ente");
+		layoutCol1.add(txtfldEnte, new FormData("80%"));
+		
+		dtfldDataEmissione=new DateField();
+		dtfldDataEmissione.setValue(new Date());
+		dtfldDataEmissione.setFieldLabel("Data Emissione RTV");
+		layoutCol1.add(dtfldDataEmissione, new FormData("80%"));
+			
 		txtfldImporto= new TextField<String>();
 		txtfldImporto.setEnabled(true);
 		txtfldImporto.setFieldLabel("Importo");
 		//TODO espressione regolare
 		layoutCol1.add(txtfldImporto, new FormData("80%"));
-	
-		Date d= new Date();
-		String dt= d.toString();
-		final String anno= dt.substring(dt.length()-4, dt.length());
-		final String mese= ClientUtility.meseToLong(ClientUtility.traduciMeseToIt(dt.substring(4, 7)));
 		
-		smplcmbxAnno= new SimpleComboBox<String>();
-		smplcmbxAnno.setFieldLabel("Anno");
-		smplcmbxAnno.setName("anno");
-		smplcmbxAnno.setEmptyText("Anno..");
-		smplcmbxAnno.setAllowBlank(false);
-		smplcmbxAnno.setEnabled(true);
-		for(String l : DatiComboBox.getAnno()){
-			 smplcmbxAnno.add(l);}
-		smplcmbxAnno.setTriggerAction(TriggerAction.ALL);
-		smplcmbxAnno.setSimpleValue(anno);
-		smplcmbxAnno.setWidth(100);
-		layoutCol1.add(smplcmbxAnno, new FormData("60%"));
+		dtfldDataInizioAttivita= new DateField();
+		dtfldDataInizioAttivita.setFieldLabel("Data Inizio Attivita");
+		layoutCol1.add(dtfldDataInizioAttivita, new FormData("80%"));
 		
-		smplcmbxMese= new SimpleComboBox<String>();
-		smplcmbxMese.setFieldLabel("Mese");
-		smplcmbxMese.setName("mese");
-		smplcmbxMese.setEmptyText("Mese..");
-		smplcmbxMese.setAllowBlank(false);
-		 for(String l : DatiComboBox.getMese()){
-			 smplcmbxMese.add(l);}
-		smplcmbxMese.setTriggerAction(TriggerAction.ALL);
-		smplcmbxMese.setSimpleValue(mese);
-		layoutCol1.add(smplcmbxMese, new FormData("60%"));
+		dtfldDataFineAttivita= new DateField();
+		dtfldDataFineAttivita.setFieldLabel("Data Fine Attivita");
+		layoutCol1.add(dtfldDataFineAttivita, new FormData("80%"));
 		
-		smplcmbxTipoModulo= new SimpleComboBox<String>();
-		smplcmbxTipoModulo.setFieldLabel("Tipo Modulo");
-		smplcmbxTipoModulo.setName("tipoModulo");
-		smplcmbxTipoModulo.setEmptyText("Tipo Modulo...");
-		smplcmbxTipoModulo.setAllowBlank(false);
-		smplcmbxTipoModulo.add("Tipo 1");
-		smplcmbxTipoModulo.add("Tipo 2");
-		smplcmbxTipoModulo.add("Tipo 3");
-		smplcmbxTipoModulo.setTriggerAction(TriggerAction.ALL);
-		layoutCol1.add(smplcmbxTipoModulo, new FormData("80%"));		
-				
+		txtfldCdcRichiedente= new TextField<String>();
+		txtfldCdcRichiedente.setFieldLabel("Cdc Richiedente");
+		layoutCol1.add(txtfldCdcRichiedente,new FormData("80%"));
+		
+		txtfldCommessaCliente= new TextField<String>();
+		txtfldCommessaCliente.setFieldLabel("Commessa Cliente");
+		layoutCol1.add(txtfldCommessaCliente, new FormData("80%"));
+		
+		txtarAttivita= new TextArea();
+		txtarAttivita.setEmptyText("Descrizione Attivita...");
+		txtarAttivita.setHeight(100);
+		layoutCol1.add(txtarAttivita);							
+		
 		btnPrintToRTF = new Button();
-		btnPrintToRTF.setToolTip("Stampa Fattura");
+		btnPrintToRTF.setToolTip("Stampa RTV");
 		btnPrintToRTF.setHeight(80);
 		btnPrintToRTF.setWidth(80);
 		btnPrintToRTF.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.print64()));
@@ -142,11 +209,49 @@ public class DialogFormInserimentoDatiRtv extends Dialog{
 			@Override
 			public void componentSelected(ButtonEvent ce) {			
 				
-				if(checkDati()){					
-					String meseRif=smplcmbxMese.getRawValue().toString().substring(0, 3)+smplcmbxAnno.getRawValue().toString();
-									
-					SessionManagementService.Util.getInstance().setDataRtv(numeroOrdine, meseRif, txtfldImporto.getValue().toString(),
-							smplcmbxTipoModulo.getRawValue().toString(), "STAMPARTV",	new AsyncCallback<Boolean>() {
+				if(checkDati()){	
+										
+					String numeroRtv="";
+					String codiceFornitore="";
+					String nomeResponsabile="";
+					Date dataOrdine=null;
+					Date dataEmissione=null;
+					String importo= "0.00";
+					String importoOrdine="";
+					String importoAvanzamenti="";
+					String meseRiferimento="";
+					String attivita="";
+					String statoLavori="";
+					String cdcRichiedente="";
+					String commessaCliente="";
+					String ente="";
+					Date dataInizioAttivita=null;
+					Date dataFineAttivita=null;			
+					
+					RiferimentiRtvModel rifModel= cmbxReferente.getValue();
+					
+					if(!txtfldNumeroRtv.getRawValue().isEmpty())numeroRtv=txtfldNumeroRtv.getValue().toString();
+					if(!txtfldCodiceFornitore.getRawValue().isEmpty())codiceFornitore=txtfldCodiceFornitore.getValue().toString();
+					if(!txtfldImporto.getRawValue().isEmpty())importo=txtfldImporto.getValue().toString();
+					if(!txtfldCdcRichiedente.getRawValue().isEmpty())cdcRichiedente=txtfldCdcRichiedente.getValue().toString();
+					if(!txtfldCommessaCliente.getRawValue().isEmpty())commessaCliente=txtfldCommessaCliente.getValue().toString();
+					if(!txtfldEnte.getRawValue().isEmpty())ente=txtfldEnte.getValue().toString();
+					if(!txtarAttivita.getRawValue().isEmpty())attivita=txtarAttivita.getValue().toString();		
+					
+					if(!dtfldDataOrdine.getRawValue().isEmpty())dataOrdine=dtfldDataOrdine.getValue();
+					if(!dtfldDataEmissione.getRawValue().isEmpty())dataEmissione=dtfldDataEmissione.getValue();
+					if(!dtfldDataInizioAttivita.getRawValue().isEmpty())dataInizioAttivita=dtfldDataInizioAttivita.getValue();
+					if(!dtfldDataFineAttivita.getRawValue().isEmpty())dataFineAttivita=dtfldDataFineAttivita.getValue();
+					
+					RtvModel rtv= new RtvModel(0, 0, numeroOrdine, numeroRtv, codiceFornitore, nomeResponsabile, dataOrdine,
+							dataEmissione, Float.valueOf(importo), importoOrdine, importoAvanzamenti, meseRiferimento, attivita, statoLavori, 
+							cdcRichiedente, commessaCliente, ente, dataInizioAttivita, dataFineAttivita);
+					
+					String tipoModulo=smplcmbxTipoModulo.getRawValue().toString();
+					tipoModulo=tipoModulo.substring(0, tipoModulo.indexOf("("));
+					
+					SessionManagementService.Util.getInstance().setDataRtv(rtv, rifModel,
+							tipoModulo, "STAMPARTV",	new AsyncCallback<Boolean>() {
 
 						@Override
 						public void onFailure(Throwable caught) {
@@ -192,6 +297,30 @@ public class DialogFormInserimentoDatiRtv extends Dialog{
 		add(layoutContainer);	
 	}
 	
+	private void caricaDatiReferenti() {
+		
+		AdministrationService.Util.getInstance().getDatiReferenti(new AsyncCallback<List<RiferimentiRtvModel>>(){
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("Problemi di connessione on getDatiReferenti();");
+			}
+
+			@Override
+			public void onSuccess(List<RiferimentiRtvModel> result) {
+				if(result!=null){
+					ListStore<RiferimentiRtvModel> lista= new ListStore<RiferimentiRtvModel>();
+					lista.setStoreSorter(new StoreSorter<RiferimentiRtvModel>());  
+					lista.setDefaultSort("referente", SortDir.ASC);
+					
+					lista.add(result);				
+					cmbxReferente.clear();
+					cmbxReferente.setStore(lista);
+				}					
+			}			
+		});
+	}
+
 	private class FormSubmitCompleteHandler implements SubmitCompleteHandler {
 
 		@Override
@@ -209,14 +338,10 @@ public class DialogFormInserimentoDatiRtv extends Dialog{
 	}
 	
 	private boolean checkDati() {
-		
-		if(smplcmbxAnno.isValid())
-			if(smplcmbxMese.isValid())
-				if(smplcmbxTipoModulo.isValid())
-					return true;
-		
+		if(smplcmbxTipoModulo.isValid())
+			return true;
+		else
 			return false;
-		
 	}
 	
 }

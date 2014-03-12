@@ -20,6 +20,9 @@ import gestione.pack.client.model.RiepilogoOreNonFatturabiliJavaBean;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 import gestione.pack.client.model.RiepilogoSALPCLJavaBean;
 import gestione.pack.client.model.RiepilogoSALPCLModel;
+import gestione.pack.client.model.RiferimentiRtvModel;
+import gestione.pack.client.model.RtvJavaBean;
+import gestione.pack.client.model.RtvModel;
 import gestione.pack.shared.AssociazionePtoA;
 import gestione.pack.shared.AttivitaFatturata;
 import gestione.pack.shared.Commessa;
@@ -2494,6 +2497,65 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 		}	
 		
 		return listaM;
+	}
+
+	public static RtvJavaBean createRtvJavaBeanEntry(RtvModel rtv, RiferimentiRtvModel rifM) {
+		
+		RtvJavaBean rtvJB=null;
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		String numeroOrdine=rtv.get("numeroOrdine");
+		Float imp= rtv.get("importo");
+		
+		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+	    formatSymbols.setDecimalSeparator('.');
+	    String pattern="0.00";
+	    DecimalFormat d= new DecimalFormat(pattern,formatSymbols);
+		
+	    SimpleDateFormat formatter =new SimpleDateFormat("dd-MM-yyyy",Locale.ITALIAN);
+				
+	    String dataInizioAttivita;
+	    String dataFineAttivita;
+	    Date inizio=(Date)rtv.get("dataInizioAttivita");
+	    Date fine=(Date)rtv.get("dataFineAttivita");
+	    
+	    if(inizio!=null)
+	    	dataInizioAttivita=formatter.format(inizio);
+	    else
+	    	dataInizioAttivita="00-00-0000";
+	    
+	    if(fine!=null)
+	    	dataFineAttivita=formatter.format(fine);
+	    else
+	    	dataFineAttivita="00-00-0000";
+	    
+		Ordine o= new Ordine();
+		
+		try{
+			tx=session.beginTransaction();
+			
+			o=(Ordine)session.createQuery("from Ordine where codiceOrdine=:numeroOrdine").setParameter("numeroOrdine", numeroOrdine).uniqueResult();
+						
+			
+			
+			rtvJB=new RtvJavaBean(numeroOrdine, (String)rtv.get("numeroRtv"), (String)rtv.get("codiceFornitore"), o.getCommessa().getMatricolaPM(), 
+					formatter.format(rtv.get("dataOrdine")), formatter.format(rtv.get("dataEmissione")),
+					d.format(imp), o.getImporto(), "", "", (String)rtv.get("attivita"), "", (String)rtv.get("cdcRichiedente"), (String)rtv.get("commessaCliente"), (String)rtv.get("ente"), 
+					dataInizioAttivita, dataFineAttivita, o.getRda().getCliente().getRagioneSociale(), (String)rifM.get("sezione"), (String)rifM.get("reparto"), 
+					(String)rifM.get("indirizzo"), (String)rifM.get("referente"), (String)rifM.get("telefono"),(String) rifM.get("email"));
+			
+			tx.commit();
+		}catch (Exception e) {
+			e.printStackTrace();
+			if (tx != null)
+				tx.rollback();
+			return null;
+		}finally{
+			session.close();
+		}	
+		
+		return rtvJB;
 	}
 	
 }
