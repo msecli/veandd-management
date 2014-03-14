@@ -293,7 +293,7 @@ public class PrintDataServlet extends HttpServlet  {
 
 					try {
 
-						fis = new FileInputStream(Constanti.PATHAmazon+"JasperReport/RiepilogoDatiFatturazione.jasper");
+						fis = new FileInputStream(/*Constanti.PATHAmazon+*/"JasperReport/RiepilogoDatiFatturazione.jasper");
 																	
 						bufferedInputStream = new BufferedInputStream(fis);
 
@@ -309,10 +309,14 @@ public class PrintDataServlet extends HttpServlet  {
 						exporterXLS.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
 						exporterXLS.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
 						exporterXLS.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
-						exporterXLS.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, Constanti.PATHAmazon+"FileStorage/RiepilogoDatiFatturazione.xls");
+						exporterXLS.setParameter(JRXlsExporterParameter.IS_IGNORE_CELL_BACKGROUND, Boolean.FALSE);
+						exporterXLS.setParameter(JRXlsExporterParameter.IS_IGNORE_GRAPHICS, Boolean.FALSE);
+						exporterXLS.setParameter(JRXlsExporterParameter.IS_IGNORE_CELL_BACKGROUND, Boolean.FALSE);
+						exporterXLS.setParameter(JRXlsExporterParameter.IS_IGNORE_CELL_BORDER, Boolean.FALSE);
+						exporterXLS.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, /*Constanti.PATHAmazon+*/"FileStorage/RiepilogoDatiFatturazione.xls");
 						exporterXLS.exportReport();
 							
-						File f=new File(Constanti.PATHAmazon+"FileStorage/RiepilogoDatiFatturazione.xls");
+						File f=new File(/*Constanti.PATHAmazon+*/"FileStorage/RiepilogoDatiFatturazione.xls");
 						FileInputStream fin = new FileInputStream(f);
 						ServletOutputStream outStream = response.getOutputStream();
 						// SET THE MIME TYPE.
@@ -806,29 +810,26 @@ public class PrintDataServlet extends HttpServlet  {
 			BufferedInputStream bufferedInputStream;
 			byte[] rtfResume = null;
 	
-			/*DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
-			formatSymbols.setDecimalSeparator('.');
-			String pattern = "0.00";
-			DecimalFormat d = new DecimalFormat(pattern, formatSymbols);*/
-
 			List<RtvJavaBean> listaO= new ArrayList<RtvJavaBean>();
 						
 			String tipoModulo=(String) httpSession.getAttribute("tipoModulo");
 			RtvModel rtv=(RtvModel) httpSession.getAttribute("rtv");
 			RiferimentiRtvModel rifM=(RiferimentiRtvModel) httpSession.getAttribute("rifM");
 			
+			//Salvo i dati rtv sul DB in modo tale da poterli usare dove necessario
+			ServerUtility.saveDataRtv(rtv);
+			
 			listaO.add(ServerUtility.createRtvJavaBeanEntry(rtv, rifM));
 
 			try {
 
-				fis = new FileInputStream(/*Constanti.PATHAmazon+ */"JasperReport/ReportRtv"+tipoModulo.trim()+".jasper");
+				fis = new FileInputStream(Constanti.PATHAmazon+"JasperReport/ReportRtv"+tipoModulo.trim()+".jasper");
 
 				bufferedInputStream = new BufferedInputStream(fis);
 
 				JasperReport jasperReport = (JasperReport) JRLoader
 						.loadObject(bufferedInputStream);
 
-				//TODO passare la lista rtvjavabean che conterrà comque un unico entry
 				jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, getDataSourceRtv(listaO));
 
 				final JRRtfExporter rtfExporter = new JRRtfExporter();
@@ -845,7 +846,7 @@ public class PrintDataServlet extends HttpServlet  {
 				// case the open/save dialog needs to appear.
 
 				response.setHeader("Content-Disposition",
-						"attachment;filename=" + "Fattura_");
+						"attachment;filename=" + "RTV_"+rtv.get("numeroRtv"));
 
 				for (int i = 0; i < rtfResume.length; i++) {
 					outStream.write(rtfResume[i]);
@@ -859,6 +860,7 @@ public class PrintDataServlet extends HttpServlet  {
 			}
 		}
 		else
+			if(operazione.compareTo("ONE")==0)
 			{
 			//operazione ONE
 				

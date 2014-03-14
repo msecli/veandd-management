@@ -85,9 +85,12 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 	private TextField<String> txtfldNome= new TextField<String>();
 	private TextField<String> txtfldCognome= new TextField<String>();
 	private TextField<String> txtfldIdAssociazione= new TextField<String>();
-	private Text txtNome = new Text();
+	private TextField<String> txtfldUsername= new TextField<String>();
+	
+	private String username;
+	//private Text txtNome = new Text();
 	private Text txtRuolo= new Text();
-	private Text txtCognome = new Text();
+	//private Text txtCognome = new Text();
 	
 	private ListView<PersonaleModel> list1 = new ListView<PersonaleModel>();//Lista sorgente
 	ListView<PersonaleModel> list2 = new ListView<PersonaleModel>();//Lista destinazione
@@ -96,6 +99,12 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 	protected void onRender(Element target, int index) {  
 	    super.onRender(target, index);   
 	    
+	    try {
+			selectLayout(); //Se l'accesso è stato effettuato da un PM ci sarà la precompilazione del nome PM (successivamente anche mese e dati relativi)		
+		} catch (Exception e) {
+			Window.alert("error: Impossibile recuperare i dati in sessione.");
+		}
+	    
 		final FitLayout fl= new FitLayout();
 		LayoutContainer layoutContainer= new LayoutContainer();
 		layoutContainer.setBorders(false);
@@ -103,13 +112,12 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 		layoutContainer.setWidth(w-225);
 		layoutContainer.setHeight(h-54);
 		
-		recuperoSessionUsername();
+		//recuperoSessionUsername();
 	
 		LayoutContainer bodyContainer = new LayoutContainer();
 		bodyContainer.setLayout(new FlowLayout());
 		bodyContainer.setBorders(false);		
-			
-		
+				
 		ContentPanel cntpnlVista = new ContentPanel(); //Pannello contenente Form e Grid
 		cntpnlVista.setHeading("Associazione Commesse Dipendenti.");
 		cntpnlVista.setFrame(true);
@@ -164,10 +172,7 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 					List<String> listaDipendenti= new ArrayList<String>();
 					String pm= new String();
 					String commessa= new String();
-					
-					/*if(smplcmbxCommessa.getRawValue().isEmpty()){ commessa="";}
-						else{commessa=smplcmbxCommessa.getRawValue().toString();}*/
-					
+															
 					if(!cmbxCommessa.isValid())
 						commessa="";
 					else
@@ -191,7 +196,9 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 									e.printStackTrace();
 									Window.alert("error: Impossibile caricare i dati in tabella.");
 								}
-								getCommesseByPm(txtNome.getText(), txtCognome.getText());
+								String cognome=txtfldUsername.getValue().toString();
+								cognome=cognome.substring(cognome.indexOf(".")+1,cognome.length());								
+								getCommesseByPm("", cognome);
 							}
 						}			
 
@@ -377,10 +384,12 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 		cmbxCommessa.setDisplayField("commessa");
 		cmbxCommessa.addListener(Events.OnClick, new Listener<BaseEvent>(){
 			@Override
-			public void handleEvent(BaseEvent be) {					
+			public void handleEvent(BaseEvent be) {	
+				String cognome=username;
+				cognome=cognome.substring(cognome.indexOf(".")+1,cognome.length());
 				if(txtRuolo.getText()!=null)
 					if(txtRuolo.getText().compareTo("PM")==0)//se è un PM vedrà le sue commesse aperte	
-						getCommesseByPm(txtNome.getText(), txtCognome.getText());
+						getCommesseByPm("",cognome);
 					else getCommesseAperte();//altrimenti verranno selezionate tutte le commesse aperte
 				else getCommesseAperte();				
 			}		
@@ -391,8 +400,8 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 		txtfldCognome.setVisible(false);
 		txtfldNome.setVisible(false);		
 		
-		txtNome.setVisible(false);
-		txtCognome.setVisible(false);
+		//txtNome.setVisible(false);
+		//txtCognome.setVisible(false);
 		txtRuolo.setVisible(false);
 		list1.setDisplayProperty("nomeCompleto");
 		try {
@@ -484,8 +493,8 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 		cntpnlSelezioni.add(txtfldNome);
 		cntpnlSelezioni.add(txtfldCommessa);
 		
-		cntpnlSelezioni.add(txtCognome);
-		cntpnlSelezioni.add(txtNome);
+		//cntpnlSelezioni.add(txtCognome);
+		//cntpnlSelezioni.add(txtNome);
 		cntpnlSelezioni.add(txtRuolo);
 		cntpnlSelezioni.add(cntpnlListe);
 		cntpnlSelezioni.add(buttonBar);
@@ -539,9 +548,11 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 
 
 	private void caricaTabellaDati() {
-		String cognomeApp=new String();
+		
+		String cognomeApp=username;
+		cognomeApp=cognomeApp.substring(cognomeApp.indexOf(".")+1,cognomeApp.length());
 		String ruolo=new String();
-		cognomeApp=txtCognome.getText();
+		//cognomeApp=txtCognome.getText();
 		ruolo=txtRuolo.getText();
 		
 		if(ruolo.compareTo("AMM")==0||ruolo.compareTo("UA")==0||ruolo.compareTo("DIR")==0) //se ad accedere è il DIR o UA o AMM allora vedrà tutte le associazioni
@@ -703,7 +714,7 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 	}
 	
 	
-	private void recuperoSessionRuolo() {		
+/*	private void recuperoSessionRuolo() {		
 		SessionManagementService.Util.getInstance().getRuolo(new AsyncCallback<String>() {
 			
 			@Override
@@ -758,6 +769,42 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 		txtNome.setText(nome);
 		txtCognome.setText(cognome);
 		recuperoSessionRuolo();
+	}*/
+	
+	
+	private void selectLayout() {
+		BodyLayout_PersonalManager lcPM = new BodyLayout_PersonalManager();
+		BodyLayout_UffAmministrazione lcUA = new BodyLayout_UffAmministrazione();
+		BodyLayout_Administration lcAMM = new BodyLayout_Administration();
+		BodyLayout_Direzione lcDIR= new BodyLayout_Direzione();
+		
+		if (getParent().getParent().getParent().getParent().getClass().equals(lcPM.getClass())) {
+			lcPM = (BodyLayout_PersonalManager) getParent().getParent()	.getParent().getParent();
+			txtfldUsername.setValue(lcPM.txtfldUsername.getValue().toString());
+			username=txtfldUsername.getValue().toString();
+			txtRuolo.setText("PM");
+		}
+		if (getParent().getParent().getParent().getParent().getClass().equals(lcUA.getClass())) {
+			lcUA = (BodyLayout_UffAmministrazione) getParent().getParent()	.getParent().getParent();
+			txtfldUsername.setValue(lcUA.txtfldUsername.getValue().toString());
+			username=txtfldUsername.getValue().toString();
+			txtRuolo.setText("UA");
+		}
+		if (getParent().getParent().getParent().getParent().getClass().equals(lcAMM.getClass())) {
+			lcAMM = (BodyLayout_Administration) getParent().getParent()	.getParent().getParent();
+			txtfldUsername.setValue(lcAMM.txtfldUsername.getValue().toString());
+			username=txtfldUsername.getValue().toString();
+			txtRuolo.setText("AMM");
+		}
+		if (getParent().getParent().getParent().getParent().getClass().equals(lcDIR.getClass())) {
+			lcDIR = (BodyLayout_Direzione) getParent().getParent()	.getParent().getParent();
+			txtfldUsername.setValue(lcDIR.txtfldUsername.getValue().toString());
+			username=txtfldUsername.getValue().toString();
+			txtRuolo.setText("PM");
+		}
+		else txtfldUsername.setValue("a.b");
+		
+		caricaTabellaDati();
 	}
 	
 }

@@ -6050,6 +6050,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String tariffaUtilizzata= new String();
 		String sommaVariazioniSal= "0.00";
 		String sommaVariazioniPcl= "0.00";
+		String importoRtv="#";
 		
 		String oreResidueBudget="0.00";
 		String importoResiduo="0.00";
@@ -6123,8 +6124,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				if(o==null){//se non c'è un ordine associato, permetto l'inserimento di eventuali sal pcl
 					tariffaUtilizzata=c.getTariffaSal();//prendo la tariffa della commessa
 					if(f==null){						
-						foglioModel= new FoglioFatturazioneModel("#", "0.0", "0.0", "0.0", "0.0", Float.valueOf(tariffaUtilizzata), "0.0", 
-								sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.00","0.0", "0.0", "0.0", "", "0");
+						foglioModel= new FoglioFatturazioneModel("#", "0.0", "0.0", "0.0", "0.0", Float.valueOf(tariffaUtilizzata), "0.0",
+								sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.00","#","0.0", "0.0", "0.0", "", "0");
 					}
 					else{	
 						//il foglio fatturazione era già stato compilato quindi tolgo alla sommavariazioni quella in esame
@@ -6132,10 +6133,15 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						sommaVariazioniPcl=ServerUtility.getDifference(sommaVariazioniPcl, f.getVariazionePCL());
 						
 						foglioModel= new FoglioFatturazioneModel("#", "0.0", "0.0", "0.0", "0.0", Float.valueOf(f.getTariffaUtilizzata()), f.getOreEseguite(),
-								sommaVariazioniSal, sommaVariazioniPcl, f.getOreFatturare(), f.getImportoRealeFatturato(), f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione());
+								sommaVariazioniSal, sommaVariazioniPcl, f.getOreFatturare(), f.getImportoRealeFatturato(),"#", f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione());
 					}		
 							
 				}else{					
+					List<Rtv> listaRtv= new ArrayList<Rtv>();
+					listaRtv.addAll(o.getRtvs());
+					for(Rtv rtv:listaRtv)
+						if(rtv.getMeseRiferimento().compareTo(mese)==0)
+							importoRtv=String.valueOf((Float)rtv.getImporto());
 					
 					//--
 					oreResidueBudget=o.getOreResidueBudget();
@@ -6164,13 +6170,13 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					
 					if(f==null){																			//--				
 						foglioModel= new FoglioFatturazioneModel(numOrdine, o.getOreBudget(), oreResidueBudget,importo, importoResiduo,
-								Float.valueOf(tariffaUtilizzata), "0.0", sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.00", "0.0", "0.0", "0.0", "", "0");
+								Float.valueOf(tariffaUtilizzata), "0.0", sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.00",importoRtv, "0.0", "0.0", "0.0", "", "0");
 					}
 					else{		
 						sommaVariazioniSal=ServerUtility.getDifference(sommaVariazioniSal, f.getVariazioneSAL());
 						sommaVariazioniPcl=ServerUtility.getDifference(sommaVariazioniPcl, f.getVariazionePCL());
 						foglioModel= new FoglioFatturazioneModel(numOrdine, o.getOreBudget(), oreResidueBudget , importo, importoResiduo, Float.valueOf(f.getTariffaUtilizzata()), f.getOreEseguite(),
-								sommaVariazioniSal, sommaVariazioniPcl, f.getOreFatturare(), f.getImportoRealeFatturato(), f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione());
+								sommaVariazioniSal, sommaVariazioniPcl, f.getOreFatturare(), f.getImportoRealeFatturato(),importoRtv, f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione());
 					}		
 				}	
 				
@@ -6186,6 +6192,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				listaFF.addAll(c.getFoglioFatturaziones());			
 				
 				if(o!=null){
+					
 					oreResidueBudget=o.getOreResidueBudget();
 					importoResiduo=o.getImportoResiduo();
 					if(importoResiduo==null)
@@ -6219,16 +6226,23 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					tariffaUtilizzata=c.getTariffaSal();//prendo la tariffa della commessa
 					if(f==null){						
 						foglioModel= new FoglioFatturazioneModel("#", "0.0", "0.0", "0.0", "0.0",Float.valueOf(tariffaUtilizzata), "0.0", 
-								sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.00", "0.0", "0.0", "0.0", "", "0");
+								sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.00", "#", "0.0", "0.0", "0.0", "", "0");
 					}
 					else{	
 						//sommaVariazioniSal=ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f.getVariazioneSAL());
 						//sommaVariazioniPcl=ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, f.getVariazionePCL());
 						foglioModel= new FoglioFatturazioneModel("#", "0.0", "0.0", "0.0", "0.0",Float.valueOf(f.getTariffaUtilizzata()), f.getOreEseguite(),
-								sommaVariazioniSal, sommaVariazioniPcl, f.getOreFatturare(), f.getImportoRealeFatturato(), f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione());
+								sommaVariazioniSal, sommaVariazioniPcl, f.getOreFatturare(), f.getImportoRealeFatturato(),"#", f.getVariazioneSAL(), f.getVariazionePCL(), 
+								f.getOreScaricate(), f.getNote(), f.getStatoElaborazione());
 					}		
 							
 				}else{	
+					
+					List<Rtv> listaRtv= new ArrayList<Rtv>();
+					listaRtv.addAll(o.getRtvs());
+					for(Rtv rtv:listaRtv)
+						if(rtv.getMeseRiferimento().compareTo(mese)==0)
+							importoRtv=String.valueOf((Float)rtv.getImporto());
 					
 					for(AttivitaOrdine a:o.getAttivitaOrdines())
 						if(a.getIdAttivitaOrdine()==idAttivita)
@@ -6243,12 +6257,12 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					if(f==null){		
 						//--
 						foglioModel= new FoglioFatturazioneModel(numOrdine, o.getOreBudget(),oreResidueBudget, importo, importoResiduo,
-								Float.valueOf(tariffaUtilizzata), "0.0",sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.00", "0.0", "0.0", "0.0", "", "0");
+								Float.valueOf(tariffaUtilizzata), "0.0",sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.00", importoRtv, "0.0", "0.0", "0.0", "", "0");
 					}
 					else{			
 						//tariffa utilizza prendo quella registrata al momento della registrazione del foglio fatturazione
 						foglioModel= new FoglioFatturazioneModel(numOrdine, o.getOreBudget(), oreResidueBudget, importo, importoResiduo, Float.valueOf(f.getTariffaUtilizzata()), f.getOreEseguite(),
-								sommaVariazioniSal, sommaVariazioniPcl, f.getOreFatturare(), f.getImportoRealeFatturato(), f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione());
+								sommaVariazioniSal, sommaVariazioniPcl, f.getOreFatturare(), f.getImportoRealeFatturato(), importoRtv, f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione());
 					}		
 				}						
 			}
@@ -6256,9 +6270,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			return foglioModel;
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			if (tx != null)
 				tx.rollback();
-			e.printStackTrace();
 			return null;
 		}finally{
 			session.close();
@@ -7158,14 +7172,13 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 			tx=session.beginTransaction();
 				
-			listaCommesse=(List<Commessa>)session.createQuery("from Commessa where statoCommessa=:stato and estensione<>:estensione").
-					setParameter("stato", "Aperta").setParameter("estensione", "pa").list();
+			/*listaCommesse=(List<Commessa>)session.createQuery("from Commessa where statoCommessa=:stato and estensione<>:estensione").
+					setParameter("stato", "Aperta").setParameter("estensione", "pa").list();*/
+			listaCommesse=(List<Commessa>)session.createQuery("from Commessa where estensione<>:estensione").
+					setParameter("estensione", "pa").list();
 			
 			for(Commessa c: listaCommesse){
-				
-				if(c.getNumeroCommessa().compareTo("10008")==0 && c.getEstensione().compareTo("32")==0)
-					System.out.print("");
-				
+								
 			 	commessa=c.getNumeroCommessa();
 				codCommessa=c.getCodCommessa(); //id commessa
 				o=(Ordine)session.createQuery("from Ordine where cod_commessa=:id").setParameter("id", codCommessa).uniqueResult();
@@ -7173,17 +7186,18 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				//controllo la presenza di una commessa .pa 
 				c_pa=(Commessa)session.createQuery("from Commessa where numeroCommessa=:commessa and estensione=:estensione").setParameter("commessa", commessa)
 						.setParameter("estensione", "pa").uniqueResult();
-				if(c_pa==null)
-					esistePa=false;
-					else
-						esistePa=true;
-							
+				if(c_pa!=null)
+					esistePa=true;
+												
 				if(esistePa){		
 					
 					// se esiste la Pa devo ciclare sulle attivita ordine perchè potrebbero essercene più di una altrimenti basta prendere la prima sotto l'ordine
 				 
-					listaC=(List<Commessa>)session.createQuery("from Commessa where numeroCommessa=:commessa and estensione<>:estensione and statoCommessa<>:stato").setParameter("commessa", commessa)
-							.setParameter("estensione", "pa").setParameter("stato", "Chiusa").list();
+					/*listaC=(List<Commessa>)session.createQuery("from Commessa where numeroCommessa=:commessa and estensione<>:estensione and statoCommessa<>:stato").setParameter("commessa", commessa)
+							.setParameter("estensione", "pa").setParameter("stato", "Chiusa").list();*/
+					listaC=(List<Commessa>)session.createQuery("from Commessa where numeroCommessa=:commessa and estensione<>:estensione").setParameter("commessa", commessa)
+							.setParameter("estensione", "pa").list();
+					
 					for(Commessa c1:listaC)
 						listaFF.addAll(c1.getFoglioFatturaziones());			
 					
@@ -7212,20 +7226,21 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							if(tabSelected.compareTo("pcl")==0){
 								//importo=ServerUtility.calcolaImporto(tariffaUtilizzata, sommaVariazioniPcl);
 								importo=Float.valueOf(tariffaUtilizzata)*Float.valueOf(sommaVariazioniPcl);
-								if(Float.valueOf(sommaVariazioniPcl)!=0){
-							    	riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
+								if(Float.valueOf(sommaVariazioniPcl)!=0 && c.getStatoCommessa().compareTo("Conclusa")!=0){
+										riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
 							    			"#", c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniPcl),Float.valueOf("0.00"), 
 							    			Float.valueOf(sommaVariazioniPcl), tariffaUtilizzata,importo , Float.valueOf("0.00"), Float.valueOf("0.00"), Float.valueOf("0.00"));
-							    	listaM.add(riepM);
-								}
+										listaM.add(riepM);
+								}						
 							}
 							else{
 								importo=Float.valueOf(tariffaUtilizzata)*Float.valueOf(sommaVariazioniSal);
-								if(Float.valueOf(sommaVariazioniSal)!=0){
-							    	riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
-										"#", c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniSal),Float.valueOf("0.00"), 
-										Float.valueOf(sommaVariazioniSal), tariffaUtilizzata,importo , Float.valueOf("0.00"), Float.valueOf("0.00"), Float.valueOf("0.00"));
-							    	listaM.add(riepM);
+								if(Float.valueOf(sommaVariazioniSal)!=0 && c.getStatoCommessa().compareTo("Conclusa")!=0){
+										riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
+												"#", c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniSal),Float.valueOf("0.00"), 
+												Float.valueOf(sommaVariazioniSal), tariffaUtilizzata,importo , Float.valueOf("0.00"), Float.valueOf("0.00"), Float.valueOf("0.00"));
+										listaM.add(riepM);
+									
 								}
 							}
 						}
@@ -7245,11 +7260,13 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 								
 								//if(Float.valueOf(ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, f.getVariazionePCL()))!=0){
 								if(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL()))!=0){
-									riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
-											"#", c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniPcl), Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), 
-											Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), tariffaUtilizzata, 
-											importo , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf("0.00"), importoMese);
-									listaM.add(riepM);
+									if(!(Float.valueOf(f.getVariazionePCL())==0 && c.getStatoCommessa().compareTo("Conclusa")==0)){
+										riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
+												"#", c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniPcl), Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), 
+												Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), tariffaUtilizzata, 
+												importo , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf("0.00"), importoMese);
+										listaM.add(riepM);
+									}
 								}else
 									if(Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL()))!=0){
 										riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
@@ -7266,11 +7283,13 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 								importoMese=Float.valueOf(tariffaUtilizzata)*Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL()));
 								//if(Float.valueOf(ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f.getVariazioneSAL()))!=0){
 								if(Float.valueOf(sommaVariazioniSal)+ Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL()))!=0){
-									riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
-										"#", c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniSal),Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), 
-										Float.valueOf(sommaVariazioniSal)+ Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), tariffaUtilizzata, 
-										importo , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf("0.00"), importoMese);
-									listaM.add(riepM);
+									if(!(Float.valueOf(f.getVariazioneSAL())==0 && c.getStatoCommessa().compareTo("Conclusa")==0)){
+										riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
+												"#", c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniSal),Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), 
+												Float.valueOf(sommaVariazioniSal)+ Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), tariffaUtilizzata, 
+												importo , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf("0.00"), importoMese);
+										listaM.add(riepM);
+									}
 								}else
 									//if(Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL()))!=0){
 									if(Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL()))!=0){
@@ -7302,22 +7321,24 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 								if(tabSelected.compareTo("pcl")==0){
 									//importo=ServerUtility.calcolaImporto(tariffaUtilizzata, sommaVariazioniPcl);
 									importo=Float.valueOf(tariffaUtilizzata)*Float.valueOf(sommaVariazioniPcl);
-									if(Float.valueOf(sommaVariazioniPcl)!=0){
-									  riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(), cliente
-											, c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniPcl),Float.valueOf("0.00"), 
-											Float.valueOf(sommaVariazioniPcl), tariffaUtilizzata,importo , Float.valueOf("0.00"), Float.valueOf("0.00"), Float.valueOf("0.00"));
-									  listaM.add(riepM);
+									if(Float.valueOf(sommaVariazioniPcl)!=0 && c.getStatoCommessa().compareTo("Conclusa")!=0){
+											riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(), cliente
+													, c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniPcl),Float.valueOf("0.00"), 
+													Float.valueOf(sommaVariazioniPcl), tariffaUtilizzata,importo , Float.valueOf("0.00"), Float.valueOf("0.00"), Float.valueOf("0.00"));
+											listaM.add(riepM);
+										
 									}
 								}
 								else{
 									//importo=ServerUtility.calcolaImporto(tariffaUtilizzata, sommaVariazioniSal);
 									importo=Float.valueOf(tariffaUtilizzata)*Float.valueOf(sommaVariazioniSal);
-									if(Float.valueOf(sommaVariazioniSal)!=0){
+									if(Float.valueOf(sommaVariazioniSal)!=0 && c.getStatoCommessa().compareTo("Conclusa")!=0){
 											riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
 												cliente, c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniSal),Float.valueOf("0.00"), 
 												Float.valueOf(sommaVariazioniSal), tariffaUtilizzata,importo , Float.valueOf("0.00"), Float.valueOf("0.00"), Float.valueOf("0.00"));
 											listaM.add(riepM);
 									}
+									
 								}
 							}
 							else{	
@@ -7336,11 +7357,13 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 									
 									//if(Float.valueOf(ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, f.getVariazionePCL()))!=0){
 									if(Float.valueOf(sommaVariazioniPcl)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL()))!=0){
-										riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
+										if(!(Float.valueOf(f.getVariazionePCL())==0 && c.getStatoCommessa().compareTo("Conclusa")==0)){
+											riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
 												cliente, c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniPcl), Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), 
 												Float.valueOf(sommaVariazioniPcl)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), tariffaUtilizzata, 
 												importo , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf("0.00"), importoMese);
-										listaM.add(riepM);
+											listaM.add(riepM);
+										}
 									}else
 										if(Float.valueOf(f.getVariazionePCL())!=0){
 											riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
@@ -7358,11 +7381,13 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 									importoMese=Float.valueOf(tariffaUtilizzata)*Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL()));
 									//if(Float.valueOf(ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f.getVariazioneSAL()))!=0){
 									if(Float.valueOf(sommaVariazioniSal)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL()))!=0){
-										riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
+										if(!(Float.valueOf(f.getVariazioneSAL())==0 && c.getStatoCommessa().compareTo("Conclusa")==0)){
+											riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
 												cliente, c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniSal),Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), 
 												Float.valueOf(sommaVariazioniSal)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), tariffaUtilizzata, 
 												importo , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf("0.00"), importoMese);
-										listaM.add(riepM);
+											listaM.add(riepM);
+										}
 									}else
 										if(Float.valueOf(f.getVariazioneSAL())!=0){
 											riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
@@ -7414,7 +7439,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						if(tabSelected.compareTo("pcl")==0){
 							//importo=ServerUtility.calcolaImporto(tariffaUtilizzata, sommaVariazioniPcl);
 							importo=Float.valueOf(tariffaUtilizzata)*Float.valueOf(sommaVariazioniPcl);
-							if(Float.valueOf(sommaVariazioniPcl)!=0){
+							if(Float.valueOf(sommaVariazioniPcl)!=0 && c.getStatoCommessa().compareTo("Cocnlusa")!=0){
 								riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
 										cliente, c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniPcl),Float.valueOf("0.00"), 
 										Float.valueOf(sommaVariazioniPcl), tariffaUtilizzata,importo , Float.valueOf("0.00"), Float.valueOf("0.00"), Float.valueOf("0.00"));
@@ -7424,7 +7449,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						else{
 							//importo=ServerUtility.calcolaImporto(tariffaUtilizzata, sommaVariazioniSal);
 							importo=Float.valueOf(tariffaUtilizzata)*Float.valueOf(sommaVariazioniSal);
-							if(Float.valueOf(sommaVariazioniSal)!=0){
+							if(Float.valueOf(sommaVariazioniSal)!=0 && c.getStatoCommessa().compareTo("Cocnlusa")!=0){
 								riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
 									cliente, c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniSal),Float.valueOf("0.00"), 
 									Float.valueOf(sommaVariazioniSal), tariffaUtilizzata, importo , Float.valueOf("0.00"), Float.valueOf("0.00"), Float.valueOf("0.00"));
@@ -7443,11 +7468,13 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							importoMese=Float.valueOf(tariffaUtilizzata)*Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL()));
 							//if(Float.valueOf(ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, f.getVariazionePCL()))!=0){
 							if(Float.valueOf(sommaVariazioniPcl)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL()))!=0){
-								riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
+								if(!(Float.valueOf(f.getVariazionePCL())==0 && c.getStatoCommessa().compareTo("Conclusa")==0)){
+									riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
 										cliente, c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniPcl), Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), 
 										Float.valueOf(sommaVariazioniPcl)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), tariffaUtilizzata, 
 										importo , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf("0.00"), importoMese);
-								listaM.add(riepM);	
+									listaM.add(riepM);	
+								}
 							}else 
 								if(Float.valueOf(f.getVariazionePCL())!=0){
 									riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
@@ -7464,11 +7491,13 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 									(Float.valueOf(sommaVariazioniSal)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())));
 							importoMese=Float.valueOf(tariffaUtilizzata)*Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL()));
 							if(Float.valueOf(ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f.getVariazioneSAL()))!=0){
-								riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
+								if(!(Float.valueOf(f.getVariazioneSAL())==0 && c.getStatoCommessa().compareTo("Conclusa")==0)){
+									riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
 										cliente, c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniSal),Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), 
 										Float.valueOf(sommaVariazioniSal)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), tariffaUtilizzata, 
 										importo , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf("0.00"), importoMese);
-								listaM.add(riepM);
+									listaM.add(riepM);
+								}
 							}else
 								if(Float.valueOf(f.getVariazioneSAL())!=0){
 									riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
@@ -7592,8 +7621,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 			tx=session.beginTransaction();
 			
-			listaCommesse=(List<Commessa>)session.createQuery("from Commessa where statoCommessa=:stato and estensione<>:estensione").
-					setParameter("stato", "Aperta").setParameter("estensione", "pa").list();
+			/*listaCommesse=(List<Commessa>)session.createQuery("from Commessa where statoCommessa=:stato and estensione<>:estensione").
+					setParameter("stato", "Aperta").setParameter("estensione", "pa").list();*/
+			listaCommesse=(List<Commessa>)session.createQuery("from Commessa where estensione<>:estensione").
+					setParameter("estensione", "pa").list();
 			
 			for(Commessa c: listaCommesse){
 				
@@ -7872,11 +7903,12 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			for(Personale p:listaP){
 				String matricolaPM=p.getCognome()+" "+p.getNome();
 				
-				listaC=(List<Commessa>)session.createQuery("from Commessa where estensione<>:estensione and matricolaPM=:pm and statoCommessa=:stato")
-						.setParameter("estensione", "pa").setParameter("pm", matricolaPM).setParameter("stato", "Aperta").list();
+				/*listaC=(List<Commessa>)session.createQuery("from Commessa where estensione<>:estensione and matricolaPM=:pm and statoCommessa=:stato")
+						.setParameter("estensione", "pa").setParameter("pm", matricolaPM).setParameter("stato", "Aperta").list();*/
+				listaC=(List<Commessa>)session.createQuery("from Commessa where estensione<>:estensione and matricolaPM=:pm")
+						.setParameter("estensione", "pa").setParameter("pm", matricolaPM).list();
 				
 				for(Commessa c:listaC){
-					//if(c.getNumeroCommessa().compareTo("9005")==0)
 				 if(!ServerUtility.esisteCommessa(c.getNumeroCommessa(), listaNomiCommesse)){
 					 //salvo le commesse che incontro per evitare di cumulare il totale per ogni estensione
 					listaNomiCommesse.add(c.getNumeroCommessa());
@@ -10550,6 +10582,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<RtvModel> getDatiRtv(String numeroO) {
 		List<RtvModel> listaRM= new ArrayList<RtvModel>();
@@ -10571,7 +10604,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			listaR=(List<Rtv>)session.createQuery("from Rtv where idOrdine=:idOrdine").setParameter("idOrdine", idOrdine).list();
 			
 			for(Rtv r:listaR){
-				rtvM=new RtvModel();
+				rtvM=new RtvModel(r.getIdRtv(), r.getOrdine().getNumeroOrdine(), numeroO, r.getNumeroRtv(), 
+						r.getCodiceFornitore(), r.getOrdine().getCommessa().getMatricolaPM(), r.getDataOrdine(),
+						r.getDataEmissione(), r.getImporto(), "0.00", "0.00", "", r.getAttivita(), "", r.getCdcCliente(),
+						r.getCommessaCliente(), r.getEnte(), null, null);
 				listaRM.add(rtvM);
 			}
 					

@@ -76,7 +76,7 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 		cpnlContainTab.setHeaderVisible(false);
 		cpnlContainTab.setBorders(false);
 		cpnlContainTab.setFrame(true);
-		cpnlContainTab.setSize(w-180, h-95);
+		cpnlContainTab.setSize(w-180, h-125);
 		//cpnlContainTab.setPosition(3, 3);
 		//cpnlContainTab.setScrollMode(Scroll.AUTO);
 		cpnlContainTab.setLayout(new FitLayout());
@@ -175,7 +175,7 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 	   
 	    tabpnlRiepSalPcl= new TabPanel();
 	    tabpnlRiepSalPcl.setPlain(false);
-	    tabpnlRiepSalPcl.setSize(w-215, h-95);
+	    tabpnlRiepSalPcl.setSize(w-200, h-155);
 	   	    	  
 	    tbSal.setTitle("SAL");
 	    tbSal.setScrollMode(Scroll.AUTO);

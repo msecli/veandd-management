@@ -36,6 +36,7 @@ import gestione.pack.shared.FoglioFatturazione;
 import gestione.pack.shared.GiorniFestivi;
 import gestione.pack.shared.Ordine;
 import gestione.pack.shared.PeriodoSbloccoGiorni;
+import gestione.pack.shared.Rtv;
 
 import gestione.pack.shared.FoglioOreMese;
 import gestione.pack.shared.Personale;
@@ -2556,6 +2557,62 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 		}	
 		
 		return rtvJB;
+	}
+	
+
+	public static void saveDataRtv(RtvModel rtvM) {
+		
+		Rtv rtv= new Rtv();
+		Ordine o= new Ordine();
+		
+		Date dataEmissione=(Date)rtvM.get("dataEmissione");
+		Date dataOrdine=(Date)rtvM.get("dataOrdine");
+		Float importo=(Float)rtvM.get("importo");
+				
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		String numeroRtv=rtvM.get("numeroRtv");
+		String meseRif;
+		
+		SimpleDateFormat formatter =new SimpleDateFormat("MMMyyyy",Locale.ITALIAN);
+		meseRif=formatter.format(dataEmissione);
+		
+		try{
+			tx=session.beginTransaction();
+		
+			rtv=(Rtv)session.createQuery("from Rtv where numeroRtv=:numeroRtv").setParameter("numeroRtv", numeroRtv).uniqueResult();
+			
+			if(rtv==null){		
+				o=(Ordine)session.createQuery("from Ordine where codiceOrdine=:numeroOrdine").
+					setParameter("numeroOrdine", (String)rtvM.get("numeroOrdine")).uniqueResult();
+					
+				rtv=new Rtv();
+				rtv.setAttivita((String)rtvM.get("attivita"));
+				rtv.setCdcCliente((String)rtvM.get("cdcRichiedente"));
+				rtv.setCodiceFornitore((String)rtvM.get("codiceFornitore"));
+				rtv.setCommessaCliente((String)rtvM.get("commessaCliente"));
+				rtv.setDataEmissione(dataEmissione);
+				rtv.setDataOrdine(dataOrdine);
+				rtv.setImporto(importo);
+				rtv.setNumeroRtv((String)rtvM.get("numeroRtv"));
+				rtv.setMeseRiferimento(meseRif);
+			
+				rtv.setOrdine(o);			
+				o.getRtvs().add(rtv);
+			
+				session.save(o);	
+			}
+					
+			tx.commit();
+		}catch (Exception e) {
+			e.printStackTrace();
+			if (tx != null)
+				tx.rollback();
+		
+		}finally{
+			session.close();
+		}	
 	}
 	
 }
