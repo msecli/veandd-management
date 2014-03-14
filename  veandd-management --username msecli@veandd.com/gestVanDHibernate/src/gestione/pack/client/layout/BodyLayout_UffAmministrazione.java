@@ -337,16 +337,25 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 	    cp.add(btnAssociaPersonale);
 	    
 	    Button btnRiepiloghiSalPcl = new Button();
-	    btnRiepiloghiSalPcl.setToolTip("Riepilogo SAL/PCL");
+	    btnRiepiloghiSalPcl.setToolTip("Riepilogo SAL/PCL/Non Fatturabili");
 	    btnRiepiloghiSalPcl.setHeight(65);
 	    btnRiepiloghiSalPcl.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
 	    btnRiepiloghiSalPcl.setIconAlign(IconAlign.BOTTOM);
 	    btnRiepiloghiSalPcl.setWidth("100%");
 	    btnRiepiloghiSalPcl.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
-	        	center.removeAll();
-	        	center.add(new CenterLayout_RiepiloghiSalPcl());
-	        	center.layout(true);}        
+	        	int h=Window.getClientHeight();
+	        	int w=Window.getClientWidth();
+	        	Dialog d= new Dialog();
+	        	d.setSize(w-100, h-75);
+	        	d.add(new CenterLayout_RiepiloghiSalPcl());
+	        	d.setHeading("Riepilogo Sal/Pcl/Non Fatturabili");
+	        	d.setCollapsible(true);
+	        	d.setScrollMode(Scroll.NONE);
+	        	d.setButtons("");
+	        	d.setConstrain(false);
+	        	d.show();
+	        }        
 	      });
 	    cp.add(btnRiepiloghiSalPcl);
 	    

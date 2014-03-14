@@ -9,6 +9,7 @@ import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.layout.panel.PanelRiepilogoDatiPerFatturazione;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
+import gestione.pack.client.model.RiepilogoMensileOrdiniModel;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.DatiComboBox;
 import gestione.pack.client.utility.MyImages;
@@ -19,7 +20,6 @@ import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SortDir;
-import com.extjs.gxt.ui.client.core.XTemplate;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -86,8 +86,10 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		private SimpleComboBox<String> smplcmbxMese= new SimpleComboBox<String>();
 		private SimpleComboBox<String> smplcmbxAnno;
 		private SimpleComboBox<String> smplcmbxOrderBy;
-		//private SimpleComboBox<String> smplcmbxPM;
+		private SimpleComboBox<String> smplcmbxPM;
+		
 		private GroupingStore<DatiFatturazioneMeseModel>store = new GroupingStore<DatiFatturazioneMeseModel>();
+		private GroupingStore<DatiFatturazioneMeseModel>storeRes = new GroupingStore<DatiFatturazioneMeseModel>();
 		private EditorGrid<DatiFatturazioneMeseModel> gridRiepilogo;
 		private ColumnModel cm;
 		private RowExpander expander;
@@ -135,16 +137,32 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			smplcmbxAnno.setTriggerAction(TriggerAction.ALL);
 			smplcmbxAnno.setSimpleValue(anno);
 			
-			/*
 			smplcmbxPM = new SimpleComboBox<String>();
-			smplcmbxPM.setFieldLabel("Project Manager");
 			smplcmbxPM.setName("pm");
 			smplcmbxPM.setAllowBlank(true);
 			smplcmbxPM.setTriggerAction(TriggerAction.ALL);
 			smplcmbxPM.setEmptyText("Project Manager..");
 			smplcmbxPM.setAllowBlank(false);
+			smplcmbxPM.setWidth(180);
+			smplcmbxPM.addListener(Events.Select, new Listener<BaseEvent>() {
+				@Override
+				public void handleEvent(BaseEvent be) {
+					if(smplcmbxPM.getRawValue().toString().compareTo("Tutti")==0)
+						gridRiepilogo.reconfigure(store, cm);
+						
+					else{
+						storeRes.removeAll();
+						for(DatiFatturazioneMeseModel r:store.getModels())
+							if(smplcmbxPM.getRawValue().toString().compareTo((String) r.get("pm"))==0)
+								storeRes.add(r);
+						storeRes.setSortField("numeroCommessa");
+						storeRes.setSortDir(SortDir.ASC);
+						gridRiepilogo.reconfigure(storeRes, cm);
+					}
+				}
+			});
 			getNomePM();	
-			*/
+			
 			
 			smplcmbxOrderBy= new SimpleComboBox<String>();
 			smplcmbxOrderBy.setFieldLabel("Group By");
@@ -174,6 +192,8 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			
 			Text txtGroup= new Text();
 			txtGroup.setText("Group By: ");
+			Text txtFiltri= new Text();
+			txtFiltri.setText("Filtri per Stampa: ");
 			
 			btnSelect= new Button();
 			btnSelect.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.reload()));
@@ -207,8 +227,15 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					String mese=smplcmbxMese.getRawValue().toString();
 					String anno=smplcmbxAnno.getRawValue().toString();
 					mese=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
+					GroupingStore<DatiFatturazioneMeseModel> storeF= new GroupingStore<DatiFatturazioneMeseModel>();
+					storeF.add(store.getModels());
 					
-					SessionManagementService.Util.getInstance().setDataReportDatiFatturazioneInSession(anno, mese, store.getModels(), "RIEP.FATT",
+					if(smplcmbxPM.getValue().getValue().compareTo("")!=0){
+						storeF.removeAll();
+						storeF.add(storeRes.getModels());
+					}						
+					
+					SessionManagementService.Util.getInstance().setDataReportDatiFatturazioneInSession(anno, mese, storeF.getModels(), "RIEP.FATT",
 							new AsyncCallback<Boolean>() {
 
 						@Override
@@ -258,12 +285,12 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			tlbOperazioni.add(smplcmbxMese);
 			tlbOperazioni.add(btnSelect);
 			tlbOperazioni.add(new SeparatorToolItem());
-			tlbOperazioni.add(cp);
-			//tlbOperazioni.add(new SeparatorToolItem());
-			//tlbOperazioni.add(btnRiepDatiFatt);
-			tlbOperazioni.add(new SeparatorToolItem());
 			tlbOperazioni.add(txtGroup);
 			tlbOperazioni.add(smplcmbxOrderBy);
+			tlbOperazioni.add(new SeparatorToolItem());
+			tlbOperazioni.add(txtFiltri);
+			tlbOperazioni.add(smplcmbxPM);			
+			tlbOperazioni.add(cp);
 			setTopComponent(tlbOperazioni);
 			
 		    try {
@@ -303,7 +330,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 				
 			}
 		}
-	/*
+	
 		private void getNomePM() {
 			AdministrationService.Util.getInstance().getNomePM(new AsyncCallback<List<String>>() {
 
@@ -322,7 +349,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					}else Window.alert("error: Errore durante l'accesso ai dati PM.");			
 				}
 			});		
-		}*/
+		}
 
 
 		private List<ColumnConfig> createColumns() {

@@ -92,7 +92,7 @@ public class PanelRtv extends ContentPanel{
 		btnAddRtv.addSelectionListener(new SelectionListener<ButtonEvent>() {		
 			@Override
 			public void componentSelected(ButtonEvent ce) {	
-				DialogFormInserimentoDatiRtv dp= new DialogFormInserimentoDatiRtv(numeroO);
+				DialogFormInserimentoDatiRtv dp= new DialogFormInserimentoDatiRtv(numeroO, storeRtv);
 				dp.setSize(630, 550);
 				dp.setButtons("");
 				dp.setHeading("Dati per l'RTV.");
@@ -118,9 +118,9 @@ public class PanelRtv extends ContentPanel{
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 		final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
 		SummaryColumnConfig<Double> column = new SummaryColumnConfig<Double>();  
-		GridCellRenderer<RiepilogoMensileOrdiniModel> renderer = new GridCellRenderer<RiepilogoMensileOrdiniModel>() {
-            public String render(RiepilogoMensileOrdiniModel model, String property, ColumnData config, int rowIndex,
-                    int colIndex, ListStore<RiepilogoMensileOrdiniModel> store, Grid<RiepilogoMensileOrdiniModel> grid) {
+		GridCellRenderer<RtvModel> renderer = new GridCellRenderer<RtvModel>() {
+            public String render(RtvModel model, String property, ColumnData config, int rowIndex,
+                    int colIndex, ListStore<RtvModel> store, Grid<RtvModel> grid) {
             	Float n=model.get(property);
             	return num.format(n);				
             }
@@ -133,9 +133,17 @@ public class PanelRtv extends ContentPanel{
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
+	    
+	    column = new SummaryColumnConfig<Double>();  
+	    column.setId("numeroRtv");  
+	    column.setHeader("Numero RTV");  
+	    column.setWidth(140);  
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    configs.add(column);
 		
 	    column = new SummaryColumnConfig<Double>();  
-	    column.setId("meseRiferimento");  
+	    column.setId("dataEmissione");  
 	    column.setHeader("Data Emissione RTV");  
 	    column.setWidth(140);  
 	    column.setRowHeader(true);
@@ -178,6 +186,7 @@ public class PanelRtv extends ContentPanel{
 			@Override
 			public void onSuccess(List<RtvModel> result) {
 				if(result!=null){
+					storeRtv.removeAll();
 					storeRtv.add(result);
 					gridRiepRtv.reconfigure(storeRtv, cmRiepRtv);
 				}	

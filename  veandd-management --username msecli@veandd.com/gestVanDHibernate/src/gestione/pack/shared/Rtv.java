@@ -43,6 +43,8 @@ public class Rtv  extends LightEntity implements IsSerializable{
 	
 	private String commessaCliente;
 	
+	private String ente;
+	
 	private float importo;
 
 	private String meseRiferimento;
@@ -197,6 +199,14 @@ public class Rtv  extends LightEntity implements IsSerializable{
 	 */
 	public void setCommessaCliente(String commessaCliente) {
 		this.commessaCliente = commessaCliente;
+	}
+
+	public String getEnte() {
+		return ente;
+	}
+
+	public void setEnte(String ente) {
+		this.ente = ente;
 	}
 	
 	

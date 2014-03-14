@@ -692,6 +692,7 @@ public CenterLayout_FoglioFatturazione(){}
 		private TextField<String> txtfldImportoOrdine= new TextField<String>();
 		private TextField<String> txtfldImportoResiduo= new TextField<String>();
 		private CheckBox chbxSalButtare;
+		private TextField<String> txtfldImportoRtv= new TextField<String>();
 		
 		private Text txtOreDaFatturare= new Text();
 		private Text txtVariazioneSal= new Text();
@@ -865,8 +866,7 @@ public CenterLayout_FoglioFatturazione(){}
 		            		idAttivita=be.getSelectedItem().get("idAttivita");
 		            		numeroC=be.getSelectedItem().getNumeroCommessa();
 		            		estensione=be.getSelectedItem().getEstensione();
-		            		try{
-		            			
+		            		try{		            			
 		            			caricaDatiFatturazioneOrdine(numeroC+"."+estensione, idAttivita);
 		            		}catch (Exception e) {
 		            			e.printStackTrace();
@@ -1492,7 +1492,10 @@ public CenterLayout_FoglioFatturazione(){}
 						else importo="0.00";
 						txtfldImportoDaFatturare.setValue(importo);						
 					}
-				});
+			});
+			
+			txtfldImportoRtv.setFieldLabel("Importo da RTV");
+			txtfldImportoRtv.setEnabled(false);
 			
 			RowData data1 = new RowData(.20, 1);
 			data.setMargins(new Margins(5));
@@ -1575,14 +1578,15 @@ public CenterLayout_FoglioFatturazione(){}
 				
 			LayoutContainer layoutColumn5=new LayoutContainer();
 			layout= new FormLayout();
-			layout.setLabelWidth(110);
-			layout.setLabelAlign(LabelAlign.TOP);
+			layout.setLabelWidth(100);
+			layout.setLabelAlign(LabelAlign.LEFT);
 			layoutColumn5.setLayout(layout);
 			layoutColumn5.add(chbxSalButtare, new FormData("20%"));
-			layoutColumn5.add(txtfldTotFatturato, new FormData("85%"));
+			layoutColumn5.add(txtfldTotFatturato, new FormData("20%"));
+			layoutColumn5.add(txtfldImportoRtv, new FormData("20%"));
 			HorizontalPanel hp= new HorizontalPanel();
 			hp.setSpacing(2);
-			hp.add(txtfldImportoDaFatturare);
+			hp.add(txtfldImportoDaFatturare);			
 			hp.add(btnAssegnaImporto);
 			layoutColumn5.add(hp, new FormData("85%"));
 			cp2.add(layoutColumn5, data1);						
@@ -1904,7 +1908,8 @@ public CenterLayout_FoglioFatturazione(){}
 					txtaNote.setValue(result.getNote());
 					txtfldImportoOrdine.setValue((String)result.get("importo"));
 					txtfldImportoResiduo.setValue((String)result.get("importoResiduo"));
-					txtfldImportoDaFatturare.setValue((String)result.get("importoDaFatturare"));					
+					txtfldImportoDaFatturare.setValue((String)result.get("importoDaFatturare"));
+					txtfldImportoRtv.setValue((String)result.get("importoRtv"));
 						
 					txtfldOreEseguiteRegistrate.setValue(result.getOreEseguiteRegistrate());
 					
@@ -1962,6 +1967,7 @@ public CenterLayout_FoglioFatturazione(){}
 					txtfldVariazioneSAL.setValue(result.getVariazioneSal());
 					txtfldVariazionePCL.setValue(result.getVariazionePcl());
 					txtfldOreScaricate.setValue("0.00");
+					txtfldImportoRtv.setValue((String)result.get("importoRtv"));
 					
 					txtfldOreEseguiteRegistrate.setValue(totOre);
 					//txtfldOreEseguiteRegistrate.setValue(result.getOreEseguiteRegistrate());

@@ -23,6 +23,7 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.util.Margins;
@@ -44,6 +45,7 @@ import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -68,20 +70,17 @@ public class DialogFormInserimentoDatiRtv extends Dialog{
 	
 	//scelta del referente
 	private ComboBox<RiferimentiRtvModel> cmbxReferente;
+	private ComboBox<RtvModel> cmbxRtv;
 	
 	private SimpleComboBox<String> smplcmbxTipoModulo;
-	
+	final NumberFormat num= NumberFormat.getFormat("0.00");
 	private Button btnPrintToRTF;
 
 	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
 	private static String url= "/gestvandhibernate/PrintDataServlet";
 	
-	public DialogFormInserimentoDatiRtv(final String numeroOrdine){
+	public DialogFormInserimentoDatiRtv(final String numeroOrdine, GroupingStore<RtvModel> storeRtv){
   
-		
-		//TODO callback per vedere se c'è un mese precedente e precompilare alcuni campi
-		
-		
 	    final FitLayout fl= new FitLayout();
 		LayoutContainer layoutContainer= new LayoutContainer();
 		layoutContainer.setBorders(false);
@@ -111,11 +110,29 @@ public class DialogFormInserimentoDatiRtv extends Dialog{
 		layout.setLabelAlign(LabelAlign.LEFT);
 		layoutCol1.setLayout(layout);
 					
-		Date d= new Date();
-		String dt= d.toString();
-		final String anno= dt.substring(dt.length()-4, dt.length());
-		final String mese= ClientUtility.meseToLong(ClientUtility.traduciMeseToIt(dt.substring(4, 7)));
-						
+		cmbxRtv= new ComboBox<RtvModel>();
+		cmbxRtv.setStore(storeRtv);
+		cmbxRtv.setFieldLabel("Rtv Precedenti");
+		cmbxRtv.setName("rtv");
+		cmbxRtv.setEmptyText("Rtv...");
+		cmbxRtv.setAllowBlank(false);
+		cmbxRtv.setTriggerAction(TriggerAction.ALL);
+		cmbxRtv.setDisplayField("numeroRtv");
+		cmbxRtv.addListener(Events.SelectionChange, new Listener<BaseEvent>(){
+			@Override
+			public void handleEvent(BaseEvent be) {
+				RtvModel rtvM= cmbxRtv.getValue();
+				txtarAttivita.setValue((String)rtvM.get("attivita"));
+				txtfldCdcRichiedente.setValue((String)rtvM.get("cdcRichiedente"));
+				txtfldCodiceFornitore.setValue((String)rtvM.get("codiceFornitore"));
+				txtfldCommessaCliente.setValue((String)rtvM.get("commessaCliente"));
+				txtfldEnte.setValue((String)rtvM.get("ente"));
+				txtfldNumeroRtv.setValue((String)rtvM.get("numeroRtv"));
+				dtfldDataOrdine.setValue((Date)rtvM.get("dataOrdine"));
+			}		
+		});		
+		layoutCol1.add(cmbxRtv, new FormData("80%"));
+		
 		smplcmbxTipoModulo= new SimpleComboBox<String>();
 		smplcmbxTipoModulo.setFieldLabel("Tipo Modulo");
 		smplcmbxTipoModulo.setName("tipoModulo");
@@ -156,6 +173,7 @@ public class DialogFormInserimentoDatiRtv extends Dialog{
 		
 		txtfldNumeroRtv= new TextField<String>();
 		txtfldNumeroRtv.setFieldLabel("Numero RTV");
+		txtfldNumeroRtv.setAllowBlank(false);
 		layoutCol1.add(txtfldNumeroRtv, new FormData("80%"));
 		
 		txtfldCodiceFornitore= new TextField<String>();
@@ -174,6 +192,7 @@ public class DialogFormInserimentoDatiRtv extends Dialog{
 		txtfldImporto= new TextField<String>();
 		txtfldImporto.setEnabled(true);
 		txtfldImporto.setFieldLabel("Importo");
+		txtfldImporto.setAllowBlank(false);
 		//TODO espressione regolare
 		layoutCol1.add(txtfldImporto, new FormData("80%"));
 		
@@ -194,7 +213,8 @@ public class DialogFormInserimentoDatiRtv extends Dialog{
 		layoutCol1.add(txtfldCommessaCliente, new FormData("80%"));
 		
 		txtarAttivita= new TextArea();
-		txtarAttivita.setEmptyText("Descrizione Attivita...");
+		txtarAttivita.setFieldLabel("Attivita'");
+		txtarAttivita.setEmptyText("Descrizione Attivita'...");
 		txtarAttivita.setHeight(100);
 		layoutCol1.add(txtarAttivita);							
 		
@@ -210,7 +230,8 @@ public class DialogFormInserimentoDatiRtv extends Dialog{
 			public void componentSelected(ButtonEvent ce) {			
 				
 				if(checkDati()){	
-										
+								
+					int idRtv=0;
 					String numeroRtv="";
 					String codiceFornitore="";
 					String nomeResponsabile="";
@@ -229,7 +250,7 @@ public class DialogFormInserimentoDatiRtv extends Dialog{
 					Date dataFineAttivita=null;			
 					
 					RiferimentiRtvModel rifModel= cmbxReferente.getValue();
-					
+										
 					if(!txtfldNumeroRtv.getRawValue().isEmpty())numeroRtv=txtfldNumeroRtv.getValue().toString();
 					if(!txtfldCodiceFornitore.getRawValue().isEmpty())codiceFornitore=txtfldCodiceFornitore.getValue().toString();
 					if(!txtfldImporto.getRawValue().isEmpty())importo=txtfldImporto.getValue().toString();
@@ -243,7 +264,7 @@ public class DialogFormInserimentoDatiRtv extends Dialog{
 					if(!dtfldDataInizioAttivita.getRawValue().isEmpty())dataInizioAttivita=dtfldDataInizioAttivita.getValue();
 					if(!dtfldDataFineAttivita.getRawValue().isEmpty())dataFineAttivita=dtfldDataFineAttivita.getValue();
 					
-					RtvModel rtv= new RtvModel(0, 0, numeroOrdine, numeroRtv, codiceFornitore, nomeResponsabile, dataOrdine,
+					RtvModel rtv= new RtvModel(idRtv, 0, numeroOrdine, numeroRtv, codiceFornitore, nomeResponsabile, dataOrdine,
 							dataEmissione, Float.valueOf(importo), importoOrdine, importoAvanzamenti, meseRiferimento, attivita, statoLavori, 
 							cdcRichiedente, commessaCliente, ente, dataInizioAttivita, dataFineAttivita);
 					
@@ -297,6 +318,7 @@ public class DialogFormInserimentoDatiRtv extends Dialog{
 		add(layoutContainer);	
 	}
 	
+
 	private void caricaDatiReferenti() {
 		
 		AdministrationService.Util.getInstance().getDatiReferenti(new AsyncCallback<List<RiferimentiRtvModel>>(){
@@ -338,7 +360,10 @@ public class DialogFormInserimentoDatiRtv extends Dialog{
 	}
 	
 	private boolean checkDati() {
-		if(smplcmbxTipoModulo.isValid())
+		if(smplcmbxTipoModulo.isValid() &&
+				txtfldNumeroRtv.isValid()&&
+				txtfldImporto.isValid()&&
+				cmbxReferente.isValid())
 			return true;
 		else
 			return false;
