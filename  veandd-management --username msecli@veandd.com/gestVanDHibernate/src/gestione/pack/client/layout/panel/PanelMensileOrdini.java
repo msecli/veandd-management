@@ -155,7 +155,8 @@ public class PanelMensileOrdini extends LayoutContainer{
 			public void handleEvent(ComponentEvent be) {
 				numeroOrdine=sm.getSelectedItem().get("numeroOrdine");
 				pnlRtv.setNumeroOrdine(numeroOrdine);
-				pnlRtv.caricaDatiTabellaRtv(numeroOrdine);				
+				pnlRtv.caricaDatiTabellaRtv(numeroOrdine);	
+				
 								
 				AdministrationService.Util.getInstance().getDettaglioMensileOrdine(numeroOrdine, new AsyncCallback<List<RiepilogoMensileOrdiniModel>>() {
 
@@ -450,6 +451,8 @@ public class PanelMensileOrdini extends LayoutContainer{
 		cpGridRiepMensile.add(gridRiepMensile);
 		
 		hp.add(cpGridRiepMensile);
+		if(ruolo.compareTo("PM")==0)
+			pnlRtv.setButtonDisable();
 		hp.add(pnlRtv);
 		
 		vp.add(cpGridRiepOrdini);

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
+import gestione.pack.client.model.RiepilogoMensileOrdiniModel;
 import gestione.pack.client.model.RiepilogoSALPCLModel;
 import gestione.pack.client.utility.MyImages;
 
@@ -13,7 +14,10 @@ import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.fx.Resizable;
 import com.extjs.gxt.ui.client.store.GroupingStore;
@@ -21,8 +25,10 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
@@ -35,6 +41,7 @@ import com.extjs.gxt.ui.client.widget.grid.SummaryColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.SummaryRenderer;
 import com.extjs.gxt.ui.client.widget.grid.SummaryType;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
@@ -46,6 +53,7 @@ import com.google.gwt.user.client.ui.FormPanel;
 public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 
 	private GroupingStore<RiepilogoSALPCLModel>store = new GroupingStore<RiepilogoSALPCLModel>();
+	private GroupingStore<RiepilogoSALPCLModel>storeRes = new GroupingStore<RiepilogoSALPCLModel>();
 	private Grid<RiepilogoSALPCLModel> gridRiepilogo;
 	private ColumnModel cmRiepilogo;
 	private CellSelectionModel<RiepilogoSALPCLModel> cs;
@@ -55,6 +63,7 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	
 	private SimpleComboBox<String> smplcmbxScelta= new SimpleComboBox<String>();
 	private SimpleComboBox<String> smplcmbxOrderBy;
+	private SimpleComboBox<String> smplcmbxPM;
 	
 	private int h=Window.getClientHeight();
 	private int w=Window.getClientWidth();
@@ -128,6 +137,39 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 		
 		ToolBar tlbrPrint= new ToolBar();
 		
+		Text txtFiltri= new Text();
+		txtFiltri.setText("Filtri per la stampa: ");
+		
+		smplcmbxPM= new SimpleComboBox<String>();
+		smplcmbxPM.setFieldLabel("Project Manager");
+		smplcmbxPM.setName("pm");
+		smplcmbxPM.setAllowBlank(true);
+		smplcmbxPM.setTriggerAction(TriggerAction.ALL);
+		smplcmbxPM.setWidth(150);
+		smplcmbxPM.setEmptyText("Project Manager...");
+		smplcmbxPM.addListener(Events.Select, new Listener<BaseEvent>() {
+
+			@Override
+			public void handleEvent(BaseEvent be) {
+				if(smplcmbxPM.getRawValue().toString().compareTo("Tutti")==0)
+					gridRiepilogo.reconfigure(store, cmRiepilogo);
+					
+				else{
+					storeRes.removeAll();
+					for(RiepilogoSALPCLModel r:store.getModels())
+						if(smplcmbxPM.getRawValue().toString().compareTo((String) r.get("pm"))==0)
+							storeRes.add(r);
+													    
+					storeRes.setSortField("commessa");
+					storeRes.setSortDir(SortDir.ASC);
+					storeRes.groupBy("pm");
+					
+					gridRiepilogo.reconfigure(storeRes, cmRiepilogo);
+				}
+			}
+		});
+		getNomePm();
+		
 		btnRiep= new Button();
 		btnRiep.setEnabled(true);
 		btnRiep.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.datiTimb()));
@@ -143,7 +185,6 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 				d.show();
 			}		
 		});
-
 		
 		btnPrint= new Button();
 		btnPrint.setEnabled(true);
@@ -154,7 +195,7 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 		btnPrint.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
-				SessionManagementService.Util.getInstance().setDatiReportSalPcl("RIEP.SALPCL", store.getModels(),
+				SessionManagementService.Util.getInstance().setDatiReportSalPcl("RIEP.SALPCL", storeRes.getModels(),
 						new AsyncCallback<Boolean>() {
 
 					@Override
@@ -181,7 +222,10 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 		ContentPanel cp= new ContentPanel();
 		cp.setHeaderVisible(false);
 		cp.add(fp);
+		tlbrPrint.add(txtFiltri);
+		tlbrPrint.add(smplcmbxPM);
 		tlbrPrint.add(cp);
+		tlbrPrint.add(new SeparatorToolItem());
 		tlbrPrint.add(btnRiep);
 		
 	    store.groupBy("pm");
@@ -209,9 +253,28 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	    add(layoutContainer);
 	}
 
+	private void getNomePm() {
+		AdministrationService.Util.getInstance().getNomePM(new AsyncCallback<List<String>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("Errore connessione on getNomePM();");
+				caught.printStackTrace();
+			}
+
+			@Override
+			public void onSuccess(List<String> result) {
+				if(result!=null){
+					smplcmbxPM.add(result);
+					smplcmbxPM.add("Tutti");
+					smplcmbxPM.recalculate();											
+				}else Window.alert("error: Errore durante l'accesso ai dati PM.");			
+			}
+		});		
+	}
+
 	private void caricaTabellaRiass() {
-		tabSelected="sal";
-		 
+		tabSelected="sal";		 
 		AdministrationService.Util.getInstance().getRiepilogoSalPclRiassunto(data, tabSelected, new AsyncCallback<List<RiepilogoSALPCLModel>>() {
 
 			@Override
@@ -224,8 +287,6 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 			public void onSuccess(List<RiepilogoSALPCLModel> result) {
 				loadTableRiass(result);		
 			}
-
-
 		 });		
 	}
 

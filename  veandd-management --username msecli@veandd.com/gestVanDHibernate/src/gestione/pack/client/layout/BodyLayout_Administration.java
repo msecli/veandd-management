@@ -235,9 +235,9 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    cp.setExpanded(true);
 	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
-            	center.removeAll();
+            	/*center.removeAll();
 	        	center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb());
-	        	center.layout(true);               
+	        	center.layout(true);     */          
             }
         });
 	    
@@ -353,9 +353,9 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    cp.setHeading("Personale");  
 	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
-            	center.removeAll();
+            	/*center.removeAll();
 	        	center.add(new PanelGestioneCostiDipendenti());
-	        	center.layout(true);               
+	        	center.layout(true);*/               
             }
         });
 	    Button btnAnagrP = new Button();
@@ -414,9 +414,9 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    cp.setHeading("Clienti");
 	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
-            	center.removeAll();
+            	/*center.removeAll();
 	        	center.add(new CenterLayout_AnagraficaClienti());
-	        	center.layout(true);               
+	        	center.layout(true);  */             
             }
         });
 	    Button btnAnagrC = new Button();
@@ -442,9 +442,9 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    cp.setHeading("Gestione Ordini");
 	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
-            	center.removeAll();
+            	/*center.removeAll();
 	        	center.add(new CenterLayout_GestioneRdoCompleta());
-	        	center.layout(true);
+	        	center.layout(true);*/
             }
         });
 	    Button btnGestioneRdo = new Button();
@@ -511,9 +511,9 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    cp.setHeading("Gestione Commesse");
 	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
-            	center.removeAll();
+            	/*center.removeAll();
 	        	center.add(new CenterLayout_GestioneCommessa());
-	        	center.layout(true);               
+	        	center.layout(true);   */            
             }
         });
 	   
@@ -598,9 +598,9 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    cp.setHeading("Riepilogo Ore");
 	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
-            	center.removeAll();
+            	/*center.removeAll();
 	        	center.add(new PanelRiepilogoOreDipendentiPerCommesse());
-	        	center.layout(true);               
+	        	center.layout(true);     */          
             }
         });
 	    
@@ -656,9 +656,9 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    cp.setHeading("Fatturazione");
 	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
-            	center.removeAll();
+            	/*center.removeAll();
 	        	center.add(new CenterLayout_FoglioFatturazione());
-	        	center.layout(true);               
+	        	center.layout(true);   */            
             }
         });
 	    Button btnFoglioFatturazione = new Button();
@@ -723,9 +723,9 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    cp.setHeading("Tools Amministrativi");
 	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
-            	center.removeAll();
+            	/*center.removeAll();
 	        	center.add(new PanelEditPasswordUtenti());
-	        	center.layout(true);               
+	        	center.layout(true);      */         
             }
         });
 	    

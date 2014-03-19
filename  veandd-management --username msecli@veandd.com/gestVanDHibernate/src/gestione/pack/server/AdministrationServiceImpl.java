@@ -6140,7 +6140,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					List<Rtv> listaRtv= new ArrayList<Rtv>();
 					listaRtv.addAll(o.getRtvs());
 					for(Rtv rtv:listaRtv)
-						if(rtv.getMeseRiferimento().compareTo(mese)==0)
+						if(rtv.getMeseRiferimento().compareTo(mese.toLowerCase())==0)
 							importoRtv=String.valueOf((Float)rtv.getImporto());
 					
 					//--
@@ -6550,6 +6550,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String statoFattura="N";
 		String cognome="";
 		
+		Float[] totaleOreSalPcl={(float)0.0,(float)0.0};
+		
+		
 		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
 	    formatSymbols.setDecimalSeparator('.');
 	    String pattern="0.00";
@@ -6562,7 +6565,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			tx = session.beginTransaction();
 		
 			listaFF=(List<FoglioFatturazione>)session.createQuery("from FoglioFatturazione where meseCorrente=:mese").setParameter("mese", mese).list();
-			for(FoglioFatturazione f: listaFF){	
+			for(FoglioFatturazione f: listaFF){
 				
 				fattura=(Fattura)session.createQuery("from Fattura where idFoglioFatturazione=:id").setParameter("id", f.getIdFoglioFatturazione()).uniqueResult();
 				if(fattura!=null)
@@ -6602,18 +6605,22 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							importoSal=ServerUtility.calcolaImporto(a.getTariffaAttivita(),f.getVariazioneSAL());
 							importoPcl=ServerUtility.calcolaImporto(a.getTariffaAttivita(),f.getVariazionePCL());
 							attivitaOrdine=a.getDescrizioneAttivita();
+							
 						}else
 							if(f.getAttivitaOrdine()==0){
 								importo=ServerUtility.calcolaImporto(f.getTariffaUtilizzata(),f.getOreFatturare());
 								importoSal=ServerUtility.calcolaImporto(f.getTariffaUtilizzata(),f.getVariazioneSAL());
 								importoPcl=ServerUtility.calcolaImporto(f.getTariffaUtilizzata(),f.getVariazionePCL());
 								attivitaOrdine="";
-							}				
+							}	
+					
+					totaleOreSalPcl=ServerUtility.calcolaSalPclTotale(f.getCommessa().getNumeroCommessa(), f.getCommessa().getEstensione(), "pcl", true, mese);
 					
 					datiModel=new DatiFatturazioneMeseModel(f.getIdFoglioFatturazione(), p.getSedeOperativa(),f.getCommessa().getMatricolaPM(), f.getCommessa().getNumeroCommessa()+"."+f.getCommessa().getEstensione(), o.getRda().getCliente().getRagioneSociale(), 
 							numeroOrdine, o.getCommessa().getDenominazioneAttivita(),attivitaOrdine , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf(ServerUtility.getOreCentesimi(f.getOreFatturare()))
 							, Float.valueOf(f.getTariffaUtilizzata()),	importo, importoEffettivo, Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), importoSal, 
-							Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), importoPcl, Float.valueOf(ServerUtility.getOreCentesimi(oreScaricate)), margine, d.format(efficienza), f.getNote(), statoFattura);
+							Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), importoPcl, Float.valueOf(ServerUtility.getOreCentesimi(oreScaricate)), margine, d.format(efficienza), f.getNote(), statoFattura
+							,totaleOreSalPcl[0], totaleOreSalPcl[1]);
 				}
 				else{
 					numeroOrdine="";
@@ -6632,10 +6639,13 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					importoSal=ServerUtility.calcolaImporto(f.getTariffaUtilizzata(),f.getVariazioneSAL());
 					importoPcl=ServerUtility.calcolaImporto(f.getTariffaUtilizzata(),f.getVariazionePCL());
 					
+					totaleOreSalPcl=ServerUtility.calcolaSalPclTotale(f.getCommessa().getNumeroCommessa(), f.getCommessa().getEstensione(), "pcl", false, mese);
+					
 					datiModel=new DatiFatturazioneMeseModel(f.getIdFoglioFatturazione(), p.getSedeOperativa(), f.getCommessa().getMatricolaPM(), f.getCommessa().getNumeroCommessa()+"."+f.getCommessa().getEstensione(), "#", numeroOrdine,
 							f.getCommessa().getDenominazioneAttivita(),attivitaOrdine, Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf(ServerUtility.getOreCentesimi(f.getOreFatturare())),
 							Float.valueOf(f.getTariffaUtilizzata()), (float) 0.0, (float)0.0, Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), importoSal, Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), 
-							importoPcl, Float.valueOf(ServerUtility.getOreCentesimi(oreScaricate)), margine, d.format(efficienza), f.getNote(), statoFattura);	
+							importoPcl, Float.valueOf(ServerUtility.getOreCentesimi(oreScaricate)), margine, d.format(efficienza), f.getNote(), statoFattura
+							,totaleOreSalPcl[0], totaleOreSalPcl[1]);	
 				}
 				listaDati.add(datiModel);
 				
@@ -7231,7 +7241,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							    			"#", c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniPcl),Float.valueOf("0.00"), 
 							    			Float.valueOf(sommaVariazioniPcl), tariffaUtilizzata,importo , Float.valueOf("0.00"), Float.valueOf("0.00"), Float.valueOf("0.00"));
 										listaM.add(riepM);
-								}						
+								}
 							}
 							else{
 								importo=Float.valueOf(tariffaUtilizzata)*Float.valueOf(sommaVariazioniSal);
@@ -7518,6 +7528,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				sommaVariazioniSal="0.00";
 				importo=(float)0.00;
 				importoMese=(float)0.00;
+				esistePa=false;
 			}
 			
 			
@@ -7582,6 +7593,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}finally{
 			session.close();
 		}
+
 	}
 	
 	
@@ -10543,6 +10555,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<RiferimentiRtvModel> getDatiReferenti()	throws IllegalArgumentException {
 		List<RiferimentiRtvModel> listaRM= new ArrayList<RiferimentiRtvModel>();

@@ -280,7 +280,7 @@ public class PrintDataServlet extends HttpServlet  {
 					lista= (List<DatiFatturazioneMeseModel>) httpSession.getAttribute("listaDati");
 					
 					listaR.addAll(ServerUtility.traduciDatiFatturazioneCompletiModelToBean(lista));
-									
+					listaR.add(0,new DatiFatturazioneMeseJavaBean());				
 					
 					Map parameters = new HashMap();
 					/*parameters.put(JRHibernateQueryExecuterFactory.PARAMETER_HIBERNATE_SESSION,
@@ -293,7 +293,7 @@ public class PrintDataServlet extends HttpServlet  {
 
 					try {
 
-						fis = new FileInputStream(/*Constanti.PATHAmazon+*/"JasperReport/RiepilogoDatiFatturazione.jasper");
+						fis = new FileInputStream(Constanti.PATHAmazon+"JasperReport/RiepilogoDatiFatturazione.jasper");
 																	
 						bufferedInputStream = new BufferedInputStream(fis);
 
@@ -309,14 +309,15 @@ public class PrintDataServlet extends HttpServlet  {
 						exporterXLS.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
 						exporterXLS.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
 						exporterXLS.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
-						exporterXLS.setParameter(JRXlsExporterParameter.IS_IGNORE_CELL_BACKGROUND, Boolean.FALSE);
 						exporterXLS.setParameter(JRXlsExporterParameter.IS_IGNORE_GRAPHICS, Boolean.FALSE);
 						exporterXLS.setParameter(JRXlsExporterParameter.IS_IGNORE_CELL_BACKGROUND, Boolean.FALSE);
 						exporterXLS.setParameter(JRXlsExporterParameter.IS_IGNORE_CELL_BORDER, Boolean.FALSE);
-						exporterXLS.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, /*Constanti.PATHAmazon+*/"FileStorage/RiepilogoDatiFatturazione.xls");
+						exporterXLS.setParameter(JRXlsExporterParameter.IS_FONT_SIZE_FIX_ENABLED,
+			                    Boolean.TRUE);
+						exporterXLS.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, Constanti.PATHAmazon+"FileStorage/RiepilogoDatiFatturazione.xls");
 						exporterXLS.exportReport();
 							
-						File f=new File(/*Constanti.PATHAmazon+*/"FileStorage/RiepilogoDatiFatturazione.xls");
+						File f=new File(Constanti.PATHAmazon+"FileStorage/RiepilogoDatiFatturazione.xls");
 						FileInputStream fin = new FileInputStream(f);
 						ServletOutputStream outStream = response.getOutputStream();
 						// SET THE MIME TYPE.
@@ -741,11 +742,9 @@ public class PrintDataServlet extends HttpServlet  {
 					FatturaModel fm= (FatturaModel) httpSession.getAttribute("fatturaModel");
 					listaAttF.addAll((List<AttivitaFatturateModel>) httpSession.getAttribute("listaA"));
 					List<AttivitaFatturateJavaBean> listaAF= elaboraListaAttivita(listaAttF);
-				
-					
+									
 					//salvare i dati della fattura con le attivita fatturate
-					boolean saveOk=ServerUtility.saveDataFattura(fm, listaAttF);					
-													
+					boolean saveOk=ServerUtility.saveDataFattura(fm, listaAttF);																		
 					
 					for(AttivitaFatturateJavaBean af:listaAF){
 						imponibile=ServerUtility.aggiornaTotGenerale(imponibile, af.getImporto());

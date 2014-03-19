@@ -175,6 +175,10 @@ public class PanelRtv extends ContentPanel{
 		numeroO=numeroOrdine;
 	}
 	
+	public void setButtonDisable(){
+		btnAddRtv.disable();
+	}
+	
 	public void caricaDatiTabellaRtv(String numeroO) {
 		AdministrationService.Util.getInstance().getDatiRtv(numeroO, new AsyncCallback<List<RtvModel>>(){
 
