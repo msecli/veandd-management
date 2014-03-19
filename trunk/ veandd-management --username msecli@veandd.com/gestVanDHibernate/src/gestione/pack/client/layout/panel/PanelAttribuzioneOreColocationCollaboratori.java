@@ -130,7 +130,7 @@ public class PanelAttribuzioneOreColocationCollaboratori extends LayoutContainer
 		
 		btnConferma= new Button();
 		btnConferma.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.confirm()));
-		btnConferma.setToolTip("Load");
+		btnConferma.setToolTip("Conferma");
 		btnConferma.setIconAlign(IconAlign.TOP);
 		btnConferma.setSize(26, 26);
 		btnConferma.addSelectionListener(new SelectionListener<ButtonEvent>() {		
@@ -168,7 +168,7 @@ public class PanelAttribuzioneOreColocationCollaboratori extends LayoutContainer
 		
 		btnReset= new Button();
 		btnReset.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.azzera()));
-		btnReset.setToolTip("Load");
+		btnReset.setToolTip("Reset");
 		btnReset.setIconAlign(IconAlign.TOP);
 		btnReset.setSize(26, 26);
 		btnReset.addSelectionListener(new SelectionListener<ButtonEvent>() {		

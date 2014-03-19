@@ -1743,7 +1743,7 @@ public class ServerUtility {
 			rB= new DatiFatturazioneMeseJavaBean(r.getPM(), (String)r.get("numeroCommessa"), (String)r.get("cliente"), (String)r.get("numeroOrdine"), (String)r.get("oggettoAttivita"), 
 					(Float)r.get("oreEseguite"), (Float)r.get("oreFatturate"), (Float)r.get("tariffaOraria"), (Float)r.get("importo"), 
 					(Float)r.get("importoEffettivo"), (float)0, (float)0, (float)0, (float)0, (float)0, (float)0, "",
-					(String)r.get("note"));
+					(String)r.get("note"), (Float)r.get("totaleOrePcl"), (Float)r.get("totaleOreSal"));
 			listaB.add(rB);
 		}
 		
@@ -1762,7 +1762,7 @@ public class ServerUtility {
 					(Float)r.get("oreEseguite"), (Float)r.get("oreFatturate"), (Float)r.get("tariffaOraria"), (Float)r.get("importo"), (Float)r.get("importoEffettivo"), 
 					(Float)r.get("variazioneSal"), (Float)r.get("importoSal"), 
 					(Float)r.get("variazionePcl"), (Float)r.get("importoPcl"), (Float)r.get("oreScaricate"), (Float)r.get("margine"), (String) r.get("efficienza"),
-					(String)r.get("note"));
+					(String)r.get("note"),  (Float)r.get("totaleOrePcl"), (Float)r.get("totaleOreSal"));
 			listaB.add(rB);
 		}
 		
@@ -2577,6 +2577,7 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 		
 		SimpleDateFormat formatter =new SimpleDateFormat("MMMyyyy",Locale.ITALIAN);
 		meseRif=formatter.format(dataEmissione);
+		//meseRif=meseRif.substring(0,1).toUpperCase()+meseRif.substring(1,meseRif.length());
 		
 		try{
 			tx=session.beginTransaction();
@@ -2597,6 +2598,7 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 				rtv.setImporto(importo);
 				rtv.setNumeroRtv((String)rtvM.get("numeroRtv"));
 				rtv.setMeseRiferimento(meseRif);
+				rtv.setEnte((String)rtvM.get("ente"));
 			
 				rtv.setOrdine(o);			
 				o.getRtvs().add(rtv);
@@ -2614,6 +2616,95 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 			session.close();
 		}	
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	public static Float[] calcolaSalPclTotale(String numeroCommessa,
+			String estensione, String parametro, boolean presenzaOrdine, String data) {
+
+		List<Commessa> listaC= new ArrayList<Commessa>();
+		List<FoglioFatturazione> listaFF= new ArrayList<FoglioFatturazione>();
+		Commessa c= new Commessa();
+		Commessa c_pa= new Commessa();
+		
+		boolean esistePa=false;
+		
+		Float[] totaleOre= {(float)0.0,(float)0.0};
+		String sommaVariazioniSal= "0.00";
+		String sommaVariazioniPcl= "0.00";
+		
+		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+	    formatSymbols.setDecimalSeparator('.');
+	    String pattern="0.00";
+	    DecimalFormat d= new DecimalFormat(pattern,formatSymbols);
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try{
+			tx=session.beginTransaction();
+			
+			c=(Commessa)session.createQuery("from Commessa where numeroCommessa=:numeroCommessa and estensione=:estensione").setParameter("numeroCommessa", numeroCommessa)
+					.setParameter("estensione", estensione).uniqueResult();
+			
+			//controllo la presenza di una commessa .pa 
+			c_pa=(Commessa)session.createQuery("from Commessa where numeroCommessa=:commessa and estensione=:estensione").setParameter("commessa", numeroCommessa)
+					.setParameter("estensione", "pa").uniqueResult();
+			if(c_pa!=null)
+				esistePa=true;
+			
+			if(esistePa){
+				
+				listaC=(List<Commessa>)session.createQuery("from Commessa where numeroCommessa=:commessa and estensione<>:estensione")
+						.setParameter("commessa", numeroCommessa)
+						.setParameter("estensione", "pa").list();
+				
+				for(Commessa c1:listaC)
+					listaFF.addAll(c1.getFoglioFatturaziones());			
+				
+				for(FoglioFatturazione f1:listaFF){ 					
+					if(ServerUtility.isPrecedente(f1.getMeseCorrente(), data)){
+						sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(f1.getVariazionePCL())));
+						sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)+ Float.valueOf( ServerUtility.getOreCentesimi(f1.getVariazioneSAL())));
+					}
+				}
+			
+				sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)+ Float.valueOf(ServerUtility.getOreCentesimi(c_pa.getSalAttuale())));
+				sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(c_pa.getPclAttuale())));
+				
+				totaleOre[0]=Float.valueOf(sommaVariazioniPcl);
+				totaleOre[1]=Float.valueOf(sommaVariazioniSal);					
+							
+			}else{
+			
+			
+				listaFF.addAll(c.getFoglioFatturaziones());			
+								
+				//Considero tutti i FF compilati in mesi differenti da quello in esame
+				for(FoglioFatturazione f1:listaFF)										
+					if(ServerUtility.isPrecedente(f1.getMeseCorrente(),data)){
+						
+							sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(f1.getVariazionePCL())));
+							sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)+ Float.valueOf( ServerUtility.getOreCentesimi(f1.getVariazioneSAL())));
+					}
+							
+				sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)+ Float.valueOf(ServerUtility.getOreCentesimi(c.getSalAttuale())));
+				sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(c.getPclAttuale())));	
+				
+				totaleOre[0]=Float.valueOf(sommaVariazioniPcl);
+				totaleOre[1]=Float.valueOf(sommaVariazioniSal);				
+			}
+						
+			tx.commit();
+		}catch (Exception e) {
+			e.printStackTrace();
+			if (tx != null)
+				tx.rollback();
+		
+		}finally{
+			session.close();
+		}	
+		
+		return totaleOre;	
+	}	
 }
 

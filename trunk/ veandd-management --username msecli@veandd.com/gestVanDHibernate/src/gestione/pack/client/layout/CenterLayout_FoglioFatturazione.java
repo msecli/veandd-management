@@ -1488,8 +1488,15 @@ public CenterLayout_FoglioFatturazione(){}
 					public void componentSelected(ButtonEvent ce) {
 						
 						String importo=new String();
-						if(!txtfldTotFatturato.getRawValue().isEmpty()) importo=txtfldTotFatturato.getValue().toString();
-						else importo="0.00";
+						
+						if(txtfldImportoRtv.getValue().toString().compareTo("#")!=0)
+							importo=txtfldImportoRtv.getValue().toString();	
+						else
+						if(!txtfldTotFatturato.getRawValue().isEmpty()) 
+							importo=txtfldTotFatturato.getValue().toString();
+						else 
+							importo="0.00";
+						
 						txtfldImportoDaFatturare.setValue(importo);						
 					}
 			});

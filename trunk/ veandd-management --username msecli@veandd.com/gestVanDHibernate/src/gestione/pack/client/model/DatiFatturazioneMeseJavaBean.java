@@ -20,10 +20,14 @@ public class DatiFatturazioneMeseJavaBean {
 	private Float margine;
 	private String efficienza;
 	private String note;
+	private Float totaleOreSal;
+	private Float totaleOrePcl;
+	
+	public  DatiFatturazioneMeseJavaBean(){}
 	
 	public  DatiFatturazioneMeseJavaBean(String pm, String commessa, String cliente, String numeroOrdine, String oggettoAttivita, Float oreEseguite, 
 			Float oreFatturate, Float tariffaOraria, Float importo, Float importoEffettivo, Float variazioneSal, Float importoSal, Float variazionePcl,
-			Float importoPcl, Float oreScaricate, Float margine, String efficienza, String note){
+			Float importoPcl, Float oreScaricate, Float margine, String efficienza, String note , Float totaleOrePcl, Float totaleOreSal){
 		
 		this.pm=pm;
 		this.commessa= commessa;
@@ -43,6 +47,8 @@ public class DatiFatturazioneMeseJavaBean {
 		this.margine=margine;
 		this.efficienza=efficienza;
 		this.note=note;
+		this.setTotaleOrePcl(totaleOrePcl);
+		this.setTotaleOreSal(totaleOreSal);
 	}
 	
 	
@@ -146,5 +152,21 @@ public class DatiFatturazioneMeseJavaBean {
 	}
 	public void setNote(String note) {
 		this.note = note;
+	}
+
+	public Float getTotaleOreSal() {
+		return totaleOreSal;
+	}
+
+	public void setTotaleOreSal(Float totaleOreSal) {
+		this.totaleOreSal = totaleOreSal;
+	}
+
+	public Float getTotaleOrePcl() {
+		return totaleOrePcl;
+	}
+
+	public void setTotaleOrePcl(Float totaleOrePcl) {
+		this.totaleOrePcl = totaleOrePcl;
 	}	
 }

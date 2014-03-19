@@ -216,6 +216,7 @@ public class DialogFormInserimentoDatiRtv extends Dialog{
 		txtarAttivita.setFieldLabel("Attivita'");
 		txtarAttivita.setEmptyText("Descrizione Attivita'...");
 		txtarAttivita.setHeight(100);
+		txtarAttivita.setMaxLength(245);
 		layoutCol1.add(txtarAttivita);							
 		
 		btnPrintToRTF = new Button();
