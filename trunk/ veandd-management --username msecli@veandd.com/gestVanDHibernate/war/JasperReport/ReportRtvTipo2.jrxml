@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReportRtvTipo1" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9b69285d-2b52-4ec6-869d-65a5181e705e">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReportRtvTipo1" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="50" bottomMargin="50" uuid="9b69285d-2b52-4ec6-869d-65a5181e705e">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -98,50 +98,51 @@
 				</textElement>
 				<text><![CDATA[Riepilogo delle attività svolte nel mese precedente]]></text>
 			</staticText>
-			<textField>
-				<reportElement uuid="695c15c3-284c-43db-8737-1cb4a857e70a" x="323" y="107" width="209" height="14"/>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="695c15c3-284c-43db-8737-1cb4a857e70a" x="323" y="107" width="209" height="14" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Right">
 					<paragraph rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement uuid="c64a4674-6d85-4f66-80b1-6a6e765ba42f" x="323" y="23" width="209" height="14"/>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="c64a4674-6d85-4f66-80b1-6a6e765ba42f" x="323" y="23" width="209" height="14" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Right">
+					<font isBold="true"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{ragioneSociale}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement uuid="bc6c0fbc-0bf0-448b-8473-97e6401de8d1" x="323" y="65" width="209" height="14"/>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="bc6c0fbc-0bf0-448b-8473-97e6401de8d1" x="323" y="65" width="209" height="14" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Right">
 					<paragraph rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{indirizzo}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement uuid="24ad593c-72eb-437b-bc47-b36204d0e9d8" x="323" y="37" width="209" height="14"/>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="24ad593c-72eb-437b-bc47-b36204d0e9d8" x="323" y="37" width="209" height="14" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Right">
 					<paragraph rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{sezione}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement uuid="92e46f40-817e-4a7b-a98c-beeebe4e6911" x="323" y="79" width="209" height="14"/>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="92e46f40-817e-4a7b-a98c-beeebe4e6911" x="323" y="79" width="209" height="14" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Right">
 					<paragraph rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{referente}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement uuid="424a1adb-f745-4a0f-9640-312a9ee2602d" x="323" y="93" width="209" height="14"/>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="424a1adb-f745-4a0f-9640-312a9ee2602d" x="323" y="93" width="209" height="14" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Right">
 					<paragraph rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{telefono}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement uuid="089fcefd-d76d-4001-8b82-d0da0c9f71ff" x="323" y="51" width="209" height="14"/>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="089fcefd-d76d-4001-8b82-d0da0c9f71ff" x="323" y="51" width="209" height="14" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Right">
 					<paragraph rightIndent="5"/>
 				</textElement>
@@ -190,10 +191,10 @@
 				<textFieldExpression><![CDATA[$F{importo}]]></textFieldExpression>
 			</textField>
 			<rectangle>
-				<reportElement uuid="7cb9e35d-23dc-48e4-9894-b11c4025bbe5" x="18" y="397" width="514" height="105"/>
+				<reportElement uuid="7cb9e35d-23dc-48e4-9894-b11c4025bbe5" x="18" y="397" width="514" height="121"/>
 			</rectangle>
 			<textField>
-				<reportElement uuid="599ce5fd-82d8-45e0-b0ea-b74e617e1c8b" x="18" y="397" width="514" height="105"/>
+				<reportElement uuid="599ce5fd-82d8-45e0-b0ea-b74e617e1c8b" x="18" y="397" width="514" height="121"/>
 				<textElement>
 					<font size="12"/>
 					<paragraph leftIndent="10" spacingBefore="10" spacingAfter="10"/>
@@ -201,10 +202,10 @@
 				<textFieldExpression><![CDATA[$F{attivita}]]></textFieldExpression>
 			</textField>
 			<rectangle>
-				<reportElement uuid="5a49a04d-b3b7-468f-bf0e-cbece7ecc6e5" x="18" y="502" width="514" height="45"/>
+				<reportElement uuid="5a49a04d-b3b7-468f-bf0e-cbece7ecc6e5" x="18" y="518" width="514" height="45"/>
 			</rectangle>
 			<staticText>
-				<reportElement uuid="e14c8ac6-7028-48df-ba33-1a566b2df5bb" x="18" y="513" width="63" height="20"/>
+				<reportElement uuid="e14c8ac6-7028-48df-ba33-1a566b2df5bb" x="18" y="529" width="63" height="20"/>
 				<textElement>
 					<font size="12"/>
 					<paragraph leftIndent="10"/>
@@ -238,6 +239,11 @@
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Importo da Fatturare]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f3240419-118d-4336-af26-aaaabd259d6f" x="92" y="518" width="425" height="45"/>
+				<textElement/>
+				<text><![CDATA[]]></text>
 			</staticText>
 		</band>
 	</detail>
