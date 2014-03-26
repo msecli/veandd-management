@@ -29,6 +29,8 @@ import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.grid.AggregationRenderer;
+import com.extjs.gxt.ui.client.widget.grid.AggregationRowConfig;
 import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
@@ -43,7 +45,9 @@ import com.extjs.gxt.ui.client.widget.grid.SummaryType;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.i18n.client.CurrencyData;
 import com.google.gwt.i18n.client.NumberFormat;
+import com.google.gwt.i18n.client.constants.CurrencyCodeMapConstants;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -54,12 +58,13 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 
 	private GroupingStore<RiepilogoSALPCLModel>store = new GroupingStore<RiepilogoSALPCLModel>();
 	private GroupingStore<RiepilogoSALPCLModel>storeRes = new GroupingStore<RiepilogoSALPCLModel>();
-	private Grid<RiepilogoSALPCLModel> gridRiepilogo;
+	private EditorGrid<RiepilogoSALPCLModel> gridRiepilogo;
 	private ColumnModel cmRiepilogo;
 	private CellSelectionModel<RiepilogoSALPCLModel> cs;
 	
 	private String tabSelected="";
 	private String data;
+	private String pm;
 	
 	private SimpleComboBox<String> smplcmbxScelta= new SimpleComboBox<String>();
 	private SimpleComboBox<String> smplcmbxOrderBy;
@@ -73,9 +78,10 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
 	private static String url= "/gestvandhibernate/PrintDataServlet";
 	
-	public PanelRiepilogoSalPclMese(String tabSelected, String data){
+	public PanelRiepilogoSalPclMese(String tabSelected, String data, String pm){
 		this.tabSelected=tabSelected;
 		this.data=data;
+		this.pm=pm;
 	}
 			
 	protected void onRender(Element target, int index) {  
@@ -107,7 +113,7 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 		cpGrid.setHeaderVisible(false);
 		cpGrid.setBorders(false);
 		cpGrid.setFrame(false);
-		cpGrid.setSize(w-300, h-155);
+		cpGrid.setSize(w-300, h-195);
 		cpGrid.setScrollMode(Scroll.AUTO);
 		cpGrid.setLayout(new FitLayout());
 								
@@ -195,7 +201,7 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 		btnPrint.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
-				SessionManagementService.Util.getInstance().setDatiReportSalPcl("RIEP.SALPCL", storeRes.getModels(),
+				SessionManagementService.Util.getInstance().setDatiReportSalPcl("RIEP.SALPCL", store.getModels(),
 						new AsyncCallback<Boolean>() {
 
 					@Override
@@ -222,17 +228,20 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 		ContentPanel cp= new ContentPanel();
 		cp.setHeaderVisible(false);
 		cp.add(fp);
-		tlbrPrint.add(txtFiltri);
-		tlbrPrint.add(smplcmbxPM);
+		//tlbrPrint.add(txtFiltri);
+		//tlbrPrint.add(smplcmbxPM);
 		tlbrPrint.add(cp);
 		tlbrPrint.add(new SeparatorToolItem());
 		tlbrPrint.add(btnRiep);
 		
-	    store.groupBy("pm");
-	    
+		AggregationRowConfig<RiepilogoSALPCLModel> agrTotale= new AggregationRowPersonale();		
+		cmRiepilogo.addAggregationRow(agrTotale);
+				
+	    store.groupBy("numeroCommessa");
 	    GroupSummaryView summary = new GroupSummaryView();  
 	    summary.setForceFit(false);  
-	    summary.setShowGroupedColumn(false);  
+	    summary.setShowGroupedColumn(true);
+	    summary.setStartCollapsed(true);
 		      		  
 	    cs= new CellSelectionModel<RiepilogoSALPCLModel>();
 	    
@@ -345,7 +354,7 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 
 	private void caricaTabella() {
 				
-		AdministrationService.Util.getInstance().getRiepilogoSalPcl(data, tabSelected, new AsyncCallback<List<RiepilogoSALPCLModel>>() {
+		AdministrationService.Util.getInstance().getRiepilogoSalPcl(data, tabSelected, pm, new AsyncCallback<List<RiepilogoSALPCLModel>>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -361,68 +370,44 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 
 	private List<ColumnConfig> createColumnsSalPcl() {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
-		final NumberFormat number= NumberFormat.getFormat("0.00");
 		
 		GridCellRenderer<RiepilogoSALPCLModel> renderer = new GridCellRenderer<RiepilogoSALPCLModel>() {
 	            public String render(RiepilogoSALPCLModel model, String property, ColumnData config, int rowIndex,
 	                    int colIndex, ListStore<RiepilogoSALPCLModel> store, Grid<RiepilogoSALPCLModel> grid) {
-					
-					Float variazione=model.get("variazione");
-					String commessa=model.get("numeroCommessa");
-					
-	            	if(variazione!=(float)0)
-	            			config.style = config.style + ";background-color:#d2f5af;" +"font-weight:bold;" ;
-	            	else
-	            		config.style = config.style + ";background-color:#FFFFFF;" +"font-weight:normal;";  
-	            	
-	            	if(commessa.compareTo("TOTALE")==0)
-	            		config.style = config.style + ";background-color:#ffeeee;" +"font-weight:bold;" ;
-	            	
-					return model.get(property);				
+	            	return model.get(property);				
 	            }};
 		
 		GridCellRenderer<RiepilogoSALPCLModel> rendererSum = new GridCellRenderer<RiepilogoSALPCLModel>() {
             public String render(RiepilogoSALPCLModel model, String property, ColumnData config, int rowIndex,
                     int colIndex, ListStore<RiepilogoSALPCLModel> store, Grid<RiepilogoSALPCLModel> grid) {
 				
-            	Float variazione=model.get("variazione");
-            	String commessa=model.get("numeroCommessa");
-				
-            	if(variazione!=0)
-            			config.style = config.style + ";background-color:#d2f5af;" +"font-weight:bold;" ;//verde
-            	else
-            		config.style = config.style + ";background-color:#FFFFFF;" +"font-weight:normal;" ;
-            	
-            	if(commessa.compareTo("TOTALE")==0)
-            		config.style = config.style + ";background-color:#ffeeee;" +"font-weight:bold;" ;//rosso
-            	
             	final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
 				Float n=model.get(property);
 				return num.format(n);			
             }};
 		
 		SummaryColumnConfig<Double> column=new SummaryColumnConfig<Double>();		
-	    column.setId("pm");  
-	    column.setHeader("Project Manager");  
-	    column.setWidth(140);  
-	    column.setRowHeader(true);  
-	    column.setRenderer(renderer);
-	    configs.add(column); 
-		
-		column=new SummaryColumnConfig<Double>();		
+	   
+		/*column=new SummaryColumnConfig<Double>();		
 	    column.setId("numeroCommessa");  
 	    column.setHeader("Commessa");  
 	    column.setWidth(70);  
 	    column.setRowHeader(true);  
 	    column.setRenderer(renderer);
 	    configs.add(column); 
-	    
+	    */
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("estensione");  
 	    column.setHeader("Est");  
-	    column.setWidth(30);  
+	    column.setWidth(120);  
 	    column.setRowHeader(true);  
 	    column.setRenderer(renderer);
+	    column.setSummaryRenderer(new SummaryRenderer() {		
+			@Override
+			public String render(Number value, Map<String, Number> data) {
+				return "TOTALE";
+			}
+		});
 	    configs.add(column); 
 	    
 	    column=new SummaryColumnConfig<Double>();		
@@ -447,7 +432,15 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	    column.setWidth(95);  
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT); 
+	    column.setSummaryType(SummaryType.SUM); 
 	    column.setRenderer(rendererSum); 
+	    column.setSummaryRenderer(new SummaryRenderer() {	
+			@Override
+			public String render(Number value, Map<String, Number> data) {
+				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
+				return num.format(value);
+			}
+		});
 	    configs.add(column);
 	    
 	    column=new SummaryColumnConfig<Double>();		
@@ -455,8 +448,17 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	    column.setHeader("Variazione Mese");  
 	    column.setWidth(105);  
 	    column.setRowHeader(true);
-	    column.setAlignment(HorizontalAlignment.RIGHT); 
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    column.setStyle("color:#e71d2b;");
+	    column.setSummaryType(SummaryType.SUM); 
 	    column.setRenderer(rendererSum); 
+	    column.setSummaryRenderer(new SummaryRenderer() {	
+			@Override
+			public String render(Number value, Map<String, Number> data) {
+				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
+				return num.format(value);
+			}
+		});
 	    configs.add(column);
 	    
 	    column=new SummaryColumnConfig<Double>();		
@@ -465,7 +467,15 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	    column.setWidth(95);  
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT); 
-	    column.setRenderer(rendererSum); 
+	    column.setSummaryType(SummaryType.SUM); 
+	    column.setRenderer(rendererSum);  
+	    column.setSummaryRenderer(new SummaryRenderer() {	
+			@Override
+			public String render(Number value, Map<String, Number> data) {
+				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
+				return num.format(value);
+			}
+		});
 	    configs.add(column);
 	    
 	    column=new SummaryColumnConfig<Double>();		
@@ -484,7 +494,15 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	    columnImporto.setRowHeader(true); 
 	    columnImporto.setAlignment(HorizontalAlignment.RIGHT);
 	    columnImporto.setStyle("color:#e71d2b;");
-	    columnImporto.setRenderer(rendererSum);  
+	    columnImporto.setSummaryType(SummaryType.SUM); 
+	    columnImporto.setRenderer(rendererSum);   
+	    columnImporto.setSummaryRenderer(new SummaryRenderer() {	
+			@Override
+			public String render(Number value, Map<String, Number> data) {
+				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
+				return num.format(value);
+			}
+		});
 	    configs.add(columnImporto); 	
 	    	    
 	    SummaryColumnConfig<Double> columnOreLavoro=new SummaryColumnConfig<Double>();		
@@ -494,6 +512,14 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	    columnOreLavoro.setRowHeader(true); 
 	    columnOreLavoro.setAlignment(HorizontalAlignment.RIGHT);  	
 	    columnOreLavoro.setRenderer(rendererSum); 
+	    columnOreLavoro.setSummaryType(SummaryType.SUM); 
+	    columnOreLavoro.setSummaryRenderer(new SummaryRenderer() {	
+			@Override
+			public String render(Number value, Map<String, Number> data) {
+				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
+				return num.format(value);
+			}
+		});
 	    configs.add(columnOreLavoro); 	
 	    
 	      
@@ -505,6 +531,14 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	    columnImportoMese.setAlignment(HorizontalAlignment.RIGHT);
 	    columnImportoMese.setStyle("color:#e71d2b;");  
 	    columnImportoMese.setRenderer(rendererSum);  
+	    columnImportoMese.setSummaryType(SummaryType.SUM); 
+	    columnImportoMese.setSummaryRenderer(new SummaryRenderer() {	
+			@Override
+			public String render(Number value, Map<String, Number> data) {
+				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
+				return num.format(value);
+			}
+		});
 	    configs.add(columnImportoMese); 
 	  	    	    
 	    /*   
@@ -549,15 +583,52 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 		try {
 			store.removeAll();
 			store.setStoreSorter(new StoreSorter<RiepilogoSALPCLModel>());  
-		    store.setDefaultSort("numeroCommessa", SortDir.ASC);
+		    store.setDefaultSort("estensione", SortDir.ASC);
 			store.add(result);
-			store.groupBy("pm");
+			store.groupBy("numeroCommessa");
 			gridRiepilogo.reconfigure(store, cmRiepilogo);	    		    	
 		} catch (NullPointerException e) {
 			Window.alert("error: Impossibile effettuare il caricamento dati in tabella.");
 				e.printStackTrace();
 		}
 		
+	}
+	
+	
+	private class AggregationRowPersonale extends AggregationRowConfig<RiepilogoSALPCLModel>{
+		
+		public AggregationRowPersonale(){
+			final NumberFormat number= NumberFormat.getFormat("#,##0.0#;-#");
+			AggregationRenderer<RiepilogoSALPCLModel> aggrRender= new AggregationRenderer<RiepilogoSALPCLModel>() {			
+				@Override
+				public Object render(Number value, int colIndex, Grid<RiepilogoSALPCLModel> grid, ListStore<RiepilogoSALPCLModel> store) {
+					 if(value!=null)		    		  
+			    		  return number.format(value.doubleValue());
+			    	  else
+			    		  return number.format((float) 0) ;
+				}
+			};			
+						
+			setHtml("estensione", "<p style=\"font-size:15px; color:#000000; font-weight:bold;\">TOTALE</p>");	
+			setSummaryType("variazione", SummaryType.SUM);
+			setRenderer("variazione", aggrRender);
+			
+			setSummaryType("attuale", SummaryType.SUM);  
+			setRenderer("attuale", aggrRender);
+			
+			setSummaryType("importoMese", SummaryType.SUM);
+			setSummaryFormat("importoMese", NumberFormat.getCurrencyFormat("EUR"));
+			
+			setSummaryType("precedente", SummaryType.SUM);
+			setRenderer("precedente", aggrRender);
+			
+			setSummaryType("importoComplessivo", SummaryType.SUM);
+			setSummaryFormat("importoComplessivo", NumberFormat.getCurrencyFormat("EUR"));
+			
+			setSummaryType("oreEseguite", SummaryType.SUM);
+			setRenderer("oreEseguite", aggrRender);
+			setCellStyle("oreEseguite", "font-size:15px; color:#000000; font-weight:bold;");
+		}
 	}
 	
 }

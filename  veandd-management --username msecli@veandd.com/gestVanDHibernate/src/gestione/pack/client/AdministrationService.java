@@ -351,7 +351,7 @@ public interface AdministrationService extends RemoteService {
 	List<GestioneRdoCommesse> getAllRdoCommesse()throws IllegalArgumentException;
 
 	List<RiepilogoSALPCLModel> getRiepilogoSalPcl(String data,
-			String tabSelected) throws IllegalArgumentException;
+			String tabSelected, String pm);
 
 	List<RiepilogoSALPCLModel> getRiepilogoSalPclRiassunto(String data,
 			String tabSelected)throws IllegalArgumentException;
@@ -458,5 +458,8 @@ public interface AdministrationService extends RemoteService {
 	List<RiferimentiRtvModel> getDatiReferenti()throws IllegalArgumentException;
 
 	List<RtvModel> getDatiRtv(String numeroO);
+
+	List<RiepilogoSALPCLModel> getRiepilogoSalPclOld(String data,
+			String tabSelected) throws IllegalArgumentException;
 
 }

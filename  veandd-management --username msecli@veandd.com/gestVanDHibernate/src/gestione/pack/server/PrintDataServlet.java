@@ -584,7 +584,7 @@ public class PrintDataServlet extends HttpServlet  {
 						outStream.close();
 						
 					} catch (JRException e) {
-							e.printStackTrace();
+						e.printStackTrace();
 					}								
 				}
 		else

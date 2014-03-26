@@ -139,8 +139,8 @@ public class DialogFormInserimentoDatiRtv extends Dialog{
 		smplcmbxTipoModulo.setEmptyText("Tipo Modulo...");
 		smplcmbxTipoModulo.setAllowBlank(false);
 		smplcmbxTipoModulo.add("Tipo1(FGA)");
-		smplcmbxTipoModulo.add("Tipo2(FGA-Rid)");
-		smplcmbxTipoModulo.add("Tipo3(FPT)");
+		smplcmbxTipoModulo.add("Tipo2(FGA-Rid.)");
+		smplcmbxTipoModulo.add("Tipo3(FPT-Ind.)");
 		smplcmbxTipoModulo.setTriggerAction(TriggerAction.ALL);
 		layoutCol1.add(smplcmbxTipoModulo, new FormData("80%"));		
 		

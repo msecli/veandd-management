@@ -1,7 +1,9 @@
 package gestione.pack.client.layout;
 
 import java.util.Date;
+import java.util.List;
 
+import gestione.pack.client.AdministrationService;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.DatiComboBox;
 import gestione.pack.client.utility.MyImages;
@@ -9,6 +11,7 @@ import gestione.pack.client.utility.MyImages;
 import gestione.pack.client.layout.panel.PanelRiepilogoOreIndiretti;
 import gestione.pack.client.layout.panel.PanelRiepilogoOreNonFatturabili;
 import gestione.pack.client.layout.panel.PanelRiepilogoSalPclMese;
+import gestione.pack.client.layout.panel.PanelRiepilogoSalPclMeseOld;
 import gestione.pack.client.layout.panel.PanelRiepilogoSalPclRiassunto;
 
 import com.extjs.gxt.ui.client.Style.IconAlign;
@@ -32,6 +35,7 @@ import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
@@ -41,8 +45,10 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 	}
 	
 	private int h=Window.getClientHeight();
-	private int w=Window.getClientWidth();
+	private int w=Window.getClientWidth();	
 	
+	private TabItem tbSalOld= new TabItem("SAL old");
+	private TabItem tbPclOld= new TabItem("PCL old");
 	private TabItem tbSal = new TabItem("SAL");
 	private TabItem tbPcl = new TabItem("PCL");
 	private TabItem tbRiassunto= new TabItem("Riassunto");
@@ -56,8 +62,11 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 	private SimpleComboBox<String> smplcmbxAnno;
 	private SimpleComboBox<String> smplcmbxMese;
 	
+	private SimpleComboBox<String> smplcmbxPM;
+	
 	private String tabSelected;
 	private String data= new String();
+	private String ruolo="";
 	
 	protected void onRender(Element target, int index) {  
 		super.onRender(target, index);
@@ -128,6 +137,16 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 		smplcmbxMese.setSimpleValue(mese);
 	    tlbScelte.add(smplcmbxMese);
 	    
+	    smplcmbxPM= new SimpleComboBox<String>();
+		smplcmbxPM.setFieldLabel("Project Manager");
+		smplcmbxPM.setName("pm");
+		smplcmbxPM.setAllowBlank(true);
+		smplcmbxPM.setTriggerAction(TriggerAction.ALL);
+		smplcmbxPM.setWidth(150);
+		smplcmbxPM.setEmptyText("Project Manager...");
+		getNomePm();
+		tlbScelte.add(smplcmbxPM);
+	    
 	    Button btnPrint= new Button();
 	    btnPrint.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.print24()));
 	    btnPrint.setIconAlign(IconAlign.TOP);
@@ -145,20 +164,25 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 				if(smplcmbxMese.isValid()&&smplcmbxAnno.isValid()){			
 					String meseRif= new String(); 
 			    	String anno= new String();
-			    				    				    	
+			    	String pm=new String();
+			    	if(smplcmbxPM.getRawValue().isEmpty())
+			    		pm="";
+			    	else
+			    		pm=smplcmbxPM.getRawValue().toString();
+			    	
 			    	anno= smplcmbxAnno.getRawValue().toString();
 					meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
 					data=meseRif+anno;
 								
 					if(tabSelected.compareTo("sal")==0){
 						tbSal.removeAll();
-						tbSal.add(new PanelRiepilogoSalPclMese(tabSelected, data));
+						tbSal.add(new PanelRiepilogoSalPclMese(tabSelected, data, pm));
 						tbSal.layout(true);
 						cpnlContainTab.layout();
 					}else
 						if(tabSelected.compareTo("pcl")==0){
 							tbPcl.removeAll();
-							tbPcl.add(new PanelRiepilogoSalPclMese(tabSelected, data));
+							tbPcl.add(new PanelRiepilogoSalPclMese(tabSelected, data, pm));
 							tbPcl.layout(true);
 							//cpnlContainTab.layout();							
 						}else{
@@ -169,8 +193,7 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 					
 				}else Window.alert("Controllare i dati selezionati!");
 			}
-		});		
-		
+		});				
 		tlbScelte.add(btnSelect);
 	   
 	    tabpnlRiepSalPcl= new TabPanel();
@@ -183,18 +206,48 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 	        public void handleEvent(ComponentEvent be) {  
 	        	String meseRif= new String(); 
 		    	String anno= new String();
-		    				    				    	
+		    	String pm= new String();
+		    	if(smplcmbxPM.getRawValue().isEmpty())
+		    		pm="";
+		    	else
+		    		pm=smplcmbxPM.getRawValue().toString();
+		    	
 		    	anno= smplcmbxAnno.getRawValue().toString();
 				meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
 				data=meseRif+anno;
 				
 	        	tabSelected="sal";
 	        	tbSal.removeAll();
-	        	tbSal.add(new PanelRiepilogoSalPclMese(tabSelected, data));
+	        	tbSal.add(new PanelRiepilogoSalPclMese(tabSelected, data, pm));
 	        	tbSal.layout(true);
 	          }  
 	    });  
 	    tabpnlRiepSalPcl.add(tbSal);  
+	    	   
+	    tbSalOld.setTitle("SAL old");
+	    tbSalOld.setScrollMode(Scroll.AUTO);
+	    tbSalOld.addListener(Events.Select, new Listener<ComponentEvent>() {  
+	        public void handleEvent(ComponentEvent be) {  
+	        	String meseRif= new String(); 
+		    	String anno= new String();
+		    	String pm= new String();
+		    	if(smplcmbxPM.getRawValue().isEmpty())
+		    		pm="";
+		    	else
+		    		pm=smplcmbxPM.getRawValue().toString();
+		    	
+		    	anno= smplcmbxAnno.getRawValue().toString();
+				meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
+				data=meseRif+anno;
+				
+	        	tabSelected="sal";
+	        	tbSalOld.removeAll();
+	        	tbSalOld.add(new PanelRiepilogoSalPclMeseOld(tabSelected, data));
+	        	tbSalOld.layout(true);
+	          }  
+	    });  
+	    if(ruolo.compareTo("AMM")==0)
+	    	tabpnlRiepSalPcl.add(tbSalOld); 
 	   
 	    tbPcl.setTitle("PCL");
 	    tbPcl.setScrollMode(Scroll.AUTO);
@@ -202,18 +255,48 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 	        public void handleEvent(ComponentEvent be) {  
 	        	String meseRif= new String(); 
 		    	String anno= new String();
-		    				    				    	
+		    	String pm= new String();
+		    	if(smplcmbxPM.getRawValue().isEmpty())
+		    		pm="";
+		    	else
+		    		pm=smplcmbxPM.getRawValue().toString();
+		    	
 		    	anno= smplcmbxAnno.getRawValue().toString();
 				meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
 				data=meseRif+anno;
 				
 	        	tabSelected="pcl";
 	        	tbPcl.removeAll();
-	        	tbPcl.add(new PanelRiepilogoSalPclMese(tabSelected, data));
+	        	tbPcl.add(new PanelRiepilogoSalPclMese(tabSelected, data, pm));
 	        	tbPcl.layout(true);
 	          }  
 	    });  
 	    tabpnlRiepSalPcl.add(tbPcl);
+	    
+	    tbPclOld.setTitle("PCL old");
+	    tbPclOld.setScrollMode(Scroll.AUTO);
+	    tbPclOld.addListener(Events.Select, new Listener<ComponentEvent>() {  
+	        public void handleEvent(ComponentEvent be) {  
+	        	String meseRif= new String(); 
+		    	String anno= new String();
+		    	String pm= new String();
+		    	if(smplcmbxPM.getRawValue().isEmpty())
+		    		pm="";
+		    	else
+		    		pm=smplcmbxPM.getRawValue().toString();
+		    	
+		    	anno= smplcmbxAnno.getRawValue().toString();
+				meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
+				data=meseRif+anno;
+				
+	        	tabSelected="pcl";
+	        	tbPclOld.removeAll();
+	        	tbPclOld.add(new PanelRiepilogoSalPclMeseOld(tabSelected, data));
+	        	tbPclOld.layout(true);
+	          }  
+	    });  
+	    if(ruolo.compareTo("AMM")==0)
+	    	tabpnlRiepSalPcl.add(tbPclOld);
 	    
 	    tbRiassunto.setTitle("Riassunto");
 	    tbRiassunto.setScrollMode(Scroll.AUTO);
@@ -279,5 +362,29 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 	    	    	    
 		layoutContainer.add(cpnlContainTab, new FitData(3, 3, 3, 3));
 		add(layoutContainer);
-	}		
+	}
+
+	private void getNomePm() {
+		AdministrationService.Util.getInstance().getNomePM(new AsyncCallback<List<String>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("Errore connessione on getNomePM();");
+				caught.printStackTrace();
+			}
+
+			@Override
+			public void onSuccess(List<String> result) {
+				if(result!=null){
+					smplcmbxPM.add(result);
+					//smplcmbxPM.add("Tutti");
+					smplcmbxPM.recalculate();											
+				}else Window.alert("error: Errore durante l'accesso ai dati PM.");			
+			}
+		});		
+	}	
+	
+	public void setRuolo(String ruolo){
+		this.ruolo=ruolo;
+	}
 }

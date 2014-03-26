@@ -564,7 +564,9 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        	int w=Window.getClientWidth();
 	        	Dialog d= new Dialog();
 	        	d.setSize(w-100, h-75);
-	        	d.add(new CenterLayout_RiepiloghiSalPcl());
+	        	CenterLayout_RiepiloghiSalPcl cl= new CenterLayout_RiepiloghiSalPcl();
+	        	cl.setRuolo("AMM");
+	        	d.add(cl);
 	        	d.setHeading("Riepilogo Sal/Pcl/Non Fatturabili");
 	        	d.setCollapsible(true);
 	        	d.setScrollMode(Scroll.NONE);

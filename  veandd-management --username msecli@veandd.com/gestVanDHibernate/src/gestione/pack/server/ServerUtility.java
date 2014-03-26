@@ -2705,6 +2705,18 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 		}	
 		
 		return totaleOre;	
+	}
+	
+
+	public static boolean mesePresente(String data,
+			Set<FoglioOreMese> foglioOreMeses) {
+		boolean presente=false;
+		
+		for(FoglioOreMese f:foglioOreMeses)
+			if(f.getMeseRiferimento().compareTo(data)==0)
+				return true;
+		
+		return presente;
 	}	
 }
 

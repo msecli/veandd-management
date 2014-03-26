@@ -228,20 +228,34 @@ public class BodyLayout_Dirigente extends LayoutContainer {
 	        	center.layout(true);               
             }
         });	    
-	    
-	    Button btnDatiCommesse = new Button();
-	    btnDatiCommesse.setToolTip("Riepilogo Dati SAL/PCL");
-	    btnDatiCommesse.setHeight(65);
-	    btnDatiCommesse.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
-	    btnDatiCommesse.setIconAlign(IconAlign.BOTTOM);
-	    btnDatiCommesse.setWidth("100%");
-	    btnDatiCommesse.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	    Button btnRiepiloghiSalPcl = new Button();
+	    btnRiepiloghiSalPcl.setToolTip("Riepilogo Sal/Pcl/Non Fatturabili");
+	    btnRiepiloghiSalPcl.setHeight(65);
+	    btnRiepiloghiSalPcl.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnRiepiloghiSalPcl.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepiloghiSalPcl.setWidth("100%");
+	    btnRiepiloghiSalPcl.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
-	        	center.removeAll();
+	        	/*center.removeAll();
 	        	center.add(new CenterLayout_RiepiloghiSalPcl());
-	        	center.layout(true);}      
-	    });
-	    cp.add(btnDatiCommesse);
+	        	center.layout(true);*/
+	        	int h=Window.getClientHeight();
+	        	int w=Window.getClientWidth();
+	        	Dialog d= new Dialog();
+	        	d.setSize(w-100, h-75);
+	        	CenterLayout_RiepiloghiSalPcl cl= new CenterLayout_RiepiloghiSalPcl();
+	        	cl.setRuolo("AMM");
+	        	d.add(cl);
+	        	d.setHeading("Riepilogo Sal/Pcl/Non Fatturabili");
+	        	d.setCollapsible(true);
+	        	d.setScrollMode(Scroll.NONE);
+	        	d.setButtons("");
+	        	d.setConstrain(false);
+	        	d.show();
+	        }        
+	      });
+	    cp.add(btnRiepiloghiSalPcl);
+	    
 	    panel.add(cp);
 	    
 	    
