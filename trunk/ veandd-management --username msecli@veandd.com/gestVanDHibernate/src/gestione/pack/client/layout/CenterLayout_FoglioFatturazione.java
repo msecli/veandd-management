@@ -45,6 +45,8 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.grid.AggregationRenderer;
+import com.extjs.gxt.ui.client.widget.grid.AggregationRowConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -52,6 +54,7 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GroupSummaryView;
 import com.extjs.gxt.ui.client.widget.grid.SummaryColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.SummaryType;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
@@ -273,6 +276,8 @@ public CenterLayout_FoglioFatturazione(){}
 	private class CntpnlRiepilogoOreDipFatturazione extends ContentPanel{
 		
 		private Text txtfldOreTotali= new Text();
+		private Text txtfldOreLavoro= new Text();
+		private Text txtfldOreViaggio= new Text();
 		private GroupingStore<RiepilogoOreDipFatturazione>store = new GroupingStore<RiepilogoOreDipFatturazione>();		
 		private Grid<RiepilogoOreDipFatturazione> gridRiepilogo;
 		private ColumnModel cm;
@@ -315,7 +320,10 @@ public CenterLayout_FoglioFatturazione(){}
 					
 				}
 			});
-		    		   		
+		    		   	
+		   /* AggregationRowConfig<RiepilogoOreDipFatturazione> agrTotale= new AggregationRowPersonale();		
+			cm.addAggregationRow(agrTotale);*/
+		    
 		    gridRiepilogo= new Grid<RiepilogoOreDipFatturazione>(store, cm);  
 		    gridRiepilogo.setItemId("grid");
 		    gridRiepilogo.setBorders(false);
@@ -456,9 +464,14 @@ public CenterLayout_FoglioFatturazione(){}
 		    tlbrRiepilogoOre.add(btnEditOreDip);
 		    
 		    txtfldOreTotali.setWidth(150);	
-		    txtfldOreTotali.setHeight(30);
+		    txtfldOreTotali.setHeight(25);
 		    txtfldOreTotali.setStyleAttribute("font-size", "14px");
-		    txtfldOreTotali.setStyleAttribute("padding-top", "5px");
+		    txtfldOreLavoro.setWidth(150);	
+		    txtfldOreLavoro.setHeight(25);
+		    txtfldOreLavoro.setStyleAttribute("font-size", "14px");
+		    txtfldOreViaggio.setWidth(150);	
+		    txtfldOreViaggio.setHeight(25);
+		    txtfldOreViaggio.setStyleAttribute("font-size", "14px");		    
 		    
 		    store.setSortField("dipendente");
 		    store.setSortDir(SortDir.ASC);
@@ -474,7 +487,17 @@ public CenterLayout_FoglioFatturazione(){}
 		    
 		    cntpnlGrid.setTopComponent(tlbrRiepilogoOre);
 		    cntpnlGrid.add(gridRiepilogo);
-		    cntpnlGrid.setBottomComponent(txtfldOreTotali);
+		    
+		    VerticalPanel vp= new VerticalPanel();
+		    vp.setWidth(400);
+		    vp.setBorders(true);
+		    vp.setSpacing(3);
+		    vp.setStyleAttribute("padding-top", "5px");
+		    vp.add(txtfldOreLavoro);
+		    vp.add(txtfldOreViaggio);
+		    vp.add(txtfldOreTotali);		    
+		    
+		    cntpnlGrid.setBottomComponent(vp);
 		    
 		    if(!smplcmbxMese.getRawValue().isEmpty()&&!smplcmbxPM.getRawValue().isEmpty()&&!smplcmbxAnno.getRawValue().isEmpty()){
 		    	String meseRif= new String(); 
@@ -488,6 +511,33 @@ public CenterLayout_FoglioFatturazione(){}
 		  	add(cntpnlGrid);
 		  	layout();
 		}
+		
+	/*private class AggregationRowPersonale extends AggregationRowConfig<RiepilogoOreDipFatturazione>{
+			
+			public AggregationRowPersonale(){
+				final NumberFormat number= NumberFormat.getFormat("#,##0.0#;-#");
+				AggregationRenderer<RiepilogoOreDipFatturazione> aggrRender= new AggregationRenderer<RiepilogoOreDipFatturazione>() {			
+					@Override
+					public Object render(Number value, int colIndex, Grid<RiepilogoOreDipFatturazione> grid, ListStore<RiepilogoOreDipFatturazione> store) {
+						if(value!=null)		    		  
+				    		  return number.format(value.doubleValue());
+				    	else
+				    		  return number.format((float) 0) ;
+					}
+				};			
+							
+				setHtml("dipendente", "<p style=\"font-size:15px; color:#000000; font-weight:bold;\">TOTALE</p>");	
+				
+				setSummaryType("oreLavoro", SummaryType.SUM);
+				setRenderer("oreLavoro", aggrRender);
+				
+				setSummaryType("oreViaggio", SummaryType.SUM);  
+				setRenderer("oreViaggio", aggrRender);
+								
+				setSummaryType("oreTotali", SummaryType.SUM);
+				setRenderer("oreTotali", aggrRender);			
+			}
+		}*/
 		
 		
 		private List<ColumnConfig> createColumns() {
@@ -653,14 +703,22 @@ public CenterLayout_FoglioFatturazione(){}
 				gridRiepilogo.reconfigure(store, cm);	
 				
 				String totale="0.00";
+				String orel="0.00";
+				String orev="0.00";
+				
 				NumberFormat number = NumberFormat.getFormat("0.00");
 				
 				for(RiepilogoOreDipFatturazione r:result){
 					if(r.getDipendente().compareTo("_TOTALE")==0){
 						totale=ClientUtility.aggiornaTotGenerale(totale, number.format(r.getOreTotali()));
-						txtfldOreTotali.setText("Ore totali lavorate: "+totale);
+						orel=ClientUtility.aggiornaTotGenerale(orel, number.format(r.getOreLavoro()));
+						orev=ClientUtility.aggiornaTotGenerale(orev, number.format(r.getOreViaggio()));
 					}
 				}
+				
+				txtfldOreTotali.setText("Totale: "+totale);
+				txtfldOreViaggio.setText("Tot.Ore viaggio: "+orev);
+				txtfldOreLavoro.setText("Tot.Ore lavoro: "+orel);
 				
 			} catch (NullPointerException e) {
 				Window.alert("error: Impossibile effettuare il caricamento dati in tabella.");

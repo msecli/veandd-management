@@ -142,6 +142,8 @@ public class PanelAttribuzioneOreColocationCollaboratori extends LayoutContainer
 				for(Record record: store.getModifiedRecords()){		    		  
 					RiepilogoOreDipCommesseGiornaliero g= new RiepilogoOreDipCommesseGiornaliero();
 		    		  g=(RiepilogoOreDipCommesseGiornaliero) record.getModel();		    		  
+		    		  
+		    		  
 		    		  AdministrationService.Util.getInstance().elaboraDatiOreCollaboratori(g, data, new AsyncCallback<Boolean>() {
 
 								@Override

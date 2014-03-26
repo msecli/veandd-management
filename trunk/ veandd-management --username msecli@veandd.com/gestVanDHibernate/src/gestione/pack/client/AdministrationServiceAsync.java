@@ -350,7 +350,7 @@ public interface AdministrationServiceAsync {
 	void deleteCommento(int id, AsyncCallback<Boolean> asyncCallback);
 
 	void getRiepilogoSalPcl(String data, String tabSelected,
-			AsyncCallback<List<RiepilogoSALPCLModel>> asyncCallback);
+			String pm, AsyncCallback<List<RiepilogoSALPCLModel>> asyncCallback);
 
 	void getRiepilogoSalPclRiassunto(String data, String tabSelected,
 			AsyncCallback<List<RiepilogoSALPCLModel>> asyncCallback);
@@ -469,6 +469,9 @@ public interface AdministrationServiceAsync {
 	void getDatiReferenti(AsyncCallback<List<RiferimentiRtvModel>> asyncCallback);
 
 	void getDatiRtv(String numeroO, AsyncCallback<List<RtvModel>> asyncCallback);
+
+	void getRiepilogoSalPclOld(String data, String tabSelected,
+			AsyncCallback<List<RiepilogoSALPCLModel>> callback);
 
 	
 

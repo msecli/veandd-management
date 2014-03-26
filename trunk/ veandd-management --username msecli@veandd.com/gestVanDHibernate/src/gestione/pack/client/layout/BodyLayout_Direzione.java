@@ -270,7 +270,7 @@ public class BodyLayout_Direzione extends LayoutContainer {
             public void handleEvent(ComponentEvent be) {
             	center.removeAll();
 	        	center.add(new PanelGestioneCostiDipendenti());
-	        	center.layout(true);               
+	        	center.layout(true);
             }
         });
 	  	   
@@ -349,6 +349,35 @@ public class BodyLayout_Direzione extends LayoutContainer {
 	      });
 	    btnAssociaPersonale.setWidth("100%");
 	    cp.add(btnAssociaPersonale);
+	    
+	    Button btnRiepiloghiSalPcl = new Button();
+	    btnRiepiloghiSalPcl.setToolTip("Riepilogo Sal/Pcl/Non Fatturabili");
+	    btnRiepiloghiSalPcl.setHeight(65);
+	    btnRiepiloghiSalPcl.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnRiepiloghiSalPcl.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepiloghiSalPcl.setWidth("100%");
+	    btnRiepiloghiSalPcl.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	/*center.removeAll();
+	        	center.add(new CenterLayout_RiepiloghiSalPcl());
+	        	center.layout(true);*/
+	        	int h=Window.getClientHeight();
+	        	int w=Window.getClientWidth();
+	        	Dialog d= new Dialog();
+	        	d.setSize(w-100, h-75);
+	        	CenterLayout_RiepiloghiSalPcl cl= new CenterLayout_RiepiloghiSalPcl();
+	        	cl.setRuolo("AMM");
+	        	d.add(cl);
+	        	d.setHeading("Riepilogo Sal/Pcl/Non Fatturabili");
+	        	d.setCollapsible(true);
+	        	d.setScrollMode(Scroll.NONE);
+	        	d.setButtons("");
+	        	d.setConstrain(false);
+	        	d.show();
+	        }        
+	      });
+	    cp.add(btnRiepiloghiSalPcl);
+	    
 	    panel.add(cp);
 	    
 	    

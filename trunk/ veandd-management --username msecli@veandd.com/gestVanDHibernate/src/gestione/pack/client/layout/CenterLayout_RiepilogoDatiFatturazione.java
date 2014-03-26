@@ -92,8 +92,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		private GroupingStore<DatiFatturazioneMeseModel>storeRes = new GroupingStore<DatiFatturazioneMeseModel>();
 		private EditorGrid<DatiFatturazioneMeseModel> gridRiepilogo;
 		private ColumnModel cm;
-		private RowExpander expander;
-		
+				
 		private Button btnSelect;
 		private Button btnPrint;
 		private Button btnRiepDatiFatt;
@@ -157,6 +156,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 								storeRes.add(r);
 						storeRes.setSortField("numeroCommessa");
 						storeRes.setSortDir(SortDir.ASC);
+						storeRes.groupBy("pm");
 						gridRiepilogo.reconfigure(storeRes, cm);
 					}
 				}
@@ -306,8 +306,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			    
 		    GroupSummaryView summary = new GroupSummaryView();  
 		    summary.setForceFit(false);  
-		    summary.setShowGroupedColumn(false);  
-			   
+		    summary.setShowGroupedColumn(false);     
 		    		    
 		    gridRiepilogo= new EditorGrid<DatiFatturazioneMeseModel>(store, cm);  
 		    gridRiepilogo.setBorders(false); 
