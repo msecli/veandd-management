@@ -1024,7 +1024,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 		
 		txtfldOreRecupero=new TextField<String>();
 		txtfldOreRecupero.setName("oreRecupero");
-		txtfldOreRecupero.setValue("0.0");
+		txtfldOreRecupero.setValue("0.00");
 		right.add(txtfldOreRecupero, new FormData("50%"));
 	    txtfldOreRecupero.setFieldLabel("Ore Recupero");
 	    txtfldOreRecupero.setRegex("[-]?[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0|0");

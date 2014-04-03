@@ -72,7 +72,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	private Text txtCheck= new Text();
 	private String listaCheck= new String();
 	
-	 private SimpleComboBox<String> smplcmbxPeriodo= new SimpleComboBox<String>();
+	private SimpleComboBox<String> smplcmbxPeriodo= new SimpleComboBox<String>();
 	
 	public TextField<String> txtfldUsername= new TextField<String>();
 	public TextField<String> txtfldRuolo= new TextField<String>();
@@ -81,9 +81,8 @@ public class BodyLayout_Administration extends LayoutContainer {
 	protected Status status;
   	
 	public BodyLayout_Administration() {
-		setBorders(false);	
-		
-			}
+		setBorders(false);
+	}
 
 	protected void onRender(Element target, int index) {  
 	    super.onRender(target, index);
@@ -374,7 +373,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    btnAnagrP.setWidth("100%");
 	    cp.add(btnAnagrP);
 	   
-	    Button btnGestioneCostiDip = new Button();
+	   /* Button btnGestioneCostiDip = new Button();
 	    btnGestioneCostiDip.setToolTip("Gestione Costi Dipendenti");
 	    btnGestioneCostiDip.setHeight(65);
 	    btnGestioneCostiDip.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.presenzeDip()));
@@ -388,7 +387,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        
 	      });
 	    btnAnagrP.setWidth("100%");
-	    cp.add(btnGestioneCostiDip);
+	    cp.add(btnGestioneCostiDip);*/
 	    
 	    Button btnRiepilogoCostiDip = new Button();
 	    btnRiepilogoCostiDip.setToolTip("Riepilogo Costi");

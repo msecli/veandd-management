@@ -31,6 +31,7 @@ import gestione.pack.shared.DatiOreMese;
 import gestione.pack.shared.DatiRiepilogoMensileCommesse;
 import gestione.pack.shared.DettaglioIntervalliCommesse;
 import gestione.pack.shared.DettaglioOreGiornaliere;
+import gestione.pack.shared.DettaglioTrasferta;
 import gestione.pack.shared.Fattura;
 import gestione.pack.shared.FoglioFatturazione;
 import gestione.pack.shared.GiorniFestivi;
@@ -912,8 +913,7 @@ public class ServerUtility {
 					datoG.setOreStraordinario(d.getOreStraordinario());
 					datoG.setGiustificativo(d.getGiustificativo());
 					datoG.setNoteAggiuntive(d.getNoteAggiuntive());
-					datoG.setDeltaGiornaliero(d.getDeltaOreGiorno());
-					
+					datoG.setDeltaGiornaliero(d.getDeltaOreGiorno());					
 					
 					listaDatiMese.add(datoG);
 					
@@ -936,6 +936,7 @@ public class ServerUtility {
 				if(!p.getFoglioOreMeses().isEmpty()){
 					listaMesi.addAll(p.getFoglioOreMeses());
 					for(FoglioOreMese f1:listaMesi){
+						if(isPrecedente(f1.getMeseRiferimento(), dataRif ))
 						if(f1.getMeseRiferimento().compareTo("Feb2013")!=0 && f1.getMeseRiferimento().compareTo(dataRif)!=0){//per omettere le ore inserite nel mese di prova di Feb2013 e quelle relative al mese in corso
 							listaGiorniM.clear();
 							if(!f1.getDettaglioOreGiornalieres().isEmpty()){
@@ -945,9 +946,7 @@ public class ServerUtility {
 									parzialeOreRecuperoMese=ServerUtility.aggiornaTotGenerale(parzialeOreRecuperoMese, d.getOreAssenzeRecupero());
 										
 								}	
-								//se sono negative le escludo dal conteggio totale
-								//if(Float.valueOf(parzialeOreRecuperoMese)>0)
-									monteOreRecuperoTotale=ServerUtility.aggiornaTotGenerale(monteOreRecuperoTotale,parzialeOreRecuperoMese);	
+								monteOreRecuperoTotale=ServerUtility.aggiornaTotGenerale(monteOreRecuperoTotale,parzialeOreRecuperoMese);	
 							}
 						}									
 					}		
@@ -999,8 +998,7 @@ public class ServerUtility {
 				sumOreStraordinario="0.00";
 				sumDeltaGiorno="0.00";
 								
-			}
-		 
+			}		 
 		  
 			 for(DatiOreMese d:listaDatiMese){
 				 rJB= new RiepilogoDatiOreMeseJavaBean(d.getUsername(), d.getGiorno(), d.getTotGiorno(), d.getOreViaggio(), d.getDeltaOreViaggio(),
@@ -2019,11 +2017,11 @@ public class ServerUtility {
 		sommaEbit=sommaFatturato-sommaCostiTotali;
 		sommaEbitPerc=sommaEbit/sommaFatturato;
 		
-		costingM= new CostingRisorsaModel(0, "", "", "", "TOTALE", 0, "", d.format(sommaCostiOrari), "", d.format(sommaOreCorrette), "", d.format(sommaCostoRisorsa), "",  
+		/*costingM= new CostingRisorsaModel(0, "", "", "", "TOTALE", 0, "", d.format(sommaCostiOrari), "", d.format(sommaOreCorrette), "", d.format(sommaCostoRisorsa), "",  
 				d.format(sommaCostiStrRisorse),d.format(sommaCostiTotaliAzienda), d.format(sommaIncidenzaCostiAzienda), d.format(sommaCostiHw), d.format(sommaCostiSw), "", d.format(sommaCostiHwSwOneriH), 
 				d.format(sommaCostiHwSwOneriRisorse), d.format(sommaIncidenzaCosti),d.format(sommaCostiConsulenza),"", d.format(sommaCostiTotali), d.format(sommaEfficienza), 
 				d.format(sommaOreFatturare), d.format(sommaTariffa), d.format(tariffaDerivata), d.format(sommaFatturato), d.format(sommaMol), d.format(sommaMolPerc), d.format(sommaEbit), d.format(sommaEbitPerc));
-		
+		*/
 		return costingM;		
 	}
 
@@ -2686,10 +2684,9 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 							sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(f1.getVariazionePCL())));
 							sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)+ Float.valueOf( ServerUtility.getOreCentesimi(f1.getVariazioneSAL())));
 					}
-							
+
 				sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)+ Float.valueOf(ServerUtility.getOreCentesimi(c.getSalAttuale())));
-				sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(c.getPclAttuale())));	
-				
+				sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(c.getPclAttuale())));					
 				totaleOre[0]=Float.valueOf(sommaVariazioniPcl);
 				totaleOre[1]=Float.valueOf(sommaVariazioniSal);				
 			}
@@ -2717,6 +2714,16 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 				return true;
 		
 		return presente;
+	}
+	
+
+	public static Float calcoloTotaleCostotrasferta(
+			DettaglioTrasferta dettTrasferta) {
+		
+		
+		
+		
+		return null;
 	}	
 }
 

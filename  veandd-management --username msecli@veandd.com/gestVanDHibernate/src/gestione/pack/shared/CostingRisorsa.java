@@ -1,6 +1,11 @@
 package gestione.pack.shared;
 
+import java.util.Set;
+
 import javax.persistence.*;
+
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import net.sf.gilead.pojo.gwt.LightEntity;
 
@@ -21,28 +26,10 @@ public class CostingRisorsa extends LightEntity implements IsSerializable {
 	@Column(name="ID_COSTING_RISORSA")
 	private int idCostingRisorsa;
 
-	private String costoConsulenza;
-
-	private String costoHw;
-	
-	private String costoSw;
-
-	private String costoOneri;
-
-	private String costoOrarioRisorsa;
-
-	private String costoStruttura;
-
+	private String costoOrario;
 	private String efficienza;
-
-	private String lc;
-
 	private String progetto;
-
-	private String costoTrasferta;
-
-	private String orePianificate;
-
+	private String oreLavoro;
 	private String tariffa;
 
 	//bi-directional many-to-one association to Costing
@@ -55,6 +42,11 @@ public class CostingRisorsa extends LightEntity implements IsSerializable {
 	@JoinColumn(name="idPersonale")
 	private Personale personale;
 
+  //bi-directional many-to-one association to DettaglioOreGiornaliere
+  	@OneToMany(mappedBy="costingRisorsa", fetch=FetchType.LAZY)
+  	@Cascade({CascadeType.SAVE_UPDATE})
+  	private Set<DettaglioTrasferta> dettaglioTrasfertas;
+    
     public CostingRisorsa() {
     }
 
@@ -64,56 +56,14 @@ public class CostingRisorsa extends LightEntity implements IsSerializable {
 
 	public void setIdCostingRisorsa(int idCostingRisorsa) {
 		this.idCostingRisorsa = idCostingRisorsa;
-	}
-
-	public String getCostoConsulenza() {
-		return this.costoConsulenza;
-	}
-
-	public void setCostoConsulenza(String costoConsulenza) {
-		this.costoConsulenza = costoConsulenza;
-	}
-
-	
-
-	public String getCostoHw() {
-		return costoHw;
-	}
-
-	public void setCostoHw(String costoHw) {
-		this.costoHw = costoHw;
-	}
-
-	public String getCostoSw() {
-		return costoSw;
-	}
-
-	public void setCostoSw(String costoSw) {
-		this.costoSw = costoSw;
-	}
-
-	public String getCostoOneri() {
-		return this.costoOneri;
-	}
-
-	public void setCostoOneri(String costoOneri) {
-		this.costoOneri = costoOneri;
-	}
+	}	
 
 	public String getCostoOrarioRisorsa() {
-		return this.costoOrarioRisorsa;
+		return this.costoOrario;
 	}
 
 	public void setCostoOrarioRisorsa(String costoOrarioRisorsa) {
-		this.costoOrarioRisorsa = costoOrarioRisorsa;
-	}
-
-	public String getCostoStruttura() {
-		return this.costoStruttura;
-	}
-
-	public void setCostoStruttura(String costoStruttura) {
-		this.costoStruttura = costoStruttura;
+		this.costoOrario = costoOrarioRisorsa;
 	}
 
 	public String getEfficienza() {
@@ -124,14 +74,6 @@ public class CostingRisorsa extends LightEntity implements IsSerializable {
 		this.efficienza = efficienza;
 	}
 
-	public String getLc() {
-		return this.lc;
-	}
-
-	public void setLc(String lc) {
-		this.lc = lc;
-	}
-
 	public String getDescProgetto() {
 		return this.progetto;
 	}
@@ -140,20 +82,13 @@ public class CostingRisorsa extends LightEntity implements IsSerializable {
 		this.progetto = progetto;
 	}
 
-	public String getCostoTrasferta() {
-		return this.costoTrasferta;
+
+	public String getOreLavoro() {
+		return this.oreLavoro;
 	}
 
-	public void setCostotrasferta(String costoTrasferta) {
-		this.costoTrasferta = costoTrasferta;
-	}
-
-	public String getOrePianificate() {
-		return this.orePianificate;
-	}
-
-	public void setOrePianificate(String orePianificate) {
-		this.orePianificate = orePianificate;
+	public void setOreLavoro(String orePianificate) {
+		this.oreLavoro = orePianificate;
 	}
 
 	public String getTariffa() {
@@ -179,5 +114,12 @@ public class CostingRisorsa extends LightEntity implements IsSerializable {
 	public void setPersonale(Personale personale) {
 		this.personale = personale;
 	}
-	
+
+	public Set<DettaglioTrasferta> getDettaglioTrasfertas() {
+		return dettaglioTrasfertas;
+	}
+
+	public void setDettaglioTrasfertas(Set<DettaglioTrasferta> dettaglioTrasfertas) {
+		this.dettaglioTrasfertas = dettaglioTrasfertas;
+	}	
 }

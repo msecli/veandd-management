@@ -14,34 +14,22 @@ public class RiepilogoCostiDipendentiModel extends BaseModel implements IsSerial
 		
 	}
 	
-	public RiepilogoCostiDipendentiModel(int idDip, String nome, String costoAnnuo, String costoOrario, String gruppoLavoro, String costoStruttura, 
-			String costoOneri, String tipoCad, String tipoTc, String costoCad, String costoTc, String tipoHardware, String costoHardware, String sommaCostoHwSw,
-			String costoAggiuntivo, String costoTotaleRisorsa, String tipoOrario, String colocation, Float oreCig, Float orePreviste, Float orePianificate,
-			String saturazione, String oreAssegnare){
+	public RiepilogoCostiDipendentiModel(int idDip, String nome, String costoAnnuo, String tipoOrario,  String orePreviste, String costoOrario,
+			 String costoStruttura, String costoOneri, String costoSwCadVari, String costoSwOffice,  String costoHw, String costoOrarioTotale, String gruppoLavoro){
 		
 		set("idPersonale", idDip);
 		set("nome", nome);
 		set("costoAnnuo", costoAnnuo);
+		set("tipoOrario", tipoOrario);
+		set("orePreviste", orePreviste);
 		set("costoOrario", costoOrario);
-		set("gruppoLavoro", gruppoLavoro);
 		set("costoStruttura", costoStruttura);
 		set("costoOneri", costoOneri);
-		set("tipoCad", tipoCad);
-		set("tipoTc", tipoTc);
-		set("costoCad", costoCad);
-		set("costoTc", costoTc);
-		set("tipoHardware", tipoHardware);
-		set("costoHardware", costoHardware);
-		set("sommaCostoHwSw", sommaCostoHwSw);
-		set("costoAggiuntivo", costoAggiuntivo);
-		set("costoTotaleRisorsa", costoTotaleRisorsa);
-		set("tipoOrario", tipoOrario);
-		set("colocation", colocation);
-		set("oreCig", oreCig);
-		set("orePreviste", orePreviste);
-		set("orePianificate", orePianificate);
-		set("saturazione", saturazione);
-		set("oreAssegnare", oreAssegnare);	
+		set("costoSwCadVari",costoSwCadVari);
+		set("costoSwOffice", costoSwOffice);
+		set("costoHw", costoHw);
+		set("costoOrarioTotale", costoOrarioTotale);	
+		set("gruppoLavoro", gruppoLavoro);
 		
 	}
 	

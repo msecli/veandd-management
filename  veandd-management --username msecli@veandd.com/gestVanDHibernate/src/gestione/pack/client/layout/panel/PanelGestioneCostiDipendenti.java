@@ -41,6 +41,9 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
+
+/*NON USATO */
+
 public class PanelGestioneCostiDipendenti extends LayoutContainer{
 
 	private int h=Window.getClientHeight();
@@ -227,7 +230,7 @@ public class PanelGestioneCostiDipendenti extends LayoutContainer{
 				
 		ColumnConfig column = new ColumnConfig();  
 		    
-	    column = new ColumnConfig();  
+	   /* column = new ColumnConfig();  
 	    column.setId("cognome");  
 	    column.setHeader("Cognome");  
 	    column.setWidth(140);  
@@ -292,8 +295,86 @@ public class PanelGestioneCostiDipendenti extends LayoutContainer{
 	    txtfldOrePianificate.setRegex("[0-9]+[.]{1}[0-9]{2}|[0-9]");
 	    txtfldOrePianificate.getMessages().setRegexText("Deve essere un numero!");
 	    column.setEditor(new CellEditor(txtfldOrePianificate));
+	    configs.add(column);*/
+		
+		column = new ColumnConfig();  
+	    column.setId("cognome");  
+	    column.setHeader("Cognome");  
+	    column.setWidth(140);  
+	    configs.add(column);  
+	    
+	    column = new ColumnConfig();  
+	    column.setId("costoAnnuo");  
+	    column.setHeader("Costo Annuo");  
+	    column.setWidth(140);  
 	    configs.add(column);
-	        	    
+	    
+	    column = new ColumnConfig();  
+	    column.setId("tipoOrario");  
+	    column.setHeader("Ore/G");  
+	    column.setWidth(100);  
+	    configs.add(column);
+	    
+	    column = new ColumnConfig();  
+	    column.setId("oreAnno");  
+	    column.setHeader("Ore Anno");  
+	    column.setWidth(140);  
+	    configs.add(column);
+	    
+	    column = new ColumnConfig();  
+	    column.setId("costoOrario");  
+	    column.setHeader("Costo/h");  
+	    column.setWidth(100);  
+	    configs.add(column);
+	    
+	    column = new ColumnConfig();  
+	    column.setId("costoStruttura");  
+	    column.setHeader("Costo Struttura");  
+	    column.setWidth(100);  
+	    configs.add(column);
+	    
+	    column = new ColumnConfig();  
+	    column.setId("costoOneri");  
+	    column.setHeader("Costo Oneri");  
+	    column.setWidth(100);  
+	    configs.add(column);
+	        
+	    column = new ColumnConfig();  
+	    column.setId("costoSwCadVari");  
+	    column.setHeader("Costo SW CAD/Vari");  
+	    column.setWidth(140);  
+	    configs.add(column);
+	    
+	    column = new ColumnConfig();  
+	    column.setId("costoSwOffice");  
+	    column.setHeader("Costo SW Office");  
+	    column.setWidth(140);  
+	    configs.add(column);
+	    
+	    column = new ColumnConfig();  
+	    column.setId("costoHw");  
+	    column.setHeader("Costo HW");  
+	    column.setWidth(140);  
+	    configs.add(column);
+	    
+	    column = new ColumnConfig();  
+	    column.setId("costoOrarioTot");  
+	    column.setHeader("CostoTot/h");  
+	    column.setWidth(140);  
+	    configs.add(column);
+	    
+	    column = new ColumnConfig();  
+	    column.setId("orePianificate");  
+	    column.setHeader("Ore Pianificate");  
+	    column.setWidth(140);  
+	    configs.add(column);
+	    
+	    column = new ColumnConfig();  
+	    column.setId("gruppoLavoro");  
+	    column.setHeader("Area");  
+	    column.setWidth(140);  
+	    configs.add(column);
+	    
 	    return configs;
 	}
 
@@ -345,9 +426,7 @@ public class PanelGestioneCostiDipendenti extends LayoutContainer{
 					@Override
 					public void onSuccess(List<GestioneCostiDipendentiModel> result) {
 						loadTable(result);
-					}
-
-					
+					}			
 					@Override
 					public void onFailure(Throwable caught) {
 						Window.alert("Errore connessione;");
