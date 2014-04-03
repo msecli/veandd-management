@@ -14,17 +14,23 @@ public class CostoAzienda extends LightEntity implements IsSerializable {
 	@Id
 	private int idCostoAzienda;
 
-	private String costiOneri;
+	private String costoOneri;
 
 	private String costoAnnuo;
-
+	
+	private String oreAnno;
+	
 	private String costoStruttura;
 	
-	private String tipoOrario;
-
-	private String oreCig;
-
-	private String orePianificate;
+	private String costoSwCadVari;
+	
+	private String costoSwOffice;
+	
+	private String costoHw;
+	
+	private String annoRif;
+	
+	private String costoOrario;
 
 	//bi-directional many-to-one association to Personale
     @ManyToOne
@@ -43,11 +49,11 @@ public class CostoAzienda extends LightEntity implements IsSerializable {
 	}
 
 	public String getCostiOneri() {
-		return this.costiOneri;
+		return this.costoOneri;
 	}
 
 	public void setCostiOneri(String costiOneri) {
-		this.costiOneri = costiOneri;
+		this.costoOneri = costiOneri;
 	}
 
 	public String getCostoAnnuo() {
@@ -66,22 +72,6 @@ public class CostoAzienda extends LightEntity implements IsSerializable {
 		this.costoStruttura = costoStruttura;
 	}
 
-	public String getOreCig() {
-		return this.oreCig;
-	}
-
-	public void setOreCig(String oreCig) {
-		this.oreCig = oreCig;
-	}
-
-	public String getOrePianificate() {
-		return this.orePianificate;
-	}
-
-	public void setOrePianificate(String orePianificate) {
-		this.orePianificate = orePianificate;
-	}
-
 	public Personale getPersonale() {
 		return this.personale;
 	}
@@ -90,12 +80,96 @@ public class CostoAzienda extends LightEntity implements IsSerializable {
 		this.personale = personale;
 	}
 
-	public String getTipoOrario() {
-		return tipoOrario;
+
+	/**
+	 * @return the costoOneri
+	 */
+	public String getCostoOneri() {
+		return costoOneri;
 	}
 
-	public void setTipoOrario(String tipoOrario) {
-		this.tipoOrario = tipoOrario;
+	/**
+	 * @param costoOneri the costoOneri to set
+	 */
+	public void setCostoOneri(String costoOneri) {
+		this.costoOneri = costoOneri;
 	}
+
+	/**
+	 * @return the oreAnno
+	 */
+	public String getOreAnno() {
+		return oreAnno;
+	}
+
+	/**
+	 * @param oreAnno the oreAnno to set
+	 */
+	public void setOreAnno(String oreAnno) {
+		this.oreAnno = oreAnno;
+	}
+
+	/**
+	 * @return the costoSwCadVari
+	 */
+	public String getCostoSwCadVari() {
+		return costoSwCadVari;
+	}
+
+	/**
+	 * @param costoSwCadVari the costoSwCadVari to set
+	 */
+	public void setCostoSwCadVari(String costoSwCadVari) {
+		this.costoSwCadVari = costoSwCadVari;
+	}
+
+	/**
+	 * @return the costoSwOffice
+	 */
+	public String getCostoSwOffice() {
+		return costoSwOffice;
+	}
+
+	/**
+	 * @param costoSwOffice the costoSwOffice to set
+	 */
+	public void setCostoSwOffice(String costoSwOffice) {
+		this.costoSwOffice = costoSwOffice;
+	}
+
+	/**
+	 * @return the costoHw
+	 */
+	public String getCostoHw() {
+		return costoHw;
+	}
+
+	/**
+	 * @param costoHw the costoHw to set
+	 */
+	public void setCostoHw(String costoHw) {
+		this.costoHw = costoHw;
+	}
+
+	public String getAnnoRif() {
+		return annoRif;
+	}
+
+	/**
+	 * @param annoRif the annoRif to set
+	 */
+	public void setAnnoRif(String annoRif) {
+		this.annoRif = annoRif;
+	}
+
+	public String getCostoOrario() {
+		return costoOrario;
+	}
+
+	public void setCostoOrario(String costoOrario) {
+		this.costoOrario = costoOrario;
+	}
+	
+	
 	
 }

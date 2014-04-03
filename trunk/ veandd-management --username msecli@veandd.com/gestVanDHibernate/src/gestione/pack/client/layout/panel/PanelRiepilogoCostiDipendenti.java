@@ -35,6 +35,9 @@ import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 
+/*AL MOMENTO I COSTI VENGONO CARICATI STATICAMENTE DA .CVS*/
+
+
 public class PanelRiepilogoCostiDipendenti extends LayoutContainer{
 	
 	private int h=Window.getClientHeight();
@@ -75,8 +78,7 @@ public class PanelRiepilogoCostiDipendenti extends LayoutContainer{
 		cpGrid.setScrollMode(Scroll.AUTO);
 		cpGrid.setLayout(new FitLayout());
 		cpGrid.setButtonAlign(HorizontalAlignment.CENTER);  
-		Resizable r=new Resizable(cpGrid);			
-		
+		Resizable r=new Resizable(cpGrid);
 		
 		btnPrint= new Button();
 		btnPrint.setEnabled(true);
@@ -125,7 +127,7 @@ public class PanelRiepilogoCostiDipendenti extends LayoutContainer{
 		cp.add(fp);
 		
 		ToolBar tlBar= new ToolBar();
-		tlBar.add(cp);
+		//tlBar.add(cp);
 				
 		cpGrid.setTopComponent(tlBar);
 		cpGrid.add(gridRiepilogo); 
@@ -137,7 +139,6 @@ public class PanelRiepilogoCostiDipendenti extends LayoutContainer{
 	
 
 	private class FormSubmitCompleteHandler implements SubmitCompleteHandler {
-
 		@Override
 		public void onSubmitComplete(final SubmitCompleteEvent event) {
 			
@@ -146,10 +147,11 @@ public class PanelRiepilogoCostiDipendenti extends LayoutContainer{
 		}
 	}
 	
+	
 	private List<ColumnConfig> createColumns() {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 				
-		ColumnConfig column = new ColumnConfig();  
+		ColumnConfig column = new ColumnConfig();
 		    
 	    column = new ColumnConfig();  
 	    column.setId("nome");  
@@ -158,104 +160,8 @@ public class PanelRiepilogoCostiDipendenti extends LayoutContainer{
 	    configs.add(column);  
 	    
 	    column = new ColumnConfig();  
-	    column.setId("costoAnnuo");  
-	    column.setHeader("Costo Annuo");  
-	    column.setWidth(80);  
-	    configs.add(column);
-	    
-	    column = new ColumnConfig();  
-	    column.setId("costoOrario");  
-	    column.setHeader("Costo Orario");  
-	    column.setWidth(80);  
-	    configs.add(column);
-	        
-	    column = new ColumnConfig();  
-	    column.setId("gruppoLavoro");  
-	    column.setHeader("Area");  
-	    column.setWidth(80);  
-	    configs.add(column);
-	    
-	    column = new ColumnConfig();  
-	    column.setId("costoStruttura");  
-	    column.setHeader("Costo Struttura");  
-	    column.setWidth(140);  
-	    configs.add(column);
-	    
-	    column = new ColumnConfig();  
-	    column.setId("costoOneri");  
-	    column.setHeader("Costo Oneri");  
-	    column.setWidth(80);  
-	    configs.add(column);
-	        
-	  /*  column = new ColumnConfig();  
-	    column.setId("tipoCad");  
-	    column.setHeader("Tipo CAD");  
-	    column.setWidth(80);  
-	    configs.add(column);
-	    
-	    column = new ColumnConfig();  
-	    column.setId("tipoTc");  
-	    column.setHeader("Tipo TC");  
-	    column.setWidth(80);  
-	    configs.add(column);
-	    
-	    column = new ColumnConfig();  
-	    column.setId("costoCad");  
-	    column.setHeader("Costo CAD");  
-	    column.setWidth(80);  
-	    configs.add(column);
-	    
-	    column = new ColumnConfig();  
-	    column.setId("costoTc");  
-	    column.setHeader("Costo TC");  
-	    column.setWidth(80);  
-	    configs.add(column);
-	    
-	    column = new ColumnConfig();  
-	    column.setId("tipoHardware");  
-	    column.setHeader("Tipo Hardware");  
-	    column.setWidth(80);  
-	    configs.add(column);
-	    
-	    column = new ColumnConfig();  
-	    column.setId("costoHardware");  
-	    column.setHeader("Costo HW");  
-	    column.setWidth(80);  
-	    configs.add(column);
-	    
-	    column = new ColumnConfig();  
-	    column.setId("sommaCostoHwSw");  
-	    column.setHeader("Costo HW e SW");  
-	    column.setWidth(80);  
-	    configs.add(column);*/
-	    
-	    column = new ColumnConfig();  
-	    column.setId("costoAggiuntivo");  
-	    column.setHeader("Costo Aggiuntivo");  
-	    column.setWidth(80);  
-	    configs.add(column);
-	    
-	    column = new ColumnConfig();  
-	    column.setId("costoTotaleRisorsa");  
-	    column.setHeader("Costo Tot. Risorsa");  
-	    column.setWidth(100);  
-	    configs.add(column);
-	    
-	    column = new ColumnConfig();  
 	    column.setId("tipoOrario");  
 	    column.setHeader("Orario Giornaliero");  
-	    column.setWidth(80);  
-	    configs.add(column);
-	    
-	    column = new ColumnConfig();  
-	    column.setId("colocation");  
-	    column.setHeader("Colocation");  
-	    column.setWidth(80);  
-	    configs.add(column);
-	    
-	    column = new ColumnConfig();  
-	    column.setId("oreCig");  
-	    column.setHeader("Ore Cig");  
 	    column.setWidth(80);  
 	    configs.add(column);
 	    
@@ -266,23 +172,53 @@ public class PanelRiepilogoCostiDipendenti extends LayoutContainer{
 	    configs.add(column);
 	    
 	    column = new ColumnConfig();  
-	    column.setId("orePianificate");  
-	    column.setHeader("Ore Pianificate");  
-	    column.setWidth(100);  
-	    configs.add(column);
-	    
-	    column = new ColumnConfig();  
-	    column.setId("saturazione");  
-	    column.setHeader("Saturazione");  
+	    column.setId("costoOrario");  
+	    column.setHeader("Costo Orario");  
 	    column.setWidth(80);  
 	    configs.add(column);
 	    
 	    column = new ColumnConfig();  
-	    column.setId("oreAssegnare");  
-	    column.setHeader("Ore da Assegnare");  
+	    column.setId("costoStruttura");  
+	    column.setHeader("Costo Struttura");  
+	    column.setWidth(140);  
+	    configs.add(column);
+	        
+	    column = new ColumnConfig();  
+	    column.setId("costoOneri");  
+	    column.setHeader("Costo Orario");  
 	    column.setWidth(80);  
 	    configs.add(column);
-	        	    
+	    
+	    column = new ColumnConfig();  
+	    column.setId("costoSwCadVari");  
+	    column.setHeader("Costo SW CAD/Office");  
+	    column.setWidth(140);  
+	    configs.add(column);
+	    
+	    column = new ColumnConfig();  
+	    column.setId("costoSwOffice");  
+	    column.setHeader("Costo SW Vari");  
+	    column.setWidth(140);  
+	    configs.add(column);
+	    
+	    column = new ColumnConfig();  
+	    column.setId("costoHw");  
+	    column.setHeader("Costo HW");  
+	    column.setWidth(140);  
+	    configs.add(column);
+	    
+	    column = new ColumnConfig();  
+	    column.setId("costoOrarioTotale");  
+	    column.setHeader("CostoTot/h");  
+	    column.setWidth(140);  
+	    configs.add(column);
+	    	    
+	    column = new ColumnConfig();  
+	    column.setId("gruppoLavoro");  
+	    column.setHeader("Area");  
+	    column.setWidth(80);  
+	    configs.add(column);
+	    	        	    
 	    return configs;
 	}
 
@@ -318,8 +254,6 @@ public class PanelRiepilogoCostiDipendenti extends LayoutContainer{
 		store.setStoreSorter(new StoreSorter<RiepilogoCostiDipendentiModel>());  
 	    store.setDefaultSort("nome", SortDir.ASC);
 		store.add(result);
-	}
-	
-	
+	}	
 	
 }

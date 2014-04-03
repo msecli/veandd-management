@@ -64,6 +64,7 @@
       <mapping class="gestione.pack.shared.AssociazionePtoHw"/>
       <mapping class="gestione.pack.shared.Rtv"/>
       <mapping class="gestione.pack.shared.RiferimentiRtv"/>
+      <mapping class="gestione.pack.shared.DettaglioTrasferta"/>
       
 </session-factory>
  

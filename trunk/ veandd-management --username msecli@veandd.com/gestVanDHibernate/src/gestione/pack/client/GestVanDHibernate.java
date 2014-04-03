@@ -179,10 +179,8 @@ public class GestVanDHibernate implements EntryPoint {
 						}								
 				}
 
-	  		}); //AsyncCallback  
-	    	    	          
+	  		}); //AsyncCallback            
 	      }// run();
-
 	    };//Timer();
 	    t.schedule(1500);
 	  }

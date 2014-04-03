@@ -321,9 +321,6 @@ public CenterLayout_FoglioFatturazione(){}
 				}
 			});
 		    		   	
-		   /* AggregationRowConfig<RiepilogoOreDipFatturazione> agrTotale= new AggregationRowPersonale();		
-			cm.addAggregationRow(agrTotale);*/
-		    
 		    gridRiepilogo= new Grid<RiepilogoOreDipFatturazione>(store, cm);  
 		    gridRiepilogo.setItemId("grid");
 		    gridRiepilogo.setBorders(false);
@@ -333,50 +330,6 @@ public CenterLayout_FoglioFatturazione(){}
 		    gridRiepilogo.setColumnReordering(true);  
 		    gridRiepilogo.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 		    gridRiepilogo.setView(summary);
-		    gridRiepilogo.addListener(Events.RowClick, new Listener<ComponentEvent>() {
-				@Override
-				public void handleEvent(ComponentEvent be) {
-					/*List<RiepilogoOreDipFatturazione> listaRecord= new ArrayList<RiepilogoOreDipFatturazione>();
-					listaRecord.addAll(store.getModels());
-					String meseRif= new String(); 
-			    	String anno= new String();
-			    	int idDip=0;
-			    	
-			    	anno= smplcmbxAnno.getRawValue().toString();
-					meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString()).toLowerCase();
-						
-					
-					Date data= new Date();
-					DateFormat  formatter = new SimpleDateFormat("MMMyyyy", Locale.ITALIAN);
-				    	    
-					try {			
-						data= formatter.parse(meseRif+anno);
-						
-					} catch (ParseException e) {
-						e.printStackTrace();
-					}
-					
-					for(RiepilogoOreDipFatturazione r: listaRecord)
-						AdministrationService.Util.getInstance().checkOreIntervalliIUOreCommesse((int)r.get("idDip"), data, new AsyncCallback<List<RiepilogoOreDipCommesseGiornaliero>>() {
-						
-							@Override
-							public void onSuccess(List<RiepilogoOreDipCommesseGiornaliero> result) {
-								
-							
-							}
-						
-							@Override
-							public void onFailure(Throwable caught) {
-								
-							
-							}
-						});
-					*/
-					}	
-				});
-		    
-		   // gridRiepilogo.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-		   
 		    gridRiepilogo.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<RiepilogoOreDipFatturazione>>() {  
 		          public void handleEvent(SelectionChangedEvent<RiepilogoOreDipFatturazione> be) {  
 		        	
@@ -463,14 +416,14 @@ public CenterLayout_FoglioFatturazione(){}
 		    tlbrRiepilogoOre.add(btnShowDettaglioOre);
 		    tlbrRiepilogoOre.add(btnEditOreDip);
 		    
-		    txtfldOreTotali.setWidth(150);	
-		    txtfldOreTotali.setHeight(25);
+		    txtfldOreTotali.setWidth(250);	
+		    txtfldOreTotali.setHeight(23);
 		    txtfldOreTotali.setStyleAttribute("font-size", "14px");
-		    txtfldOreLavoro.setWidth(150);	
-		    txtfldOreLavoro.setHeight(25);
+		    txtfldOreLavoro.setWidth(250);	
+		    txtfldOreLavoro.setHeight(23);
 		    txtfldOreLavoro.setStyleAttribute("font-size", "14px");
-		    txtfldOreViaggio.setWidth(150);	
-		    txtfldOreViaggio.setHeight(25);
+		    txtfldOreViaggio.setWidth(250);	
+		    txtfldOreViaggio.setHeight(23);
 		    txtfldOreViaggio.setStyleAttribute("font-size", "14px");		    
 		    
 		    store.setSortField("dipendente");
@@ -512,34 +465,7 @@ public CenterLayout_FoglioFatturazione(){}
 		  	layout();
 		}
 		
-	/*private class AggregationRowPersonale extends AggregationRowConfig<RiepilogoOreDipFatturazione>{
 			
-			public AggregationRowPersonale(){
-				final NumberFormat number= NumberFormat.getFormat("#,##0.0#;-#");
-				AggregationRenderer<RiepilogoOreDipFatturazione> aggrRender= new AggregationRenderer<RiepilogoOreDipFatturazione>() {			
-					@Override
-					public Object render(Number value, int colIndex, Grid<RiepilogoOreDipFatturazione> grid, ListStore<RiepilogoOreDipFatturazione> store) {
-						if(value!=null)		    		  
-				    		  return number.format(value.doubleValue());
-				    	else
-				    		  return number.format((float) 0) ;
-					}
-				};			
-							
-				setHtml("dipendente", "<p style=\"font-size:15px; color:#000000; font-weight:bold;\">TOTALE</p>");	
-				
-				setSummaryType("oreLavoro", SummaryType.SUM);
-				setRenderer("oreLavoro", aggrRender);
-				
-				setSummaryType("oreViaggio", SummaryType.SUM);  
-				setRenderer("oreViaggio", aggrRender);
-								
-				setSummaryType("oreTotali", SummaryType.SUM);
-				setRenderer("oreTotali", aggrRender);			
-			}
-		}*/
-		
-		
 		private List<ColumnConfig> createColumns() {
 			List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 			final NumberFormat number = NumberFormat.getFormat("0.00");
@@ -724,7 +650,7 @@ public CenterLayout_FoglioFatturazione(){}
 				Window.alert("error: Impossibile effettuare il caricamento dati in tabella.");
 					e.printStackTrace();
 			}
-		}	
+		}
 	}
 	
 	
@@ -1042,7 +968,7 @@ public CenterLayout_FoglioFatturazione(){}
 							txtfldCostoOrario.setValue(valore);
 						}						
 					}
-			 }
+				}
 			});
 			
 			txtfldOreEseguiteRegistrate.setFieldLabel("Ore Eseguite");
@@ -1488,7 +1414,7 @@ public CenterLayout_FoglioFatturazione(){}
 				    	  		txtPclTotale.setValue(ClientUtility.aggiornaTotGenerale(txtfldPCLIniziale.getValue().toString(), txtfldVariazionePCL.getValue().toString()));
 				    	  	}
 						}	    		
-				      }
+				 }
 			});
 			
 			txtfldOreScaricate.setFieldLabel("Ore Scaricate");
@@ -1908,13 +1834,11 @@ public CenterLayout_FoglioFatturazione(){}
 			{
 				Window.alert("error: Dati selezionati non corretti.");
 			}
-		}
-		
+		}		
 		
 		protected boolean hasValue(TextField<String> field) {
 		    return field.getValue() != null && field.isValid();
-		}
-		
+		}		
 		
 		private void loadFormFatturazione(FoglioFatturazioneModel result, String numeroCommessa) {								
 			ListStore<RiepilogoOreDipFatturazione> store= new ListStore<RiepilogoOreDipFatturazione>();
@@ -1942,10 +1866,11 @@ public CenterLayout_FoglioFatturazione(){}
 					
 				//prendo il numero di ore eseguite dalla commessa selezionata
 				for(RiepilogoOreDipFatturazione riep: lista){
-					ncommessa=riep.getNumeroCommessa().substring(0,riep.getNumeroCommessa().indexOf("(")-1).toLowerCase();			
+					ncommessa=riep.getNumeroCommessa().substring(0,riep.getNumeroCommessa().indexOf("(")-1).toLowerCase();
+					String c=ncommessa.substring(ncommessa.indexOf(".")+1, ncommessa.length());
 					if(ncommessa.compareTo(numeroCommessa)==0 &&
-							(ncommessa.substring(ncommessa.length()-2, ncommessa.length()).compareTo("pa")!=0) &&
-								(riep.getDipendente().compareTo(".TOTALE")==0)){
+							(ncommessa.substring(ncommessa.indexOf(".")+1, ncommessa.length()).compareTo("pa")!=0) &&
+								(riep.getDipendente().compareTo("_TOTALE")==0)){
 						String numeroFormattato= new String();
 						numeroFormattato=number.format(riep.getOreTotali());
 						totOre=	ClientUtility.aggiornaTotGenerale(totOre, numeroFormattato);

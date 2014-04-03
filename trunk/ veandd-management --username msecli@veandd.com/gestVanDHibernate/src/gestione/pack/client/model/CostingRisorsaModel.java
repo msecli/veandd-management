@@ -13,10 +13,9 @@ public class CostingRisorsaModel extends BaseModel{
 		
 	}
 	
-	public CostingRisorsaModel(int idCostingRisorsa, String area, String cliente, String progetto, String commessa, int idRisorsa, String risorsa, String costoOrario, String orePianificate,
-			String oreCorrette, String lc, String costoRisorsa, String costoOrarioStruttura, String costoRisorsaStruttura, String costoTotaleAzienda, String incidenzaCostiAzienda,
-			String costoHw, String costoSw, String costoOneri, String costoHSommaHwSwOneri, String costoRisorsaSommaHwSwOneri, String incidenzaCostiHwSw, String costoConsulenza, String costoTrasferta, 
-			String costoTotale, String efficienza, String oreFatturare,  String tariffa, String tariffaDerivata, String fatturato, String mol, String molPerc, String ebit, String ebitPerc){
+	public CostingRisorsaModel(int idCostingRisorsa, String area, String cliente, String progetto, String commessa, int idRisorsa, String risorsa, Float costoOrario,
+			Float oreLavoro, Float oreViaggio, int giorniViaggio, Float diaria, Float costoTotOre, Float costoTrasferta, Float costoTotale, String efficienza, 
+			Float oreDaFatturare, Float oreTrasferta, String tariffa, Float fatturatoTotale, String ebit, String ebitPerc){
 		
 		set("idCostingRisorsa",idCostingRisorsa);
 		set("area",area);	
@@ -26,30 +25,18 @@ public class CostingRisorsaModel extends BaseModel{
 		set("idRisorsa", idRisorsa);
 		set("risorsa", risorsa);		
 		set("costoOrario",costoOrario);
-		set("orePianificate",orePianificate);
-		set("oreCorrette",oreCorrette);
-		set("lc",lc);
-		set("costoRisorsa",costoRisorsa);
-		set("costoOrarioStruttura",costoOrarioStruttura);
-		set("costoRisorsaStruttura",costoRisorsaStruttura);
-		set("costoTotaleAzienda",costoTotaleAzienda);
-		set("incidenzaCostiAzienda",incidenzaCostiAzienda);		
-		set("costoHw",costoHw);
-		set("costoSw", costoSw);
-		set("costoOneri",costoOneri);
-		set("costoSommaHwSwOneri",costoHSommaHwSwOneri);
-		set("costoRisorsaSommaHwSwOneri",costoRisorsaSommaHwSwOneri);
-		set("incidenzaCostiHwSw",incidenzaCostiHwSw);
-		set("costoConsulenza",costoConsulenza);
-		set("costoTrasferta",costoTrasferta);
-		set("costoTotale",costoTotale);
-		set("efficienza",efficienza);
-		set("oreFatturare",oreFatturare);
+		set("oreLavoro", oreLavoro);
+		set("oreViaggio", oreViaggio);
+		set("giorniViaggio", giorniViaggio);
+		set("diaria",diaria);
+		set("costoTotOre",costoTotOre);
+		set("costoTrasferta", costoTrasferta);
+		set("costoTotale", costoTotale);
+		set("efficienza", efficienza);
+		set("oreDaFatturare", oreDaFatturare);
+		set("oreTrasferta", oreTrasferta);
 		set("tariffa",tariffa);
-		set("tariffaDerivata",tariffaDerivata);
-		set("fatturato",fatturato);
-		set("mol",mol);
-		set("molPerc",molPerc);
+		set("fatturatoTotale", fatturatoTotale);
 		set("ebit",ebit);
 		set("ebitPerc",ebitPerc);
 		

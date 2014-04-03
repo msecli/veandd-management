@@ -102,6 +102,7 @@ import gestione.pack.shared.DettaglioIntervalliCommesse;
 import gestione.pack.shared.DettaglioIntervalliIU;
 import gestione.pack.shared.DettaglioOreGiornaliere;
 import gestione.pack.shared.DettaglioTimbrature;
+import gestione.pack.shared.DettaglioTrasferta;
 import gestione.pack.shared.Fattura;
 import gestione.pack.shared.FoglioFatturazione;
 import gestione.pack.shared.FoglioOreMese;
@@ -4279,7 +4280,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 																				
 								monteOreRecuperoTotale=ServerUtility.aggiornaTotGenerale(monteOreRecuperoTotale,parzialeOreRecuperoMese);	
 							}
-						  }								
+						 }
 					}		
 				}
 				
@@ -8541,14 +8542,12 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				if(p.getGruppoLavoro().compareTo("Indiretti")!=0)//i dipendenti considerati non devono essere indiretti
 					for(Commessa c:listaCommAss){
 						for(String mese:listaMesiConsiderati){
-							for(DettaglioIntervalliCommesse d:listaDettCommAll){
-								
+							for(DettaglioIntervalliCommesse d:listaDettCommAll){							
 								if(d.getNumeroCommessa().compareTo(c.getNumeroCommessa())==0 && d.getEstensioneCommessa().compareTo(c.getEstensione())==0
 										&& mese.compareTo(d.getDettaglioOreGiornaliere().getFoglioOreMese().getMeseRiferimento())==0
 										&& p.getId_PERSONALE()==d.getDettaglioOreGiornaliere().getFoglioOreMese().getPersonale().getId_PERSONALE() ){
 									totOreCommMese=ServerUtility.aggiornaTotGenerale(totOreCommMese, d.getOreLavorate());
-									totOreCommMese=ServerUtility.aggiornaTotGenerale(totOreCommMese, d.getOreViaggio());
-											
+									totOreCommMese=ServerUtility.aggiornaTotGenerale(totOreCommMese, d.getOreViaggio());											
 								}
 							}
 							totOreCommMese=ServerUtility.getOreCentesimi(totOreCommMese);
@@ -8563,8 +8562,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						if(p.getCostoAziendas().iterator().hasNext()){
 							costoP=p.getCostoAziendas().iterator().next();
 							
+							//TODO
+							
 							//se non carico i costi mi darà errore!!!
-							costoOrario=df.format(Float.valueOf(costoP.getCostoAnnuo())/Float.valueOf(costoP.getOrePianificate()));		
+							//costoOrario=df.format(Float.valueOf(costoP.getCostoAnnuo())/Float.valueOf(costoP.getOrePianificate()));		
 							
 							costoEffettivo=Float.valueOf(totOre)* Float.valueOf(costoOrario);
 						}else
@@ -8603,9 +8604,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					listaRO.add(riep);
 				}
 			}
-			
-			
-			
+		
 			tx.commit();
 			return listaRO;
 			
@@ -8767,7 +8766,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							costoP=p.getCostoAziendas().iterator().next();
 							
 							//se non carico i costi mi darà errore!!!
-							costoOrario=df.format(Float.valueOf(costoP.getCostoAnnuo())/Float.valueOf(costoP.getOrePianificate()));		
+							//costoOrario=df.format(Float.valueOf(costoP.getCostoAnnuo())/Float.valueOf(costoP.getOrePianificate()));		
+							
+							
+							//TODO
 							
 							costoEffettivo=Float.valueOf(totOre)* Float.valueOf(costoOrario);
 						}else
@@ -9331,6 +9333,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 //-------------
 //---------------------------------------------------COSTI------------------------------------------------------------------------------------------------
 	
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<GestioneCostiDipendentiModel> getDatiCostiPersonale(
@@ -9356,19 +9359,16 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				if(p.getCostoAziendas().iterator().hasNext()){
 					
 					c=p.getCostoAziendas().iterator().next();
-					g= new GestioneCostiDipendentiModel(c.getPersonale().getId_PERSONALE(), c.getPersonale().getCognome() +" "+ c.getPersonale().getNome(),
-							c.getCostoAnnuo(), c.getCostoStruttura(), c.getCostiOneri(), c.getTipoOrario(), Float.valueOf(c.getOreCig()), Float.valueOf(c.getOrePianificate()));
-					lista.add(g);
+					//g= new GestioneCostiDipendentiModel(idPersonale, cognome, costoAnnuo, oreAnno, costoStruttura, costoOneri, tipoOrario, costoSwCadVari, costoSwOffice, costoHw, orePianificate, costoOrarioTot, gruppoLavoro);
+					//lista.add(g);
 				}
 				else{
-					g=new GestioneCostiDipendentiModel(p.getId_PERSONALE(), p.getCognome() +" "+ p.getNome(), 
-							"0.00", "0.00", "0.00", "0", Float.valueOf("0.00"), Float.valueOf("0.00"));
-					lista.add(g);
+					/*g=new GestioneCostiDipendentiModel(p.getId_PERSONALE(), p.getCognome() +" "+ p.getNome(), 
+							"0.00", "0.00", "0.00", "0", Float.valueOf("0.00"), Float.valueOf("0.00"));*/
+					//lista.add(g);
 				}				
 			}
-					
-			tx.commit();
-			
+			tx.commit();			
 		} catch (Exception e) {
 			if (tx != null)
 				tx.rollback();
@@ -9376,11 +9376,12 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			return null;
 		} finally {
 			session.close();
-		}			
+		}
 		return lista;
 	}
 
 	
+	//NON USATA
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<CostiHwSwModel> getDatiCostiHwSw(int id)throws IllegalArgumentException {
@@ -9431,6 +9432,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 	
 
+	//NON USATA
 	@Override
 	public boolean saveAssociaCostiHwSw(int idSelected,
 			CostiHwSwModel costoHS) throws IllegalArgumentException {
@@ -9497,6 +9499,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 
 
+	//NON USATA
 	@Override
 	public void editDatiCostiAzienda(GestioneCostiDipendentiModel g)
 			throws IllegalArgumentException {
@@ -9519,10 +9522,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				c.setCostiOneri((String)g.get("costoOneri"));
 				c.setCostoAnnuo((String)g.get("costoAnnuo"));
 				c.setCostoStruttura((String)g.get("costoStruttura"));
-				c.setOreCig(String.valueOf(g.get("oreCig")));
-				c.setOrePianificate(String.valueOf(g.get("orePianificate")));
-				c.setTipoOrario((String)g.get("tipoOrario"));
-			
+				
+				
 				tx.commit();
 			}
 			else{
@@ -9532,9 +9533,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				c.setCostiOneri((String)g.get("costoOneri"));
 				c.setCostoAnnuo((String)g.get("costoAnnuo"));
 				c.setCostoStruttura((String)g.get("costoStruttura"));
-				c.setOreCig(String.valueOf(g.get("oreCig")));
-				c.setOrePianificate(String.valueOf(g.get("orePianificate")));
-				c.setTipoOrario((String)g.get("tipoOrario"));
+				
+				
 				c.setPersonale(p);
 				
 				p.getCostoAziendas().add(c);				
@@ -9562,41 +9562,19 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		List<RiepilogoCostiDipendentiModel> listaC= new ArrayList<RiepilogoCostiDipendentiModel>();
 		List<Personale> listaP= new ArrayList<Personale>();
 		CostoAzienda costo= new CostoAzienda();
-		List<AssociazionePtohwsw> listaAss= new  ArrayList<AssociazionePtohwsw>();
-		
+			
 		RiepilogoCostiDipendentiModel r;
 		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
 		
 		sede="T";
-		int oreAnno=0;
-		String tipoSw;
+	
+		int idDip=0;
+		String nome="";	
+		Float costoOrarioTotale=(float)0.00;
 		
-		int idDip;
-		String nome;
-		String costoAnnuo;
-		Float costoOrario=(float)0;
-		String gruppoLavoro;
-		String costoStruttura;
-		String costoOneri;
-		String tipoCad="#";
-		String tipoTc="#";
-		Float costoCad=(float)0;
-		Float costoTc=(float)0;
-		String tipoHardware="#";
-		Float costoHardware=(float)0;
-		Float sommaCostoHwSw;
-		Float costoAggiuntivo;
-		Float costoTotaleRisorsa; 
-		String tipoOrario;
-		String colocation;
-		Float oreCig;
-		Float orePreviste;
-		Float orePianificate;
-		String saturazione;
-		String oreAssegnare;
-		
+				
 		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
 	    formatSymbols.setDecimalSeparator('.');
 	    String pattern="0.00";
@@ -9609,59 +9587,18 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 			for(Personale p:listaP){
 				if(p.getCostoAziendas().iterator().hasNext()){
-					
-					oreAnno=ServerUtility.getOreAnno(p.getSedeOperativa());
 					costo=p.getCostoAziendas().iterator().next();
-					idDip=p.getId_PERSONALE();
-					nome=p.getNome()+" "+p.getCognome();
-					costoAnnuo=costo.getCostoAnnuo();
-					costoOrario= Float.valueOf(costoAnnuo)/oreAnno; //TODO ha senso??? e chi non lavora un anno??
-					gruppoLavoro=ServerUtility.getShortGruppoLavoro(p.getGruppoLavoro());
-					costoStruttura=costo.getCostoStruttura();
-					costoOneri=costo.getCostiOneri();
 					
-					//al momento considero ancora la possibilità di avere un solo HW e un solo SW per tipo
-					listaAss.addAll(p.getAssociazionePtohwsws());
-					for(AssociazionePtohwsw a:listaAss){
-						if(a.getCostiHwSw().getTipologia().compareTo("HW")==0){
-							tipoHardware=a.getCostiHwSw().getDescrizione();
-							costoHardware=Float.valueOf(a.getCostiHwSw().getCosto());
-						}
-						else{
-							tipoSw= a.getCostiHwSw().getDescrizione().substring(0,1);
-							if(tipoSw.compareTo("C")==0){
-								costoCad=Float.valueOf(a.getCostiHwSw().getCosto());
-								tipoCad=a.getCostiHwSw().getDescrizione();				
-							}else{
-								costoTc=Float.valueOf(a.getCostiHwSw().getCosto());
-								tipoTc=a.getCostiHwSw().getDescrizione();								
-							}
-						}
-					}	
-					listaAss.clear();
+				costoOrarioTotale=Float.valueOf(costo.getCostoOrario())+Float.valueOf(costo.getCostoStruttura())+Float.valueOf(costo.getCostiOneri())
+							+Float.valueOf(costo.getCostoSwCadVari())+Float.valueOf(costo.getCostoSwOffice())+Float.valueOf(costo.getCostoHw());
 					
-					sommaCostoHwSw=costoCad+costoTc+costoHardware;
-					costoAggiuntivo=costoOrario+Float.valueOf(costoStruttura)+sommaCostoHwSw;
-					costoTotaleRisorsa= costoAggiuntivo+costoOrario;
-					tipoOrario=costo.getTipoOrario();
-					colocation=ServerUtility.getColocation(p.getSede());
-					oreCig=Float.valueOf(costo.getOreCig());
-					orePreviste=Float.valueOf(oreAnno)/8*Float.valueOf(tipoOrario)-oreCig;
-					orePianificate=Float.valueOf(costo.getOrePianificate());
-					saturazione=d.format(orePianificate/orePreviste);
-					oreAssegnare=d.format(orePreviste-orePianificate);					
+					nome=p.getCognome() + " "+p.getNome();
+					r= new RiepilogoCostiDipendentiModel(idDip, nome, costo.getCostoAnnuo(), p.getTipologiaOrario(), costo.getOreAnno(), 
+							costo.getCostoOrario(),  costo.getCostoStruttura(), costo.getCostiOneri(), costo.getCostoSwCadVari(), costo.getCostoSwOffice(),
+							costo.getCostoHw(), d.format(costoOrarioTotale), p.getGruppoLavoro());
 					
-					r= new RiepilogoCostiDipendentiModel(idDip, nome, costoAnnuo, d.format(costoOrario), gruppoLavoro, costoStruttura, costoOneri, tipoCad, 
-							tipoTc, d.format(costoCad), d.format(costoTc), tipoHardware, d.format(costoHardware), d.format(sommaCostoHwSw), d.format(costoAggiuntivo), d.format(costoTotaleRisorsa),
-							tipoOrario, colocation, oreCig, orePreviste, orePianificate, saturazione, oreAssegnare);
 					listaC.add(r);
-					
-					tipoCad="#";
-					tipoTc="#";
-					costoCad=(float)0;
-					costoTc=(float)0;
-					tipoHardware="#";
-					costoHardware=(float)0;
+					costoOrarioTotale=(float)0.0;
 				}
 			}
 			
@@ -9806,10 +9743,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		Costing cs= new Costing();
 		Commessa c= new Commessa();
-		Personale p =new Personale();
+		
 		String numeroCommessa= commessa.substring(0,commessa.indexOf("."));
 		String estensione= commessa.substring(commessa.indexOf(".")+1,commessa.length());		
-		String nomePM="";
+		
 		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
@@ -9870,6 +9807,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Costing cost;
 		CostingRisorsaModel costRMod;
 		Cliente cliente;
+		DettaglioTrasferta dettTrasferta= new DettaglioTrasferta();
 		
 		String area="";
 		String ragioneSociale="";
@@ -9877,23 +9815,19 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		int idRisorsa=0;
 		String risorsa="";
 		String progetto="";
-		String oreCorrette="0.0";
-		String costoRisorsa="0.0";
-		String costoRisorsaStruttura="0.0";
-		String costoTrasferta="0.0";
-		String costoTotaleAzienda="0.0";
-		String incidenzaCostiAzienda="0.0";
-		String costoSommaHwSwOneri="0.00";
-		String costoRisorsaSommaHwSwOneri="0.0";
-		String incidenzaCostiHwSw="0.0";
-		String costoTotale="0.0";
-		String oreFatturare="0.0";
-		String tariffaDerivata="0.0";
-		String fatturato="0.0";
-		String mol="0.0";
-		String molPerc="0.0";
-		String ebit="0.0";//solo su totale commessa
-		String ebitPerc="0.0";
+		Float oreViaggio=(float)0.0;
+		int giorniViaggio=0;
+		Float diaria=(float)0.0;
+		Float costoTotOre=(float)0.0;
+		Float costoTrasferta=(float)0.0;
+		Float costoTotale=(float)0.0;
+		String efficienza="1.0";
+		Float oreDaFatturare=(float)0.0;
+		Float oreTrasferta=(float)0.0;
+		String tariffa="0.00";
+		Float fatturatoTotale=(float)0.0;
+		String ebit="";//solo su totale commessa
+		String ebitPerc="";
 		
 		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
 	    formatSymbols.setDecimalSeparator('.');
@@ -9912,55 +9846,43 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				cliente=(Cliente)session.get(Cliente.class, cost.getCliente());
 				ragioneSociale=cliente.getRagioneSociale();
 			
-				if(cost.getCostingRisorsas().iterator().hasNext())
+				if(cost.getCostingRisorsas().iterator().hasNext())//prelevo i dati di costing di eventuali risorse inserite
 					listaCost.addAll(cost.getCostingRisorsas());
 			
-				area=cost.getArea();
-			
+				area=cost.getArea();		
 				progetto=cost.getDescrizioneProgetto();
 				commessa=cost.getCommessa().getNumeroCommessa();
-						
-			for(CostingRisorsa c:listaCost){
 				
+			for(CostingRisorsa c:listaCost){		
 				idRisorsa=c.getPersonale().getId_PERSONALE();
 				risorsa=c.getPersonale().getCognome()+" "+c.getPersonale().getNome();
-				oreCorrette=d.format(Float.valueOf(c.getOrePianificate())* Float.valueOf(c.getLc()));
-				costoRisorsa=/*d.format(Float.valueOf(oreCorrette)* Float.valueOf(c.getCostoOrarioRisorsa()));*/
-						d.format(ServerUtility.calcolaImporto(c.getCostoOrarioRisorsa(), oreCorrette));
-				costoRisorsaStruttura=/*d.format(Float.valueOf(oreCorrette)* Float.valueOf(c.getCostoStruttura()));*/
-						d.format(ServerUtility.calcolaImporto(c.getCostoStruttura(), oreCorrette));
-				costoTrasferta=c.getCostoTrasferta();
-				costoTotaleAzienda=d.format(Float.valueOf(costoRisorsa)+ Float.valueOf(costoRisorsaStruttura) + Float.valueOf(costoTrasferta));
-				incidenzaCostiAzienda=d.format(Float.valueOf(c.getCostoStruttura())/ Float.valueOf(c.getCostoOrarioRisorsa()));
-				
-				
-				costoSommaHwSwOneri=d.format(Float.valueOf(c.getCostoHw())+Float.valueOf(c.getCostoSw())+ Float.valueOf(c.getCostoOneri()));
-				
-				
-				costoRisorsaSommaHwSwOneri=/*d.format(Float.valueOf(costoSommaHwSwOneri)* Float.valueOf(oreCorrette));*/
-						d.format(ServerUtility.calcolaImporto(costoSommaHwSwOneri, oreCorrette));
-				incidenzaCostiHwSw=d.format(Float.valueOf(costoSommaHwSwOneri)/ Float.valueOf(c.getCostoOrarioRisorsa()));
-				costoTotale=d.format(Float.valueOf(c.getCostoConsulenza())+ Float.valueOf(costoTotaleAzienda)+ Float.valueOf(costoRisorsaSommaHwSwOneri));
-				oreFatturare=/*d.format(Float.valueOf(c.getEfficienza())*Float.valueOf(oreCorrette));*/
-						d.format(ServerUtility.calcolaImporto(c.getEfficienza(), oreCorrette));
-				tariffaDerivata="";
-				fatturato=/*d.format(Float.valueOf(c.getTariffa())* Float.valueOf(oreFatturare));*/
-						d.format(ServerUtility.calcolaImporto(c.getTariffa(), oreCorrette));
-				mol=d.format(Float.valueOf(fatturato)-Float.valueOf(costoTotaleAzienda));
-				molPerc=d.format(Float.valueOf(mol)/ Float.valueOf(fatturato));
+
 				ebit="#";
 				ebitPerc="#";
+				
+				//dati di viaggio
+				if(c.getDettaglioTrasfertas().iterator().hasNext()){
+					dettTrasferta=c.getDettaglioTrasfertas().iterator().next();
+					costoTrasferta=ServerUtility.calcoloTotaleCostotrasferta(dettTrasferta);
+					
+					oreViaggio=Float.valueOf(dettTrasferta.getOreViaggio())*Float.valueOf(dettTrasferta.getNumViaggi());
+					giorniViaggio= Integer.valueOf(dettTrasferta.getNumGiorni());
+					diaria=Float.valueOf(dettTrasferta.getDiariaGiorno())*Integer.valueOf(dettTrasferta.getNumGiorni());
+				}
 								
-				costRMod= new CostingRisorsaModel(c.getIdCostingRisorsa(), area, ragioneSociale, progetto, commessa, idRisorsa, risorsa, c.getCostoOrarioRisorsa(), c.getOrePianificate(), oreCorrette,
-						c.getLc(), costoRisorsa, c.getCostoStruttura(), costoRisorsaStruttura, costoTotaleAzienda, incidenzaCostiAzienda, c.getCostoHw(), c.getCostoSw(), c.getCostoOneri(), 
-						costoSommaHwSwOneri, costoRisorsaSommaHwSwOneri, incidenzaCostiHwSw, c.getCostoConsulenza(), c.getCostoTrasferta(), costoTotale, c.getEfficienza(), oreFatturare, 
-						c.getTariffa(), tariffaDerivata, fatturato, mol, molPerc, ebit, ebitPerc);
+				costoTotOre=Float.valueOf(c.getCostoOrarioRisorsa())*Float.valueOf(c.getOreLavoro());
+				costoTotale=costoTotOre+costoTrasferta;			
+				costRMod=new CostingRisorsaModel(c.getIdCostingRisorsa(), area, ragioneSociale, progetto, commessa, idRisorsa, risorsa,
+						Float.valueOf(c.getCostoOrarioRisorsa()), Float.valueOf(c.getOreLavoro()), oreViaggio, giorniViaggio, diaria, 
+						costoTotOre, costoTrasferta, costoTotale, efficienza, oreDaFatturare, oreTrasferta, tariffa, fatturatoTotale, ebit, ebitPerc);
+												
 				listaCostR.add(costRMod);
-			}
-			
+			}		
 				//Calcolo dei totali
-				if(listaCost.size()>0)
-					listaCostR.add(ServerUtility.elaboraRecordTotaliCostingCommessa(listaCostR));			
+			
+			//TODO ?
+				//if(listaCost.size()>0)
+					//listaCostR.add(ServerUtility.elaboraRecordTotaliCostingCommessa(listaCostR));			
 			}			
 			tx.commit();
 			
@@ -9983,26 +9905,12 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Cliente cl;
 		Personale p= new Personale();
 		CostoAzienda costoAzienda= new CostoAzienda();
-		List<AssociazionePtohwsw> listaCostiHwSw= new ArrayList<AssociazionePtohwsw>();
-		CostiHwSw costoHS= new CostiHwSw();
-		
+	
 		String area="";
-		Float incidenzaCostiAzienda=(float) 0.0;
-		Float costoSommaHwSwOneri=(float) 0.0;
-		
-		String costoTotale="0.00";
-		String oreFatturare="0.00";
-		String tariffaDerivata="0.00";
-		String fatturato="0.00";
-		String mol="0";
-		String molPerc="0";
+	
 		String ebit="0";
 		String ebitPerc="0";
-		
-		Float costoHw=(float) 0.0;
-		Float costoSw=(float) 0.0;
 		Float costoOrario=(float) 0.0;
-		Float costoHwSw=(float) 0.0;
 		
 		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
 	    formatSymbols.setDecimalSeparator('.');
@@ -10011,7 +9919,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
-	
+
 		try {		
 			tx=session.beginTransaction();
 			
@@ -10020,35 +9928,23 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			cl=(Cliente)session.get(Cliente.class, costing.getCliente());
 			area=costing.getArea();
 			
-			
 			if(p.getCostoAziendas().iterator().hasNext()){
-				costoAzienda=p.getCostoAziendas().iterator().next();
-				listaCostiHwSw.addAll(p.getAssociazionePtohwsws());
-			
-				for(AssociazionePtohwsw ass:listaCostiHwSw){
-					costoHS=ass.getCostiHwSw();
-					if(costoHS.getTipologia().compareTo("HW")==0)
-						costoHw=costoHw+Float.valueOf(costoHS.getCosto());
-					else
-						costoSw=costoSw+Float.valueOf(costoHS.getCosto());
-				}
-			
-				costoOrario= Float.valueOf(costoAzienda.getCostoAnnuo())/ServerUtility.getOreAnno(p.getSedeOperativa());
-				costoHwSw=costoHw+costoSw;
-				incidenzaCostiAzienda=Float.valueOf(costoAzienda.getCostoStruttura())/Float.valueOf(costoOrario);
-				costoSommaHwSwOneri=costoHwSw+Float.valueOf(costoAzienda.getCostiOneri());
-			
-				cM= new CostingRisorsaModel(0 , area, cl.getRagioneSociale(), costing.getDescrizioneProgetto(), costing.getCommessa().getNumeroCommessa(), p.getId_PERSONALE(), p.getCognome()+" "+p.getNome(), 
-					d.format(costoOrario)	, "0.00", "0.00", "1.0", "0.00", costoAzienda.getCostoStruttura(), "0.00", "0.00", d.format(incidenzaCostiAzienda), 
-					"0.00","0.00" , costoAzienda.getCostiOneri(), d.format(costoSommaHwSwOneri), "0.00", "0.00", "0.00","0.00", costoTotale, "1.0", oreFatturare, 
-					"0.00", tariffaDerivata, fatturato, mol, molPerc, ebit, ebitPerc);
-			
+				
+				costoAzienda= p.getCostoAziendas().iterator().next();		
+				costoOrario= Float.valueOf(costoAzienda.getCostoOrario());
+				
+				cM= new CostingRisorsaModel(0 , area, cl.getRagioneSociale(), costing.getDescrizioneProgetto(), costing.getCommessa().getNumeroCommessa(), p.getId_PERSONALE(), 
+						p.getCognome()+" "+p.getNome(),costoOrario, (float)0.0, (float)0.0, (int)0, (float) 0, (float)0.0, (float)0.0, (float)0.0, "0.00", 
+						(float)0.0, (float)0.0, "0.00", (float)0.0, ebit, ebitPerc);
+				
+				//TODO aggiungere i dati trasferta se era già registrato e ci sono
+				
 				tx.commit();
 				return cM;
 			}else{
 				tx.commit();
 				return null;
-			}	
+			}
 			
 		} catch (Exception e) {
 			if (tx!=null)
@@ -10059,6 +9955,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			session.close();
 		}				
 	}
+	
 	
 
 	@Override
@@ -10072,6 +9969,11 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		List<CostingRisorsa> listaCR= new ArrayList<CostingRisorsa>();
 		
 		int idCosting=0;
+		
+		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+	    formatSymbols.setDecimalSeparator('.');
+	    String pattern="0.00";
+	    DecimalFormat d= new DecimalFormat(pattern,formatSymbols);
 		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
@@ -10088,77 +9990,46 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				idCosting=ServerUtility.costingPresente(listaCR, p.getId_PERSONALE());
 				if(idCosting!=0){
 					
-					cR=(CostingRisorsa)session.get(CostingRisorsa.class, idCosting);
-										
-					cR.setCostoConsulenza((String) c.get("costoConsulenza"));
-					cR.setCostotrasferta((String) c.get("costoTrasferta"));
-					cR.setCostoHw((String) c.get("costoHw"));
-					cR.setCostoSw((String) c.get("costoSw"));
-					cR.setCostoOneri((String) c.get("costoOneri"));
-					cR.setCostoOrarioRisorsa((String) c.get("costoOrario"));
-					cR.setCostoStruttura((String) c.get("costoOrarioStruttura"));
-					//cR.setDescProgetto((String) c.get("progetto"));
-					cR.setEfficienza((String) c.get("efficienza"));
-					cR.setLc((String) c.get("lc"));
-					cR.setOrePianificate((String) c.get("orePianificate"));
+					cR=(CostingRisorsa)session.get(CostingRisorsa.class, idCosting);					
+					cR.setCostoOrarioRisorsa(d.format((Float) c.get("costoOrario")));					
+					cR.setEfficienza((String) c.get("efficienza"));	
+					String a=((String) c.get("oreLavoro"));
+					cR.setOreLavoro(a);
 					cR.setTariffa((String) c.get("tariffa"));
 					
 					tx.commit();
 					
 				}else{//creo il nuovo e l'associazione del dipendente alla commessa.
 					
-					commessa=costing.getCommessa();
-							
+					commessa=costing.getCommessa();						
 					createAssociazionePtoA(commessa.getNumeroCommessa(), commessa.getEstensione(), p.getUsername());
-					
-					cR.setCostoConsulenza((String) c.get("costoConsulenza"));
-					cR.setCostotrasferta((String) c.get("costoTrasferta"));
-					cR.setCostoHw((String) c.get("costoHw"));
-					cR.setCostoSw((String) c.get("costoSw"));
-					cR.setCostoOneri((String) c.get("costoOneri"));
-					cR.setCostoOrarioRisorsa((String) c.get("costoOrario"));
-					cR.setCostoStruttura((String) c.get("costoOrarioStruttura"));
-					//cR.setDescProgetto((String) c.get("progetto"));
-					cR.setEfficienza((String) c.get("efficienza"));
-					cR.setLc((String) c.get("lc"));
-					cR.setOrePianificate((String) c.get("orePianificate"));
-					cR.setTariffa((String) c.get("tariffa"));
-					
+				
+					cR.setCostoOrarioRisorsa(d.format((Float) c.get("costoOrario")));				
+					cR.setEfficienza((String) c.get("efficienza"));				
+					String a=((String) c.get("oreLavoro"));
+					cR.setOreLavoro(a);
+					cR.setTariffa((String) c.get("tariffa"));				
 					cR.setCosting(costing);
 					cR.setPersonale(p);
-					
 					costing.getCostingRisorsas().add(cR);
-					p.getCostingRisorsas().add(cR);
-					
+					p.getCostingRisorsas().add(cR);				
 					session.save(p);
 					session.save(costing);
 					
 					tx.commit();
-					
-					
 				}
 				
 			}else{
 				commessa=costing.getCommessa();
 				createAttivita(commessa.getNumeroCommessa(), commessa.getEstensione());
 				createAssociazionePtoA(commessa.getNumeroCommessa(), commessa.getEstensione(), p.getUsername());
-				
-				cR.setCostoConsulenza((String) c.get("costoConsulenza"));
-				cR.setCostotrasferta((String) c.get("costoTrasferta"));
-				cR.setCostoHw((String) c.get("costoHw"));
-				cR.setCostoSw((String) c.get("costoSw"));
-				cR.setCostoOneri((String) c.get("costoOneri"));
-				cR.setCostoOrarioRisorsa((String) c.get("costoOrario"));
-				cR.setCostoStruttura((String) c.get("costoOrarioStruttura"));
-				//cR.setDescProgetto((String) c.get("progetto"));
+				cR.setCostoOrarioRisorsa(d.format((Float) c.get("costoOrario")));				
 				cR.setEfficienza((String) c.get("efficienza"));
-				cR.setLc((String) c.get("lc"));
-				cR.setOrePianificate((String) c.get("orePianificate"));
+				String a=((String) c.get("oreLavoro"));
+				cR.setOreLavoro(a);
 				cR.setTariffa((String) c.get("tariffa"));
-				
 				cR.setCosting(costing);
-				cR.setPersonale(p);
-				
+				cR.setPersonale(p);				
 				costing.getCostingRisorsas().add(cR);
 				p.getCostingRisorsas().add(cR);
 				
@@ -10166,8 +10037,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				session.save(costing);
 				
 				tx.commit();			
-			}		
-			
+			}			
 		} catch (Exception e) {
 			if (tx!=null)
 	    		tx.rollback();	
@@ -10331,18 +10201,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			for(Costing cs:listaC)
 				if(cs.getNumerorevisione().compareTo(revisione)==0)
 					costing=cs;
-			
-			costingR.setCostoConsulenza(cr.getCostoConsulenza());
-			costingR.setCostotrasferta(cr.getCostoTrasferta());
-			costingR.setCostoHw((String) cr.getCostoHw());
-			costingR.setCostoSw((String) cr.getCostoSw());
-			costingR.setCostoOneri(cr.getCostoOneri());
+						
 			costingR.setCostoOrarioRisorsa(cr.getCostoOrarioRisorsa());
-			costingR.setCostoStruttura(cr.getCostoStruttura());
-			//cR.setDescProgetto((String) c.get("progetto"));
 			costingR.setEfficienza(cr.getEfficienza());
-			costingR.setLc(cr.getLc());
-			costingR.setOrePianificate(cr.getOrePianificate());
+			costingR.setOreLavoro(cr.getOreLavoro());
 			costingR.setTariffa(cr.getTariffa());
 			
 			costingR.setCosting(costing);
