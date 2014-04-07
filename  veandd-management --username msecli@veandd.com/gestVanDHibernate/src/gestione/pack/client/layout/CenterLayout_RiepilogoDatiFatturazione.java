@@ -604,7 +604,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		    totaleOreSal.setWidth(80);    
 		    totaleOreSal.setRowHeader(true); 
 		    totaleOreSal.setAlignment(HorizontalAlignment.RIGHT);  
-		    totaleOreSal.setSummaryType(SummaryType.SUM);  
+		    //totaleOreSal.setSummaryType(SummaryType.SUM);  
 		    totaleOreSal.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
 				@Override
 				public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
@@ -613,13 +613,13 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					return number.format(n);
 				}  	
 			});
-		    totaleOreSal.setSummaryRenderer(new SummaryRenderer() {
+		    /*totaleOreSal.setSummaryRenderer(new SummaryRenderer() {
 				
 				@Override
 				public String render(Number value, Map<String, Number> data) {
 					return number.format(value);
 				}
-			});
+			});*/
 		    configs.add(totaleOreSal);     
 		    
 		    SummaryColumnConfig<Double> variazionePcl=new SummaryColumnConfig<Double>();		
@@ -680,7 +680,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		    totaleOrePcl.setWidth(80);    
 		    totaleOrePcl.setRowHeader(true); 
 		    totaleOrePcl.setAlignment(HorizontalAlignment.RIGHT);  
-		    totaleOrePcl.setSummaryType(SummaryType.SUM);  
+		    //totaleOrePcl.setSummaryType(SummaryType.SUM);  
 		    totaleOrePcl.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
 				@Override
 				public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
@@ -689,13 +689,13 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					return number.format(n);
 				}  	
 			});
-		    totaleOrePcl.setSummaryRenderer(new SummaryRenderer() {
+		    /*totaleOrePcl.setSummaryRenderer(new SummaryRenderer() {
 				
 				@Override
 				public String render(Number value, Map<String, Number> data) {
 					return number.format(value);
 				}
-			});
+			});*/
 		    configs.add(totaleOrePcl);     
 		    
 		    SummaryColumnConfig<Double> oreScaricate=new SummaryColumnConfig<Double>();		

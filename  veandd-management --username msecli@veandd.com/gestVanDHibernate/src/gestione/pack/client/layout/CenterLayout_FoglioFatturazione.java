@@ -823,7 +823,6 @@ public CenterLayout_FoglioFatturazione(){}
 						return false;
 					else return true;
 				}
-
 			});		    
 		    
 		    btnRiep.setEnabled(false);

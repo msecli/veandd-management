@@ -27,6 +27,7 @@ import com.extjs.gxt.ui.client.fx.Resizable;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
@@ -364,7 +365,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 		  				}
 		  			});
 		  		}
-			}				
+			}
 		});	  
 	    
 	    btnConfermaNewVersione=new Button();
@@ -409,9 +410,22 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    btnAddDatitrasferta.addSelectionListener(new SelectionListener<ButtonEvent>() {		
 			@Override
 			public void componentSelected(ButtonEvent ce) {
-						
+				int idRisorsa=0;
+								
+				if(cm.getSelectedItem()!=null){
+					idRisorsa= cm.getSelectedItem().get("idRisorsa");
+					Integer id=(Integer)cm.getSelectedItem().get("idCostingRisorsa");
+					if(id!= null){	
+						DialogDatiTrasferta dlgDatiTrasferta= new DialogDatiTrasferta(idRisorsa, id );
+						dlgDatiTrasferta.setWidth(910);
+						dlgDatiTrasferta.setHeading("Dati trasferta per la risorsa selezionata");
+						dlgDatiTrasferta.setButtons("");
+						dlgDatiTrasferta.show();
+					}
+				}
+				
 			}
-		});	  
+		});
 	    
 	    
 		cmCosting = new ColumnModel(createColumnsCosting());		
@@ -435,7 +449,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 		            	idSelected=be.getSelectedItem().get("idCosting");
 		            	caricaTabellaCostingRisorsa(idSelected);           
 		            }             
-		          }		            
+		      }		            
 		}); 
 	    
 	    cm=new CellSelectionModel<CostingRisorsaModel>();
@@ -452,8 +466,16 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    gridCostingDipendente.addListener(Events.CellClick, new Listener<ComponentEvent>() {
 			@Override
 			public void handleEvent(ComponentEvent be) {
-	            	//btnConfermaDip.enable();
-	            	//btnConfermaNewVersione.enable();
+				if(cm.getSelectedItem()!=null){
+					Integer idCostingRis=(Integer) cm.getSelectedItem().get("idCostingRisorsa");
+					if(idCostingRis!=null)
+						if(idCostingRis!=0)
+							btnAddDatitrasferta.setEnabled(true);
+						else
+							btnAddDatitrasferta.setEnabled(false);
+					else
+						btnAddDatitrasferta.setEnabled(false);
+				}
 			}
 		});	  
 	    
@@ -708,9 +730,9 @@ public class PanelGestioneCosting extends LayoutContainer{
 						if(result==null)
 							Window.alert("Nessun dato di costo trovato per il dipendente selezionato.");
 						else{
-							gridCostingDipendente.stopEditing(); 
+							gridCostingDipendente.stopEditing();
 							storeCostingRisorsa.remove(index);
-							storeCostingRisorsa.insert(result, index);  
+							storeCostingRisorsa.insert(result, index);
 							gridCostingDipendente.startEditing(storeCostingRisorsa.indexOf(result), 0);
 						}
 					}
@@ -911,7 +933,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    };	    
 	    column.setEditor(editorTxt);
 	    configs.add(column);
-    
+ 
 	    column = new ColumnConfig();  
 	    column.setId("fatturatoTotale");  
 	    column.setHeader("Fatturato");    
@@ -1106,7 +1128,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 				public void onFailure(Throwable caught) {				
 					Window.alert("Error on getRuolo();");
 				}
-			});					
+		});					
 	}	
 	
 	

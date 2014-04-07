@@ -16,7 +16,7 @@ public class DettaglioTrasfertaModel extends BaseModel implements IsSerializable
 
 	public DettaglioTrasfertaModel(int ID_DETTAGLIO_TRASFERTA, Float numGiorni,  int numViaggi, Float oreViaggio, Float kmStradali, Float costoCarburante,
 			Float diariaGiorno, Float costoAutostrada, char usoVetturaPropria, Float costoTreno, Float costoAereo, Float costoAlbergo, Float costoPranzo,
-			Float costoCena, Float costoNoleggioAuto, Float costoTrasportiLocali){
+			Float costoCena, Float costoNoleggioAuto, Float costoTrasportiLocali, String costiVari){
 		
 		set("idDettaglioTrasferta", ID_DETTAGLIO_TRASFERTA);
 		set("numGiorni", numGiorni);
@@ -34,7 +34,7 @@ public class DettaglioTrasfertaModel extends BaseModel implements IsSerializable
 		set("costoCena", costoCena);
 		set("costoNoleggioAuto", costoNoleggioAuto);
 		set("costotrasportiLocali", costoTrasportiLocali);
+		set("costiVari", costiVari);
 		
 	}	
-	
 }
