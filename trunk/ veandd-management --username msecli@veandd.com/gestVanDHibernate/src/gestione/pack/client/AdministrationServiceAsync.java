@@ -439,7 +439,14 @@ public interface AdministrationServiceAsync {
 
 	void editStatoCosting(int idSelected, String operazione,
 			AsyncCallback<Boolean> asyncCallback);
+	
+	void saveDatiTrasfertaUtente(int idRisorsa, int idCostingSelected,
+			String oreViaggio, String kmStradali, String carburante, String autostrada,
+			boolean usoAutoPropria, String costotreno, String costoAereo, String costiVari,
+			String numeroGiorni, String costoAlbergo, String costoPranzo, String costoCena,
+			String noleggioAuto, String trasportoLocale, AsyncCallback<Boolean> asyncCallback);
 
+	
 	
 	//-----------------------------------Strumenti Amministrativi
 	
@@ -473,6 +480,6 @@ public interface AdministrationServiceAsync {
 	void getRiepilogoSalPclOld(String data, String tabSelected,
 			AsyncCallback<List<RiepilogoSALPCLModel>> callback);
 
-	
+
 
 }

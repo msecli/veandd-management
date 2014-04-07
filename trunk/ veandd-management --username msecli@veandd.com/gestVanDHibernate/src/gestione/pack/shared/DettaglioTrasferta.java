@@ -33,6 +33,7 @@ public class DettaglioTrasferta extends LightEntity implements IsSerializable{
 	private String costoCena;
 	private String costoNoleggioAuto;
 	private String costoTrasportiLocali;
+	private String costiVari;
 	
 	//bi-directional many-to-one association to FoglioOreMese
 	@ManyToOne
@@ -236,6 +237,12 @@ public class DettaglioTrasferta extends LightEntity implements IsSerializable{
 	}
 	public void setCostingRisorsa(CostingRisorsa costingRisorsas) {
 		this.costingRisorsa = costingRisorsas;
+	}
+	public String getCostiVari() {
+		return costiVari;
+	}
+	public void setCostiVari(String costiVari) {
+		this.costiVari = costiVari;
 	}
 	
 	

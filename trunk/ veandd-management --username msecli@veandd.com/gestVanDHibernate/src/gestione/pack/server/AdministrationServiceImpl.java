@@ -10173,7 +10173,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			return false;
 		}finally{
 			//session.close();
-		}	
+		}
 	}
 
 	private void createCostingRisorsaPerNuovaVersione(int codCommessa,
@@ -10301,6 +10301,60 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}finally{
 						
 		}				
+	}
+	
+	
+	@Override
+	public boolean saveDatiTrasfertaUtente(int idRisorsa,
+			int idCostingSelected, String oreViaggio, String kmStradali,
+			String carburante, String autostrada, boolean usoAutoPropria,
+			String costotreno, String costoAereo, String costiVari,
+			String numeroGiorni, String costoAlbergo, String costoPranzo,
+			String costoCena, String noleggioAuto, String trasportoLocale) {
+
+		CostingRisorsa costing= new CostingRisorsa();
+		DettaglioTrasferta dettT= new DettaglioTrasferta();
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {
+			
+			tx=session.beginTransaction();
+		
+			costing=(CostingRisorsa)session.createQuery("from CostingRisorsa where idCosting=:idCostingRisorsa").setParameter("idCosting", idCostingSelected).uniqueResult();
+		
+			dettT.setCostiVari(costiVari);
+			dettT.setCostoAereo(costoAereo);
+			dettT.setCostoAlbergo(costoAlbergo);
+			dettT.setCostoAutostrada(autostrada);
+			dettT.setCostoCarburante(carburante);
+			dettT.setCostoCena(costoCena);
+			dettT.setCostoNoleggioAuto(noleggioAuto);
+			dettT.setCostoPranzo(costoPranzo);
+			dettT.setCostoTrasportiLocali(trasportoLocale);
+			dettT.setCostoTreno(costotreno);
+			dettT.setKmStradali(Float.valueOf(kmStradali));
+			dettT.setNumGiorni(numeroGiorni);
+			dettT.setNumViaggi(oreViaggio);
+			dettT.setOreViaggio(oreViaggio);
+						
+			dettT.setCostingRisorsa(costing);
+			costing.getDettaglioTrasfertas().add(dettT);
+			
+			session.save(costing);			
+			tx.commit();
+			
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+			if (tx!=null)
+				tx.rollback();				
+			return false;		
+		}finally{
+			session.close();		
+		}		
+		return true;
 	}
 	
 	

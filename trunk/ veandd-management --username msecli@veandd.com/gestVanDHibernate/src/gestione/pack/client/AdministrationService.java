@@ -432,6 +432,12 @@ public interface AdministrationService extends RemoteService {
 			String anno, String string, String string2, String string3,
 			String pm, List<CommessaModel> listaCommesseSel)throws IllegalArgumentException;
 
+	boolean saveDatiTrasfertaUtente(int idRisorsa, int idCostingSelected,
+			String oreViaggio, String kmStradali, String carburante,
+			String autostrada, boolean usoAutoPropria, String costotreno,
+			String costoAereo, String costiVari, String numeroGiorni,
+			String costoAlbergo, String costoPranzo, String costoCena,
+			String noleggioAuto, String trasportoLocale);
 	
 	//------------------------STRUMENTI AMMINISTRATIVI
 	
