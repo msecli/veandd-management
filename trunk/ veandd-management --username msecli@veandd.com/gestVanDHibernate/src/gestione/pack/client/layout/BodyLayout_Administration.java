@@ -671,7 +671,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    btnFoglioFatturazione.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	        	center.removeAll();
-	        	center.add(new CenterLayout_FoglioFatturazione());
+	        	center.add(new CenterLayout_FoglioFatturazione("AMM"));
 	        	center.layout(true);}      
 	      });
 	    btnFoglioFatturazione.setWidth("100%");
@@ -692,7 +692,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        	int w=Window.getClientWidth();
 	        	Dialog d= new Dialog();
 	        	d.setSize(w-130, h-75);
-	        	d.add(new CenterLayout_RiepilogoDatiFatturazione());
+	        	d.add(new CenterLayout_RiepilogoDatiFatturazione("AMM"));
 	        	d.setHeading("Riepilogo Dati Fatturazione");
 	        	d.setCollapsible(true);
 	        	d.setScrollMode(Scroll.AUTO);

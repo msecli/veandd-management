@@ -1,18 +1,22 @@
 package gestione.pack.client.layout.panel;
 
 import gestione.pack.client.AdministrationService;
+import gestione.pack.client.model.DettaglioTrasfertaModel;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
@@ -22,11 +26,13 @@ import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.google.gwt.i18n.client.NumberFormat;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class DialogDatiTrasferta extends Dialog {
-
 	
 	private TextField<String> txtfldNumeroGiorni;
 	private TextField<String> txtfldNumeroViaggi;
@@ -50,6 +56,7 @@ public class DialogDatiTrasferta extends Dialog {
 	private Text txtTotCostoAereo;
 	private Text txtTotCostiVari;
 	
+	private TextField<String> txtfldCostoDiaria;
 	private TextField<String> txtfldCostoAlbergo;
 	private TextField<String> txtfldCostoPranzo;
 	private TextField<String> txtfldCostoCena;
@@ -57,19 +64,22 @@ public class DialogDatiTrasferta extends Dialog {
 	private TextField<String> txtfldTrasportoLocale;
 	
 	private Text txtVuota3= new Text();
+	private Text txtTotCostoDiaria;
 	private Text txtTotCostoAlbergo;
 	private Text txtTotCostoPranzo;
 	private Text txtTotCostoCena;
 	private Text txtTotNoleggioAuto;
 	private Text txtTotTrasportoLocale;
 	
-	private Text txtTotCostiViaggio;
-	private Text txtTotCostiSoggiorno;
+	private TextField<String> txtfldTotCostiViaggio= new TextField<String>();
+	private TextField<String> txtfldTotCostiSoggiorno= new TextField<String>();
 	
 	private Button btnConferma;
 	
 	private int idRisorsaSelected;
 	private int idCostingSelected;
+	
+	NumberFormat number= NumberFormat.getFormat("0.00");
 	
 	public DialogDatiTrasferta(int idrisorsa, int idSelected){
 		
@@ -132,7 +142,6 @@ public class DialogDatiTrasferta extends Dialog {
 		layout.setLabelWidth(80);
 		layout.setLabelAlign(LabelAlign.LEFT);
 		layoutCol2.setLayout(layout);
-		layoutCol2.setStyleAttribute("padding-left", "20px");
 		
 		layout= new FormLayout();
 		layout.setLabelWidth(120);
@@ -144,81 +153,342 @@ public class DialogDatiTrasferta extends Dialog {
 		layout.setLabelAlign(LabelAlign.LEFT);
 		layoutCol4.setLayout(layout);
 		
-		txtfldOreViaggio= new TextField<String>();
-		txtfldOreViaggio.setFieldLabel("Ore Viaggio");
 		
+		//--------------LAYOUTCOL1
 		txtfldNumeroViaggi= new TextField<String>();
 		txtfldNumeroViaggi.setFieldLabel("Numero Viaggi");
+		txtfldNumeroViaggi.setValue("0");
+		
+		txtfldOreViaggio= new TextField<String>();
+		txtfldOreViaggio.setFieldLabel("Ore Viaggio A/R");
+		txtfldOreViaggio.setValue("0.00");
+		txtfldOreViaggio.setAllowBlank(false);
+		txtfldOreViaggio.addKeyListener(new KeyListener() {
+			 public void componentKeyUp(ComponentEvent event) {
+				 if(hasValue(txtfldOreViaggio)&&txtfldOreViaggio.getValue()!=null){
+					 Float totale= (float)0.00;
+					 String oreSingoloViaggio=txtfldOreViaggio.getRawValue().toString();
+					 String numeroViaggi="0";
+					 if(hasValue(txtfldNumeroViaggi)){
+						 numeroViaggi=txtfldNumeroViaggi.getRawValue().toString();
+						 totale=Float.valueOf(oreSingoloViaggio)* Float.valueOf(numeroViaggi);					 
+						 txtTotOreViaggio.setText("Ore Totali: "+number.format(totale));
+					 }
+					 
+					 calcolaTotaleViaggi();
+					
+		    	 }
+			 }
+		});
 		
 		txtfldKmStradali= new TextField<String>();
 		txtfldKmStradali.setFieldLabel("Km stradali");
-				
+		txtfldKmStradali.setValue("0.00");
+		txtfldKmStradali.setAllowBlank(false);
+		txtfldKmStradali.addKeyListener(new KeyListener() {
+			 public void componentKeyUp(ComponentEvent event) {
+				 if(hasValue(txtfldKmStradali)&&txtfldKmStradali.getValue()!=null){
+					 Float totale= (float)0.00;
+					 String kmViaggio=txtfldKmStradali.getRawValue().toString();
+					 String numeroViaggi="0";
+					 if(hasValue(txtfldNumeroViaggi)){
+						 numeroViaggi=txtfldNumeroViaggi.getRawValue().toString();
+						 totale=Float.valueOf(kmViaggio)* Float.valueOf(numeroViaggi);					 
+						 txtTotKmStradali.setText("Km Totali: "+number.format(totale));
+					 }
+					 
+					 calcolaTotaleViaggi();
+		    	 }	 
+			 }
+		});
+
 		txtfldCarburante= new TextField<String>();
 		txtfldCarburante.setFieldLabel("Costo carburante");
+		txtfldCarburante.setValue("0.00");
+		txtfldCarburante.setAllowBlank(false);
+		txtfldCarburante.addKeyListener(new KeyListener() {
+			 public void componentKeyUp(ComponentEvent event) {
+				 if(hasValue(txtfldCarburante)&&txtfldCarburante.getValue()!=null){
+					 Float totale= (float)0.00;
+					 String totCarburante=txtfldCarburante.getRawValue().toString();
+					 String numeroViaggi="0";
+					 if(hasValue(txtfldNumeroViaggi)){
+						 numeroViaggi=txtfldNumeroViaggi.getRawValue().toString();
+						 totale=Float.valueOf(totCarburante)* Float.valueOf(numeroViaggi);					 
+						 txtTotCarburante.setText("Costo Totale: "+number.format(totale));
+					 }
+					 calcolaTotaleViaggi();
+		    	 }
+			 }
+		});
 		
 		txtfldAutostrada= new TextField<String>();
 		txtfldAutostrada.setFieldLabel("Costo Autostrada");
+		txtfldAutostrada.setValue("0.00");
+		txtfldAutostrada.setAllowBlank(false);
+		txtfldAutostrada.addKeyListener(new KeyListener() {
+			 public void componentKeyUp(ComponentEvent event) {
+				 if(hasValue(txtfldAutostrada)&&txtfldAutostrada.getValue()!=null){
+					 Float totale= (float)0.00;
+					 String totAutostrada=txtfldAutostrada.getRawValue().toString();
+					 String numeroViaggi="0";
+					 if(hasValue(txtfldNumeroViaggi)){
+						 numeroViaggi=txtfldNumeroViaggi.getRawValue().toString();
+						 totale=Float.valueOf(totAutostrada)* Float.valueOf(numeroViaggi);					 
+						 txtTotAutostrada.setText("Costo Totale: "+number.format(totale));
+					 }
+					 calcolaTotaleViaggi();
+		    	 }			 
+			 }
+		});
 		
 		chbxAutoPropria=new CheckBox();
 		chbxAutoPropria.setFieldLabel("Uso auto propria");
 		
 		txtfldCostoTreno= new TextField<String>();
 		txtfldCostoTreno.setFieldLabel("Costo treno");
+		txtfldCostoTreno.setValue("0.00");
+		txtfldCostoTreno.setAllowBlank(false);
+		txtfldCostoTreno.addKeyListener(new KeyListener() {
+			 public void componentKeyUp(ComponentEvent event) {
+				 if(hasValue(txtfldCostoTreno)&&txtfldCostoTreno.getValue()!=null){
+					 Float totale= (float)0.00;
+					 String totTreno=txtfldCostoTreno.getRawValue().toString();
+					 String numeroViaggi="0";
+					 if(hasValue(txtfldNumeroViaggi)){
+						 numeroViaggi=txtfldNumeroViaggi.getRawValue().toString();
+						 totale=Float.valueOf(totTreno)* Float.valueOf(numeroViaggi);					 
+						 txtTotCostoTreno.setText("Costo Totale: "+number.format(totale));
+					 }
+					 calcolaTotaleViaggi();
+		    	 }			 
+			 }
+		});
 		
 		txtfldCostoAereo= new TextField<String>();
 		txtfldCostoAereo.setFieldLabel("Costo aereo");
+		txtfldCostoAereo.setValue("0.00");
+		txtfldCostoAereo.setAllowBlank(false);
+		txtfldCostoAereo.addKeyListener(new KeyListener() {
+			 public void componentKeyUp(ComponentEvent event) {
+				 if(hasValue(txtfldCostoAereo)&&txtfldCostoAereo.getValue()!=null){
+					 Float totale= (float)0.00;
+					 String totAereo=txtfldCostoAereo.getRawValue().toString();
+					 String numeroViaggi="0";
+					 if(hasValue(txtfldNumeroViaggi)){
+						 numeroViaggi=txtfldNumeroViaggi.getRawValue().toString();
+						 totale=Float.valueOf(totAereo)* Float.valueOf(numeroViaggi);					 
+						 txtTotCostoAereo.setText("Costo Totale: "+number.format(totale));
+					 }
+					 calcolaTotaleViaggi();
+		    	 }			 
+			 }
+		});
 		
 		txtfldCostiVari= new TextField<String>();
 		txtfldCostiVari.setFieldLabel("Costi vari");
+		txtfldCostiVari.setValue("0.00");
+		txtfldCostiVari.setAllowBlank(false);
+		txtfldCostiVari.addKeyListener(new KeyListener() {
+			 public void componentKeyUp(ComponentEvent event) {
+				 if(hasValue(txtfldCostiVari)&&txtfldCostiVari.getValue()!=null){
+					 Float totale= (float)0.00;
+					 String totVari=txtfldCostiVari.getRawValue().toString();
+					 String numeroViaggi="0";
+					 if(hasValue(txtfldNumeroViaggi)){
+						 numeroViaggi=txtfldNumeroViaggi.getRawValue().toString();
+						 totale=Float.valueOf(totVari)* Float.valueOf(numeroViaggi);					 
+						 txtTotCostiVari.setText("Costo Totale: "+number.format(totale));
+					 }
+					 calcolaTotaleViaggi();
+		    	 }			 
+			 }
+		});
+		//-------------- 
 		
-		txtVuota1.setText(".");
-		txtVuota2.setText("");
+		
+		//-------------- LAYOUTCOL 2
+		txtVuota1.setStyleAttribute("padding-top", "6px");		
 		
 		txtTotOreViaggio= new Text();
+		txtTotOreViaggio.setStyleAttribute("padding-top", "6px");
 		
 		txtTotKmStradali= new Text();
+		txtTotKmStradali.setStyleAttribute("padding-top", "6px");
 				
 		txtTotCarburante=new Text();
+		txtTotCarburante.setStyleAttribute("padding-top", "6px");
 		
 		txtTotAutostrada= new Text();
+		txtTotAutostrada.setStyleAttribute("padding-top", "6px");
 		
 		txtTotCostoTreno= new Text();
+		txtTotCostoTreno.setStyleAttribute("padding-top", "18px");
 		
 		txtTotCostoAereo= new Text();
+		txtTotCostoAereo.setStyleAttribute("padding-top", "6px");
 		
 		txtTotCostiVari=new Text();
+		txtTotCostiVari.setStyleAttribute("padding-top", "6px");
 		
-		txtTotCostiViaggio= new Text();
+		//----------------
 		
+		
+		//---------------- LAYOUTCOL 3
 		txtfldNumeroGiorni= new TextField<String>();
 		txtfldNumeroGiorni.setFieldLabel("Numero giorni");
+		txtfldNumeroGiorni.setValue("0");
 		
+		txtfldCostoDiaria= new TextField<String>();
+		txtfldCostoDiaria.setFieldLabel("Costo diaria");
+		txtfldCostoDiaria.setValue("0.00");
+		txtfldCostoDiaria.setAllowBlank(false);
+		txtfldCostoDiaria.addKeyListener(new KeyListener() {
+			 public void componentKeyUp(ComponentEvent event) {
+				 if(hasValue(txtfldCostoDiaria)&&txtfldCostoDiaria.getValue()!=null){
+					 Float totale= (float)0.00;
+					 String totAlbergo=txtfldCostoDiaria.getRawValue().toString();
+					 String numeroViaggi="0";
+					 if(hasValue(txtfldNumeroGiorni)){
+						 numeroViaggi=txtfldNumeroGiorni.getRawValue().toString();
+						 totale=Float.valueOf(totAlbergo)* Float.valueOf(numeroViaggi);					 
+						 txtTotCostoDiaria.setText("Costo Totale: "+number.format(totale));
+					 }
+					 
+					 calcolaTotaleSoggiorno();
+		    	 }			 
+			 }
+
+			
+		});
+				
 		txtfldCostoAlbergo= new TextField<String>();
 		txtfldCostoAlbergo.setFieldLabel("Costo albergo");
+		txtfldCostoAlbergo.setValue("0.00");
+		txtfldCostoAlbergo.setAllowBlank(false);
+		txtfldCostoAlbergo.addKeyListener(new KeyListener() {
+			 public void componentKeyUp(ComponentEvent event) {
+				 if(hasValue(txtfldCostoAlbergo)&&txtfldCostoAlbergo.getValue()!=null){
+					 Float totale= (float)0.00;
+					 String totAlbergo=txtfldCostoAlbergo.getRawValue().toString();
+					 String numeroViaggi="0";
+					 if(hasValue(txtfldNumeroGiorni)){
+						 numeroViaggi=txtfldNumeroGiorni.getRawValue().toString();
+						 totale=Float.valueOf(totAlbergo)* Float.valueOf(numeroViaggi);					 
+						 txtTotCostoAlbergo.setText("Costo Totale: "+number.format(totale));
+					 }
+					 
+					 calcolaTotaleSoggiorno();
+		    	 }			 
+			 }
+
+			
+		});
 		
 		txtfldCostoPranzo= new TextField<String>();
 		txtfldCostoPranzo.setFieldLabel("Costo pranzo");
+		txtfldCostoPranzo.setValue("0.00");
+		txtfldCostoPranzo.setAllowBlank(false);
+		txtfldCostoPranzo.addKeyListener(new KeyListener() {
+			 public void componentKeyUp(ComponentEvent event) {
+				 if(hasValue(txtfldCostoPranzo)&&txtfldCostoPranzo.getValue()!=null){
+					 Float totale= (float)0.00;
+					 String totPranzo=txtfldCostoPranzo.getRawValue().toString();
+					 String numeroViaggi="0";
+					 if(hasValue(txtfldNumeroGiorni)){
+						 numeroViaggi=txtfldNumeroGiorni.getRawValue().toString();
+						 totale=Float.valueOf(totPranzo)* Float.valueOf(numeroViaggi);					 
+						 txtTotCostoPranzo.setText("Costo Totale: "+number.format(totale));
+					 }
+					 calcolaTotaleSoggiorno();
+		    	 }			 
+			 }
+		});
 		
 		txtfldCostoCena= new TextField<String>();
 		txtfldCostoCena.setFieldLabel("Costo cena");
+		txtfldCostoCena.setValue("0.00");
+		txtfldCostoCena.setAllowBlank(false);
+		txtfldCostoCena.addKeyListener(new KeyListener() {
+			 public void componentKeyUp(ComponentEvent event) {
+				 if(hasValue(txtfldCostoCena)&&txtfldCostoCena.getValue()!=null){
+					 Float totale= (float)0.00;
+					 String totCena=txtfldCostoCena.getRawValue().toString();
+					 String numeroViaggi="0";
+					 if(hasValue(txtfldNumeroGiorni)){
+						 numeroViaggi=txtfldNumeroGiorni.getRawValue().toString();
+						 totale=Float.valueOf(totCena)* Float.valueOf(numeroViaggi);					 
+						 txtTotCostoCena.setText("Costo Totale: "+number.format(totale));
+					 }
+					 calcolaTotaleSoggiorno();
+		    	 }			 
+			 }
+		});
 		
 		txtfldNoleggioAuto= new TextField<String>();
 		txtfldNoleggioAuto.setFieldLabel("Noleggio auto");
+		txtfldNoleggioAuto.setValue("0.00");
+		txtfldNoleggioAuto.setAllowBlank(false);
+		txtfldNoleggioAuto.addKeyListener(new KeyListener() {
+			 public void componentKeyUp(ComponentEvent event) {
+				 if(hasValue(txtfldNoleggioAuto)&&txtfldNoleggioAuto.getValue()!=null){
+					 Float totale= (float)0.00;
+					 String noleggioA=txtfldNoleggioAuto.getRawValue().toString();
+					 String numeroViaggi="0";
+					 if(hasValue(txtfldNumeroGiorni)){
+						 numeroViaggi=txtfldNumeroGiorni.getRawValue().toString();
+						 totale=Float.valueOf(noleggioA)* Float.valueOf(numeroViaggi);					 
+						 txtTotNoleggioAuto.setText("Costo Totale: "+number.format(totale));
+					 }
+					 calcolaTotaleSoggiorno();
+		    	 }
+			 }
+		});
 		
 		txtfldTrasportoLocale= new TextField<String>();
 		txtfldTrasportoLocale.setFieldLabel("Trasporto locale");
+		txtfldTrasportoLocale.setValue("0.00");
+		txtfldTrasportoLocale.setAllowBlank(false);
+		txtfldTrasportoLocale.addKeyListener(new KeyListener() {
+			 public void componentKeyUp(ComponentEvent event) {
+				 if(hasValue(txtfldTrasportoLocale)&&txtfldTrasportoLocale.getValue()!=null){
+					 Float totale= (float)0.00;
+					 String traspLocale=txtfldTrasportoLocale.getRawValue().toString();
+					 String numeroViaggi="0";
+					 if(hasValue(txtfldNumeroGiorni)){
+						 numeroViaggi=txtfldNumeroGiorni.getRawValue().toString();
+						 totale=Float.valueOf(traspLocale)* Float.valueOf(numeroViaggi);					 
+						 txtTotTrasportoLocale.setText("Costo Totale: "+number.format(totale));
+					 }
+					 calcolaTotaleSoggiorno();
+		    	 }
+			 }
+		});
+		//------------------
 		
-		txtTotCostiSoggiorno= new Text();
+		
+		//------------------ LAYOUTCOL 4	
+		txtVuota3.setStyleAttribute("padding-top", "6px");
+		
+		txtTotCostoDiaria= new Text();
+		txtTotCostoDiaria.setStyleAttribute("padding-top", "6px");
 		
 		txtTotCostoAlbergo= new Text();
+		txtTotCostoAlbergo.setStyleAttribute("padding-top", "6px");
 				
 		txtTotCostoPranzo= new Text();
+		txtTotCostoPranzo.setStyleAttribute("padding-top", "6px");
 		
 		txtTotCostoCena= new Text();
+		txtTotCostoCena.setStyleAttribute("padding-top", "6px");
 		
 		txtTotNoleggioAuto= new Text();
+		txtTotNoleggioAuto.setStyleAttribute("padding-top", "6px");
 		
 		txtTotTrasportoLocale= new Text();
+		txtTotTrasportoLocale.setStyleAttribute("padding-top", "6px");
+		//------------------
+		
 		
 		btnConferma= new Button("Conferma");
 		btnConferma.setWidth(80);
@@ -229,36 +499,49 @@ public class DialogDatiTrasferta extends Dialog {
 				
 				boolean checkbox= chbxAutoPropria.getValue();
 				
-				AdministrationService.Util.getInstance().saveDatiTrasfertaUtente(idRisorsaSelected, idCostingSelected, txtfldOreViaggio.getRawValue().toString(), txtfldKmStradali.getRawValue().toString(),
+				AdministrationService.Util.getInstance().saveDatiTrasfertaUtente(idRisorsaSelected, idCostingSelected, txtfldNumeroViaggi.getRawValue().toString(),
+						txtfldOreViaggio.getRawValue().toString(), txtfldKmStradali.getRawValue().toString(),
 						txtfldCarburante.getRawValue().toString(), txtfldAutostrada.getRawValue().toString(), checkbox, txtfldCostoTreno.getRawValue().toString(),
 						txtfldCostoAereo.getRawValue().toString(), txtfldCostiVari.getRawValue().toString(), txtfldNumeroGiorni.getRawValue().toString(), 
-						txtfldCostoAlbergo.getRawValue().toString(), txtfldCostoPranzo.getRawValue().toString(), txtfldCostoCena.getRawValue().toString(), 
+						txtfldCostoDiaria.getRawValue().toString(), txtfldCostoAlbergo.getRawValue().toString(), txtfldCostoPranzo.getRawValue().toString(), txtfldCostoCena.getRawValue().toString(), 
 						txtfldNoleggioAuto.getRawValue().toString(), txtfldTrasportoLocale.getRawValue().toString(), new AsyncCallback<Boolean>() {
 
 							@Override
 							public void onFailure(Throwable caught) {
-								// TODO Auto-generated method stub
-								
+								Window.alert("Errore di connessione on saveDatiTrasfertaUtente();");
 							}
 
 							@Override
 							public void onSuccess(Boolean result) {
-								// TODO Auto-generated method stub
-								
+								if(result)
+									Window.alert("Inserimento dati avvenuto");
+								else
+									Window.alert("Impossibile inserire i dati!");								
 							}
-				});
+				});				
 			}
 		});
 		
-		layoutCol1.add(txtfldNumeroViaggi,new FormData("20%"));
-		layoutCol1.add(txtfldOreViaggio,new FormData("20%"));
-		layoutCol1.add(txtfldKmStradali,new FormData("20%"));
-		layoutCol1.add(txtfldCarburante,new FormData("20%"));
-		layoutCol1.add(txtfldAutostrada,new FormData("20%"));
-		layoutCol1.add(chbxAutoPropria,new FormData("20%"));
-		layoutCol1.add(txtfldCostoTreno,new FormData("20%"));
-		layoutCol1.add(txtfldCostoAereo,new FormData("20%"));
-		layoutCol1.add(txtfldCostiVari,new FormData("20%"));
+		txtfldTotCostiViaggio.setValue("0.00");
+		txtfldTotCostiViaggio.setWidth(100);
+		txtfldTotCostiViaggio.setFieldLabel("TOTALE COSTI VIAGGIO");
+		txtfldTotCostiViaggio.setEnabled(false);
+		
+		txtfldTotCostiSoggiorno.setValue("0.00");
+		txtfldTotCostiSoggiorno.setWidth(100);
+		txtfldTotCostiSoggiorno.setEnabled(false);
+		txtfldTotCostiSoggiorno.setFieldLabel("TOTALE COSTI SOGGIORNO");
+		txtfldTotCostiSoggiorno.setStyleAttribute("padding-top", "6px");
+		
+		layoutCol1.add(txtfldNumeroViaggi,new FormData("85%"));
+		layoutCol1.add(txtfldOreViaggio,new FormData("85%"));
+		layoutCol1.add(txtfldKmStradali,new FormData("85%"));
+		layoutCol1.add(txtfldCarburante,new FormData("85%"));
+		layoutCol1.add(txtfldAutostrada,new FormData("85%"));
+		layoutCol1.add(chbxAutoPropria,new FormData("85%"));
+		layoutCol1.add(txtfldCostoTreno,new FormData("85%"));
+		layoutCol1.add(txtfldCostoAereo,new FormData("85%"));
+		layoutCol1.add(txtfldCostiVari,new FormData("85%"));
 		
 		layoutCol2.add(txtVuota1);
 		layoutCol2.add(txtTotOreViaggio);
@@ -270,27 +553,35 @@ public class DialogDatiTrasferta extends Dialog {
 		layoutCol2.add(txtTotCostoAereo);
 		layoutCol2.add(txtTotCostiVari);
 		
-		layoutCol3.add(txtfldNumeroGiorni,new FormData("20%"));
-		layoutCol3.add(txtfldCostoAlbergo,new FormData("20%"));
-		layoutCol3.add(txtfldCostoPranzo,new FormData("20%"));
-		layoutCol3.add(txtfldCostoCena,new FormData("20%"));
-		layoutCol3.add(txtfldNoleggioAuto,new FormData("20%"));
-		layoutCol3.add(txtfldTrasportoLocale,new FormData("20%"));
+		layoutCol3.add(txtfldNumeroGiorni,new FormData("85%"));
+		layoutCol3.add(txtfldCostoDiaria,new FormData("85%"));
+		layoutCol3.add(txtfldCostoAlbergo,new FormData("85%"));
+		layoutCol3.add(txtfldCostoPranzo,new FormData("85%"));
+		layoutCol3.add(txtfldCostoCena,new FormData("85%"));
+		layoutCol3.add(txtfldNoleggioAuto,new FormData("85%"));
+		layoutCol3.add(txtfldTrasportoLocale,new FormData("85%"));
 		
 		layoutCol4.add(txtVuota3);
+		layoutCol4.add(txtTotCostoDiaria);
 		layoutCol4.add(txtTotCostoAlbergo);
 		layoutCol4.add(txtTotCostoPranzo);
 		layoutCol4.add(txtTotCostoCena);
 		layoutCol4.add(txtTotNoleggioAuto);
 		layoutCol4.add(txtTotTrasportoLocale);
 		
-		cp1.add(layoutCol1);
-		cp1.add(layoutCol2);
-		cp1.setBottomComponent(txtTotCostiViaggio);
+		RowData data = new RowData(.55, 1);
+		data.setMargins(new Margins(3));
 		
-		cp2.add(layoutCol3);
-		cp2.add(layoutCol4);
-		cp2.setBottomComponent(txtTotCostiSoggiorno);
+		RowData data1 = new RowData(.45, 1);
+		data1.setMargins(new Margins(3));
+		
+		cp1.add(layoutCol1,data);
+		cp1.add(layoutCol2,data1);
+		cp1.setBottomComponent(txtfldTotCostiViaggio);
+		
+		cp2.add(layoutCol3,data);
+		cp2.add(layoutCol4,data1);
+		cp2.setBottomComponent(txtfldTotCostiSoggiorno);
 		
 		HorizontalPanel hp= new HorizontalPanel();
 		hp.setSpacing(5);
@@ -308,8 +599,93 @@ public class DialogDatiTrasferta extends Dialog {
 		cntpnlLayout.add(hp);
 		cntpnlLayout.setBottomComponent(hp1);
 		
+		loadDataForm();
+		
 		layoutContainer.add(cntpnlLayout, new FitData(3, 3, 3, 3));
 		add(layoutContainer);
 		
+	}
+	
+	private void loadDataForm() {		
+		AdministrationService.Util.getInstance().loadDataTrasferta(idCostingSelected, new AsyncCallback<DettaglioTrasfertaModel>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("Problemi di connessione on loadDataTrasferta()");
+			}
+
+			@Override
+			public void onSuccess(DettaglioTrasfertaModel result) {
+				if(result!=null)
+					loadData(result);
+			}
+		});
+	}
+	
+	private void loadData(DettaglioTrasfertaModel result) {
+		txtfldNumeroViaggi.setValue(String.valueOf((Float) result.get("numViaggi")));
+		txtfldOreViaggio.setValue(String.valueOf((Float)  result.get("oreViaggio")));
+		txtfldKmStradali.setValue(String.valueOf((Float) result.get("kmStradali")));
+		txtfldCarburante.setValue(String.valueOf((Float) result.get("costoCarburante")));
+		txtfldAutostrada.setValue(String.valueOf((Float) result.get("costoAutostrada")));		
+		chbxAutoPropria.setValue((Boolean) result.get("usoVetturaPropria"));
+		txtfldCostoTreno.setValue(String.valueOf((Float) result.get("costoTreno")));
+		txtfldCostoAereo.setValue(String.valueOf((Float)  result.get("costoAereo")));
+		txtfldCostiVari.setValue(String.valueOf((Float)  result.get("costiVari")));
+		
+		txtfldNumeroGiorni.setValue(String.valueOf((Float)  result.get("numGiorni")));
+		txtfldCostoDiaria.setValue(String.valueOf((Float)  result.get("diariaGiorno")));
+		txtfldCostoAlbergo.setValue(String.valueOf((Float)  result.get("costoAlbergo")));
+		txtfldCostoPranzo.setValue(String.valueOf((Float)  result.get("costoPranzo")));
+		txtfldCostoCena.setValue(String.valueOf((Float)  result.get("costoCena")));
+		txtfldNoleggioAuto.setValue(String.valueOf((Float)  result.get("costoNoleggioAuto")));
+		txtfldTrasportoLocale.setValue(String.valueOf((Float)  result.get("costoTrasportiLocali")));
+		
+		txtfldCarburante.fireEvent(Events.KeyUp);
+		txtfldCostoDiaria.fireEvent(Events.KeyUp);
+		txtfldAutostrada.fireEvent(Events.KeyUp);
+		txtfldCostoTreno.fireEvent(Events.KeyUp);
+		txtfldCostoAereo.fireEvent(Events.KeyUp);
+		txtfldCostiVari.fireEvent(Events.KeyUp);
+		txtfldCostoAlbergo.fireEvent(Events.KeyUp);
+		txtfldCostoPranzo.fireEvent(Events.KeyUp);
+		txtfldCostoCena.fireEvent(Events.KeyUp);
+		txtfldNoleggioAuto.fireEvent(Events.KeyUp);
+		txtfldTrasportoLocale.fireEvent(Events.KeyUp);
+		
+		calcolaTotaleSoggiorno();
+		calcolaTotaleViaggi();
+	}
+
+	private void calcolaTotaleSoggiorno() {
+		 Float totaleC= (float)0.00;
+		 Float numeroGiorni= Float.valueOf(txtfldNumeroGiorni.getRawValue().toString());
+		
+		 totaleC=/*(Float.valueOf(txtfldOreViaggio.getRawValue().toString()))+(Float.valueOf(txtfldKmStradali.getRawValue().toLowerCase()))+*/
+				 (Float.valueOf(txtfldCostoAlbergo.getRawValue().toString()))+(Float.valueOf(txtfldCostoPranzo.getRawValue().toString()))+
+				 (Float.valueOf(txtfldCostoCena.getRawValue().toString()))+(Float.valueOf(txtfldNoleggioAuto.getRawValue().toString()))+
+				 (Float.valueOf(txtfldTrasportoLocale.getRawValue().toString()))+(Float.valueOf(txtfldCostoDiaria.getRawValue().toString()));
+		 
+		 totaleC=totaleC*numeroGiorni;
+		 
+		 txtfldTotCostiSoggiorno.setValue(number.format(totaleC));
+	}
+	
+	private void calcolaTotaleViaggi() {
+		 Float totaleC= (float)0.00;
+		 Float numeroViaggi= Float.valueOf(txtfldNumeroViaggi.getRawValue().toString());
+		
+		 totaleC=/*(Float.valueOf(txtfldOreViaggio.getRawValue().toString()))+(Float.valueOf(txtfldKmStradali.getRawValue().toLowerCase()))+*/
+				 (Float.valueOf(txtfldCarburante.getRawValue().toString()))+(Float.valueOf(txtfldAutostrada.getRawValue().toString()))+
+				 (Float.valueOf(txtfldCostoTreno.getRawValue().toString()))+(Float.valueOf(txtfldCostoAereo.getRawValue().toString()))+
+				 (Float.valueOf(txtfldCostiVari.getRawValue().toString()));
+		 
+		 totaleC=totaleC*numeroViaggi;
+		 
+		 txtfldTotCostiViaggio.setValue(number.format(totaleC));
+	}
+	
+	private boolean hasValue(TextField<String> field) {
+		return field.getValue() != null && field.isValid();
 	}
 }

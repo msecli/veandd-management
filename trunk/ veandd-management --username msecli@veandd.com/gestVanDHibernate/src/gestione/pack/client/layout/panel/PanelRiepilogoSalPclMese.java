@@ -505,7 +505,7 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 		});
 	    configs.add(columnImporto); 	
 	    	    
-	    SummaryColumnConfig<Double> columnOreLavoro=new SummaryColumnConfig<Double>();		
+	   /* SummaryColumnConfig<Double> columnOreLavoro=new SummaryColumnConfig<Double>();		
 	    columnOreLavoro.setId("oreEseguite");  
 	    columnOreLavoro.setHeader("Ore Eseguite");  
 	    columnOreLavoro.setWidth(90);    
@@ -520,7 +520,7 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 				return num.format(value);
 			}
 		});
-	    configs.add(columnOreLavoro); 	
+	    configs.add(columnOreLavoro); 	*/
 	    
 	      
 	    SummaryColumnConfig<Double> columnImportoMese=new SummaryColumnConfig<Double>();		

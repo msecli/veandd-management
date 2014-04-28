@@ -12,6 +12,7 @@ import gestione.pack.client.model.CostingModel;
 import gestione.pack.client.model.CostingRisorsaModel;
 import gestione.pack.client.model.DatiFatturazioneCommessaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
+import gestione.pack.client.model.DettaglioTrasfertaModel;
 import gestione.pack.client.model.FatturaModel;
 import gestione.pack.client.model.FoglioFatturazioneModel;
 import gestione.pack.client.model.GestioneCostiDipendentiModel;
@@ -440,13 +441,16 @@ public interface AdministrationServiceAsync {
 	void editStatoCosting(int idSelected, String operazione,
 			AsyncCallback<Boolean> asyncCallback);
 	
-	void saveDatiTrasfertaUtente(int idRisorsa, int idCostingSelected,
+	void saveDatiTrasfertaUtente(int idRisorsa, int idCostingSelected, String numeroViaggi,
 			String oreViaggio, String kmStradali, String carburante, String autostrada,
 			boolean usoAutoPropria, String costotreno, String costoAereo, String costiVari,
 			String numeroGiorni, String costoAlbergo, String costoPranzo, String costoCena,
-			String noleggioAuto, String trasportoLocale, AsyncCallback<Boolean> asyncCallback);
+			String noleggioAuto, String trasportoLocale, String costoDiaria, AsyncCallback<Boolean> asyncCallback);
 
-	
+	void loadDataTrasferta(int idCostingSelected,
+			AsyncCallback<DettaglioTrasfertaModel> asyncCallback);
+
+
 	
 	//-----------------------------------Strumenti Amministrativi
 	
@@ -480,6 +484,7 @@ public interface AdministrationServiceAsync {
 	void getRiepilogoSalPclOld(String data, String tabSelected,
 			AsyncCallback<List<RiepilogoSALPCLModel>> callback);
 
-
+	void setStatoFoglioFatturazione(String mese, String anno,
+			AsyncCallback<Boolean> asyncCallback);
 
 }

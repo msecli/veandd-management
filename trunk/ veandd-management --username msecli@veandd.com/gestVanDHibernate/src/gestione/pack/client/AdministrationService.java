@@ -26,6 +26,7 @@ import gestione.pack.client.model.CostingModel;
 import gestione.pack.client.model.CostingRisorsaModel;
 import gestione.pack.client.model.DatiFatturazioneCommessaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
+import gestione.pack.client.model.DettaglioTrasfertaModel;
 import gestione.pack.client.model.FatturaModel;
 import gestione.pack.client.model.FoglioFatturazioneModel;
 import gestione.pack.client.model.GestioneCostiDipendentiModel;
@@ -433,11 +434,15 @@ public interface AdministrationService extends RemoteService {
 			String pm, List<CommessaModel> listaCommesseSel)throws IllegalArgumentException;
 
 	boolean saveDatiTrasfertaUtente(int idRisorsa, int idCostingSelected,
-			String oreViaggio, String kmStradali, String carburante,
-			String autostrada, boolean usoAutoPropria, String costotreno,
-			String costoAereo, String costiVari, String numeroGiorni,
-			String costoAlbergo, String costoPranzo, String costoCena,
-			String noleggioAuto, String trasportoLocale);
+			String numeroViaggi, String oreViaggio, String kmStradali,
+			String carburante, String autostrada, boolean usoAutoPropria,
+			String costotreno, String costoAereo, String costiVari,
+			String numeroGiorni, String costoAlbergo, String costoPranzo,
+			String costoCena, String noleggioAuto, String trasportoLocale,
+			String costoDiaria);
+	
+	DettaglioTrasfertaModel loadDataTrasferta(int idCostingSelected) throws IllegalArgumentException;
+
 	
 	//------------------------STRUMENTI AMMINISTRATIVI
 	
@@ -468,4 +473,6 @@ public interface AdministrationService extends RemoteService {
 	List<RiepilogoSALPCLModel> getRiepilogoSalPclOld(String data,
 			String tabSelected) throws IllegalArgumentException;
 
+	boolean setStatoFoglioFatturazione(String mese, String anno);
+	
 }

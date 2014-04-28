@@ -9,7 +9,6 @@ import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.layout.panel.PanelRiepilogoDatiPerFatturazione;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
-import gestione.pack.client.model.RiepilogoMensileOrdiniModel;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.DatiComboBox;
 import gestione.pack.client.utility.MyImages;
@@ -42,7 +41,6 @@ import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GroupSummaryView;
-import com.extjs.gxt.ui.client.widget.grid.RowExpander;
 import com.extjs.gxt.ui.client.widget.grid.SummaryColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.SummaryRenderer;
 import com.extjs.gxt.ui.client.widget.grid.SummaryType;
@@ -68,6 +66,12 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
 	private static String url= "/gestvandhibernate/PrintDataServlet";
 
+	private String ruolo= new String();
+	
+	public CenterLayout_RiepilogoDatiFatturazione(String ruolo){
+		this.ruolo=ruolo;
+	}
+	
 	protected void onRender(Element target, int index) {  
 	    super.onRender(target, index);
 
@@ -96,6 +100,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		private Button btnSelect;
 		private Button btnPrint;
 		private Button btnRiepDatiFatt;
+		private Button btnConfermaDati;
 		
 		CntpnlRiepilogoMese(){
 			
@@ -272,6 +277,37 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 				}
 			});
 			
+			btnConfermaDati= new Button();
+			btnConfermaDati.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.confirm()));
+			btnConfermaDati.setToolTip("Conferma i dati del mese");
+			btnConfermaDati.setIconAlign(IconAlign.TOP);
+			btnConfermaDati.setSize(26, 26);
+			btnConfermaDati.addSelectionListener(new SelectionListener<ButtonEvent>() {		
+				@Override
+				public void componentSelected(ButtonEvent ce) {
+					String mese=smplcmbxMese.getRawValue().toString();
+					String anno=smplcmbxAnno.getRawValue().toString();
+					mese=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
+					
+					AdministrationService.Util.getInstance().setStatoFoglioFatturazione(mese, anno, new AsyncCallback<Boolean>(){
+						@Override
+						public void onFailure(Throwable caught) {
+							Window.alert("Errore di connessione on setStatoFoglioFatturazione();");
+						}
+
+						@Override
+						public void onSuccess(Boolean result) {
+							if(result)
+								Window.alert("Conferma avvenuta con successo!");
+							else
+								Window.alert("Problemi riscontrati durante l'accesso ai dati!");
+						}
+					});
+				}
+			});
+			if((ruolo.compareTo("AMM")!=0)&&(ruolo.compareTo("UA")!=0))
+				btnConfermaDati.setVisible(false);		
+			
 			fp.setMethod(FormPanel.METHOD_POST);
 			fp.setAction(url);
 			fp.addSubmitCompleteHandler(new FormSubmitCompleteHandler());  
@@ -291,6 +327,8 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			tlbOperazioni.add(txtFiltri);
 			tlbOperazioni.add(smplcmbxPM);			
 			tlbOperazioni.add(cp);
+			tlbOperazioni.add(new SeparatorToolItem());
+			tlbOperazioni.add(btnConfermaDati);
 			setTopComponent(tlbOperazioni);
 			
 		    try {

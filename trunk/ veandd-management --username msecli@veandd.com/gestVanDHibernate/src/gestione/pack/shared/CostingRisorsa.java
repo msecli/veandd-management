@@ -1,5 +1,6 @@
 package gestione.pack.shared;
 
+import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -27,10 +28,17 @@ public class CostingRisorsa extends LightEntity implements IsSerializable {
 	private int idCostingRisorsa;
 
 	private String costoOrario;
+	private String costoStruttura;
+	private String costoOneri;
+	private String costoHwSw;
 	private String efficienza;
 	private String progetto;
 	private String oreLavoro;
 	private String tariffa;
+	@Temporal( TemporalType.DATE)
+	private Date dataInizioAttivita;
+	@Temporal( TemporalType.DATE)
+	private Date dataFineAttivita;
 
 	//bi-directional many-to-one association to Costing
     @ManyToOne
@@ -121,5 +129,93 @@ public class CostingRisorsa extends LightEntity implements IsSerializable {
 
 	public void setDettaglioTrasfertas(Set<DettaglioTrasferta> dettaglioTrasfertas) {
 		this.dettaglioTrasfertas = dettaglioTrasfertas;
+	}
+
+	/**
+	 * @return the costoOrario
+	 */
+	public String getCostoOrario() {
+		return costoOrario;
+	}
+
+	/**
+	 * @param costoOrario the costoOrario to set
+	 */
+	public void setCostoOrario(String costoOrario) {
+		this.costoOrario = costoOrario;
+	}
+
+	/**
+	 * @return the costoStruttura
+	 */
+	public String getCostoStruttura() {
+		return costoStruttura;
+	}
+
+	/**
+	 * @param costoStruttura the costoStruttura to set
+	 */
+	public void setCostoStruttura(String costoStruttura) {
+		this.costoStruttura = costoStruttura;
+	}
+
+	/**
+	 * @return the costoOneri
+	 */
+	public String getCostoOneri() {
+		return costoOneri;
+	}
+
+	/**
+	 * @param costoOneri the costoOneri to set
+	 */
+	public void setCostoOneri(String costoOneri) {
+		this.costoOneri = costoOneri;
+	}
+
+	/**
+	 * @return the costoHwSw
+	 */
+	public String getCostoHwSw() {
+		return costoHwSw;
+	}
+
+	/**
+	 * @param costoHwSw the costoHwSw to set
+	 */
+	public void setCostoHwSw(String costoHwSw) {
+		this.costoHwSw = costoHwSw;
+	}
+
+	/**
+	 * @return the progetto
+	 */
+	public String getProgetto() {
+		return progetto;
+	}
+
+	/**
+	 * @param progetto the progetto to set
+	 */
+	public void setProgetto(String progetto) {
+		this.progetto = progetto;
+	}
+
+	public Date getDataInizioAttivita() {
+		return dataInizioAttivita;
+	}
+
+	public void setDataInizioAttivita(Date dataInizioAttivita) {
+		this.dataInizioAttivita = dataInizioAttivita;
+	}
+
+	public Date getDataFineAttivita() {
+		return dataFineAttivita;
+	}
+
+	public void setDataFineAttivita(Date dataFineAttivita) {
+		this.dataFineAttivita = dataFineAttivita;
 	}	
+	
+	
 }

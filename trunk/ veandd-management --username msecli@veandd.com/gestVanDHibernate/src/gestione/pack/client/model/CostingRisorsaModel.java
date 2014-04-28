@@ -1,5 +1,7 @@
 package gestione.pack.client.model;
 
+import java.util.Date;
+
 import com.extjs.gxt.ui.client.data.BaseModel;
 
 public class CostingRisorsaModel extends BaseModel{
@@ -13,9 +15,10 @@ public class CostingRisorsaModel extends BaseModel{
 		
 	}
 	
-	public CostingRisorsaModel(int idCostingRisorsa, String area, String cliente, String progetto, String commessa, int idRisorsa, String risorsa, Float costoOrario,
-			Float oreLavoro, Float oreViaggio, int giorniViaggio, Float diaria, Float costoTotOre, Float costoTrasferta, Float costoTotale, String efficienza, 
-			Float oreDaFatturare, Float oreTrasferta, String tariffa, Float fatturatoTotale, String ebit, String ebitPerc){
+	public CostingRisorsaModel(int idCostingRisorsa, String area, String cliente, String progetto, String commessa, int idRisorsa, String risorsa,
+			Float costoOrario, Float costoStruttura,
+			Float oreLavoro, Float oreViaggio, Float giorniViaggio, /*Float diaria,*/ Float costoDiaria,Float costoTotOre, Float costoTrasferta, Float costoTotale, String efficienza, 
+			Float oreDaFatturare, Float oreTrasferta, String tariffa, Float fatturatoTotale, Float ebit, Float ebitPerc, Date dataInizioAttivita, Date dataFineAttivita){
 		
 		set("idCostingRisorsa",idCostingRisorsa);
 		set("area",area);	
@@ -25,10 +28,11 @@ public class CostingRisorsaModel extends BaseModel{
 		set("idRisorsa", idRisorsa);
 		set("risorsa", risorsa);		
 		set("costoOrario",costoOrario);
+		set("costoStruttura", costoStruttura);
 		set("oreLavoro", oreLavoro);
 		set("oreViaggio", oreViaggio);
 		set("giorniViaggio", giorniViaggio);
-		set("diaria",diaria);
+		set("costoDiaria",costoDiaria);
 		set("costoTotOre",costoTotOre);
 		set("costoTrasferta", costoTrasferta);
 		set("costoTotale", costoTotale);
@@ -39,6 +43,8 @@ public class CostingRisorsaModel extends BaseModel{
 		set("fatturatoTotale", fatturatoTotale);
 		set("ebit",ebit);
 		set("ebitPerc",ebitPerc);
+		set("dataInizioAttivita",dataInizioAttivita);
+		set("dataFineAttivita", dataFineAttivita);
 		
 	}
 }

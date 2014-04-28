@@ -2673,8 +2673,7 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 				totaleOre[1]=Float.valueOf(sommaVariazioniSal);					
 							
 			}else{
-			
-			
+						
 				listaFF.addAll(c.getFoglioFatturaziones());			
 								
 				//Considero tutti i FF compilati in mesi differenti da quello in esame
@@ -2704,6 +2703,58 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 		return totaleOre;	
 	}
 	
+	
+	public static Float[] calcolaTotaleSalPclPerEstensione(String numeroCommessa,
+			String estensione, String data) {
+		
+		List<FoglioFatturazione> listaFF= new ArrayList<FoglioFatturazione>();
+		Commessa c= new Commessa();
+		
+		Float[] totaleOre= {(float)0.0,(float)0.0};
+		String sommaVariazioniSal= "0.00";
+		String sommaVariazioniPcl= "0.00";
+		
+		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+	    formatSymbols.setDecimalSeparator('.');
+	    String pattern="0.00";
+	    DecimalFormat d= new DecimalFormat(pattern,formatSymbols);
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try{
+			tx=session.beginTransaction();
+			
+			c=(Commessa)session.createQuery("from Commessa where numeroCommessa=:numeroCommessa and estensione=:estensione").setParameter("numeroCommessa", numeroCommessa)
+					.setParameter("estensione", estensione).uniqueResult();
+			
+			listaFF.addAll(c.getFoglioFatturaziones());			
+								
+			//Considero tutti i FF compilati in mesi differenti da quello in esame
+			for(FoglioFatturazione f1:listaFF)										
+				if(ServerUtility.isPrecedente(f1.getMeseCorrente(),data)){
+					sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(f1.getVariazionePCL())));
+					sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)+ Float.valueOf( ServerUtility.getOreCentesimi(f1.getVariazioneSAL())));
+				}
+
+			sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)+ Float.valueOf(ServerUtility.getOreCentesimi(c.getSalAttuale())));
+			sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(c.getPclAttuale())));					
+			totaleOre[1]=Float.valueOf(sommaVariazioniPcl);
+			totaleOre[0]=Float.valueOf(sommaVariazioniSal);				
+						
+			tx.commit();
+		}catch (Exception e) {
+			e.printStackTrace();
+			if (tx != null)
+				tx.rollback();
+		
+		}finally{
+			session.close();
+		}	
+		
+		return totaleOre;
+	}
+	
 
 	public static boolean mesePresente(String data,
 			Set<FoglioOreMese> foglioOreMeses) {
@@ -2720,10 +2771,60 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 	public static Float calcoloTotaleCostotrasferta(
 			DettaglioTrasferta dettTrasferta) {
 		
+		Float costoTotale=(float)0.00;
+		Float numeroGiorni=Float.valueOf(dettTrasferta.getNumGiorni());
+		Float numeroViaggi=Float.valueOf(dettTrasferta.getNumViaggi());
 		
+		Float costoCarburante=Float.valueOf(dettTrasferta.getCostoCarburante());
+		Float costoAutostrada=Float.valueOf(dettTrasferta.getCostoAutostrada());
+		Float costoTreno=Float.valueOf(dettTrasferta.getCostoTreno());
+		Float costoAereo=Float.valueOf(dettTrasferta.getCostoAereo());
+		Float costoVarie=Float.valueOf(dettTrasferta.getCostiVari());
 		
+		Float costoAlbergo=Float.valueOf(dettTrasferta.getCostoAlbergo());
+		Float costoPranzo=Float.valueOf(dettTrasferta.getCostoPranzo());
+		Float costoCena=Float.valueOf(dettTrasferta.getCostoCena());
+		Float costoNoleggioAuto=Float.valueOf(dettTrasferta.getCostoNoleggioAuto());
+		Float costoTrasportoLocale=Float.valueOf(dettTrasferta.getCostoTrasportiLocali());
+		Float costoDiaria=Float.valueOf(dettTrasferta.getDiariaGiorno());
 		
-		return null;
-	}	
+		costoTotale=numeroViaggi*(costoCarburante+costoAutostrada+costoTreno+costoAereo+costoVarie)+
+					numeroGiorni*(costoAlbergo+costoPranzo+costoCena+costoNoleggioAuto+costoTrasportoLocale+costoDiaria);
+		
+		return costoTotale;
+	}
+	
+	
+	public static void setStatoFoglioFatturazione(int idFoglioFatturazione) {
+		
+		FoglioFatturazione f= new FoglioFatturazione();
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try{
+			
+			tx=session.beginTransaction();
+			
+			f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where idFoglioFatturazione=:idFoglioFatturazione")
+					.setParameter("idFoglioFatturazione", idFoglioFatturazione).uniqueResult();
+			
+			f.setStatoElaborazione("2");
+			
+			session.save(f);
+			
+			tx.commit();
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+			if (tx != null)
+				tx.rollback();
+		
+		}finally{
+			session.close();
+		}	
+		
+	}
+		
 }
 

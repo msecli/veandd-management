@@ -25,7 +25,7 @@ public class DettaglioTrasferta extends LightEntity implements IsSerializable{
 	private String costoCarburante;
 	private String diariaGiorno;
 	private String costoAutostrada;
-	private char usoVetturaPropria;
+	private String usoVetturaPropria;
 	private String costoTreno;
 	private String costoAereo;
 	private String costoAlbergo;
@@ -139,13 +139,13 @@ public class DettaglioTrasferta extends LightEntity implements IsSerializable{
 	/**
 	 * @return the usoVetturaPropria
 	 */
-	public char getUsoVetturaPropria() {
+	public String getUsoVetturaPropria() {
 		return usoVetturaPropria;
 	}
 	/**
 	 * @param usoVetturaPropria the usoVetturaPropria to set
 	 */
-	public void setUsoVetturaPropria(char usoVetturaPropria) {
+	public void setUsoVetturaPropria(String usoVetturaPropria) {
 		this.usoVetturaPropria = usoVetturaPropria;
 	}
 	/**

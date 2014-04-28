@@ -45,8 +45,6 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.grid.AggregationRenderer;
-import com.extjs.gxt.ui.client.widget.grid.AggregationRowConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -54,7 +52,6 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GroupSummaryView;
 import com.extjs.gxt.ui.client.widget.grid.SummaryColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.SummaryType;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
@@ -80,13 +77,18 @@ public CenterLayout_FoglioFatturazione(){}
 	private SimpleComboBox<String> smplcmbxPM;
 	private Button btnSelect;
 	private TextField<String> txtfldUsername= new TextField<String>();
-	private Text txtRuolo= new Text("AMM");
+	//private Text txtRuolo= new Text("AMM");
 	private HorizontalPanel hpLayout;
 	private Button btnSalva;
 	private boolean trovato=true;
 	private String numCommessa= "";
 	private String numEstensione= "";
 	private int idAttivita;
+	private String ruolo="";
+	
+	public CenterLayout_FoglioFatturazione(String ruolo){
+		this.ruolo=ruolo;
+	}
 		
 	protected void onRender(Element target, int index) {  
 	    super.onRender(target, index);
@@ -128,7 +130,7 @@ public CenterLayout_FoglioFatturazione(){}
 		cntpnlFoglioFatturazione.setHeaderVisible(false);
 		cntpnlFoglioFatturazione.setCollapsible(false);
 		cntpnlFoglioFatturazione.setBorders(false);
-		cntpnlFoglioFatturazione.setWidth(1170);
+		cntpnlFoglioFatturazione.setWidth(1300);
 		cntpnlFoglioFatturazione.setHeight(860);
 		cntpnlFoglioFatturazione.setFrame(true);
 		cntpnlFoglioFatturazione.setButtonAlign(HorizontalAlignment.CENTER);
@@ -142,7 +144,7 @@ public CenterLayout_FoglioFatturazione(){}
 		String anno= data.substring(data.length()-4, data.length());
 			
 		txtfldUsername.setVisible(false);		
-		txtRuolo.setVisible(false);
+		//txtRuolo.setVisible(false);
 		
 		smplcmbxMese.setWidth(110);
 		smplcmbxMese.setFieldLabel("Mese");
@@ -228,7 +230,7 @@ public CenterLayout_FoglioFatturazione(){}
 		if (getParent().getParent().getParent().getParent().getClass().equals(lcPM.getClass())) {
 			lcPM = (BodyLayout_PersonalManager) getParent().getParent()	.getParent().getParent();
 			txtfldUsername.setValue(lcPM.txtfldUsername.getValue().toString());
-			txtRuolo.setText("PM");
+			//txtRuolo.setText("PM");
 		}		
 		else txtfldUsername.setValue("a.b");
 		
@@ -316,7 +318,6 @@ public CenterLayout_FoglioFatturazione(){}
 
 				@Override
 				public void handleEvent(ComponentEvent be) {
-					System.out.print("brauù");
 					
 				}
 			});
@@ -703,7 +704,7 @@ public CenterLayout_FoglioFatturazione(){}
 			setBorders(false);
 			setBodyBorder(false);
 			setScrollMode(Scroll.NONE);	
-			setWidth(700);
+			setWidth(800);
 			setHeight(780);
 			setFrame(false);
 			setItemId("panelDatiFatturazione");
@@ -725,7 +726,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    cntpnlGrid.setButtonAlign(HorizontalAlignment.CENTER);  
 		    cntpnlGrid.setLayout(new FitLayout());  
 		    cntpnlGrid.setHeaderVisible(false);
-		    cntpnlGrid.setWidth(660);
+		    cntpnlGrid.setWidth(760);
 		    cntpnlGrid.setHeight(220);
 		    cntpnlGrid.setScrollMode(Scroll.AUTO);
 		
@@ -1196,8 +1197,8 @@ public CenterLayout_FoglioFatturazione(){}
 								txtfldTotFatturato.setValue(totaleEuro);
 								txtOreDaFatturare.setText("("+totaleEuro+")");
 				    	  	}
-						}	    		
-				      }
+						}
+			      }
 			});
 			
 			txtfldVariazioneSAL.setFieldLabel("Variazione SAL");
@@ -1436,7 +1437,7 @@ public CenterLayout_FoglioFatturazione(){}
 			chbxSalButtare.setFieldLabel("Sal da scartare");
 			
 			String r= new String();
-			r=txtRuolo.getText();
+			r=ruolo;
 			if(r.compareTo("PM")==0)
 				chbxSalButtare.setVisible(false);
 			chbxSalButtare.addListener(Events.OnClick, new Listener<ComponentEvent>() {
@@ -1646,7 +1647,8 @@ public CenterLayout_FoglioFatturazione(){}
 		    
 		    column=new ColumnConfig();		
 		    column.setId("sal");  
-		    column.setHeader("Var.SAL");  
+		    column.setHeader("Var.SAL"); 
+		    column.setToolTip("Variazione mensile del SAL");
 		    column.setWidth(60);  
 		    column.setRowHeader(true); 
 		    column.setAlignment(HorizontalAlignment.RIGHT);
@@ -1660,9 +1662,29 @@ public CenterLayout_FoglioFatturazione(){}
 					return number.format(n);
 				}
 			});
-		    configs.add(column); 
+		    configs.add(column);
 		    
-		    column= new ColumnConfig();
+		    
+		    column=new ColumnConfig();		
+		    column.setId("totaleSal");  
+		    column.setHeader("SAL su Est."); 
+		    column.setToolTip("Totale delle variazioni di SAL sull'estenzione");
+		    column.setWidth(60);  
+		    column.setRowHeader(true); 
+		    column.setAlignment(HorizontalAlignment.RIGHT);
+		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
+				@Override
+				public Object render(RiepilogoOreTotaliCommesse model, String property,
+						ColumnData config, int rowIndex, int colIndex,
+						ListStore<RiepilogoOreTotaliCommesse> store, Grid<RiepilogoOreTotaliCommesse> grid) {
+					
+					Float n=model.get(property);
+					return number.format(n);
+				}
+			});
+		    configs.add(column);
+		    
+		    /*column= new ColumnConfig();
 		    column.setId("salDaButtare");
 		    column.setHeader("B.");  
 		    column.setToolTip("Se verde indica Sal buttato/scartato");
@@ -1690,11 +1712,12 @@ public CenterLayout_FoglioFatturazione(){}
 					return "";
 				}
 			});
-		    configs.add(column);	
+		    configs.add(column);*/	
 		    
 		    column=new ColumnConfig();		
 		    column.setId("pcl");  
 		    column.setHeader("Var.PCL");  
+		    column.setToolTip("Variazione mensile del PCL");
 		    column.setWidth(60);  
 		    column.setRowHeader(true); 
 		    column.setAlignment(HorizontalAlignment.RIGHT);
@@ -1710,6 +1733,25 @@ public CenterLayout_FoglioFatturazione(){}
 				}
 			});
 		    configs.add(column); 
+		    
+		    column=new ColumnConfig();		
+		    column.setId("totalePcl");  
+		    column.setHeader("SAL su Est."); 
+		    column.setToolTip("Totale delle variazioni di PCL sull'estenzione");
+		    column.setWidth(60);  
+		    column.setRowHeader(true); 
+		    column.setAlignment(HorizontalAlignment.RIGHT);
+		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
+				@Override
+				public Object render(RiepilogoOreTotaliCommesse model, String property,
+						ColumnData config, int rowIndex, int colIndex,
+						ListStore<RiepilogoOreTotaliCommesse> store, Grid<RiepilogoOreTotaliCommesse> grid) {
+					
+					Float n=model.get(property);
+					return number.format(n);
+				}
+			});
+		    configs.add(column);
 		    
 			column=new ColumnConfig();		
 		    column.setId("numeroOrdine");  
@@ -1873,9 +1915,16 @@ public CenterLayout_FoglioFatturazione(){}
 						String numeroFormattato= new String();
 						numeroFormattato=number.format(riep.getOreTotali());
 						totOre=	ClientUtility.aggiornaTotGenerale(totOre, numeroFormattato);
-					}					
+					}
 				}
 				if(!nuovo){
+					
+					//String ruolo=txtRuolo.getText();
+					String statoElaborazione=result.getStato();
+					if (statoElaborazione.compareTo("2")==0 && ruolo.compareTo("AMM")!=0)
+						btnSalva.disable();
+					else
+						btnSalva.enable();
 					
 	    	  		variazionePCL=number.format(Float.valueOf(result.getVariazionePcl())*(-1));
 					scaricate=ClientUtility.aggiornaTotGenerale(result.getOreFatturate(), result.getVariazioneSal());
@@ -1991,7 +2040,7 @@ public CenterLayout_FoglioFatturazione(){}
 	    	  		chbxSalButtare.setValue(false);
 				}
 				
-				String r=txtRuolo.getText();
+				String r=ruolo;
 				
 				float oreRes=Float.valueOf(txtfldOreResiduoOrdine.getValue().toString());
 				float importoRes=Float.valueOf(txtfldImportoResiduo.getValue().toString());
