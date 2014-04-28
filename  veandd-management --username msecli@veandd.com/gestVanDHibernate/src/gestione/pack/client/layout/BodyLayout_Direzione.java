@@ -460,7 +460,7 @@ public class BodyLayout_Direzione extends LayoutContainer {
 	    btnFoglioFatturazione.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	        	center.removeAll();
-	        	center.add(new CenterLayout_FoglioFatturazione());
+	        	center.add(new CenterLayout_FoglioFatturazione("DIR"));
 	        	center.layout(true);}      
 	      });
 	    btnFoglioFatturazione.setWidth("100%");

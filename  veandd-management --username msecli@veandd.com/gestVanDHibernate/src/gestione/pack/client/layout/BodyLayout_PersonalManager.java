@@ -431,7 +431,7 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	    btnFoglioFatturazione.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	        	center.removeAll();
-	        	center.add(new CenterLayout_FoglioFatturazione());
+	        	center.add(new CenterLayout_FoglioFatturazione("PM"));
 	        	center.layout(true);}      
 	      });
 	    btnFoglioFatturazione.setWidth("100%");

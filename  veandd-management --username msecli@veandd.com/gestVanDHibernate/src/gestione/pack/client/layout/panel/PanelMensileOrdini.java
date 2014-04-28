@@ -172,7 +172,7 @@ public class PanelMensileOrdini extends LayoutContainer{
 					}				
 				});			
 			}
-		});		
+		});
 		
 		GroupSummaryView summary1 = new GroupSummaryView();  
 		summary1.setForceFit(false);  
@@ -184,7 +184,7 @@ public class PanelMensileOrdini extends LayoutContainer{
 		gridRiepMensile.setItemId("grid");
 		gridRiepMensile.setStripeRows(true); 
 		gridRiepMensile.setColumnLines(true);
-		gridRiepMensile.setView(summary1);		
+		gridRiepMensile.setView(summary1);
 		
 		ToolBar tlbrScelte= new ToolBar();
 		
@@ -324,9 +324,9 @@ public class PanelMensileOrdini extends LayoutContainer{
 		btnAggiorna.setSize(26, 26);
 		btnAggiorna.addSelectionListener(new SelectionListener<ButtonEvent>() {		
 			@Override
-			public void componentSelected(ButtonEvent ce) {		
+			public void componentSelected(ButtonEvent ce) {
 				caricaTabellaDatiOrdini();	
-			}				
+			}
 		});	
 			
 		btnChiudi=new Button();
