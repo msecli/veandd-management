@@ -444,7 +444,7 @@ public interface AdministrationServiceAsync {
 	void saveDatiTrasfertaUtente(int idRisorsa, int idCostingSelected, String numeroViaggi,
 			String oreViaggio, String kmStradali, String carburante, String autostrada,
 			boolean usoAutoPropria, String costotreno, String costoAereo, String costiVari,
-			String numeroGiorni, String costoAlbergo, String costoPranzo, String costoCena,
+			String numeroGiorni, String numeroNotti, String costoAlbergo, String costoPranzo, String costoCena,
 			String noleggioAuto, String trasportoLocale, String costoDiaria, AsyncCallback<Boolean> asyncCallback);
 
 	void loadDataTrasferta(int idCostingSelected,

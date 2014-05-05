@@ -16,8 +16,8 @@ public class CostingRisorsaModel extends BaseModel{
 	}
 	
 	public CostingRisorsaModel(int idCostingRisorsa, String area, String cliente, String progetto, String commessa, int idRisorsa, String risorsa,
-			Float costoOrario, Float costoStruttura,
-			Float oreLavoro, Float oreViaggio, Float giorniViaggio, /*Float diaria,*/ Float costoDiaria,Float costoTotOre, Float costoTrasferta, Float costoTotale, String efficienza, 
+			Float costoOrario, Float costoStruttura,Float oreLavoro, Date dataInizio, Date dataFine, Float numeroSettimane, Float orePerSettimana,
+			Float oreViaggio, Float giorniViaggio, /*Float diaria,*/ Float costoDiaria,Float costoTotOre, Float costoTrasferta, Float costoTotale, String efficienza, 
 			Float oreDaFatturare, Float oreTrasferta, String tariffa, Float fatturatoTotale, Float ebit, Float ebitPerc, Date dataInizioAttivita, Date dataFineAttivita){
 		
 		set("idCostingRisorsa",idCostingRisorsa);
@@ -30,6 +30,10 @@ public class CostingRisorsaModel extends BaseModel{
 		set("costoOrario",costoOrario);
 		set("costoStruttura", costoStruttura);
 		set("oreLavoro", oreLavoro);
+		set("dataInizio", dataInizio);
+		set("dataFine", dataFine);
+		set("numeroSettimane",numeroSettimane);
+		set("orePerSettimana", orePerSettimana);
 		set("oreViaggio", oreViaggio);
 		set("giorniViaggio", giorniViaggio);
 		set("costoDiaria",costoDiaria);

@@ -154,5 +154,8 @@ public interface MyImages extends ClientBundle{
 	
 	@Source("Icone/confirmBig.png")
 	ImageResource confirmBig();
+	
+	@Source("Icone/riepSaturazione.png")
+	ImageResource riepSaturazione();
 }
 

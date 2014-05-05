@@ -437,7 +437,7 @@ public interface AdministrationService extends RemoteService {
 			String numeroViaggi, String oreViaggio, String kmStradali,
 			String carburante, String autostrada, boolean usoAutoPropria,
 			String costotreno, String costoAereo, String costiVari,
-			String numeroGiorni, String costoAlbergo, String costoPranzo,
+			String numeroGiorni, String numeroNotti, String costoAlbergo, String costoPranzo,
 			String costoCena, String noleggioAuto, String trasportoLocale,
 			String costoDiaria);
 	

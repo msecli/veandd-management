@@ -27,6 +27,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.fx.Resizable;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
@@ -35,6 +36,7 @@ import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
@@ -54,6 +56,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
@@ -87,6 +90,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 	private Button btnConfermaDip;
 	private Button btnAddDatitrasferta;
 	private Button btnConfermaNewVersione;
+	private Button btnRiepilogoDatiSaturazione;
 	
 	private Text txtCognome= new Text();
 	private int idSelected;
@@ -198,7 +202,6 @@ public class PanelGestioneCosting extends LayoutContainer{
 	  	btnConfermaCosting.setSize(26, 26);
 	  	btnConfermaCosting.setVisible(false);
 	  	btnConfermaCosting.addSelectionListener(new SelectionListener<ButtonEvent>() {
-
 			@Override
 			public void componentSelected(ButtonEvent ce) {
 				String operazione="C";				
@@ -214,8 +217,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 						if(!result)
 							Window.alert("Impossibile completare l'operazione selezionata!");
 						else
-							caricaTabellaDatiCosting();
-						
+							caricaTabellaDatiCosting();		
 					}
 				});				
 			}	  		
@@ -333,7 +335,6 @@ public class PanelGestioneCosting extends LayoutContainer{
 						
 					}
 				});
-				
 			}
 		});	  	
 	  			
@@ -346,12 +347,11 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    btnConfermaDip.addSelectionListener(new SelectionListener<ButtonEvent>() {		
 			@Override
 			public void componentSelected(ButtonEvent ce) {
-				List<CostingRisorsaModel> lista=new ArrayList<CostingRisorsaModel>();
-		  		lista.addAll(storeCostingRisorsa.getModels());
-		  		String commessa;
-		  		for(CostingRisorsaModel c:lista){
-		  			commessa=c.get("commessa");
-		  			if(commessa.compareTo("TOTALE")!=0)
+			
+				List<Record> listaMod=storeCostingRisorsa.getModifiedRecords();
+  		
+		  		for(Record r:listaMod){
+		  			CostingRisorsaModel c=(CostingRisorsaModel)r.getModel();
 		  			AdministrationService.Util.getInstance().confermaCostingDipendente(idSelected, c, new AsyncCallback<Boolean>() {
 		  				@Override
 		  				public void onFailure(Throwable caught) {
@@ -441,6 +441,14 @@ public class PanelGestioneCosting extends LayoutContainer{
 		});
 	    
 	    
+	    btnRiepilogoDatiSaturazione= new Button();
+	    btnRiepilogoDatiSaturazione.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepSaturazione()));
+	    btnRiepilogoDatiSaturazione.setIconAlign(IconAlign.TOP);
+	    btnRiepilogoDatiSaturazione.setToolTip("Saturazione Risorsa");
+	    btnRiepilogoDatiSaturazione.setSize(26, 26);
+	    btnRiepilogoDatiSaturazione.setEnabled(true);
+	   	    
+	    
 		cmCosting = new ColumnModel(createColumnsCosting());		
 		gridCosting= new EditorGrid<CostingModel>(storeCosting, cmCosting);  
 		gridCosting.setBorders(false);  
@@ -518,6 +526,8 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    tlbCostingRisorsa.add(btnConfermaDip);
 	    tlbCostingRisorsa.add(new SeparatorToolItem());
 	    tlbCostingRisorsa.add(btnAddDatitrasferta);
+	    tlbCostingRisorsa.add(new SeparatorToolItem());
+	    tlbCostingRisorsa.add(btnRiepilogoDatiSaturazione);
 	    tlbCostingRisorsa.add(new SeparatorToolItem());
 	    tlbCostingRisorsa.add(btnConfermaNewVersione);
 	    
@@ -652,9 +662,13 @@ public class PanelGestioneCosting extends LayoutContainer{
 		GridCellRenderer<CostingRisorsaModel> renderer = new GridCellRenderer<CostingRisorsaModel>() {
             public String render(CostingRisorsaModel model, String property, ColumnData config, int rowIndex,
                     int colIndex, ListStore<CostingRisorsaModel> store, Grid<CostingRisorsaModel> grid) {
-            	
+            	final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
             	Float n=model.get(property);
-            	return num.format(n);
+				if(n!=null)            	
+					return num.format(n);
+				else
+					return num.format(0);
+            	
         }};
         
         /*GridCellRenderer<CostingRisorsaModel> rendererPerc = new GridCellRenderer<CostingRisorsaModel>() {
@@ -697,21 +711,21 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    //column.setColumnStyleName("red-background");
 	    configs.add(column); 
 	    
-	    column = new SummaryColumnConfig<Double>();  
+	   /* column = new SummaryColumnConfig<Double>();  
 	    column.setId("progetto");  
 	    column.setHeader("Descr.");
 	    column.setToolTip("Descrizione attivita");
 	    column.setWidth(100);  
-	   // column.setRenderer(renderer);
+	    //column.setRenderer(renderer);
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
-	    configs.add(column); 
+	    configs.add(column);*/ 
 	    
 	    column = new SummaryColumnConfig<Double>();  
 	    column.setId("commessa");  
 	    column.setHeader("Commessa");  
 	    column.setWidth(80);  
-	   // column.setRenderer(renderer);
+	    //column.setRenderer(renderer);
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column); 
@@ -721,7 +735,17 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    column.setId("risorsa");  
 	    column.setHeader("Risorsa");  
 	    column.setWidth(150);  
-	   // column.setRenderer(renderer);
+	    column.setRenderer(new GridCellRenderer<CostingRisorsaModel>() {
+
+			@Override
+			public Object render(CostingRisorsaModel model, String property,
+					ColumnData config, int rowIndex, int colIndex,
+					ListStore<CostingRisorsaModel> store,
+					Grid<CostingRisorsaModel> grid) {
+				config.style = config.style + ";background-color:#d2f5af;";//verde
+        	 	return model.get(property);
+			}
+		});
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    ListStore<PersonaleModel> store= new ListStore<PersonaleModel>();
@@ -792,7 +816,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    column.setHeader("Costo h.");  
 	    column.setToolTip("Costo orario per la risorsa");
 	    column.setWidth(95);  
-	   // column.setRenderer(renderer);
+	    //column.setRenderer(renderer);
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
@@ -802,7 +826,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    column.setHeader("Costo Str.");
 	    column.setToolTip("Costo di struttura");
 	    column.setWidth(95);  
-	  //  column.setRenderer(renderer);
+	    //column.setRenderer(renderer);
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);	    
@@ -813,6 +837,17 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    columnTotOreLav.setWidth(95);  
 	    columnTotOreLav.setRowHeader(true);
 	    columnTotOreLav.setAlignment(HorizontalAlignment.RIGHT);
+	    columnTotOreLav.setRenderer(new GridCellRenderer<CostingRisorsaModel>() {
+
+			@Override
+			public Object render(CostingRisorsaModel model, String property,
+					ColumnData config, int rowIndex, int colIndex,
+					ListStore<CostingRisorsaModel> store,
+					Grid<CostingRisorsaModel> grid) {
+				config.style = config.style + ";background-color:#d2f5af;";//verde
+        	 	return model.get(property);
+			}
+		});
 	    TextField<String> txtfldOreLavoro= new TextField<String>();
 	    //txtfldOreLavoro.setRegex("[0-9]+[.]{1}[0-9]{2}|[0-9]");
 	    //txtfldOreLavoro.getMessages().setRegexText("Deve essere un numero!");
@@ -823,7 +858,8 @@ public class PanelGestioneCosting extends LayoutContainer{
 	          if (value == null) {  
 	            return value;  
 	          }  
-	          return value.toString();  
+	          
+	          return Float.valueOf(value.toString());  
 	        }  
 	    
 	        @Override  
@@ -831,7 +867,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 	          if (value == null) {  
 	            return value;  
 	          }  
-	          return value.toString();  
+	          return Float.valueOf(value.toString());  
 	        }
 	    };
 	    columnTotOreLav.setEditor(editorTxt);
@@ -841,17 +877,42 @@ public class PanelGestioneCosting extends LayoutContainer{
 			@Override
 			public String render(Number value, Map<String, Number> data) {
 				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
-				return num.format(value);
+				if(value!=null)
+					return num.format(value);
+				else
+					return num.format(0);
 			}
 		});
 	    configs.add(columnTotOreLav);
-	      
+	    
+	    SummaryColumnConfig<Double> columnDataDa= new SummaryColumnConfig<Double>();
+	    columnDataDa.setId("dataInizio");
+	    columnDataDa.setHeader("Da");
+	    columnDataDa.setToolTip("Data Inizio");
+	    columnDataDa.setWidth(65);
+	    columnDataDa.setAlignment(HorizontalAlignment.RIGHT);
+	    DateField dtfldInizio= new DateField();
+	    columnDataDa.setEditor(new CellEditor(dtfldInizio));  
+	    columnDataDa.setDateTimeFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
+	    configs.add(columnDataDa);
+	    
+	    SummaryColumnConfig<Double> columnDataA= new SummaryColumnConfig<Double>();
+	    columnDataA.setId("dataFine");
+	    columnDataA.setHeader("A");
+	    columnDataA.setToolTip("Data Fine");
+	    columnDataA.setWidth(65);
+	    columnDataA.setAlignment(HorizontalAlignment.RIGHT);
+	    DateField dtfldFine= new DateField();
+	    columnDataA.setEditor(new CellEditor(dtfldFine));  
+	    columnDataA.setDateTimeFormat(DateTimeFormat.getFormat("dd/MM/yyyy")); 
+	    configs.add(columnDataA);
+	    
 	    column = new SummaryColumnConfig<Double>();  
-	    column.setId("oreViaggio");  
-	    column.setHeader("Ore V.");
-	    column.setToolTip("Ore di viaggio");
+	    column.setId("numeroSettimane");  
+	    column.setHeader("# Settimane");
+	    column.setToolTip("Numero Settimane");
 	    column.setWidth(65);  
-	  //  column.setRenderer(renderer);
+	    column.setRenderer(renderer);
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    column.setSummaryType(SummaryType.SUM);
@@ -860,7 +921,54 @@ public class PanelGestioneCosting extends LayoutContainer{
 			@Override
 			public String render(Number value, Map<String, Number> data) {
 				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
-				return num.format(value);
+				if(value!=null)
+					return num.format(value);
+				else
+					return num.format(0);
+			}
+		});
+	    configs.add(column);
+	    
+	    column = new SummaryColumnConfig<Double>();  
+	    column.setId("orePerSettimana");  
+	    column.setHeader("Ore/Settimana");
+	    column.setToolTip("Ore per Settimana");
+	    column.setWidth(65);  
+	     column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    column.setSummaryType(SummaryType.SUM);
+	    column.setSummaryRenderer(new SummaryRenderer() {
+			
+			@Override
+			public String render(Number value, Map<String, Number> data) {
+				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
+				if(value!=null)
+					return num.format(value);
+				else
+					return num.format(0);
+			}
+		});
+	    configs.add(column);
+	      
+	    column = new SummaryColumnConfig<Double>();  
+	    column.setId("oreViaggio");  
+	    column.setHeader("Ore V.");
+	    column.setToolTip("Ore di viaggio");
+	    column.setWidth(65);  
+	    column.setRenderer(renderer);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    column.setSummaryType(SummaryType.SUM);
+	    column.setSummaryRenderer(new SummaryRenderer() {
+			
+			@Override
+			public String render(Number value, Map<String, Number> data) {
+				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
+				if(value!=null)
+					return num.format(value);
+				else
+					return num.format(0);
 			}
 		});
 	    configs.add(column);
@@ -870,7 +978,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    column.setHeader("G/V");  
 	    column.setToolTip("Giorni di viaggio");
 	    column.setWidth(65);  
-	 //   column.setRenderer(renderer);
+	    column.setRenderer(renderer);
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    column.setSummaryType(SummaryType.SUM);
@@ -879,7 +987,10 @@ public class PanelGestioneCosting extends LayoutContainer{
 			@Override
 			public String render(Number value, Map<String, Number> data) {
 				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
-				return num.format(value);
+				if(value!=null)
+					return num.format(value);
+				else
+					return num.format(0);
 			}
 		});
 	    configs.add(column);
@@ -907,7 +1018,10 @@ public class PanelGestioneCosting extends LayoutContainer{
 			@Override
 			public String render(Number value, Map<String, Number> data) {
 				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
-				return num.format(value);
+				if(value!=null)
+					return num.format(value);
+				else
+					return num.format(0);
 			}
 		});
 	    configs.add(column);
@@ -926,7 +1040,10 @@ public class PanelGestioneCosting extends LayoutContainer{
 			@Override
 			public String render(Number value, Map<String, Number> data) {
 				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
-				return num.format(value);
+				if(value!=null)
+					return num.format(value);
+				else
+					return num.format(0);
 			}
 		});
 	    configs.add(column);
@@ -945,7 +1062,10 @@ public class PanelGestioneCosting extends LayoutContainer{
 			@Override
 			public String render(Number value, Map<String, Number> data) {
 				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
-				return num.format(value);
+				if(value!=null)
+					return num.format(value);
+				else
+					return num.format(0);
 			}
 		});
 	    configs.add(column);
@@ -964,7 +1084,10 @@ public class PanelGestioneCosting extends LayoutContainer{
 			@Override
 			public String render(Number value, Map<String, Number> data) {
 				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
-				return num.format(value);
+				if(value!=null)
+					return num.format(value);
+				else
+					return num.format(0);
 			}
 		});
 	    configs.add(column);
@@ -973,27 +1096,37 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    column.setId("efficienza");  
 	    column.setHeader("Efficienza");  
 	    column.setWidth(65);  
-	   // column.setRenderer(renderer);
+	    column.setRenderer(new GridCellRenderer<CostingRisorsaModel>() {
+
+			@Override
+			public Object render(CostingRisorsaModel model, String property,
+					ColumnData config, int rowIndex, int colIndex,
+					ListStore<CostingRisorsaModel> store,
+					Grid<CostingRisorsaModel> grid) {
+				config.style = config.style + ";background-color:#d2f5af;";//verde
+        	 	return model.get(property);
+			}
+		});
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    TextField<String> txtfldEfficienza= new TextField<String>();
 	    txtfldEfficienza.setValue("1.0");
 	    editorTxt= new CellEditor(txtfldEfficienza){
 	    	@Override  
-	        public Object preProcessValue(Object value) {  
+	        public Object preProcessValue(Object value) {
 	          if (value == null) {  
 	            return value;  
 	          }  
-	          return value.toString();  
+	          return Float.valueOf(value.toString());
 	        }
 	        @Override  
-	        public Object postProcessValue(Object value) {  
-	          if (value == null) {  
+	        public Object postProcessValue(Object value){
+	          if (value == null) {
 	            return value;  
-	          }  
-	          return value.toString();  
+	          }
+	          return Float.valueOf(value.toString());
 	        }  
-	    };	    
+	    };   
 	    column.setEditor(editorTxt);
 	    configs.add(column);
 	   	
@@ -1001,7 +1134,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    column.setId("oreDaFatturare");  
 	    column.setHeader("Ore da Fatturare");  
 	    column.setWidth(100);  
-	//    column.setRenderer(renderer);
+	    column.setRenderer(renderer);
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    column.setSummaryType(SummaryType.SUM);
@@ -1010,7 +1143,10 @@ public class PanelGestioneCosting extends LayoutContainer{
 			@Override
 			public String render(Number value, Map<String, Number> data) {
 				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
-				return num.format(value);
+				if(value!=null)
+					return num.format(value);
+				else
+					return num.format(0);
 			}
 		});
 	    configs.add(column);
@@ -1028,7 +1164,10 @@ public class PanelGestioneCosting extends LayoutContainer{
 			@Override
 			public String render(Number value, Map<String, Number> data) {
 				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
-				return num.format(value);
+				if(value!=null)
+					return num.format(value);
+				else
+					return num.format(0);
 			}
 		});
 	    configs.add(column);	    
@@ -1037,7 +1176,17 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    column.setId("tariffa");  
 	    column.setHeader("Tariffa");  
 	    column.setWidth(65);  
-	    //column.setRenderer(renderer);
+	    column.setRenderer(new GridCellRenderer<CostingRisorsaModel>() {
+
+			@Override
+			public Object render(CostingRisorsaModel model, String property,
+					ColumnData config, int rowIndex, int colIndex,
+					ListStore<CostingRisorsaModel> store,
+					Grid<CostingRisorsaModel> grid) {
+				config.style = config.style + ";background-color:#d2f5af;";//verde
+        	 	return model.get(property);
+			}
+		});
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    TextField<String> txtfldTariffa= new TextField<String>();
@@ -1050,7 +1199,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 	          if (value == null) {  
 	            return value;  
 	          }  
-	          return value.toString();  
+	          return Float.valueOf(value.toString());
 	        }  
 	    
 	        @Override  
@@ -1058,7 +1207,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 	          if (value == null) {  
 	            return value;  
 	          }  
-	          return value.toString();  
+	          return Float.valueOf(value.toString());
 	        }  
 	    };	    
 	    column.setEditor(editorTxt);
@@ -1077,7 +1226,10 @@ public class PanelGestioneCosting extends LayoutContainer{
 			@Override
 			public String render(Number value, Map<String, Number> data) {
 				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
-				return num.format(value);
+				if(value!=null)
+					return num.format(value);
+				else
+					return num.format(0);
 			}
 		});
 	    configs.add(column);
@@ -1095,7 +1247,10 @@ public class PanelGestioneCosting extends LayoutContainer{
 			@Override
 			public String render(Number value, Map<String, Number> data) {
 				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
-				return num.format(value);
+				if(value!=null)
+					return num.format(value);
+				else
+					return num.format(0);
 			}
 		});
 	    configs.add(column);
@@ -1104,7 +1259,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    column.setId("ebitPerc");  
 	    column.setHeader("EBIT%");    
 	    column.setWidth(50);  
-	    column.setRenderer(renderer);
+	    //column.setRenderer(renderer);
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    column.setSummaryType(SummaryType.SUM);
@@ -1119,11 +1274,13 @@ public class PanelGestioneCosting extends LayoutContainer{
 				Float totCosti=(float)0.0;
 				Float ebitPerc=(float)0.0;
 								
-				listaCostDip.add(storeCostingRisorsa.getModels());
-				for(CostingRisorsaModel c:listaCostDip.getModels()){
-					totEbit=totEbit+(Float)c.get("ebit");
-					totCosti=totCosti+(Float)c.get("costoTotale");
-				}
+				listaCostDip.add(storeCostingRisorsa.getModels());			
+					for(CostingRisorsaModel c:listaCostDip.getModels()){
+						if((Float)c.get("ebit")!=null)
+							totEbit=totEbit+(Float)c.get("ebit");
+						if((Float)c.get("costoTotale")!=null)
+							totCosti=totCosti+(Float)c.get("costoTotale");						
+					}
 				
 				ebitPerc=totEbit/totCosti;			
 				return num.format(ebitPerc);
@@ -1217,10 +1374,10 @@ public class PanelGestioneCosting extends LayoutContainer{
 			@Override
 			public void onSuccess(List<CostingRisorsaModel> result) {
 				loadTableCostingRisorse(result);
-			}		
-		});		
-	} 
-		
+			}
+		});
+	}
+	
 	private void loadTableCostingRisorse(List<CostingRisorsaModel> result) {
 		storeCostingRisorsa.removeAll();
 		storeCostingRisorsa.setStoreSorter(new StoreSorter<CostingRisorsaModel>());  

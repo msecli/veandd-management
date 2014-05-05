@@ -19,6 +19,7 @@ public class DettaglioTrasferta extends LightEntity implements IsSerializable{
 	@Id
 	private int ID_DETTAGLIO_TRASFERTA;
 	private String numGiorni;
+	private String numNotti;
 	private String numViaggi;
 	private String oreViaggio;
 	private Float kmStradali;
@@ -243,6 +244,12 @@ public class DettaglioTrasferta extends LightEntity implements IsSerializable{
 	}
 	public void setCostiVari(String costiVari) {
 		this.costiVari = costiVari;
+	}
+	public String getNumNotti() {
+		return numNotti;
+	}
+	public void setNumNotti(String numNotti) {
+		this.numNotti = numNotti;
 	}
 	
 	

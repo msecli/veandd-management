@@ -56,6 +56,7 @@ public class DialogDatiTrasferta extends Dialog {
 	private Text txtTotCostoAereo;
 	private Text txtTotCostiVari;
 	
+	private TextField<String> txtfldNumeroNotti;
 	private TextField<String> txtfldCostoDiaria;
 	private TextField<String> txtfldCostoAlbergo;
 	private TextField<String> txtfldCostoPranzo;
@@ -64,6 +65,7 @@ public class DialogDatiTrasferta extends Dialog {
 	private TextField<String> txtfldTrasportoLocale;
 	
 	private Text txtVuota3= new Text();
+	private Text txtVuota4= new Text();
 	private Text txtTotCostoDiaria;
 	private Text txtTotCostoAlbergo;
 	private Text txtTotCostoPranzo;
@@ -339,6 +341,10 @@ public class DialogDatiTrasferta extends Dialog {
 		txtfldNumeroGiorni.setFieldLabel("Numero giorni");
 		txtfldNumeroGiorni.setValue("0");
 		
+		txtfldNumeroNotti= new TextField<String>();
+		txtfldNumeroNotti.setFieldLabel("Numeri notti");
+		txtfldNumeroNotti.setValue("0");
+		
 		txtfldCostoDiaria= new TextField<String>();
 		txtfldCostoDiaria.setFieldLabel("Costo diaria");
 		txtfldCostoDiaria.setValue("0.00");
@@ -470,23 +476,25 @@ public class DialogDatiTrasferta extends Dialog {
 		//------------------ LAYOUTCOL 4	
 		txtVuota3.setStyleAttribute("padding-top", "6px");
 		
+		txtVuota4.setStyleAttribute("padding-top", "6px");
+		
 		txtTotCostoDiaria= new Text();
 		txtTotCostoDiaria.setStyleAttribute("padding-top", "6px");
 		
 		txtTotCostoAlbergo= new Text();
-		txtTotCostoAlbergo.setStyleAttribute("padding-top", "6px");
+		txtTotCostoAlbergo.setStyleAttribute("padding-top", "7px");
 				
 		txtTotCostoPranzo= new Text();
-		txtTotCostoPranzo.setStyleAttribute("padding-top", "6px");
+		txtTotCostoPranzo.setStyleAttribute("padding-top", "7px");
 		
 		txtTotCostoCena= new Text();
-		txtTotCostoCena.setStyleAttribute("padding-top", "6px");
+		txtTotCostoCena.setStyleAttribute("padding-top", "7px");
 		
 		txtTotNoleggioAuto= new Text();
-		txtTotNoleggioAuto.setStyleAttribute("padding-top", "6px");
+		txtTotNoleggioAuto.setStyleAttribute("padding-top", "7px");
 		
 		txtTotTrasportoLocale= new Text();
-		txtTotTrasportoLocale.setStyleAttribute("padding-top", "6px");
+		txtTotTrasportoLocale.setStyleAttribute("padding-top", "7px");
 		//------------------
 		
 		
@@ -502,7 +510,7 @@ public class DialogDatiTrasferta extends Dialog {
 				AdministrationService.Util.getInstance().saveDatiTrasfertaUtente(idRisorsaSelected, idCostingSelected, txtfldNumeroViaggi.getRawValue().toString(),
 						txtfldOreViaggio.getRawValue().toString(), txtfldKmStradali.getRawValue().toString(),
 						txtfldCarburante.getRawValue().toString(), txtfldAutostrada.getRawValue().toString(), checkbox, txtfldCostoTreno.getRawValue().toString(),
-						txtfldCostoAereo.getRawValue().toString(), txtfldCostiVari.getRawValue().toString(), txtfldNumeroGiorni.getRawValue().toString(), 
+						txtfldCostoAereo.getRawValue().toString(), txtfldCostiVari.getRawValue().toString(), txtfldNumeroGiorni.getRawValue().toString(), txtfldNumeroNotti.getRawValue().toString(),
 						txtfldCostoDiaria.getRawValue().toString(), txtfldCostoAlbergo.getRawValue().toString(), txtfldCostoPranzo.getRawValue().toString(), txtfldCostoCena.getRawValue().toString(), 
 						txtfldNoleggioAuto.getRawValue().toString(), txtfldTrasportoLocale.getRawValue().toString(), new AsyncCallback<Boolean>() {
 
@@ -554,6 +562,7 @@ public class DialogDatiTrasferta extends Dialog {
 		layoutCol2.add(txtTotCostiVari);
 		
 		layoutCol3.add(txtfldNumeroGiorni,new FormData("85%"));
+		layoutCol3.add(txtfldNumeroNotti, new FormData("85%"));
 		layoutCol3.add(txtfldCostoDiaria,new FormData("85%"));
 		layoutCol3.add(txtfldCostoAlbergo,new FormData("85%"));
 		layoutCol3.add(txtfldCostoPranzo,new FormData("85%"));
@@ -562,6 +571,7 @@ public class DialogDatiTrasferta extends Dialog {
 		layoutCol3.add(txtfldTrasportoLocale,new FormData("85%"));
 		
 		layoutCol4.add(txtVuota3);
+		layoutCol4.add(txtVuota4);
 		layoutCol4.add(txtTotCostoDiaria);
 		layoutCol4.add(txtTotCostoAlbergo);
 		layoutCol4.add(txtTotCostoPranzo);

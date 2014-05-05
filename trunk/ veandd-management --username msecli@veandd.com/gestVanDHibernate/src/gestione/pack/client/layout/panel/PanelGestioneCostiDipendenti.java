@@ -342,14 +342,15 @@ public class PanelGestioneCostiDipendenti extends LayoutContainer{
 	    column = new ColumnConfig();  
 	    column.setId("costoSwCadVari");  
 	    column.setHeader("Costo SW CAD/Vari");  
+	    column.setToolTip("Costo di tutti i software disponibili (CAD/Office/Vari");
 	    column.setWidth(140);  
 	    configs.add(column);
 	    
-	    column = new ColumnConfig();  
+	    /*column = new ColumnConfig();  
 	    column.setId("costoSwOffice");  
 	    column.setHeader("Costo SW Office");  
 	    column.setWidth(140);  
-	    configs.add(column);
+	    configs.add(column);*/
 	    
 	    column = new ColumnConfig();  
 	    column.setId("costoHw");  

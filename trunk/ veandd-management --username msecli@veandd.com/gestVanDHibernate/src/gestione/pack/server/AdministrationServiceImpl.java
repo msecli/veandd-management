@@ -9950,8 +9950,11 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				
 				ebitPerc=ebit/costoTotale;
 							
+				//TODO gestire date e num sett
+				
 				costRMod=new CostingRisorsaModel(c.getIdCostingRisorsa(), area, ragioneSociale, progetto, commessa, idRisorsa, risorsa,
-						Float.valueOf(c.getCostoOrarioRisorsa()), Float.valueOf(c.getCostoStruttura()), Float.valueOf(c.getOreLavoro()), oreViaggio, giorniViaggio, /*diaria,*/ costoDiaria,
+						Float.valueOf(c.getCostoOrarioRisorsa()), Float.valueOf(c.getCostoStruttura()), Float.valueOf(c.getOreLavoro()), new Date(), new Date(), 
+						(float)0.0,(float)0.0, oreViaggio, giorniViaggio, /*diaria,*/ costoDiaria,
 						costoTotOre, costoTrasferta, costoTotale, String.valueOf(efficienza), oreDaFatturare, oreTrasferta, tariffa, fatturatoTotale, ebit, ebitPerc,
 						dataInizioAttivita, dataFineAttivita);
 				
@@ -10026,7 +10029,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				costoTotOre=costoOrario+costoStruttura+Float.valueOf(costoAzienda.getCostoOneri())+costoHwSw;				
 				
 				cM= new CostingRisorsaModel(0 , area, cl.getRagioneSociale(), costing.getDescrizioneProgetto(), costing.getCommessa().getNumeroCommessa(), p.getId_PERSONALE(), 
-						p.getCognome()+" "+p.getNome(), costoOrario, costoStruttura, (float)0.0, (float)0.0, (float)0, /*(float) 0,*/(float)0.0, costoTotOre,  (float)0.0, (float)0.0, "0.00", 
+						p.getCognome()+" "+p.getNome(), costoOrario, costoStruttura, (float)0.0, new Date(), new Date(), (float)0.0,(float)0.0, 
+						(float)0.0, (float)0, /*(float) 0,*/(float)0.0, costoTotOre,  (float)0.0, (float)0.0, "1.00", 
 						(float)0.0, (float)0.0, "0.00", (float)0.0, ebit, ebitPerc, dataInizioAttivita, dataFineAttivita);				
 				
 				tx.commit();
@@ -10095,7 +10099,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					cR.setCostoOneri(d.format(costoOneri));
 					cR.setCostoHwSw(d.format(costoHwSw));
 					cR.setEfficienza((String) c.get("efficienza"));	
-					String a=d.format(((Float) c.get("oreLavoro")));
+					Float f=(Float) c.get("oreLavoro");
+					String a=d.format(f);
 					cR.setOreLavoro(a);
 					cR.setTariffa((String) c.get("tariffa"));
 					
@@ -10417,7 +10422,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			int idCostingSelected,String numeroViaggi, String oreViaggio, String kmStradali,
 			String carburante, String autostrada, boolean usoAutoPropria,
 			String costotreno, String costoAereo, String costiVari,
-			String numeroGiorni, String costoDiaria, String costoAlbergo, String costoPranzo,
+			String numeroGiorni, String numeroNotti, String costoDiaria, String costoAlbergo, String costoPranzo,
 			String costoCena, String noleggioAuto, String trasportoLocale) {
 
 		CostingRisorsa costing= new CostingRisorsa();
@@ -10454,6 +10459,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				dettT.setDiariaGiorno(costoDiaria);
 				dettT.setKmStradali(Float.valueOf(kmStradali));
 				dettT.setNumGiorni(numeroGiorni);
+				dettT.setNumNotti(numeroNotti);
 				dettT.setNumViaggi(numeroViaggi);
 				dettT.setOreViaggio(oreViaggio);
 				
@@ -10475,6 +10481,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				dettT.setDiariaGiorno(costoDiaria);
 				dettT.setKmStradali(Float.valueOf(kmStradali));
 				dettT.setNumGiorni(numeroGiorni);
+				dettT.setNumNotti(numeroNotti);
 				dettT.setNumViaggi(numeroViaggi);
 				dettT.setOreViaggio(oreViaggio);
 
@@ -10527,10 +10534,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				if(usoVettura.compareTo("T")==0)
 					usoVetturaB=true;					
 				
-				dettTM=new DettaglioTrasfertaModel( dettT.getID_DETTAGLIO_TRASFERTA(), Float.valueOf(dettT.getNumGiorni()), Float.valueOf(dettT.getNumViaggi()), 
-						Float.valueOf(dettT.getOreViaggio()),dettT.getKmStradali(), Float.valueOf(dettT.getCostoCarburante()), Float.valueOf(dettT.getDiariaGiorno()), 
-						Float.valueOf(dettT.getCostoAutostrada()), usoVetturaB, Float.valueOf(dettT.getCostoTreno()), Float.valueOf(dettT.getCostoAereo()), 
-						Float.valueOf(dettT.getCostoAlbergo()), Float.valueOf(dettT.getCostoPranzo()), Float.valueOf(dettT.getCostoCena()), 
+				dettTM=new DettaglioTrasfertaModel( dettT.getID_DETTAGLIO_TRASFERTA(), Float.valueOf(dettT.getNumGiorni()), Float.valueOf(dettT.getNumNotti()),
+						Float.valueOf(dettT.getNumViaggi()), Float.valueOf(dettT.getOreViaggio()),dettT.getKmStradali(), Float.valueOf(dettT.getCostoCarburante()),
+						Float.valueOf(dettT.getDiariaGiorno()), Float.valueOf(dettT.getCostoAutostrada()), usoVetturaB, Float.valueOf(dettT.getCostoTreno()), 
+						Float.valueOf(dettT.getCostoAereo()), Float.valueOf(dettT.getCostoAlbergo()), Float.valueOf(dettT.getCostoPranzo()), Float.valueOf(dettT.getCostoCena()), 
 						Float.valueOf(dettT.getCostoNoleggioAuto()), Float.valueOf(dettT.getCostoTrasportiLocali()), Float.valueOf(dettT.getCostiVari()));				
 			}		
 			
