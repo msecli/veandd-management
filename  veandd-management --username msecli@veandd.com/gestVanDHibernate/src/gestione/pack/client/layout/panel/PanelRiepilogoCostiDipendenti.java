@@ -191,15 +191,15 @@ public class PanelRiepilogoCostiDipendenti extends LayoutContainer{
 	    
 	    column = new ColumnConfig();  
 	    column.setId("costoSwCadVari");  
-	    column.setHeader("Costo SW CAD/Office");  
+	    column.setHeader("Costo SW CAD/Vari");  
 	    column.setWidth(140);  
 	    configs.add(column);
 	    
-	    column = new ColumnConfig();  
+	    /*column = new ColumnConfig();  
 	    column.setId("costoSwOffice");  
 	    column.setHeader("Costo SW Vari");  
 	    column.setWidth(140);  
-	    configs.add(column);
+	    configs.add(column);*/
 	    
 	    column = new ColumnConfig();  
 	    column.setId("costoHw");  

@@ -131,13 +131,13 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 		
 		ContentPanel cntpnlGrid = new ContentPanel();  
 	    cntpnlGrid.setBodyBorder(false);  
-	    cntpnlGrid.setButtonAlign(HorizontalAlignment.CENTER);  
+	    cntpnlGrid.setButtonAlign(HorizontalAlignment.CENTER);
 	    cntpnlGrid.setLayout(new FitLayout());  
 	    cntpnlGrid.setHeaderVisible(false);
 	    cntpnlGrid.setBorders(false);
 	    cntpnlGrid.setWidth(695);
 	    cntpnlGrid.setHeight(760);
-	    cntpnlGrid.setScrollMode(Scroll.AUTOY);   
+	    cntpnlGrid.setScrollMode(Scroll.AUTOY);
 	    cntpnlGrid.setBottomComponent(toolBar);
 
 	    caricaTabellaDati();

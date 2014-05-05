@@ -14,12 +14,13 @@ public class DettaglioTrasfertaModel extends BaseModel implements IsSerializable
 		
 	}
 
-	public DettaglioTrasfertaModel(int ID_DETTAGLIO_TRASFERTA, Float numGiorni,  Float numViaggi, Float oreViaggio, Float kmStradali, Float costoCarburante,
+	public DettaglioTrasfertaModel(int ID_DETTAGLIO_TRASFERTA, Float numGiorni, Float numeroNotti,  Float numViaggi, Float oreViaggio, Float kmStradali, Float costoCarburante,
 			Float diariaGiorno, Float costoAutostrada, boolean usoVetturaPropria, Float costoTreno, Float costoAereo, Float costoAlbergo, Float costoPranzo,
 			Float costoCena, Float costoNoleggioAuto, Float costoTrasportiLocali, Float costiVari){
 		
 		set("idDettaglioTrasferta", ID_DETTAGLIO_TRASFERTA);
 		set("numGiorni", numGiorni);
+		set("numeroNotti", numeroNotti);
 		set("numViaggi", numViaggi);
 		set("oreViaggio", oreViaggio);
 		set("kmStradali", kmStradali);
@@ -36,5 +37,5 @@ public class DettaglioTrasfertaModel extends BaseModel implements IsSerializable
 		set("costoTrasportiLocali", costoTrasportiLocali);
 		set("costiVari", costiVari);
 		
-	}	
+	}
 }
