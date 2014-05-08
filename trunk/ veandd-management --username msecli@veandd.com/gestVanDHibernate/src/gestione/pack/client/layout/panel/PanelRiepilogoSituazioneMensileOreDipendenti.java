@@ -162,6 +162,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	  	btnConferma.setIconAlign(IconAlign.TOP);
 	  	btnConferma.setToolTip("Conferma mese per singolo dipendente.");
 	  	btnConferma.setSize(26, 26);
+	  	btnConferma.disable();
 	  	btnConferma.addSelectionListener(new SelectionListener<ButtonEvent>() {		
 			@Override
 			public void componentSelected(ButtonEvent ce) {
@@ -191,6 +192,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	  	btnConfermaTutti.setIconAlign(IconAlign.TOP);
 	  	btnConfermaTutti.setSize(26, 26);
 	  	btnConfermaTutti.setToolTip("Conferma mese per tutti i dipendenti.");
+	  	btnConfermaTutti.disable();
 	  	btnConfermaTutti.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
@@ -555,11 +557,10 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	}
 	
 	public  void setRuolo(String result){
-		txtRuolo.setText(result);		
-		
-			if(txtRuolo.getText().compareTo("UG")!=0 && txtRuolo.getText().compareTo("AMM")!=0){
-				btnConferma.disable();
-				btnConfermaTutti.disable();
+		txtRuolo.setText(result);	
+			if(result.compareTo("UG")==0 || result.compareTo("AMM")==0){
+				btnConferma.enable();
+				btnConfermaTutti.enable();
 			}
 	}
 }

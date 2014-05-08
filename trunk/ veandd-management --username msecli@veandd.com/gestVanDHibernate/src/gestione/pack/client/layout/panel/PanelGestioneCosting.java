@@ -447,7 +447,24 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    btnRiepilogoDatiSaturazione.setToolTip("Saturazione Risorsa");
 	    btnRiepilogoDatiSaturazione.setSize(26, 26);
 	    btnRiepilogoDatiSaturazione.setEnabled(true);
-	   	    
+	    btnRiepilogoDatiSaturazione.addSelectionListener(new SelectionListener<ButtonEvent>() {		
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				
+				String numeroCommessa=(String) cm.getSelectedItem().get("commessa");
+				int idRisorsa=(Integer) cm.getSelectedItem().get("idRisorsa");
+				
+				Dialog dlg= new Dialog();
+				dlg.setWidth(1100);
+				dlg.setButtons("");
+				dlg.add(new PanelSaturazioneRisorsa(idRisorsa, numeroCommessa));
+				dlg.setModal(false);
+				dlg.setConstrain(false);
+				dlg.setCollapsible(true);
+				dlg.show();
+			}
+		});	        
+	    
 	    
 		cmCosting = new ColumnModel(createColumnsCosting());		
 		gridCosting= new EditorGrid<CostingModel>(storeCosting, cmCosting);  
@@ -462,13 +479,13 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    gridCosting.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<CostingModel>>() {  
 	          public void handleEvent(SelectionChangedEvent<CostingModel> be) {  
 		        	
-		            if (be.getSelection().size() > 0) { 
+		            if (be.getSelection().size() > 0) {
 		            	//btnAddRisorsa.enable();
 		            	//btnDelRisorsa.enable();
 		            	//btnConfermaDip.enable();
 		            	//btnConfermaNewVersione.enable();
 		            	idSelected=be.getSelectedItem().get("idCosting");
-		            	caricaTabellaCostingRisorsa(idSelected);           
+		            	caricaTabellaCostingRisorsa(idSelected);
 		            }             
 		      }		            
 		}); 
@@ -493,16 +510,17 @@ public class PanelGestioneCosting extends LayoutContainer{
 			public void handleEvent(ComponentEvent be) {
 				if(cm.getSelectedItem()!=null){
 					Integer idCostingRis=(Integer) cm.getSelectedItem().get("idCostingRisorsa");
+					
 					if(idCostingRis!=null)
 						if(idCostingRis!=0)
-							btnAddDatitrasferta.setEnabled(true);
+							btnAddDatitrasferta.setEnabled(true);						
 						else
 							btnAddDatitrasferta.setEnabled(false);
 					else
 						btnAddDatitrasferta.setEnabled(false);
 				}
 			}
-		});	  
+		});
 	    
 	    cpGridCosting.add(gridCosting); 
 	    tlbCosting.add(new SeparatorToolItem());
@@ -690,7 +708,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 				return num.format(valf)+"%";				
 		}};*/
 		
-	    column =new SummaryColumnConfig<Double>();  
+	   /* column =new SummaryColumnConfig<Double>();  
 	    column.setId("area");  
 	    column.setHeader("Area");  
 	    column.setWidth(100);
@@ -709,7 +727,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    //column.setColumnStyleName("red-background");
-	    configs.add(column); 
+	    configs.add(column);*/ 
 	    
 	   /* column = new SummaryColumnConfig<Double>();  
 	    column.setId("progetto");  
@@ -1030,7 +1048,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    column.setId("costoTotOre");  
 	    column.setHeader("Costo Tot/h"); 
 	    column.setToolTip("Costo totale in ore");
-	    column.setWidth(75);  
+	    column.setWidth(75);
 	    column.setRenderer(renderer);
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
@@ -1050,7 +1068,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 	  	    
 	    column =new SummaryColumnConfig<Double>();  
 	    column.setId("costoTrasferta");  
-	    column.setHeader("Costo Trasferta");  
+	    column.setHeader("Costo Trasferta");
 	    column.setToolTip("Costo trasferta");
 	    column.setWidth(75);  
 	    column.setRenderer(renderer);
@@ -1117,14 +1135,14 @@ public class PanelGestioneCosting extends LayoutContainer{
 	          if (value == null) {  
 	            return value;  
 	          }  
-	          return Float.valueOf(value.toString());
+	          return value.toString();
 	        }
 	        @Override  
 	        public Object postProcessValue(Object value){
 	          if (value == null) {
 	            return value;  
 	          }
-	          return Float.valueOf(value.toString());
+	          return value.toString();
 	        }  
 	    };   
 	    column.setEditor(editorTxt);
@@ -1199,7 +1217,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 	          if (value == null) {  
 	            return value;  
 	          }  
-	          return Float.valueOf(value.toString());
+	          return value.toString();
 	        }  
 	    
 	        @Override  
@@ -1207,7 +1225,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 	          if (value == null) {  
 	            return value;  
 	          }  
-	          return Float.valueOf(value.toString());
+	          return value.toString();
 	        }  
 	    };	    
 	    column.setEditor(editorTxt);

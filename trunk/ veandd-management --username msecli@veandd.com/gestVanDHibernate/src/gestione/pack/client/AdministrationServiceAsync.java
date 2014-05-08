@@ -41,6 +41,7 @@ import gestione.pack.client.model.RiepilogoRichiesteModel;
 import gestione.pack.client.model.RiepilogoSALPCLModel;
 import gestione.pack.client.model.RiferimentiRtvModel;
 import gestione.pack.client.model.RtvModel;
+import gestione.pack.client.model.SaturazioneRisorsaModel;
 import gestione.pack.client.model.TariffaOrdineModel;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -486,5 +487,8 @@ public interface AdministrationServiceAsync {
 
 	void setStatoFoglioFatturazione(String mese, String anno,
 			AsyncCallback<Boolean> asyncCallback);
+
+	void getDatiSaturazioneRisorsa(int idRisorsa,
+			AsyncCallback<List<SaturazioneRisorsaModel>> asyncCallback);
 
 }
