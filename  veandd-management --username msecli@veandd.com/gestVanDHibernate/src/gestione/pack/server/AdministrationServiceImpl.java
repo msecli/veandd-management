@@ -22,6 +22,7 @@ import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -82,6 +83,7 @@ import gestione.pack.client.model.RiepilogoRichiesteModel;
 import gestione.pack.client.model.RiepilogoSALPCLModel;
 import gestione.pack.client.model.RiferimentiRtvModel;
 import gestione.pack.client.model.RtvModel;
+import gestione.pack.client.model.SaturazioneRisorsaModel;
 import gestione.pack.client.model.TariffaOrdineModel;
 import gestione.pack.shared.AssociazionePtoA;
 import gestione.pack.shared.Attivita;
@@ -409,7 +411,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Transaction tx= null;
 		try {
 				tx=	session.beginTransaction();
-				listaP = (List<Personale>)session.createQuery("from Personale").list();
+				listaP = (List<Personale>)session.createQuery("from Personale where statoRapporto=:statoRapporto").setParameter("statoRapporto", "Attivo").list();
 				tx.commit();
 			
 				for(Personale p: listaP){
@@ -441,7 +443,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		    }	
 		
 		return listaNomi;
-	}	
+	}
 	
 	
 	@SuppressWarnings("unchecked")
@@ -459,7 +461,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Transaction tx= null;
 		try {
 			tx=	session.beginTransaction();
-			listaP = (List<Personale>)session.createQuery("from Personale").list();
+			listaP = (List<Personale>)session.createQuery("from Personale where statoRapporto=:statoRapporto").setParameter("statoRapporto", "Attivo").list();
 			tx.commit();
 			
 			for(Personale p: listaP){
@@ -9857,6 +9859,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	public List<CostingRisorsaModel> getRiepilogoDatiCostingRisorse(int idCosting)
 			throws IllegalArgumentException {
 		
+		final long ONE_HOUR = 60 * 60 * 1000L;
+		
 		List<CostingRisorsaModel> listaCostR= new ArrayList<CostingRisorsaModel>();
 		List<CostingRisorsa> listaCost= new ArrayList<CostingRisorsa>();
 		CostoAzienda costoA= new CostoAzienda();
@@ -9890,6 +9894,11 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Date dataInizioAttivita= null;
 		Date dataFineAttivita= null;
 		
+		Float giorniTotali=(float)0.0;
+		Float numeroSettimane=(float)0.0;
+		Float orePerSettimana=(float)0.0;
+		Integer nSettimane=0;
+		
 		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
 	    formatSymbols.setDecimalSeparator('.');
 	    String pattern="0.00";
@@ -9912,7 +9921,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 				area=cost.getArea();		
 				progetto=cost.getDescrizioneProgetto();
-				commessa=cost.getCommessa().getNumeroCommessa();
+				commessa=cost.getCommessa().getNumeroCommessa()+"."+cost.getCommessa().getEstensione();
 				
 			for(CostingRisorsa c:listaCost){	
 				
@@ -9945,16 +9954,21 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				costoTotale=costoTotOre*Float.valueOf(c.getOreLavoro());
 				costoTotale=costoTotale+costoTrasferta;//costo trasferta comprende già costo diaria		
 				fatturatoTotale=(oreDaFatturare+oreTrasferta)*Float.valueOf(tariffa);
-				
 				ebit=fatturatoTotale-costoTotale;
-				
 				ebitPerc=ebit/costoTotale;
 							
-				//TODO gestire date e num sett
+				dataInizioAttivita=c.getDataInizioAttivita();
+				dataFineAttivita=c.getDataFineAttivita();
+				giorniTotali=(float) (((dataFineAttivita.getTime() - dataInizioAttivita.getTime()) + (ONE_HOUR*24) ) / (ONE_HOUR * 24)) ;
+				nSettimane=(int) (giorniTotali / 7);
+				if(giorniTotali%7>0)
+					nSettimane=nSettimane+1;					
+					
+				orePerSettimana=Float.valueOf(c.getOreLavoro())/nSettimane;
 				
 				costRMod=new CostingRisorsaModel(c.getIdCostingRisorsa(), area, ragioneSociale, progetto, commessa, idRisorsa, risorsa,
-						Float.valueOf(c.getCostoOrarioRisorsa()), Float.valueOf(c.getCostoStruttura()), Float.valueOf(c.getOreLavoro()), new Date(), new Date(), 
-						(float)0.0,(float)0.0, oreViaggio, giorniViaggio, /*diaria,*/ costoDiaria,
+						Float.valueOf(c.getCostoOrarioRisorsa()), Float.valueOf(c.getCostoStruttura()), Float.valueOf(c.getOreLavoro()), dataInizioAttivita, dataFineAttivita, 
+						Float.valueOf(nSettimane), orePerSettimana, oreViaggio, giorniViaggio, /*diaria,*/ costoDiaria,
 						costoTotOre, costoTrasferta, costoTotale, String.valueOf(efficienza), oreDaFatturare, oreTrasferta, tariffa, fatturatoTotale, ebit, ebitPerc,
 						dataInizioAttivita, dataFineAttivita);
 				
@@ -9994,7 +10008,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Cliente cl;
 		Personale p= new Personale();
 		CostoAzienda costoAzienda= new CostoAzienda();	
-		String area="";	
+		String area="";
 		Float ebit=(float) 0.0;
 		Float ebitPerc=(float) 0.0;
 		Float costoOrario=(float) 0.0;
@@ -10003,6 +10017,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Float costoHwSw=(float)0.0;
 		Date dataInizioAttivita= null;
 		Date dataFineAttivita= null;
+		String commessa= new String();
 		
 		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
 	    formatSymbols.setDecimalSeparator('.');
@@ -10012,7 +10027,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
 
-		try {		
+		try {
 			tx=session.beginTransaction();
 			
 			p=(Personale)session.get(Personale.class, idPersonale);
@@ -10028,7 +10043,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				
 				costoTotOre=costoOrario+costoStruttura+Float.valueOf(costoAzienda.getCostoOneri())+costoHwSw;				
 				
-				cM= new CostingRisorsaModel(0 , area, cl.getRagioneSociale(), costing.getDescrizioneProgetto(), costing.getCommessa().getNumeroCommessa(), p.getId_PERSONALE(), 
+				commessa=costing.getCommessa().getNumeroCommessa()+"."+costing.getCommessa().getEstensione();
+				
+				cM= new CostingRisorsaModel(0 , area, cl.getRagioneSociale(), costing.getDescrizioneProgetto(), commessa, p.getId_PERSONALE(), 
 						p.getCognome()+" "+p.getNome(), costoOrario, costoStruttura, (float)0.0, new Date(), new Date(), (float)0.0,(float)0.0, 
 						(float)0.0, (float)0, /*(float) 0,*/(float)0.0, costoTotOre,  (float)0.0, (float)0.0, "1.00", 
 						(float)0.0, (float)0.0, "0.00", (float)0.0, ebit, ebitPerc, dataInizioAttivita, dataFineAttivita);				
@@ -10048,8 +10065,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}finally{
 			session.close();
 		}				
-	}
-	
+	}	
 	
 
 	@Override
@@ -10099,6 +10115,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					cR.setCostoOneri(d.format(costoOneri));
 					cR.setCostoHwSw(d.format(costoHwSw));
 					cR.setEfficienza((String) c.get("efficienza"));	
+					cR.setDataInizioAttivita((Date) c.get("dataInizio"));
+					cR.setDataFineAttivita((Date) c.get("dataFine"));
 					Float f=(Float) c.get("oreLavoro");
 					String a=d.format(f);
 					cR.setOreLavoro(a);
@@ -10116,11 +10134,14 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					cR.setCostoOneri(d.format(costoOneri));
 					cR.setCostoHwSw(d.format(costoHwSw));
 					cR.setEfficienza((String) c.get("efficienza"));				
-					String a=((String) c.get("oreLavoro"));
+					Float f=(Float) c.get("oreLavoro");
+					String a=d.format(f);
 					cR.setOreLavoro(a);
 					cR.setTariffa((String) c.get("tariffa"));				
 					cR.setCosting(costing);
 					cR.setPersonale(p);
+					cR.setDataInizioAttivita((Date) c.get("dataInizio"));
+					cR.setDataFineAttivita((Date) c.get("dataFine"));
 					costing.getCostingRisorsas().add(cR);
 					p.getCostingRisorsas().add(cR);				
 					session.save(p);
@@ -10138,7 +10159,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				cR.setCostoOneri(d.format(costoOneri));
 				cR.setCostoHwSw(d.format(costoHwSw));
 				cR.setEfficienza((String) c.get("efficienza"));
-				String a=((String) c.get("oreLavoro"));
+				cR.setDataInizioAttivita((Date) c.get("dataInizio"));
+				cR.setDataFineAttivita((Date) c.get("dataFine"));
+				Float f=(Float) c.get("oreLavoro");
+				String a=d.format(f);
 				cR.setOreLavoro(a);
 				cR.setTariffa((String) c.get("tariffa"));
 				cR.setCosting(costing);
@@ -11067,7 +11091,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						r.getCommessaCliente(), r.getEnte(), null, null);
 				listaRM.add(rtvM);
 			}
-					
+			
 			tx.commit();
 			
 		}catch (Exception e) {
@@ -11075,12 +11099,111 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			e.printStackTrace();
 			if (tx!=null)
 				tx.rollback();				
-					
 		}finally{
 			session.close();
-			if(!esito)	        	
+			if(!esito)
 	        	return null;
 		}
 		return listaRM;
+	}
+	
+
+	@Override
+	public List<SaturazioneRisorsaModel> getDatiSaturazioneRisorsa(int idRisorsa)
+			throws IllegalArgumentException {
+		
+		List<SaturazioneRisorsaModel> listaSM= new ArrayList<SaturazioneRisorsaModel>();
+		List<CostingRisorsa>listaC= new ArrayList<CostingRisorsa>();
+		Personale p= new Personale();
+		Boolean esito=true;
+		
+		final long ONE_HOUR = 60 * 60 * 1000L;
+		float[] oreSettimana= new float[54];
+		float[] oreDisponibili= new float[54];
+		float[] saturazionePercentuale= new float[54];
+			
+		Calendar ca1 = Calendar.getInstance();
+		Calendar ca2 = Calendar.getInstance();       
+		
+		Date dataInizio= new Date();
+		Date dataFine= new Date();
+		
+		DateFormat formatterAnno = new SimpleDateFormat("yyyy") ; 
+		DateFormat formatterMese  = new SimpleDateFormat("MM",Locale.ITALIAN);
+		DateFormat formattergiorno = new SimpleDateFormat("dd");
+				
+	    int sett_inizio=0;
+		int sett_fine=0;
+	    Float giorniTotali=(float)0.0;
+	    int nSettimane=0;
+	    Float orePerSettimana=(float)0.0;
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		//TODO mettere un check che se la data di fine è un anno avanti allora tirerò fuori le settimane solo fino alla fine dell'anno
+		//quindi devo gestire la parte grafica potendo scegliere l'anno d'interesse e prelevare le settimane per quell'anno
+		
+		try {		
+			tx=session.beginTransaction();
+		
+			p=(Personale) session.createQuery("from Personale where ID_PERSONALE=:idRisorsa").setParameter("idRisorsa", idRisorsa).uniqueResult();
+			
+			if(p.getCostingRisorsas().iterator().hasNext())
+				listaC.addAll(p.getCostingRisorsas());
+			
+			//inizializzazione
+			for(int j=0; j<55; j++){
+				oreSettimana[j]=0;
+				oreDisponibili[j]=Float.valueOf(p.getTipologiaOrario())*5;
+				saturazionePercentuale[j]=0;
+			}
+			
+			for(CostingRisorsa c:listaC){
+				dataInizio=c.getDataInizioAttivita();
+				dataFine=c.getDataFineAttivita();
+				
+				//numero settimane
+				ca1.set(Integer.valueOf(formatterAnno.format(dataInizio)), Integer.valueOf(formatterMese.format(dataInizio))
+						, Integer.valueOf(formattergiorno.format(dataInizio)));
+				sett_inizio=ca1.get(Calendar.WEEK_OF_YEAR);
+				ca2.set(Integer.valueOf(formatterAnno.format(dataFine)), Integer.valueOf(formatterMese.format(dataFine))
+						, Integer.valueOf(formattergiorno.format(dataFine)));
+				sett_fine=ca2.get(Calendar.WEEK_OF_YEAR);
+				
+				//calcolo ore per settimana
+				giorniTotali=(float) (((dataFine.getTime() - dataInizio.getTime()) + (ONE_HOUR*24) ) / (ONE_HOUR * 24)) ;
+				nSettimane=(int) (giorniTotali / 7);
+				if(giorniTotali%7>0)
+					nSettimane=nSettimane+1;									
+				orePerSettimana=Float.valueOf(c.getOreLavoro())/nSettimane;
+				
+				//riempio il vettore con tutte le ore per le settimane
+				for(int i=sett_inizio;i<=sett_fine;i++)
+					oreSettimana[i]=oreSettimana[i]+orePerSettimana;					
+								
+			}
+			
+			//calcolo del vettore saturazione
+			for(int k=1; k<55; k++){
+				if(oreSettimana[k]==0)
+					saturazionePercentuale[k]=0;
+				else
+					saturazionePercentuale[k]=oreSettimana[k]*100/oreDisponibili[k];
+			}				
+			
+			tx.commit();
+			
+		}catch (Exception e) {
+			esito=false;
+			e.printStackTrace();
+			if (tx!=null)
+				tx.rollback();				
+		}finally{
+			session.close();
+			if(!esito)
+	        	return null;
+		}
+		return listaSM;
 	}
 }

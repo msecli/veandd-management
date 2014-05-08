@@ -55,6 +55,7 @@ import gestione.pack.client.model.RiepilogoRichiesteModel;
 import gestione.pack.client.model.RiepilogoSALPCLModel;
 import gestione.pack.client.model.RiferimentiRtvModel;
 import gestione.pack.client.model.RtvModel;
+import gestione.pack.client.model.SaturazioneRisorsaModel;
 import gestione.pack.client.model.TariffaOrdineModel;
 
 import com.google.gwt.core.client.GWT;
@@ -474,5 +475,7 @@ public interface AdministrationService extends RemoteService {
 			String tabSelected) throws IllegalArgumentException;
 
 	boolean setStatoFoglioFatturazione(String mese, String anno);
+
+	List<SaturazioneRisorsaModel> getDatiSaturazioneRisorsa(int idRisorsa)throws IllegalArgumentException;
 	
 }

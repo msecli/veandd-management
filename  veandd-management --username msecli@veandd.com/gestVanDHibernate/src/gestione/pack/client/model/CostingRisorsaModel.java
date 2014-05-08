@@ -24,9 +24,9 @@ public class CostingRisorsaModel extends BaseModel{
 		set("area",area);	
 		set("cliente",cliente);
 		set("progetto",progetto);
-		set("commessa",commessa);
+		set("commessa",commessa);//comm+est
 		set("idRisorsa", idRisorsa);
-		set("risorsa", risorsa);		
+		set("risorsa", risorsa);
 		set("costoOrario",costoOrario);
 		set("costoStruttura", costoStruttura);
 		set("oreLavoro", oreLavoro);

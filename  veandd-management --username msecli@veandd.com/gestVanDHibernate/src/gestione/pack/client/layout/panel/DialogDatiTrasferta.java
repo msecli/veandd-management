@@ -6,10 +6,13 @@ import gestione.pack.client.model.DettaglioTrasfertaModel;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.DatePickerEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.KeyListener;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -44,6 +47,7 @@ public class DialogDatiTrasferta extends Dialog {
 	private TextField<String> txtfldCostoTreno;
 	private TextField<String> txtfldCostoAereo;
 	private TextField<String> txtfldCostiVari;
+	private TextField<String> txtfldCostoKmAutoPropria;
 	private CheckBox chbxAutoPropria;
 	
 	private Text txtVuota1= new Text();
@@ -55,6 +59,7 @@ public class DialogDatiTrasferta extends Dialog {
 	private Text txtTotCostoTreno;
 	private Text txtTotCostoAereo;
 	private Text txtTotCostiVari;
+	private Text txtTotCostoKmAutoPropria;
 	
 	private TextField<String> txtfldNumeroNotti;
 	private TextField<String> txtfldCostoDiaria;
@@ -160,11 +165,15 @@ public class DialogDatiTrasferta extends Dialog {
 		txtfldNumeroViaggi= new TextField<String>();
 		txtfldNumeroViaggi.setFieldLabel("Numero Viaggi");
 		txtfldNumeroViaggi.setValue("0");
+		txtfldNumeroViaggi.setRegex("[0-9]+[.]{1}[0-9]+|[0-9]+");
+		txtfldNumeroViaggi.getMessages().setRegexText("Deve essere un numero!");
 		
 		txtfldOreViaggio= new TextField<String>();
 		txtfldOreViaggio.setFieldLabel("Ore Viaggio A/R");
 		txtfldOreViaggio.setValue("0.00");
 		txtfldOreViaggio.setAllowBlank(false);
+		txtfldOreViaggio.setRegex("[0-9]+[.]{1}[0-9]+|[0-9]+");
+		txtfldOreViaggio.getMessages().setRegexText("Deve essere un numero!");
 		txtfldOreViaggio.addKeyListener(new KeyListener() {
 			 public void componentKeyUp(ComponentEvent event) {
 				 if(hasValue(txtfldOreViaggio)&&txtfldOreViaggio.getValue()!=null){
@@ -175,10 +184,8 @@ public class DialogDatiTrasferta extends Dialog {
 						 numeroViaggi=txtfldNumeroViaggi.getRawValue().toString();
 						 totale=Float.valueOf(oreSingoloViaggio)* Float.valueOf(numeroViaggi);					 
 						 txtTotOreViaggio.setText("Ore Totali: "+number.format(totale));
-					 }
-					 
-					 calcolaTotaleViaggi();
-					
+					 }					 
+					 calcolaTotaleViaggi();					
 		    	 }
 			 }
 		});
@@ -187,6 +194,8 @@ public class DialogDatiTrasferta extends Dialog {
 		txtfldKmStradali.setFieldLabel("Km stradali");
 		txtfldKmStradali.setValue("0.00");
 		txtfldKmStradali.setAllowBlank(false);
+		txtfldKmStradali.setRegex("[0-9]+[.]{1}[0-9]+|[0-9]+");
+		txtfldKmStradali.getMessages().setRegexText("Deve essere un numero!");
 		txtfldKmStradali.addKeyListener(new KeyListener() {
 			 public void componentKeyUp(ComponentEvent event) {
 				 if(hasValue(txtfldKmStradali)&&txtfldKmStradali.getValue()!=null){
@@ -197,10 +206,9 @@ public class DialogDatiTrasferta extends Dialog {
 						 numeroViaggi=txtfldNumeroViaggi.getRawValue().toString();
 						 totale=Float.valueOf(kmViaggio)* Float.valueOf(numeroViaggi);					 
 						 txtTotKmStradali.setText("Km Totali: "+number.format(totale));
-					 }
-					 
+					 }				 
 					 calcolaTotaleViaggi();
-		    	 }	 
+				 }
 			 }
 		});
 
@@ -208,15 +216,20 @@ public class DialogDatiTrasferta extends Dialog {
 		txtfldCarburante.setFieldLabel("Costo carburante");
 		txtfldCarburante.setValue("0.00");
 		txtfldCarburante.setAllowBlank(false);
+		txtfldCarburante.setRegex("[0-9]+[.]{1}[0-9]+|[0-9]+");
+		txtfldCarburante.getMessages().setRegexText("Deve essere un numero!");
 		txtfldCarburante.addKeyListener(new KeyListener() {
 			 public void componentKeyUp(ComponentEvent event) {
 				 if(hasValue(txtfldCarburante)&&txtfldCarburante.getValue()!=null){
 					 Float totale= (float)0.00;
 					 String totCarburante=txtfldCarburante.getRawValue().toString();
 					 String numeroViaggi="0";
+					 String kmStradali="0.0";
+					 
 					 if(hasValue(txtfldNumeroViaggi)){
 						 numeroViaggi=txtfldNumeroViaggi.getRawValue().toString();
-						 totale=Float.valueOf(totCarburante)* Float.valueOf(numeroViaggi);					 
+						 kmStradali=txtfldKmStradali.getRawValue().toString();
+						 totale=Float.valueOf(totCarburante)* Float.valueOf(numeroViaggi)*Float.valueOf(kmStradali);					 
 						 txtTotCarburante.setText("Costo Totale: "+number.format(totale));
 					 }
 					 calcolaTotaleViaggi();
@@ -228,6 +241,8 @@ public class DialogDatiTrasferta extends Dialog {
 		txtfldAutostrada.setFieldLabel("Costo Autostrada");
 		txtfldAutostrada.setValue("0.00");
 		txtfldAutostrada.setAllowBlank(false);
+		txtfldAutostrada.setRegex("[0-9]+[.]{1}[0-9]+|[0-9]+");
+		txtfldAutostrada.getMessages().setRegexText("Deve essere un numero!");
 		txtfldAutostrada.addKeyListener(new KeyListener() {
 			 public void componentKeyUp(ComponentEvent event) {
 				 if(hasValue(txtfldAutostrada)&&txtfldAutostrada.getValue()!=null){
@@ -246,11 +261,48 @@ public class DialogDatiTrasferta extends Dialog {
 		
 		chbxAutoPropria=new CheckBox();
 		chbxAutoPropria.setFieldLabel("Uso auto propria");
+		chbxAutoPropria.addListener(Events.Change, new Listener<BaseEvent>(){
+			@Override
+			public void handleEvent(BaseEvent be) {
+				if(chbxAutoPropria.getValue())
+					txtfldCostoKmAutoPropria.enable();
+				else{
+					txtfldCostoKmAutoPropria.disable();
+					txtfldCostoKmAutoPropria.setValue("0.00");
+				}
+			}
+		});
 		
+		
+		txtfldCostoKmAutoPropria= new TextField<String>();
+		txtfldCostoKmAutoPropria.setFieldLabel("Rimborso Km (Auto)");
+		txtfldCostoKmAutoPropria.setValue("0.00");
+		txtfldCostoKmAutoPropria.setAllowBlank(false);
+		txtfldCostoKmAutoPropria.disable();
+		txtfldCostoKmAutoPropria.setRegex("[0-9]+[.]{1}[0-9]+|[0-9]+");
+		txtfldCostoKmAutoPropria.getMessages().setRegexText("Deve essere un numero!");
+		txtfldCostoKmAutoPropria.addKeyListener(new KeyListener() {
+			 public void componentKeyUp(ComponentEvent event) {
+				 if(hasValue(txtfldCostoKmAutoPropria)&&txtfldCostoKmAutoPropria.getValue()!=null){
+					 Float totale= (float)0.00;
+					 String totRimborso=txtfldCostoKmAutoPropria.getRawValue().toString();
+					 String numeroKm="0";
+					 if(hasValue(txtfldNumeroViaggi)){
+						 numeroKm=txtfldKmStradali.getRawValue().toString();
+						 totale=Float.valueOf(totRimborso)* Float.valueOf(numeroKm);					 
+						 txtTotCostoKmAutoPropria.setText("Costo Totale: "+number.format(totale));
+					 }
+					 calcolaTotaleViaggi();
+		    	 }
+			 }
+		});
+				
 		txtfldCostoTreno= new TextField<String>();
 		txtfldCostoTreno.setFieldLabel("Costo treno");
 		txtfldCostoTreno.setValue("0.00");
 		txtfldCostoTreno.setAllowBlank(false);
+		txtfldCostoTreno.setRegex("[0-9]+[.]{1}[0-9]+|[0-9]+");
+		txtfldCostoTreno.getMessages().setRegexText("Deve essere un numero!");
 		txtfldCostoTreno.addKeyListener(new KeyListener() {
 			 public void componentKeyUp(ComponentEvent event) {
 				 if(hasValue(txtfldCostoTreno)&&txtfldCostoTreno.getValue()!=null){
@@ -271,6 +323,8 @@ public class DialogDatiTrasferta extends Dialog {
 		txtfldCostoAereo.setFieldLabel("Costo aereo");
 		txtfldCostoAereo.setValue("0.00");
 		txtfldCostoAereo.setAllowBlank(false);
+		txtfldCostoAereo.setRegex("[0-9]+[.]{1}[0-9]+|[0-9]+");
+		txtfldCostoAereo.getMessages().setRegexText("Deve essere un numero!");
 		txtfldCostoAereo.addKeyListener(new KeyListener() {
 			 public void componentKeyUp(ComponentEvent event) {
 				 if(hasValue(txtfldCostoAereo)&&txtfldCostoAereo.getValue()!=null){
@@ -291,6 +345,8 @@ public class DialogDatiTrasferta extends Dialog {
 		txtfldCostiVari.setFieldLabel("Costi vari");
 		txtfldCostiVari.setValue("0.00");
 		txtfldCostiVari.setAllowBlank(false);
+		txtfldCostiVari.setRegex("[0-9]+[.]{1}[0-9]+|[0-9]+");
+		txtfldCostiVari.getMessages().setRegexText("Deve essere un numero!");
 		txtfldCostiVari.addKeyListener(new KeyListener() {
 			 public void componentKeyUp(ComponentEvent event) {
 				 if(hasValue(txtfldCostiVari)&&txtfldCostiVari.getValue()!=null){
@@ -317,6 +373,9 @@ public class DialogDatiTrasferta extends Dialog {
 		
 		txtTotKmStradali= new Text();
 		txtTotKmStradali.setStyleAttribute("padding-top", "6px");
+		
+		txtTotCostoKmAutoPropria= new Text();
+		txtTotCostoKmAutoPropria.setStyleAttribute("padding-top", "18px");
 				
 		txtTotCarburante=new Text();
 		txtTotCarburante.setStyleAttribute("padding-top", "6px");
@@ -325,7 +384,7 @@ public class DialogDatiTrasferta extends Dialog {
 		txtTotAutostrada.setStyleAttribute("padding-top", "6px");
 		
 		txtTotCostoTreno= new Text();
-		txtTotCostoTreno.setStyleAttribute("padding-top", "18px");
+		txtTotCostoTreno.setStyleAttribute("padding-top", "10px");
 		
 		txtTotCostoAereo= new Text();
 		txtTotCostoAereo.setStyleAttribute("padding-top", "6px");
@@ -349,6 +408,8 @@ public class DialogDatiTrasferta extends Dialog {
 		txtfldCostoDiaria.setFieldLabel("Costo diaria");
 		txtfldCostoDiaria.setValue("0.00");
 		txtfldCostoDiaria.setAllowBlank(false);
+		txtfldCostoDiaria.setRegex("[0-9]+[.]{1}[0-9]+|[0-9]+");
+		txtfldCostoDiaria.getMessages().setRegexText("Deve essere un numero!");
 		txtfldCostoDiaria.addKeyListener(new KeyListener() {
 			 public void componentKeyUp(ComponentEvent event) {
 				 if(hasValue(txtfldCostoDiaria)&&txtfldCostoDiaria.getValue()!=null){
@@ -363,38 +424,37 @@ public class DialogDatiTrasferta extends Dialog {
 					 
 					 calcolaTotaleSoggiorno();
 		    	 }			 
-			 }
-
-			
+			 }			
 		});
 				
 		txtfldCostoAlbergo= new TextField<String>();
 		txtfldCostoAlbergo.setFieldLabel("Costo albergo");
 		txtfldCostoAlbergo.setValue("0.00");
 		txtfldCostoAlbergo.setAllowBlank(false);
+		txtfldCostoAlbergo.setRegex("[0-9]+[.]{1}[0-9]+|[0-9]+");
+		txtfldCostoAlbergo.getMessages().setRegexText("Deve essere un numero!");
 		txtfldCostoAlbergo.addKeyListener(new KeyListener() {
 			 public void componentKeyUp(ComponentEvent event) {
 				 if(hasValue(txtfldCostoAlbergo)&&txtfldCostoAlbergo.getValue()!=null){
 					 Float totale= (float)0.00;
 					 String totAlbergo=txtfldCostoAlbergo.getRawValue().toString();
-					 String numeroViaggi="0";
-					 if(hasValue(txtfldNumeroGiorni)){
-						 numeroViaggi=txtfldNumeroGiorni.getRawValue().toString();
-						 totale=Float.valueOf(totAlbergo)* Float.valueOf(numeroViaggi);					 
+					 String numeroNotti="0";
+					 if(hasValue(txtfldNumeroNotti)){
+						 numeroNotti=txtfldNumeroNotti.getRawValue().toString();
+						 totale=Float.valueOf(totAlbergo)* Float.valueOf(numeroNotti);					 
 						 txtTotCostoAlbergo.setText("Costo Totale: "+number.format(totale));
-					 }
-					 
+					 }					 
 					 calcolaTotaleSoggiorno();
 		    	 }			 
-			 }
-
-			
+			 }		
 		});
 		
 		txtfldCostoPranzo= new TextField<String>();
 		txtfldCostoPranzo.setFieldLabel("Costo pranzo");
 		txtfldCostoPranzo.setValue("0.00");
 		txtfldCostoPranzo.setAllowBlank(false);
+		txtfldCostoPranzo.setRegex("[0-9]+[.]{1}[0-9]+|[0-9]+");
+		txtfldCostoPranzo.getMessages().setRegexText("Deve essere un numero!");
 		txtfldCostoPranzo.addKeyListener(new KeyListener() {
 			 public void componentKeyUp(ComponentEvent event) {
 				 if(hasValue(txtfldCostoPranzo)&&txtfldCostoPranzo.getValue()!=null){
@@ -415,6 +475,8 @@ public class DialogDatiTrasferta extends Dialog {
 		txtfldCostoCena.setFieldLabel("Costo cena");
 		txtfldCostoCena.setValue("0.00");
 		txtfldCostoCena.setAllowBlank(false);
+		txtfldCostoCena.setRegex("[0-9]+[.]{1}[0-9]+|[0-9]+");
+		txtfldCostoCena.getMessages().setRegexText("Deve essere un numero!");
 		txtfldCostoCena.addKeyListener(new KeyListener() {
 			 public void componentKeyUp(ComponentEvent event) {
 				 if(hasValue(txtfldCostoCena)&&txtfldCostoCena.getValue()!=null){
@@ -435,6 +497,8 @@ public class DialogDatiTrasferta extends Dialog {
 		txtfldNoleggioAuto.setFieldLabel("Noleggio auto");
 		txtfldNoleggioAuto.setValue("0.00");
 		txtfldNoleggioAuto.setAllowBlank(false);
+		txtfldNoleggioAuto.setRegex("[0-9]+[.]{1}[0-9]+|[0-9]+");
+		txtfldNoleggioAuto.getMessages().setRegexText("Deve essere un numero!");
 		txtfldNoleggioAuto.addKeyListener(new KeyListener() {
 			 public void componentKeyUp(ComponentEvent event) {
 				 if(hasValue(txtfldNoleggioAuto)&&txtfldNoleggioAuto.getValue()!=null){
@@ -455,6 +519,8 @@ public class DialogDatiTrasferta extends Dialog {
 		txtfldTrasportoLocale.setFieldLabel("Trasporto locale");
 		txtfldTrasportoLocale.setValue("0.00");
 		txtfldTrasportoLocale.setAllowBlank(false);
+		txtfldTrasportoLocale.setRegex("[0-9]+[.]{1}[0-9]+|[0-9]+");
+		txtfldTrasportoLocale.getMessages().setRegexText("Deve essere un numero!");
 		txtfldTrasportoLocale.addKeyListener(new KeyListener() {
 			 public void componentKeyUp(ComponentEvent event) {
 				 if(hasValue(txtfldTrasportoLocale)&&txtfldTrasportoLocale.getValue()!=null){
@@ -547,6 +613,7 @@ public class DialogDatiTrasferta extends Dialog {
 		layoutCol1.add(txtfldCarburante,new FormData("85%"));
 		layoutCol1.add(txtfldAutostrada,new FormData("85%"));
 		layoutCol1.add(chbxAutoPropria,new FormData("85%"));
+		layoutCol1.add(txtfldCostoKmAutoPropria, new FormData("85%"));
 		layoutCol1.add(txtfldCostoTreno,new FormData("85%"));
 		layoutCol1.add(txtfldCostoAereo,new FormData("85%"));
 		layoutCol1.add(txtfldCostiVari,new FormData("85%"));
@@ -557,6 +624,7 @@ public class DialogDatiTrasferta extends Dialog {
 		layoutCol2.add(txtTotCarburante);
 		layoutCol2.add(txtTotAutostrada);
 		layoutCol2.add(txtVuota2);
+		layoutCol2.add(txtTotCostoKmAutoPropria);
 		layoutCol2.add(txtTotCostoTreno);
 		layoutCol2.add(txtTotCostoAereo);
 		layoutCol2.add(txtTotCostiVari);
