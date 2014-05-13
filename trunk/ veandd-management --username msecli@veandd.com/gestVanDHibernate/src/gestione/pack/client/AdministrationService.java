@@ -476,6 +476,7 @@ public interface AdministrationService extends RemoteService {
 
 	boolean setStatoFoglioFatturazione(String mese, String anno);
 
-	List<SaturazioneRisorsaModel> getDatiSaturazioneRisorsa(int idRisorsa)throws IllegalArgumentException;
+	List<SaturazioneRisorsaModel> getDatiSaturazioneRisorsa(int idRisorsa,
+			String anno);
 	
 }

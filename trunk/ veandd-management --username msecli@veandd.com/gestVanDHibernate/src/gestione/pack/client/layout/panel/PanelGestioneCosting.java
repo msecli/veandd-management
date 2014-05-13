@@ -405,7 +405,6 @@ public class PanelGestioneCosting extends LayoutContainer{
 				});				
 			}
 		});	  
-	  
 	    
 	    btnAddDatitrasferta= new Button();
 	    btnAddDatitrasferta.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.datiTimb()));
@@ -426,8 +425,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 						dlgDatiTrasferta.setWidth(910);
 						dlgDatiTrasferta.setHeading("Dati trasferta per la risorsa selezionata");
 						dlgDatiTrasferta.setButtons("");
-						dlgDatiTrasferta.show();
-						
+						dlgDatiTrasferta.show();					
 						dlgDatiTrasferta.addListener(Events.Hide, new Listener<ComponentEvent>() {			     
 							@Override
 							public void handleEvent(ComponentEvent be) {
@@ -435,11 +433,9 @@ public class PanelGestioneCosting extends LayoutContainer{
 						    }
 						});
 					}
-				}
-				
+				}	
 			}
-		});
-	    
+		});	    
 	    
 	    btnRiepilogoDatiSaturazione= new Button();
 	    btnRiepilogoDatiSaturazione.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepSaturazione()));
@@ -455,7 +451,8 @@ public class PanelGestioneCosting extends LayoutContainer{
 				int idRisorsa=(Integer) cm.getSelectedItem().get("idRisorsa");
 				
 				Dialog dlg= new Dialog();
-				dlg.setWidth(1100);
+				dlg.setHeading("Dati sulla saturazione della risorsa selezionata");
+				dlg.setWidth(1290);
 				dlg.setButtons("");
 				dlg.add(new PanelSaturazioneRisorsa(idRisorsa, numeroCommessa));
 				dlg.setModal(false);
@@ -464,8 +461,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 				dlg.show();
 			}
 		});	        
-	    
-	    
+	    	    
 		cmCosting = new ColumnModel(createColumnsCosting());		
 		gridCosting= new EditorGrid<CostingModel>(storeCosting, cmCosting);  
 		gridCosting.setBorders(false);  
@@ -554,8 +550,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    vp.add(cpGridCosting);
 	    vp.add(cpGridCostingRisorsa);
 	   
-	    layoutContainer.add(vp, new FitData(0, 3, 3, 0));
-				
+	    layoutContainer.add(vp, new FitData(0, 3, 3, 0));			
 		add(layoutContainer);
 	}
 	
