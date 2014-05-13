@@ -489,6 +489,6 @@ public interface AdministrationServiceAsync {
 			AsyncCallback<Boolean> asyncCallback);
 
 	void getDatiSaturazioneRisorsa(int idRisorsa,
-			AsyncCallback<List<SaturazioneRisorsaModel>> asyncCallback);
+			String anno, AsyncCallback<List<SaturazioneRisorsaModel>> asyncCallback);
 
 }
