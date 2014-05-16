@@ -250,7 +250,7 @@ public class DialogRilevazionePresenze extends Dialog {
 					String username= new String();
 					Date giorno=new Date();
 					DateField dtfld= new DateField();
-					//String controlloDati= new String(); //quando viene effettuato il controllo dei dati inseriti restituisce OK o errori
+					String controlloDati= new String(); //quando viene effettuato il controllo dei dati inseriti restituisce OK o errori
 					
 					username=txtfldUsername.getValue().toString();
 					
@@ -339,16 +339,16 @@ public class DialogRilevazionePresenze extends Dialog {
 					if(!txtrNote.getRawValue().isEmpty())
 						noteAggiuntive=txtrNote.getValue().toString();
 				
-					/* 	try {
+					 	try {
 						controlloDati=checkCoerenzaDatiInput(fldSetGiustificativi, fldSetIntervalliC);
 					} catch (Exception e) {
 						e.printStackTrace();
 						controlloDati="error: Impossibile effettuare i controlli di correttezza sui dati inseriti.";
-					}*/
+					}
 					
 					
 					if(fldSetIntervalliIU.numeroInseriti()%2==0){ 
-						//if(controlloDati.compareTo("OK")==0){	
+						if(controlloDati.compareTo("OK")==0){	
 							AdministrationService.Util.getInstance().insertFoglioOreGiorno(username, giorno, totOreGenerale, delta, oreViaggio, oreAssRecupero, deltaOreViaggio, 
 									giustificativo, oreStraordinario, oreFerie, orePermesso, "0", oreAbbuono, intervalliIU, intervalliC, oreRecuperoTot, noteAggiuntive, new AsyncCallback<Boolean>() {
 
@@ -367,8 +367,8 @@ public class DialogRilevazionePresenze extends Dialog {
 									}					
 								}	
 							});	
-						//}else
-							//Window.alert(controlloDati);
+						}else
+							Window.alert(controlloDati);
 					}else
 							Window.alert("E' stato inserito un numero di intervalli I/U non corretto!");		
 				 }			
@@ -382,9 +382,26 @@ public class DialogRilevazionePresenze extends Dialog {
 				}
 			});
 		}
+		
+		private String checkCoerenzaDatiInput(FldsetGiustificativi fldSetGiustificativi, FldsetIntervalliCommesse fldSetIntervalliC) {
+			String controllo= "OK";
+			List<IntervalliCommesseModel> listaC= new ArrayList<IntervalliCommesseModel>();
+			listaC= elaboraIntervalliC(fldSetIntervalliC);
+			String oreStraordinario=fldSetGiustificativi.txtfldStraordinario.getValue();
+			//String oreStrao= fldSetGiustificativi.txtfldStraordinario.getValue();
+			String totOreStraoSuIntervalliComm="0.00";
+					
+			for(IntervalliCommesseModel intM:listaC)
+				totOreStraoSuIntervalliComm=ClientUtility.aggiornaTotGenerale(totOreStraoSuIntervalliComm, (String) intM.get("oreStraordinario"));
+			if((oreStraordinario.compareTo("0.00")!=0)||(totOreStraoSuIntervalliComm.compareTo("0.00")!=0))
+					if(oreStraordinario.compareTo(totOreStraoSuIntervalliComm)!=0)
+						return controllo="LE ORE DI STRAORDINARIO INSERITE NEL GIUSTIFICATIVO E SUGLI INTERVALLI COMMESSE NON COINCIDONO!";
+					
+			return controllo;
+		}		
 
 		protected void reloadFoglioOre() {
-			statoRevisione=0;//TODO
+			statoRevisione=0;
 			//dtfldGiorno.setValue(giornoRiferimento.getValue());
 			
 			ButtonBar buttonBarTop = new ButtonBar();
@@ -3904,6 +3921,8 @@ public class DialogRilevazionePresenze extends Dialog {
 					frmInsCommesse.txtfldNumeroCommessa.setValue(result.get(i).getNumeroCommessa());
 					frmInsCommesse.txtfldOreIntervallo.setValue(result.get(i).getOreLavoro());
 					frmInsCommesse.txtfldOreViaggio.setValue(result.get(i).getOreViaggio());
+					frmInsCommesse.txtfldOreStrao.setValue((String) result.get(i).get("oreStraordinario"));
+					
 					if(statoRevisione==1){
 						frmInsCommesse.txtfldOreIntervallo.setEnabled(false);
 						frmInsCommesse.txtfldOreViaggio.setEnabled(false);
@@ -3931,6 +3950,7 @@ public class DialogRilevazionePresenze extends Dialog {
 		//TextField<String> txtfldNumCommessa=new TextField<String>();
 		TextField<String> txtfldOreLavoro=new TextField<String>();
 		TextField<String> txtfldOreViaggio=new TextField<String>();
+		TextField<String> txtfldOreStrao=new TextField<String>();
 		Text txtDescrizione= new Text();
 		String numeroCommessa;
 		String descrizione;	
@@ -3952,6 +3972,8 @@ public class DialogRilevazionePresenze extends Dialog {
 			//txtfldNumCommessa=frm.txtfldNumeroCommessa;
 			txtfldOreLavoro=frm.txtfldOreIntervallo;
 			txtfldOreViaggio=frm.txtfldOreViaggio;
+			txtfldOreStrao=frm.txtfldOreStrao;
+			
 			txtDescrizione=frm.txtDescrizione;
 			
 			descrizione=txtDescrizione.getText();
@@ -3959,7 +3981,7 @@ public class DialogRilevazionePresenze extends Dialog {
 			descrizione=descrizione.substring(descrizione.indexOf("(")+1, descrizione.indexOf(")"));
 			
 			intervallo= new IntervalliCommesseModel(numeroCommessa, txtfldOreLavoro.getValue().toString(), txtfldOreViaggio.getValue().toString()
-					,"","", descrizione,"");
+					,txtfldOreStrao.getValue().toString(), "","", descrizione,"");
 			intervalliC.add(intervallo);
 		}		
 		return intervalliC;

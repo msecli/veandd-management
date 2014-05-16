@@ -36,15 +36,18 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 	public TextField<String> txtfldNumeroCommessa= new TextField<String>();
 	public TextField<String> txtfldOreIntervallo = new TextField<String>();
 	public TextField<String> txtfldOreViaggio = new TextField<String>();
+	public TextField<String> txtfldOreStrao = new TextField<String>();
 	
 	public TextField<String> txtfldTotOreLavoro = new TextField<String>();
 	public TextField<String> txtfldTotOreViaggio = new TextField<String>();
+	
 	public Text txtDescrizione = new Text();
 	public Text txtOreTotLavoro = new Text();
 	public Text txtOreTotViaggio = new Text();
 	
 	private Button btnAssegnaOre;
 	private Button btnAzzeraOre;
+	private Button btnHelp;
 	private String tipoParent;
 		
 	public FormInserimentoIntervalloCommessa(String tipoParent) {
@@ -96,17 +99,25 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 				txtfldOreViaggio.setValue("0.00");		
 			}
 		});
-		
+	    
+	    btnHelp= new Button();
+	    btnHelp.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.idea()));
+	    btnHelp.setIconAlign(IconAlign.TOP);
+	    btnHelp.setToolTip("Indicare qui le ore straordinarie sulla commessa");
+	    btnHelp.setSize(18,18);
+	    //btnHelp.setEnabled(false);
+	    btnHelp.setStyleAttribute("padding-left", "5px");
+	   		
 		txtfldNumeroCommessa.setFieldLabel("Commessa");
 		txtfldNumeroCommessa.setItemId("numeroCommessa");
 		txtfldNumeroCommessa.setEnabled(false);
 
-		txtfldOreIntervallo.setFieldLabel("Ore Lavoro");
+		txtfldOreIntervallo.setFieldLabel("h/Lavoro Tot");
 		txtfldOreIntervallo.setMaxLength(7);
 		txtfldOreIntervallo.setItemId("oreLavoro");
 		txtfldOreIntervallo.setAllowBlank(false);
 		//txtfldOreIntervallo.setRegex("[0-9]*[.]?[0-5]{1}[0-9]{1}|0.0|0.00");
-		txtfldOreIntervallo.setRegex("^([0-9]+).(0|00|15|30|45)$");
+		txtfldOreIntervallo.setRegex("^([0-9]+)[.](0|00|15|30|45)$");
 		txtfldOreIntervallo.getMessages().setRegexText("Deve essere un numero nel formato 99.59 ed espresso in sessantesimi");
 		txtfldOreIntervallo.addKeyListener(new KeyListener(){
 			 @Override
@@ -139,11 +150,11 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 		      }
 		});
 		
-		txtfldOreViaggio.setFieldLabel("Ore Viaggio");
+		txtfldOreViaggio.setFieldLabel("h/Viaggio");
 		txtfldOreViaggio.setMaxLength(7);
 		txtfldOreViaggio.setItemId("oreViaggio");
 		txtfldOreViaggio.setAllowBlank(false);
-		txtfldOreViaggio.setRegex("^([0-9]+).(0|00|15|30|45)$");
+		txtfldOreViaggio.setRegex("^([0-9]+)[.](0|00|15|30|45)$");
 		txtfldOreViaggio.getMessages().setRegexText("Deve essere un numero nel formato 99.59 ed espresso in sessantesimi");
 		txtfldOreViaggio.addKeyListener(new KeyListener(){
 			 @Override
@@ -175,6 +186,44 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 				}	    		
 		      }
 		});
+		
+		txtfldOreStrao.setFieldLabel("h/Straord.");
+		txtfldOreStrao.setMaxLength(7);
+		txtfldOreStrao.setItemId("oreViaggio");
+		txtfldOreStrao.setAllowBlank(false);
+		txtfldOreStrao.setRegex("^([0-9]+)[.](0|00|15|30|45)$");
+		txtfldOreStrao.getMessages().setRegexText("Deve essere un numero nel formato 99.59 ed espresso in sessantesimi");
+		txtfldOreStrao.addKeyListener(new KeyListener(){
+			 @Override
+		      public void componentKeyDown(ComponentEvent event) {
+				 int keyCode=event.getKeyCode();
+					if(keyCode==9){			
+						
+						if(txtfldOreStrao.getValue()==null)
+							txtfldOreStrao.setValue("0.00");
+						else{
+							String valore= txtfldOreStrao.getValue().toString();
+													
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(".")==-1)
+									valore=valore+".00";
+								else{
+									int index=valore.indexOf(".");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfldOreStrao.setValue(valore);
+						}
+					}	    
+		      }
+		});
+		
 		/*
 		txtfldTotOreLavoro.setFieldLabel("Tot.Mese");
 		txtfldTotOreLavoro.setMaxLength(10);
@@ -210,18 +259,25 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 		cpTxtBtn.add(btnAzzeraOre,new RowData(.30, 1));
 		//cpTxtBtn.setStyleAttribute("float", "right");
 		
+		ContentPanel cpTxtBtn1= new ContentPanel();
+		cpTxtBtn1.setHeaderVisible(false);
+		cpTxtBtn1.setSize(70,25);
+		cpTxtBtn1.setLayout(new RowLayout(Orientation.HORIZONTAL));
+		cpTxtBtn1.add(btnHelp,new RowData(.30, 1));
+		cpTxtBtn1.setStyleAttribute("margin-top", "25px");
+		
 		ContentPanel cpVuoto= new ContentPanel();
 		cpVuoto.setHeaderVisible(false);
 		cpVuoto.setSize(70,26);
 		
 		FormLayout layout = new FormLayout();
-		layout.setLabelWidth(75);
+		layout.setLabelWidth(85);
 		layout.setLabelAlign(LabelAlign.LEFT);
 		layoutCol1.setLayout(layout);
 		layoutCol1.setItemId("lc1");
 
 		layout = new FormLayout();
-		layout.setLabelWidth(75);
+		layout.setLabelWidth(85);
 		layout.setLabelAlign(LabelAlign.LEFT);
 		layoutCol2.setLayout(layout);
 		layoutCol2.setItemId("lc2");
@@ -234,23 +290,20 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 	
 		ContentPanel cp = new ContentPanel();
 		cp.setHeaderVisible(false);
-		cp.setSize(550, 90);
+		cp.setSize(550, 112);
 		cp.setBorders(false);
 		cp.setBodyBorder(false);
 		cp.setFrame(true);
 		cp.setLayout(new RowLayout(Orientation.HORIZONTAL));
 		cp.setItemId("cp");		
 
-		//layoutCol1.add(txtfldNumeroCommessa, new FormData("80%"));
-		//layoutCol1.add(txtDescrizione, new FormData("100%"));
-
-		//layoutCol1.add(btnAzzeraOre);
 		
 		if(tipoParent.compareTo("1")==0){
 			layoutCol1.add(cpTxtBtn, new FormData("100%"));
-			//layoutCol2.add(cpTxtBtn, new FormData("74%"));
+			layoutCol1.add(cpTxtBtn1, new FormData("100%"));
 			layoutCol2.add(txtfldOreIntervallo, new FormData("100%"));
 			layoutCol2.add(txtfldOreViaggio, new FormData("100%"));
+			layoutCol2.add(txtfldOreStrao, new FormData("100%"));
 		
 			//layoutCol3.add(cpVuoto, new FormData("74%"));
 			layoutCol3.add(txtOreTotLavoro, new FormData("100%"));
@@ -259,6 +312,7 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 			
 			layoutCol2.add(txtfldOreIntervallo, new FormData("100%"));
 			layoutCol2.add(txtfldOreViaggio, new FormData("100%"));
+			layoutCol2.add(txtfldOreStrao, new FormData("100%"));
 					
 			layoutCol3.add(txtOreTotLavoro, new FormData("100%"));
 			layoutCol3.add(txtOreTotViaggio,new FormData("100%"));

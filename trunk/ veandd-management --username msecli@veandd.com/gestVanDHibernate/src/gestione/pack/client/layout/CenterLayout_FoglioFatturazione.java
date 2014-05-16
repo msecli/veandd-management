@@ -131,7 +131,7 @@ public CenterLayout_FoglioFatturazione(){}
 		cntpnlFoglioFatturazione.setCollapsible(false);
 		cntpnlFoglioFatturazione.setBorders(false);
 		cntpnlFoglioFatturazione.setWidth(1300);
-		cntpnlFoglioFatturazione.setHeight(860);
+		cntpnlFoglioFatturazione.setHeight(900);
 		cntpnlFoglioFatturazione.setFrame(true);
 		cntpnlFoglioFatturazione.setButtonAlign(HorizontalAlignment.CENTER);
 		//cntpnlFoglioFatturazione.setStyleAttribute("padding-left", "7px");
@@ -277,13 +277,14 @@ public CenterLayout_FoglioFatturazione(){}
 	
 	private class CntpnlRiepilogoOreDipFatturazione extends ContentPanel{
 		
-		private Text txtfldOreTotali= new Text();
-		private Text txtfldOreLavoro= new Text();
-		private Text txtfldOreViaggio= new Text();
+		private Text txtOreTotali= new Text();
+		private Text txtOreLavoro= new Text();
+		private Text txtOreViaggio= new Text();
+		private Text txtOreStrao= new Text();
 		private GroupingStore<RiepilogoOreDipFatturazione>store = new GroupingStore<RiepilogoOreDipFatturazione>();		
 		private Grid<RiepilogoOreDipFatturazione> gridRiepilogo;
 		private ColumnModel cm;
-		private boolean nuovo=true;	
+		private boolean nuovo=true;
 		private int idDip;
 		
 		private Button btnShowDettaglioOre;
@@ -309,7 +310,7 @@ public CenterLayout_FoglioFatturazione(){}
 			}	
 
 			store.groupBy("numeroCommessa");
-			    
+			
 		    GroupSummaryView summary = new GroupSummaryView();  
 		    summary.setForceFit(true);  
 		    summary.setShowGroupedColumn(false);
@@ -417,15 +418,18 @@ public CenterLayout_FoglioFatturazione(){}
 		    tlbrRiepilogoOre.add(btnShowDettaglioOre);
 		    tlbrRiepilogoOre.add(btnEditOreDip);
 		    
-		    txtfldOreTotali.setWidth(250);	
-		    txtfldOreTotali.setHeight(23);
-		    txtfldOreTotali.setStyleAttribute("font-size", "14px");
-		    txtfldOreLavoro.setWidth(250);	
-		    txtfldOreLavoro.setHeight(23);
-		    txtfldOreLavoro.setStyleAttribute("font-size", "14px");
-		    txtfldOreViaggio.setWidth(250);	
-		    txtfldOreViaggio.setHeight(23);
-		    txtfldOreViaggio.setStyleAttribute("font-size", "14px");		    
+		    txtOreTotali.setWidth(435);	
+		    txtOreTotali.setHeight(23);
+		    txtOreTotali.setStyleAttribute("font-size", "14px");
+		    txtOreLavoro.setWidth(250);	
+		    txtOreLavoro.setHeight(23);
+		    txtOreLavoro.setStyleAttribute("font-size", "14px");
+		    txtOreStrao.setWidth(250);	
+		    txtOreStrao.setHeight(23);
+		    txtOreStrao.setStyleAttribute("font-size", "14px");
+		    txtOreViaggio.setWidth(250);	
+		    txtOreViaggio.setHeight(23);
+		    txtOreViaggio.setStyleAttribute("font-size", "14px");		    
 		    
 		    store.setSortField("dipendente");
 		    store.setSortDir(SortDir.ASC);
@@ -436,20 +440,22 @@ public CenterLayout_FoglioFatturazione(){}
 		    cntpnlGrid.setLayout(new FitLayout());  
 		    cntpnlGrid.setHeaderVisible(false);
 		    cntpnlGrid.setWidth(445);
-		    cntpnlGrid.setHeight(785);
+		    cntpnlGrid.setHeight(840);
 		    cntpnlGrid.setScrollMode(Scroll.AUTOY);
 		    
 		    cntpnlGrid.setTopComponent(tlbrRiepilogoOre);
 		    cntpnlGrid.add(gridRiepilogo);
 		    
 		    VerticalPanel vp= new VerticalPanel();
-		    vp.setWidth(400);
+		    vp.setWidth(440);
+		    vp.setHeight(135);
 		    vp.setBorders(true);
 		    vp.setSpacing(3);
 		    vp.setStyleAttribute("padding-top", "5px");
-		    vp.add(txtfldOreLavoro);
-		    vp.add(txtfldOreViaggio);
-		    vp.add(txtfldOreTotali);		    
+		    vp.add(txtOreLavoro);
+		    vp.add(txtOreStrao);
+		    vp.add(txtOreViaggio);
+		    vp.add(txtOreTotali);		    
 		    
 		    cntpnlGrid.setBottomComponent(vp);
 		    
@@ -481,14 +487,14 @@ public CenterLayout_FoglioFatturazione(){}
 		    column=new SummaryColumnConfig<Double>();		
 		    column.setId("dipendente");  
 			column.setHeader("Dipendente");  
-			column.setWidth(120);  
+			column.setWidth(90);  
 			column.setRowHeader(true); 
 		    configs.add(column); 
 		    	    
 		    SummaryColumnConfig<Double> columnOreLavoro=new SummaryColumnConfig<Double>();		
 		    columnOreLavoro.setId("oreLavoro");  
-		    columnOreLavoro.setHeader("Ore Lavoro");  
-		    columnOreLavoro.setWidth(60);    
+		    columnOreLavoro.setHeader("h/Lavoro");  
+		    columnOreLavoro.setWidth(55);    
 		    columnOreLavoro.setRowHeader(true); 
 		    columnOreLavoro.setAlignment(HorizontalAlignment.LEFT);  
 		    columnOreLavoro.setRenderer(new GridCellRenderer<RiepilogoOreDipFatturazione>() {
@@ -506,8 +512,8 @@ public CenterLayout_FoglioFatturazione(){}
 		    
 		    SummaryColumnConfig<Double> columnOreViaggio=new SummaryColumnConfig<Double>();		
 		    columnOreViaggio.setId("oreViaggio");  
-		    columnOreViaggio.setHeader("Ore Viaggio");  
-		    columnOreViaggio.setWidth(60);    
+		    columnOreViaggio.setHeader("h/Viaggio");  
+		    columnOreViaggio.setWidth(55);    
 		    columnOreViaggio.setRowHeader(true); 
 		    columnOreViaggio.setAlignment(HorizontalAlignment.LEFT);    
 		    columnOreViaggio.setRenderer(new GridCellRenderer<RiepilogoOreDipFatturazione>() {
@@ -523,10 +529,29 @@ public CenterLayout_FoglioFatturazione(){}
 			});   
 		    configs.add(columnOreViaggio); 
 		    
+		    SummaryColumnConfig<Double> columnOreStrao=new SummaryColumnConfig<Double>();		
+		    columnOreStrao.setId("oreStraordinario");  
+		    columnOreStrao.setHeader("h/Strao");  
+		    columnOreStrao.setWidth(55);    
+		    columnOreStrao.setRowHeader(true); 
+		    columnOreStrao.setAlignment(HorizontalAlignment.LEFT);    
+		    columnOreStrao.setRenderer(new GridCellRenderer<RiepilogoOreDipFatturazione>() {
+				@Override
+				public Object render(RiepilogoOreDipFatturazione model,
+						String property, ColumnData config, int rowIndex,
+						int colIndex,
+						ListStore<RiepilogoOreDipFatturazione> store,
+						Grid<RiepilogoOreDipFatturazione> grid) {
+					Float n=model.get(property);
+					return number.format(n);
+				}			
+			});   
+		    configs.add(columnOreStrao); 
+		    
 		    SummaryColumnConfig<Double> columnOreTotali=new SummaryColumnConfig<Double>();		
 		    columnOreTotali.setId("oreTotali");  
-		    columnOreTotali.setHeader("Totale C.");  
-		    columnOreTotali.setWidth(60);    
+		    columnOreTotali.setHeader("h/Tot");  
+		    columnOreTotali.setWidth(55);    
 		    columnOreTotali.setRowHeader(true); 
 		    columnOreTotali.setAlignment(HorizontalAlignment.LEFT);    
 		    columnOreTotali.setRenderer(new GridCellRenderer<RiepilogoOreDipFatturazione>() {
@@ -621,6 +646,7 @@ public CenterLayout_FoglioFatturazione(){}
 		
 		
 		private void loadTable(List<RiepilogoOreDipFatturazione> result) {
+		
 			try {
 				btnEditOreDip.enable();
 				btnShowDettaglioOre.enable();
@@ -632,6 +658,8 @@ public CenterLayout_FoglioFatturazione(){}
 				String totale="0.00";
 				String orel="0.00";
 				String orev="0.00";
+				String oreS="0.00";
+				Float totVariato=(float)0; //è il totale con le maggiorazioni/diminuzioni ore strao viaggio
 				
 				NumberFormat number = NumberFormat.getFormat("0.00");
 				
@@ -640,12 +668,17 @@ public CenterLayout_FoglioFatturazione(){}
 						totale=ClientUtility.aggiornaTotGenerale(totale, number.format(r.getOreTotali()));
 						orel=ClientUtility.aggiornaTotGenerale(orel, number.format(r.getOreLavoro()));
 						orev=ClientUtility.aggiornaTotGenerale(orev, number.format(r.getOreViaggio()));
+						oreS=ClientUtility.aggiornaTotGenerale(oreS, number.format((Float) r.get("oreStraordinario")));
 					}
 				}
 				
-				txtfldOreTotali.setText("Totale: "+totale);
-				txtfldOreViaggio.setText("Tot.Ore viaggio: "+orev);
-				txtfldOreLavoro.setText("Tot.Ore lavoro: "+orel);
+				totVariato=(float) (Float.valueOf(ClientUtility.getOreCentesimi(orel))+
+						(Float.valueOf(ClientUtility.getOreCentesimi(orev))*0.85)+(Float.valueOf(ClientUtility.getOreCentesimi(oreS))*1.2));
+				
+				txtOreTotali.setText("Totale: "+totale +" (Con oreViaggio/oreStrao compensate: "+ number.format(totVariato) +")");
+				txtOreViaggio.setText("Tot.Ore viaggio: "+ orev);
+				txtOreLavoro.setText("Tot.Ore ordinarie lavoro: "+orel);
+				txtOreStrao.setText("Tot.Ore strao. lavoro: "+oreS);
 				
 			} catch (NullPointerException e) {
 				Window.alert("error: Impossibile effettuare il caricamento dati in tabella.");
@@ -676,6 +709,8 @@ public CenterLayout_FoglioFatturazione(){}
 		private TextField<String> txtPclTotale= new TextField<String>();
 		private TextField<String> txtfldImportoOrdine= new TextField<String>();
 		private TextField<String> txtfldImportoResiduo= new TextField<String>();
+		private Text txtVuoto1= new Text();
+		private Text txtTotCompensato= new Text();
 		private CheckBox chbxSalButtare;
 		private TextField<String> txtfldImportoRtv= new TextField<String>();
 		
@@ -936,6 +971,8 @@ public CenterLayout_FoglioFatturazione(){}
 			txtfldImportoResiduo.setFieldLabel("Importo Res.");
 			txtfldImportoResiduo.setEnabled(false);
 			
+			txtTotCompensato.setStyleAttribute("padding-top", "8px");
+			
 			txtfldCostoOrario.setFieldLabel("Tariffa Oraria");
 			txtfldCostoOrario.setEnabled(false);
 			txtfldCostoOrario.setAllowBlank(false);
@@ -1048,6 +1085,8 @@ public CenterLayout_FoglioFatturazione(){}
 								
 			layoutCol1.add(txtfldImportoOrdine, new FormData("95%"));
 			layoutCol1.add(txtfldImportoResiduo, new FormData("95%"));
+			layoutCol1.add(txtVuoto1, new FormData("95%"));
+			layoutCol1.add(txtTotCompensato, new FormData("95%"));
 						
 			layoutCol2.add(txtfldOreOrdine, new FormData("95%"));
 			layoutCol2.add(txtfldOreResiduoOrdine, new FormData("95%"));
@@ -1890,6 +1929,10 @@ public CenterLayout_FoglioFatturazione(){}
 			String scaricate= "0.00";
 			String totaleEuro= new String();
 			String variazionePCL=new String();
+			
+			Float oreViaggioC=(float)0.0;
+			Float oreStraoC=(float)0.0;
+			Float oreLavoro=(float)0.0;
 				
 			NumberFormat number= NumberFormat.getFormat("0.00");
 						
@@ -1915,8 +1958,15 @@ public CenterLayout_FoglioFatturazione(){}
 						String numeroFormattato= new String();
 						numeroFormattato=number.format(riep.getOreTotali());
 						totOre=	ClientUtility.aggiornaTotGenerale(totOre, numeroFormattato);
+						
+						oreViaggioC=(float) (Float.valueOf(ClientUtility.getOreCentesimi(number.format(riep.getOreViaggio())))*0.85)+oreViaggioC;					
+						oreStraoC=(float)((Float.valueOf(ClientUtility.getOreCentesimi(number.format((Float)riep.get("oreStraordinario"))))*1.2))+oreStraoC;
+						oreLavoro=(Float.valueOf(ClientUtility.getOreCentesimi(number.format(riep.getOreLavoro()))))+oreLavoro;
 					}
-				}
+				}				
+				
+				oreLavoro=oreLavoro+oreStraoC+oreViaggioC;
+				
 				if(!nuovo){
 					
 					//String ruolo=txtRuolo.getText();
@@ -1988,6 +2038,8 @@ public CenterLayout_FoglioFatturazione(){}
 	    	  		
 	    	  		if(Float.valueOf(result.getResiduoOre())<0)
 	    	  			Window.alert("Il numero di ore residue sull'ordine è negativo! Effettuare le modifiche opportune!");
+	    	  		
+	    	  		txtTotCompensato.setText(" ("+oreLavoro+") ");
 					
 				}else{
 									

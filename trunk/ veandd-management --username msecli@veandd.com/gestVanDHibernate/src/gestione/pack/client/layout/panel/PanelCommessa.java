@@ -1109,7 +1109,7 @@ public class PanelCommessa extends LayoutContainer {
 		SessionManagementService.Util.getInstance().getRuolo(new AsyncCallback<String>() {
 			
 			@Override
-			public void onSuccess(String result) {			
+			public void onSuccess(String result) {
 				setRuolo(result);
 			}
 			

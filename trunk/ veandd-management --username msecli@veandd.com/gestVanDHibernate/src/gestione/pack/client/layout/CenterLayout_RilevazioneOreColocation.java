@@ -563,6 +563,7 @@ public class CenterLayout_RilevazioneOreColocation extends LayoutContainer{
 		
 		TextField<String> txtfldOreLavoro=new TextField<String>();
 		TextField<String> txtfldOreViaggio=new TextField<String>();
+		TextField<String> txtfldOreStrao=new TextField<String>();
 		Text txtDescrizione= new Text();
 		FormInserimentoIntervalloCommessa frm=new FormInserimentoIntervalloCommessa("2");
 		String numeroCommessa;
@@ -584,14 +585,15 @@ public class CenterLayout_RilevazioneOreColocation extends LayoutContainer{
 			//txtfldNumCommessa=frm.txtfldNumeroCommessa;
 			txtfldOreLavoro=frm.txtfldOreIntervallo;
 			txtfldOreViaggio=frm.txtfldOreViaggio;
+			txtfldOreStrao=frm.txtfldOreStrao;
 			txtDescrizione=frm.txtDescrizione;
 			
 			descrizione=txtDescrizione.getText();
 			numeroCommessa=descrizione.substring(0,descrizione.indexOf(" "));
 			descrizione=descrizione.substring(descrizione.indexOf("(")+1, descrizione.indexOf(")"));
 						
-			intervallo= new IntervalliCommesseModel(numeroCommessa, txtfldOreLavoro.getValue().toString(), txtfldOreViaggio.getValue().toString()
-					,"","", descrizione, "");
+			intervallo= new IntervalliCommesseModel(numeroCommessa, txtfldOreLavoro.getValue().toString(), txtfldOreViaggio.getValue().toString(),
+					txtfldOreViaggio.getValue().toString(),"","", descrizione, "");
 			intervalliC.add(intervallo);
 		}
 		

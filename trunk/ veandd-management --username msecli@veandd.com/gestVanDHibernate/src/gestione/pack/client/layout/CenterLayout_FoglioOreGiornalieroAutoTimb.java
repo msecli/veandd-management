@@ -524,6 +524,8 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		String oreFerie= fldSetGiustificativi.txtfldFerie.getValue();
 		String oreViaggio= fldSetGiustificativi.txtfldOreViaggio.getValue();
 		String oreScarto= fldSetGiustificativi.txtfldAbbuono.getValue();
+		//String oreStrao= fldSetGiustificativi.txtfldStraordinario.getValue();
+		String totOreStraoSuIntervalliComm="0.00";
 				
 		String campoU1=fldSetIntervalliIU.txtfld1U.getValue();
 		String campoI1=fldSetIntervalliIU.txtfld1I.getValue();
@@ -607,7 +609,15 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 				if(totOreViaggioSuCommesse.compareTo(oreViaggio)!=0)
 					return controllo="E' stato indicato un numero di ore viaggio non coerente tra intervalli commesse e giustificativo.";
 			}
-		}		
+		}	
+		
+		for(IntervalliCommesseModel intM:listaC)
+			totOreStraoSuIntervalliComm=ClientUtility.aggiornaTotGenerale(totOreStraoSuIntervalliComm, (String) intM.get("oreStraordinario"));
+		if((oreStraordinario.compareTo("0.00")!=0)||(totOreStraoSuIntervalliComm.compareTo("0.00")!=0))
+				if(oreStraordinario.compareTo(totOreStraoSuIntervalliComm)!=0)
+					return controllo="LE ORE DI STRAORDINARIO INSERITE NEL GIUSTIFICATIVO E SUGLI INTERVALLI COMMESSE NON COINCIDONO!";
+			
+		
 		return controllo;
 	}
 
@@ -4258,10 +4268,12 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					frmInsCommesse.txtfldNumeroCommessa.setValue(result.get(i).getNumeroCommessa());
 					frmInsCommesse.txtfldOreIntervallo.setValue(result.get(i).getOreLavoro());
 					frmInsCommesse.txtfldOreViaggio.setValue(result.get(i).getOreViaggio());
+					frmInsCommesse.txtfldOreStrao.setValue((String) result.get(i).get("oreStraordinario"));
 					
 					if(statoRevisione==2){
 						frmInsCommesse.txtfldOreIntervallo.setEnabled(false);
 						frmInsCommesse.txtfldOreViaggio.setEnabled(false);
+						frmInsCommesse.txtfldOreStrao.setEnabled(false);
 					}
 					
 					//frmInsCommesse.txtfldTotOreLavoro.setValue(result.get(i).getTotOreLavoro());
@@ -4291,6 +4303,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		//TextField<String> txtfldNumCommessa=new TextField<String>();
 		TextField<String> txtfldOreLavoro=new TextField<String>();
 		TextField<String> txtfldOreViaggio=new TextField<String>();
+		TextField<String> txtfldOreStrao=new TextField<String>();
 		Text txtDescrizione= new Text();
 		
 		String numeroCommessa;
@@ -4313,6 +4326,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			//txtfldNumCommessa=frm.txtfldNumeroCommessa;
 			txtfldOreLavoro=frm.txtfldOreIntervallo;
 			txtfldOreViaggio=frm.txtfldOreViaggio;
+			txtfldOreStrao=frm.txtfldOreStrao;
 			txtDescrizione=frm.txtDescrizione;
 			
 			descrizione=txtDescrizione.getText();
@@ -4322,8 +4336,8 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			//oreV=txtfldOreViaggio.getValue().toString();
 			//oreL=txtfldOreLavoro.getValue().toString();
 			
-			intervallo= new IntervalliCommesseModel(numeroCommessa, txtfldOreLavoro.getValue().toString(), txtfldOreViaggio.getValue().toString()
-					,"","", descrizione, "");
+			intervallo= new IntervalliCommesseModel(numeroCommessa, txtfldOreLavoro.getValue().toString(), txtfldOreViaggio.getValue().toString(),
+					txtfldOreStrao.getValue().toString(),"","", descrizione, "");
 			intervalliC.add(intervallo);
 			
 		}

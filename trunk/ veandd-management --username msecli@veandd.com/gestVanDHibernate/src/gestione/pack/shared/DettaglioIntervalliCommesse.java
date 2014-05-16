@@ -29,6 +29,8 @@ public class DettaglioIntervalliCommesse extends LightEntity implements IsSerial
 	private String oreLavorate;
 
 	private String oreViaggio;
+	
+	private String oreStraordinario;
 
 	//bi-directional many-to-one association to DettaglioOreGiornaliere
 	@ManyToOne
@@ -138,6 +140,14 @@ public class DettaglioIntervalliCommesse extends LightEntity implements IsSerial
 			return false;
 		
 		return true;*/
+	}
+
+	public String getOreStraordinario() {
+		return oreStraordinario;
+	}
+
+	public void setOreStraordinario(String oreStraordinario) {
+		this.oreStraordinario = oreStraordinario;
 	}
 
 	

@@ -2156,7 +2156,7 @@ public class ServerUtility {
 					
 					numerocommessa=dt.getNumeroCommessa()+"."+dt.getEstensioneCommessa();
 					if(numerocommessa.compareTo(commessa)==0){
-						ic=new IntervalliCommesseModel("", dt.getOreLavorate(), dt.getOreViaggio(), "", "", "", "");
+						ic=new IntervalliCommesseModel("", dt.getOreLavorate(), dt.getOreViaggio(), dt.getOreStraordinario(), "", "", "", "");
 						break;
 					}												
 				}	
@@ -2176,7 +2176,7 @@ public class ServerUtility {
 		}
 		
 		if(!existDay || ic.get("oreLavoro")==null)
-			ic=new IntervalliCommesseModel("", "0.00", "0.00", "", "","","");				
+			ic=new IntervalliCommesseModel("", "0.00", "0.00", "0.00", "", "","","");				
 		
 		return ic;
 	}
