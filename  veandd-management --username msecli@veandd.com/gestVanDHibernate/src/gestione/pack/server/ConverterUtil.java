@@ -651,7 +651,7 @@ public class ConverterUtil {
 			//se la commessa non è Conclusa
 			if(c.getStatoCommessa().compareTo("Conclusa")!=0 && c.getStatoCommessa().compareTo("Costing")!=0){ 
 				
-				intervalloModel= new IntervalliCommesseModel(commessa,  "0.00",  "0.00", "0.00", "0.00", c.getDenominazioneAttivita(),"");
+				intervalloModel= new IntervalliCommesseModel(commessa,  "0.00",  "0.00", "0.00", "0.00", "0.00", c.getDenominazioneAttivita(),"");
 				
 				f=(FoglioOreMese)session.createQuery("from FoglioOreMese where meseRiferimento=:mese and id_personale=:id")
 						.setParameter("mese", data).setParameter("id", idPersonale).uniqueResult();	
@@ -694,7 +694,7 @@ public class ConverterUtil {
 							oreViaggioTotali=calcolaOreViaggioTotaliMese(data, idPersonale, numeroCommessa, estensione);
 							
 							intervalloModel=new IntervalliCommesseModel(commessa, intervalloCommessa.getOreLavorate(), 
-									intervalloCommessa.getOreViaggio(), String.valueOf(oreLavoroTotali), String.valueOf(oreViaggioTotali), 
+									intervalloCommessa.getOreViaggio(), intervalloCommessa.getOreStraordinario(), String.valueOf(oreLavoroTotali), String.valueOf(oreViaggioTotali), 
 									c.getDenominazioneAttivita(), "");
 							break;
 						}
@@ -706,7 +706,7 @@ public class ConverterUtil {
 						oreLavoroTotali=calcolaOreLavoroTotaliMese(data, idPersonale, numeroCommessa, estensione);
 						oreViaggioTotali=calcolaOreViaggioTotaliMese(data, idPersonale, numeroCommessa, estensione);
 						
-						intervalloModel=new IntervalliCommesseModel(commessa, "0.00", "0.00", oreLavoroTotali, oreViaggioTotali,
+						intervalloModel=new IntervalliCommesseModel(commessa, "0.00", "0.00", "0.00", oreLavoroTotali, oreViaggioTotali,
 								c.getDenominazioneAttivita(), "");
 						//break;
 					}

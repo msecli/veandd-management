@@ -2,6 +2,9 @@ package gestione.pack.client.layout;
 
 import gestione.pack.client.AdministrationService;
 
+import gestione.pack.client.layout.CenterLayout_FoglioOreGiornalieroAutoTimb.FldsetGiustificativi;
+import gestione.pack.client.layout.CenterLayout_FoglioOreGiornalieroAutoTimb.FldsetIntervalliCommesse;
+import gestione.pack.client.layout.CenterLayout_FoglioOreGiornalieroAutoTimb.FldsetIntervalliIU;
 import gestione.pack.client.layout.panel.DialogInvioCommenti;
 import gestione.pack.client.layout.panel.FormInserimentoIntervalloCommessa;
 import gestione.pack.client.layout.panel.PanelRiepilogoMeseFoglioOre;
@@ -360,7 +363,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 						String username= new String();
 						Date giorno=new Date();
 						DateField dtfld= new DateField();
-						//String controlloDati= new String(); //quando viene effettuato il controllo dei dati inseriti restituisce OK o errori
+						String controlloDati= new String(); //quando viene effettuato il controllo dei dati inseriti restituisce OK o errori
 						
 						username=cmbxDipendente.getValue().get("username");
 						
@@ -455,28 +458,55 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 						if(!txtrNote.getRawValue().isEmpty())
 							noteAggiuntive=txtrNote.getValue().toString();
 						
-						 
-						 AdministrationService.Util.getInstance().insertFoglioOreGiorno(username, giorno, totOreGenerale, delta, oreViaggio, oreAssRecupero, deltaOreViaggio, 
-								 giustificativo, oreStraordinario, oreFerie, orePermesso, "0", oreAbbuono, intervalliIU, intervalliC, oreRecuperoTot, noteAggiuntive, new AsyncCallback<Boolean>() {
+						try {
+							controlloDati=checkCoerenzaDatiInput(fldSetGiustificativi, fldSetIntervalliC ,fldSetIntervalliIU);
+						} catch (Exception e) {
+							e.printStackTrace();
+							controlloDati="error: Impossibile effettuare i controlli di correttezza sui dati inseriti.";
+						}	
+										
+						if(controlloDati.compareTo("OK")==0){ 
+						
+								AdministrationService.Util.getInstance().insertFoglioOreGiorno(username, giorno, totOreGenerale, delta, oreViaggio, oreAssRecupero, deltaOreViaggio, 
+										giustificativo, oreStraordinario, oreFerie, orePermesso, "0", oreAbbuono, intervalliIU, intervalliC, oreRecuperoTot, noteAggiuntive, new AsyncCallback<Boolean>() {
 
-							@Override
-							public void onFailure(Throwable caught) {
-								Window.alert("Errore di connessione on insertFoglioOreGiorno()!");					
-							}
+									@Override
+									public void onFailure(Throwable caught) {
+										Window.alert("Errore di connessione on insertFoglioOreGiorno()!");					
+									}
 
-							@Override
-							public void onSuccess( Boolean result) {
-								if(result){
-									Window.alert("Caricamento avvenuto con successo.");
-									reloadFoglioOre();
-								}else{
-									Window.alert("error: Impossibile salvare i dati!");
-								}					
-							}	
-					     });				
+									@Override
+									public void onSuccess( Boolean result) {
+										if(result){
+											Window.alert("Caricamento avvenuto con successo.");
+											reloadFoglioOre();
+										}else{
+											Window.alert("error: Impossibile salvare i dati!");
+										}					
+									}	
+								});
+						}else
+							Window.alert(controlloDati);
 					 }				
 			  }
 			});
+		}
+		
+		private String checkCoerenzaDatiInput(FldsetGiustificativi fldSetGiustificativi, FldsetIntervalliCommesse fldSetIntervalliC, FldsetIntervalliIU fldSetIntervalliIU) {
+			String controllo= "OK";
+			List<IntervalliCommesseModel> listaC= new ArrayList<IntervalliCommesseModel>();
+			listaC= elaboraIntervalliC(fldSetIntervalliC);
+			String oreStraordinario=fldSetGiustificativi.txtfldStraordinario.getValue();
+			//String oreStrao= fldSetGiustificativi.txtfldStraordinario.getValue();
+			String totOreStraoSuIntervalliComm="0.00";
+					
+			for(IntervalliCommesseModel intM:listaC)
+				totOreStraoSuIntervalliComm=ClientUtility.aggiornaTotGenerale(totOreStraoSuIntervalliComm, (String) intM.get("oreStraordinario"));
+			if((oreStraordinario.compareTo("0.00")!=0)||(totOreStraoSuIntervalliComm.compareTo("0.00")!=0))
+					if(oreStraordinario.compareTo(totOreStraoSuIntervalliComm)!=0)
+						return controllo="LE ORE DI STRAORDINARIO INSERITE NEL GIUSTIFICATIVO E SUGLI INTERVALLI COMMESSE NON COINCIDONO!";
+					
+			return controllo;
 		}
 		
 		
@@ -3987,6 +4017,8 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 					frmInsCommesse.txtfldNumeroCommessa.setValue(result.get(i).getNumeroCommessa());
 					frmInsCommesse.txtfldOreIntervallo.setValue(result.get(i).getOreLavoro());
 					frmInsCommesse.txtfldOreViaggio.setValue(result.get(i).getOreViaggio());
+					frmInsCommesse.txtfldOreStrao.setValue((String) result.get(i).get("oreStraordinario"));
+					
 					//frmInsCommesse.txtfldTotOreLavoro.setValue(result.get(i).getTotOreLavoro());
 					//frmInsCommesse.txtfldTotOreViaggio.setValue(result.get(i).getTotOreViaggio());
 					frmInsCommesse.txtOreTotLavoro.setText("Totale nel Mese: "+result.get(i).getTotOreLavoro());
@@ -4012,6 +4044,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 		
 		TextField<String> txtfldOreLavoro=new TextField<String>();
 		TextField<String> txtfldOreViaggio=new TextField<String>();
+		TextField<String> txtfldOreStrao=new TextField<String>();
 		Text txtDescrizione= new Text();
 		FormInserimentoIntervalloCommessa frm=new FormInserimentoIntervalloCommessa("2");
 		
@@ -4034,6 +4067,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			//txtfldNumCommessa=frm.txtfldNumeroCommessa;
 			txtfldOreLavoro=frm.txtfldOreIntervallo;
 			txtfldOreViaggio=frm.txtfldOreViaggio;
+			txtfldOreStrao= frm.txtfldOreStrao;
 			txtDescrizione=frm.txtDescrizione;
 			
 			descrizione=txtDescrizione.getText();
@@ -4043,8 +4077,8 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			//oreV=txtfldOreViaggio.getValue().toString();
 			//oreL=txtfldOreLavoro.getValue().toString();
 			
-			intervallo= new IntervalliCommesseModel(numeroCommessa, txtfldOreLavoro.getValue().toString(), txtfldOreViaggio.getValue().toString()
-					,"","", descrizione, "");
+			intervallo= new IntervalliCommesseModel(numeroCommessa, txtfldOreLavoro.getValue().toString(), txtfldOreViaggio.getValue().toString(),
+					txtfldOreStrao.getValue().toString(),"","", descrizione, "");
 			intervalliC.add(intervallo);
 			
 		}
