@@ -39,6 +39,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -60,6 +61,9 @@ public class PanelAttribuzioneOreColocationCollaboratori extends LayoutContainer
 	private String pm;
 	protected int conta=0;
 	protected int nModificati=0;
+	
+	private boolean completed=false;
+	private boolean isnew=false;
 	
 	public PanelAttribuzioneOreColocationCollaboratori(String pm){
 		this.pm=pm;
@@ -138,34 +142,38 @@ public class PanelAttribuzioneOreColocationCollaboratori extends LayoutContainer
 			public void componentSelected(ButtonEvent ce) {
 				Date data=dtfldData.getValue();
 				nModificati=store.getModifiedRecords().size();
-		
-				for(Record record: store.getModifiedRecords()){		    		  
+						
+				for(Record record: store.getModifiedRecords()){
+					//isnew=true;			
+					
 					RiepilogoOreDipCommesseGiornaliero g= new RiepilogoOreDipCommesseGiornaliero();
-		    		  g=(RiepilogoOreDipCommesseGiornaliero) record.getModel();		    		  
-		    		  
-		    		  
-		    		  AdministrationService.Util.getInstance().elaboraDatiOreCollaboratori(g, data, new AsyncCallback<Boolean>() {
+		    		g=(RiepilogoOreDipCommesseGiornaliero) record.getModel();		    		  
+		  
+		    		
+		    				AdministrationService.Util.getInstance().elaboraDatiOreCollaboratori(g, data, new AsyncCallback<Boolean>() {
 
-								@Override
-								public void onFailure(Throwable caught) {
-									Window.alert("Errore di connessione on editDataCostiAzienda();");
-								}
+		    					@Override
+		    					public void onFailure(Throwable caught) {
+		    						Window.alert("Errore di connessione on editDataCostiAzienda();");
+		    					}
 
-								@Override
-								public void onSuccess(Boolean result) {									
-									if(!result){
-										Window.alert("Errore durante il salvataggio dati!");
-									}
-									else{
-										conta+=1;
-										if(conta==nModificati)
-											caricaDatiTabella();
-									}
-								}		    			  
-						}); 	  
-		    	  }
-		    	  store.commitChanges();	    	
-			}
+		    					@Override
+		    					public void onSuccess(Boolean result) {									
+		    						if(!result){
+		    							Window.alert("Errore durante il salvataggio dati!");
+		    						}
+		    						else{
+		    							//completed=true;
+		    							conta+=1;
+		    							if(conta==nModificati)
+		    								caricaDatiTabella();
+		    						}
+		    					}		    			  
+		    				});
+		    			    		  
+				}		    
+				store.commitChanges();	    	
+			}		
 		});	
 		
 		btnReset= new Button();
@@ -197,6 +205,8 @@ public class PanelAttribuzioneOreColocationCollaboratori extends LayoutContainer
 		layoutContainer.add(cpGrid, new FitData(3, 3, 3, 3));
 		add(layoutContainer);
 	}
+	
+	
 
 	private void caricaDatiTabella() {		
 		String pm=smplcmbxPM.getRawValue().toString();
@@ -222,8 +232,7 @@ public class PanelAttribuzioneOreColocationCollaboratori extends LayoutContainer
 				}				
 				else Window.alert("error: Errore durante l'accesso ai dati PM.");			
 			}
-		});				
-		
+		});						
 	}
 
 	private void getNomePm() {				
@@ -242,7 +251,7 @@ public class PanelAttribuzioneOreColocationCollaboratori extends LayoutContainer
 				}				
 				else Window.alert("error: Errore durante l'accesso ai dati PM.");			
 			}
-		});			
+		});
 	}
 
 	private List<ColumnConfig> createColumns() {
@@ -344,5 +353,4 @@ public class PanelAttribuzioneOreColocationCollaboratori extends LayoutContainer
 	  		
 		return configs;
 	}
-	
 }
