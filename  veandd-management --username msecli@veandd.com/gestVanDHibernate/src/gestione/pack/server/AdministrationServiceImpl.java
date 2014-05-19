@@ -2970,9 +2970,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 								
 				p=(Personale)session.createQuery("from Personale where username=:username").setParameter("username", username).uniqueResult();
 				
-				foglioOre=(FoglioOreMese) session.createQuery("from FoglioOreMese where id_personale=:id and meseRiferimento=:mese").setParameter("id", p.getId_PERSONALE())
-						.setParameter("mese", data).uniqueResult();
-				
 				tipoLavoratore=p.getTipologiaLavoratore();
 				
 				if(tipoLavoratore.compareTo("C")==0){
@@ -2988,6 +2985,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					oreViaggio=totaleViaggio;
 				}
 				
+				
+				foglioOre=(FoglioOreMese) session.createQuery("from FoglioOreMese where id_personale=:id and meseRiferimento=:mese").setParameter("id", p.getId_PERSONALE())
+						.setParameter("mese", data).uniqueResult();
+						
 				//se è un nuovo mese, e quindi un nuovo giorno
 				if(foglioOre==null){	
 					foglioOre=new FoglioOreMese();
@@ -7838,7 +7839,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						cliente="#";
 					}
 					else{
-						tariffaUtilizzata=o.getAttivitaOrdines().iterator().next().getTariffaAttivita();
+						if(o.getAttivitaOrdines().iterator().hasNext())
+							tariffaUtilizzata=o.getAttivitaOrdines().iterator().next().getTariffaAttivita();
 						cliente=o.getRda().getCliente().getRagioneSociale();
 					}
 					

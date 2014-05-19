@@ -411,7 +411,7 @@ public CenterLayout_FoglioFatturazione(){}
 						public void handleEvent(ComponentEvent be) {
 							caricaTabellaRiepOreDipFatturazione(periodo, pm);			
 					    }
-					});	
+					});
 				}
 			});
 		    
@@ -675,7 +675,7 @@ public CenterLayout_FoglioFatturazione(){}
 				totVariato=(float) (Float.valueOf(ClientUtility.getOreCentesimi(orel))+
 						(Float.valueOf(ClientUtility.getOreCentesimi(orev))*0.85)+(Float.valueOf(ClientUtility.getOreCentesimi(oreS))*1.2));
 				
-				txtOreTotali.setText("Totale: "+totale +" (Con oreViaggio/oreStrao compensate: "+ number.format(totVariato) +")");
+				txtOreTotali.setText("Totale: "+totale +" (Con oreViaggio/Ore Strao. compensate: "+ number.format(totVariato) +")");
 				txtOreViaggio.setText("Tot.Ore viaggio: "+ orev);
 				txtOreLavoro.setText("Tot.Ore ordinarie lavoro: "+orel);
 				txtOreStrao.setText("Tot.Ore strao. lavoro: "+oreS);
@@ -971,7 +971,7 @@ public CenterLayout_FoglioFatturazione(){}
 			txtfldImportoResiduo.setFieldLabel("Importo Res.");
 			txtfldImportoResiduo.setEnabled(false);
 			
-			txtTotCompensato.setStyleAttribute("padding-top", "8px");
+			txtTotCompensato.setStyleAttribute("padding-top", "10px");
 			
 			txtfldCostoOrario.setFieldLabel("Tariffa Oraria");
 			txtfldCostoOrario.setEnabled(false);
@@ -1775,7 +1775,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    
 		    column=new ColumnConfig();		
 		    column.setId("totalePcl");  
-		    column.setHeader("SAL su Est."); 
+		    column.setHeader("PCL su Est."); 
 		    column.setToolTip("Totale delle variazioni di PCL sull'estenzione");
 		    column.setWidth(60);  
 		    column.setRowHeader(true); 
@@ -2039,7 +2039,7 @@ public CenterLayout_FoglioFatturazione(){}
 	    	  		if(Float.valueOf(result.getResiduoOre())<0)
 	    	  			Window.alert("Il numero di ore residue sull'ordine è negativo! Effettuare le modifiche opportune!");
 	    	  		
-	    	  		txtTotCompensato.setText(" ("+oreLavoro+") ");
+	    	  		txtTotCompensato.setText("Compensate--> ("+oreLavoro+") ");
 					
 				}else{
 									
@@ -2090,6 +2090,8 @@ public CenterLayout_FoglioFatturazione(){}
 	    	  		txtVariazionePcl.setText("("+totaleEuro+")");	
 	    	  		
 	    	  		chbxSalButtare.setValue(false);
+	    	  		
+	    	  		txtTotCompensato.setText("Compensate--> ("+oreLavoro+") ");
 				}
 				
 				String r=ruolo;

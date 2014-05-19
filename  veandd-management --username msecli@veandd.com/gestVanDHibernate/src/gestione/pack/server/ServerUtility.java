@@ -1693,6 +1693,33 @@ public class ServerUtility {
 	}
 	
 	
+public static String getOreSessantesimi(String totOreCommMese) {	
+		
+		if(totOreCommMese.indexOf(".")!=-1)
+		{	
+			String ore=totOreCommMese.substring(0, totOreCommMese.indexOf("."));
+			String decimali=totOreCommMese.substring(totOreCommMese.indexOf(".")+1,totOreCommMese.length());
+		
+			if(decimali.compareTo("00")==0)
+				return totOreCommMese;		
+			if(decimali.compareTo("25")==0){
+				decimali="15";
+				return ore+"."+decimali;
+			}		
+			if(decimali.compareTo("50")==0){
+				decimali="30";
+				return ore+"."+decimali;
+			}
+			if(decimali.compareTo("75")==0){
+				decimali="45";
+				return ore+"."+decimali;
+			}	
+			return totOreCommMese;
+		}else
+			return totOreCommMese;
+	}
+	
+	
 	public static List<RiepilogoOreNonFatturabiliJavaBean> traduciNonFatturabiliModelToBean(
 			List<RiepilogoOreNonFatturabiliModel> lista) {
 		
@@ -2738,7 +2765,11 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 				}
 
 			sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)+ Float.valueOf(ServerUtility.getOreCentesimi(c.getSalAttuale())));
-			sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(c.getPclAttuale())));					
+			sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(c.getPclAttuale())));
+			
+			sommaVariazioniSal=getOreSessantesimi(sommaVariazioniSal);
+			sommaVariazioniPcl=getOreSessantesimi(sommaVariazioniPcl);
+			
 			totaleOre[1]=Float.valueOf(sommaVariazioniPcl);
 			totaleOre[0]=Float.valueOf(sommaVariazioniSal);				
 						
