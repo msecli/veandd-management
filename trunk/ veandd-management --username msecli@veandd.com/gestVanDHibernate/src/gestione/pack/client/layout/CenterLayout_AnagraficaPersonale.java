@@ -1,7 +1,6 @@
 package gestione.pack.client.layout;
 
 import gestione.pack.client.AdministrationService;
-import gestione.pack.client.model.CommessaModel;
 import gestione.pack.client.model.PersonaleModel;
 import gestione.pack.client.utility.DatiComboBox;
 
@@ -109,7 +108,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	protected void onRender(Element target, int index) {  
 	    super.onRender(target, index);	
 	    
-//Creazione del Layout Esterno e del BorderLayout			
+	    //Creazione del Layout Esterno e del BorderLayout			
 	    final FitLayout fl= new FitLayout();
 		LayoutContainer layoutContainer= new LayoutContainer();
 
@@ -120,7 +119,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 		bodyContainer.setLayout(new FlowLayout());
 		bodyContainer.setBorders(false);	
 				
-//Pannelli per l'impostazione dei contenuti		
+		//Pannelli per l'impostazione dei contenuti		
 				
 		ContentPanel cntpnlDati = new ContentPanel();
 		cntpnlDati.setStyleAttribute("padding-left", "6px");

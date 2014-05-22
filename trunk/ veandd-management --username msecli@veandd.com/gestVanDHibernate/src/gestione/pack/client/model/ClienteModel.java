@@ -65,7 +65,7 @@ public class ClienteModel extends BaseModel implements IsSerializable {
 		set("ragioneSociale",ragioneSociale);
 	}
 	
-	public ClienteModel(int codCliente2, String ragioneSociale2, String codFiscale2, String partitaIVA2, String codRaggr2, String codFornitore,
+	public ClienteModel(int codCliente2, String ragioneSociale2, String codFiscale2, String partitaIVA2, String codRaggr2, String codFornitore, String testoIvaNonImponibile,
 			String citta2, String provincia2, String stato2, String indirizzo2,	String cap2, String telefono2, String fax2, String email2,
 			String banca2, String valuta2, String codABI2, String codCAB2, String codCIN2, String condizioniPagamento2,  Set<Rda> rdas2) {
 		
@@ -91,6 +91,7 @@ public class ClienteModel extends BaseModel implements IsSerializable {
 		set("codCAB", codCAB2);
 		set("codCIN", codCIN2);
 		set("condizioniPagamento", condizioniPagamento2);
+		set("testoIvaNonImponibile", testoIvaNonImponibile);
 		//set("rDAS", rdas2);
 	}
 

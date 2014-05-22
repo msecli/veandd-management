@@ -25,6 +25,7 @@ import gestione.pack.client.model.RtvJavaBean;
 import gestione.pack.client.model.RtvModel;
 import gestione.pack.shared.AssociazionePtoA;
 import gestione.pack.shared.AttivitaFatturata;
+import gestione.pack.shared.AttivitaOrdine;
 import gestione.pack.shared.Commessa;
 import gestione.pack.shared.CostingRisorsa;
 import gestione.pack.shared.DatiOreMese;
@@ -2453,8 +2454,7 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 			if(id==personale.getId_PERSONALE()){
 				return false;
 			}
-		}
-		
+		}		
 		return true;
 	}
 
@@ -2489,27 +2489,29 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 				
 				o=(Ordine)session.createQuery("from Ordine where codiceOrdine=:nOrdine").setParameter("nOrdine", r.get("numeroOrdine")).uniqueResult();
 				listaFF.addAll(o.getCommessa().getFoglioFatturaziones());
-				
-				for(FoglioFatturazione ff:listaFF)
-					for(String mese:listaMesiConsiderati){
-						if(ff.getMeseCorrente().compareTo(mese)==0){							
-							oreMese[listaMesiConsiderati.indexOf(mese)]=getOreCentesimi(ff.getOreFatturare());
-							break;
-					}					
-				}//mesi
-				
-				riep=new RiepilogoMensileOrdiniModel((String)r.get("cliente"), (String)r.get("pm"), (String)r.get("numeroOrdine"), (String)r.get("dataOrdine"), 
-						(String)r.get("commessa"), (String)r.get("numeroRda"), (String)r.get("attivita"), (String)r.get("numeroOfferta"), (String)r.get("tariffa"), 
-						(Float)r.get("importoOrdine"), Float.valueOf(oreOrdine),
-						Float.valueOf(oreMese[0]), Float.valueOf(oreMese[1]), Float.valueOf(oreMese[2]), Float.valueOf(oreMese[3]), Float.valueOf(oreMese[4]), 
-						Float.valueOf(oreMese[5]), Float.valueOf(oreMese[6]), Float.valueOf(oreMese[7]), Float.valueOf(oreMese[8]), Float.valueOf(oreMese[9]), 
-						Float.valueOf(oreMese[10]), Float.valueOf(oreMese[11]), (Float)r.get("importoResiduo"), Float.valueOf(oreResidue), (String)r.get("statoOrdine"));
-				
-				listaM.add(riep);
-				listaFF.clear();	
-				for(int i=0;i<12;i++)
-					oreMese[i]="0.00";
-				
+						
+				//for(AttivitaOrdine atto:o.getAttivitaOrdines()){
+					for(FoglioFatturazione ff:listaFF){
+						for(String mese:listaMesiConsiderati){	
+							if((ff.getMeseCorrente().compareTo(mese)==0)&&(ff.getAttivitaOrdine()==(int)r.get("idAttivitaOrdine"))){							
+								oreMese[listaMesiConsiderati.indexOf(mese)]=getOreCentesimi(ff.getOreFatturare());
+								break;
+							}							
+						}//mesi
+					}
+					
+					riep=new RiepilogoMensileOrdiniModel((int)r.get("idAttivitaOrdine"),(String)r.get("cliente"), (String)r.get("pm"), (String)r.get("numeroOrdine"), (String)r.get("dataOrdine"), 
+							(String)r.get("commessa"), (String)r.get("numeroRda"), (String)r.get("attivita"), (String)r.get("numeroOfferta"), (String)r.get("tariffa"), 
+							(Float)r.get("importoOrdine"), Float.valueOf(oreOrdine),
+							Float.valueOf(oreMese[0]), Float.valueOf(oreMese[1]), Float.valueOf(oreMese[2]), Float.valueOf(oreMese[3]), Float.valueOf(oreMese[4]), 
+							Float.valueOf(oreMese[5]), Float.valueOf(oreMese[6]), Float.valueOf(oreMese[7]), Float.valueOf(oreMese[8]), Float.valueOf(oreMese[9]), 
+							Float.valueOf(oreMese[10]), Float.valueOf(oreMese[11]), (Float)r.get("importoResiduo"), Float.valueOf(oreResidue), (String)r.get("statoOrdine"));
+					listaM.add(riep);
+					
+					for(int i=0;i<12;i++)
+						oreMese[i]="0.00";
+				//}												
+				listaFF.clear();							
 			}
 			
 			tx.commit();
@@ -2806,7 +2808,7 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 		Float numeroGiorni=Float.valueOf(dettTrasferta.getNumGiorni());
 		Float numeroViaggi=Float.valueOf(dettTrasferta.getNumViaggi());
 		
-		Float costoCarburante=Float.valueOf(dettTrasferta.getCostoCarburante());
+		Float costoCarburante=Float.valueOf(dettTrasferta.getCostoCarburante())*Float.valueOf(dettTrasferta.getKmStradali());
 		Float costoAutostrada=Float.valueOf(dettTrasferta.getCostoAutostrada());
 		Float costoTreno=Float.valueOf(dettTrasferta.getCostoTreno());
 		Float costoAereo=Float.valueOf(dettTrasferta.getCostoAereo());
@@ -2854,7 +2856,18 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 		}finally{
 			session.close();
 		}	
+	}
+
+	
+	public static String getNumeroOrdinamentoMese(String meseCorrente) {
 		
+		String anno=meseCorrente.substring(3, meseCorrente.length());
+		String mese=meseCorrente.substring(0,3).toLowerCase();
+		mese=traduciMeseToNumber(mese);
+		
+		meseCorrente=anno+mese;
+		
+		return meseCorrente;
 	}
 		
 }

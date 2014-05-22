@@ -659,8 +659,7 @@ public class PrintDataServlet extends HttpServlet  {
 				listaMesi=ServerUtility.getRiepilogoMensileOrdini(anno, lista);
 				
 				listaR.addAll(ServerUtility.traduciMensileModelToBean(listaMesi));
-				
-				
+							
 				Map parameters = new HashMap();
 										
 				JasperPrint jasperPrint;
@@ -763,7 +762,8 @@ public class PrintDataServlet extends HttpServlet  {
 							(String) fm.get("codiceFornitore"), (String)fm.get("numeroFattura"), dataFattura,annoFattura, (String)fm.get("condizioni"), (String)fm.get("filiale"), (String)fm.get("iban"),
 							(String)fm.get("numeroOrdine"),(String) fm.get("numeroOfferta"), (String)fm.get("lineaOrdine"), (String)fm.get("bem"), (String)fm.get("elementoWbs"), (String)fm.get("conto"), 
 							(String)fm.get("prCenter"), imponibile, (String)fm.get("iva"), totaleIva, totaleImporto, listaAF,
-							(String)fm.get("nomeAzienda"),(String)fm.get("capitaleSociale"),(String)fm.get("sedeLegale"),(String)fm.get("sedeOperativa"),(String)fm.get("registroImprese"),(String)fm.get("rea")));
+							(String)fm.get("nomeAzienda"),(String)fm.get("capitaleSociale"),(String)fm.get("sedeLegale"),(String)fm.get("sedeOperativa"),
+							(String)fm.get("registroImprese"),(String)fm.get("rea"), (String)fm.get("testoNonImponibile")));
 					
 					fis = new FileInputStream(Constanti.PATHAmazon+"JasperReport/ReportFattura.jasper");
 					

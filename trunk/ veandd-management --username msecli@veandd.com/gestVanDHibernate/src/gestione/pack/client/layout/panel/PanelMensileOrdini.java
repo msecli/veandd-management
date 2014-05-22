@@ -178,6 +178,7 @@ public class PanelMensileOrdini extends LayoutContainer{
 		summary1.setForceFit(false);  
 		summary1.setShowGroupedColumn(false);				
 		storeRiepMensile.groupBy("pm");
+		storeRiepMensile.setDefaultSort("statoOrdine", SortDir.ASC);
 		cmRiepMensile=new ColumnModel(createColumnsMesi());
 		gridRiepMensile= new EditorGrid<RiepilogoMensileOrdiniModel>(storeRiepMensile, cmRiepMensile);
 		gridRiepMensile.setBorders(false);
@@ -494,6 +495,7 @@ public class PanelMensileOrdini extends LayoutContainer{
 	private void caricaTabellaDatiDettaglioMensile(List<RiepilogoMensileOrdiniModel> result) {
 		storeRiepMensile.removeAll();
 		storeRiepMensile.add(result);
+		storeRiepMensile.setDefaultSort("statoOrdine", SortDir.ASC);
 		gridRiepMensile.reconfigure(storeRiepMensile, cmRiepMensile);
 	}
 	

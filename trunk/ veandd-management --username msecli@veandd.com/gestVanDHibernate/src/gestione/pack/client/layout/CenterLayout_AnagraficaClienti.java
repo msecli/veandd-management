@@ -48,6 +48,7 @@ public class CenterLayout_AnagraficaClienti extends LayoutContainer {
 	private Button btnEdit;
 	private Button btnDelete;
 	private Button btnReset;
+	private TextField<String> txtfldTestoIvaNonImponibile;
 	private TextField<String> txtfldCodRaggr;
 	private TextField<String> txtfldCodFornitore;
 	private TextField<String> txtfldEmail;
@@ -255,6 +256,7 @@ public class CenterLayout_AnagraficaClienti extends LayoutContainer {
 	    		String telefono= new String();
 	    		String fax= new String();
 	    		String email= new String();
+	    		String testoIva=new String();
 	    		   	
 	    		try{
 	    			if(txtfldCodCliente.getRawValue().isEmpty()){ codCliente=0;}else{codCliente=Integer.parseInt(txtfldCodCliente.getValue().toString());}
@@ -263,6 +265,7 @@ public class CenterLayout_AnagraficaClienti extends LayoutContainer {
 	    			if(txtfldPartitaIva.getRawValue().isEmpty()){  partitaIVA = "";}else{partitaIVA=txtfldPartitaIva.getValue().toString();};
 	    			if(txtfldCodRaggr.getRawValue().isEmpty()){  codRaggr = "";}else{codRaggr=txtfldCodRaggr.getValue().toString();};
 	    			if(txtfldCodFornitore.getRawValue().isEmpty()){  codFornitore = "";}else{codFornitore=txtfldCodFornitore.getValue().toString();};
+	    			if(txtfldTestoIvaNonImponibile.getRawValue().isEmpty()){  testoIva = "";}else{testoIva=txtfldTestoIvaNonImponibile.getValue().toString();};
 	    			if(txtfldComune.getRawValue().isEmpty()){  comune = "";}else{comune=txtfldComune.getRawValue().toString();};
 	    			if(txtfldProvincia.getRawValue().isEmpty()){  provincia = "";}else{provincia=txtfldProvincia.getRawValue().toString();};
 	    			if(txtfldStato.getRawValue().isEmpty()){  stato = "";}else{stato=txtfldStato.getRawValue().toString();};
@@ -273,7 +276,7 @@ public class CenterLayout_AnagraficaClienti extends LayoutContainer {
 	    			if(txtfldEmail.getRawValue().isEmpty()){  email = "";}else{ email=txtfldEmail.getValue().toString();};
 	    	
 	    	
-	    			AdministrationService.Util.getInstance().insertDataCliente(codCliente, ragSociale, codFiscale, partitaIVA, codRaggr, codFornitore, 
+	    			AdministrationService.Util.getInstance().insertDataCliente(codCliente, ragSociale, codFiscale, partitaIVA, codRaggr, codFornitore, testoIva,
 	    					comune, provincia, stato, indirizzo, 
 	    						cap,  telefono, fax, email, new AsyncCallback<Void>() {
 
@@ -321,6 +324,8 @@ public class CenterLayout_AnagraficaClienti extends LayoutContainer {
 	    		String telefono= new String();
 	    		String fax= new String();
 	    		String email= new String();
+	    		String testoIva=new String();
+	    		
 		    	
 		    		try{
 		    			if(txtfldCodCliente.getRawValue().isEmpty()){ codCliente=0;}else{codCliente=Integer.parseInt(txtfldCodCliente.getValue().toString());}
@@ -329,6 +334,7 @@ public class CenterLayout_AnagraficaClienti extends LayoutContainer {
 		    			if(txtfldPartitaIva.getRawValue().isEmpty()){  partitaIVA = "";}else{partitaIVA=txtfldPartitaIva.getValue().toString();};
 		    			if(txtfldCodRaggr.getRawValue().isEmpty()){  codRaggr = "";}else{codRaggr=txtfldCodRaggr.getValue().toString();};
 		    			if(txtfldCodFornitore.getRawValue().isEmpty()){  codFornitore = "";}else{codFornitore=txtfldCodFornitore.getValue().toString();};
+		    			if(txtfldTestoIvaNonImponibile.getRawValue().isEmpty()){  testoIva = "";}else{testoIva=txtfldTestoIvaNonImponibile.getValue().toString();};
 		    			if(txtfldComune.getRawValue().isEmpty()){  comune = "";}else{comune=txtfldComune.getRawValue().toString();};
 		    			if(txtfldProvincia.getRawValue().isEmpty()){  provincia = "";}else{provincia=txtfldProvincia.getRawValue().toString();};
 		    			if(txtfldStato.getRawValue().isEmpty()){  stato = "";}else{stato=txtfldStato.getRawValue().toString();};
@@ -339,7 +345,7 @@ public class CenterLayout_AnagraficaClienti extends LayoutContainer {
 		    			if(txtfldEmail.getRawValue().isEmpty()){  email = "";}else{ email=txtfldEmail.getValue().toString();};
 		    		    //da aggiungere la domiciliazione bancaria
 		    			
-		    			AdministrationService.Util.getInstance().editDataCliente(codCliente, ragSociale, codFiscale, partitaIVA, codRaggr, codFornitore,  
+		    			AdministrationService.Util.getInstance().editDataCliente(codCliente, ragSociale, codFiscale, partitaIVA, codRaggr, codFornitore, testoIva,
 		    					comune, provincia, stato, indirizzo, 
 	    						cap,  telefono, fax, email, new AsyncCallback<Void>() {
 
@@ -536,6 +542,15 @@ private List<ColumnConfig> createColumns() {
 		frmpnlAnagraficaClienti.add(txtfldCodFornitore, fd_txtfldCodFornitore);
 		txtfldCodFornitore.setFieldLabel("Cod. Fornitore");
 		txtfldCodFornitore.setName("codFornitore");
+		
+		txtfldTestoIvaNonImponibile= new TextField<String>();
+		txtfldTestoIvaNonImponibile.setMaxLength(145);
+		txtfldTestoIvaNonImponibile.setValue("\\");
+		FormData fd_txtfldTestoIvaNonImponibile = new FormData("90%");
+		fd_txtfldCodFornitore.setMargins(new Margins(0, 0, 5, 0));
+		frmpnlAnagraficaClienti.add(txtfldTestoIvaNonImponibile, fd_txtfldTestoIvaNonImponibile);
+		txtfldTestoIvaNonImponibile.setFieldLabel("NonImponibile");
+		txtfldTestoIvaNonImponibile.setName("testoIvaNonImponibile");
 		
 		fldstIndirizzo = new FieldSet();
 		

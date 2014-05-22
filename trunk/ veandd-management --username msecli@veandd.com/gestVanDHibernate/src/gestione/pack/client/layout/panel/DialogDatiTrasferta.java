@@ -751,14 +751,16 @@ public class DialogDatiTrasferta extends Dialog {
 	
 	private void calcolaTotaleViaggi() {
 		 Float totaleC= (float)0.00;
+		 Float costoCarb=(float)0.00;				 
 		 Float numeroViaggi= Float.valueOf(txtfldNumeroViaggi.getRawValue().toString());
 		
 		 totaleC=/*(Float.valueOf(txtfldOreViaggio.getRawValue().toString()))+(Float.valueOf(txtfldKmStradali.getRawValue().toLowerCase()))+*/
-				 (Float.valueOf(txtfldCarburante.getRawValue().toString()))+(Float.valueOf(txtfldAutostrada.getRawValue().toString()))+
+				(Float.valueOf(txtfldAutostrada.getRawValue().toString()))+
 				 (Float.valueOf(txtfldCostoTreno.getRawValue().toString()))+(Float.valueOf(txtfldCostoAereo.getRawValue().toString()))+
 				 (Float.valueOf(txtfldCostiVari.getRawValue().toString()));
 		 
-		 totaleC=totaleC*numeroViaggi;
+		 costoCarb= (Float.valueOf(txtfldCarburante.getRawValue().toString()))* (Float.valueOf(txtfldKmStradali.getRawValue().toString()));
+		 totaleC=(totaleC*numeroViaggi)+(costoCarb*numeroViaggi);
 		 
 		 txtfldTotCostiViaggio.setValue(number.format(totaleC));
 	}
