@@ -58,13 +58,13 @@ public interface AdministrationServiceAsync {
 	void getAllClientiModel(AsyncCallback<List<ClienteModel>> asyncCallback);
 
 	void insertDataCliente(int codCliente, String ragSociale,
-			String codFiscale, String partitaIVA, String codRaggr, String codFornitore,
+			String codFiscale, String partitaIVA, String codRaggr, String codFornitore, String testoIva,
 			String comune, String provincia, String stato, String indirizzo,
 			String cap, String telefono, String fax, String email,
 			AsyncCallback<Void> asyncCallback);
 
-	void editDataCliente(int parseInt, String ragSociale, String codFiscale,
-			String partitaIVA, String codRaggr, String codFornitore,String comune,
+	void editDataCliente(int parseInt, String ragSociale, String codFiscale, 
+			String partitaIVA, String codRaggr, String codFornitore, String testoIva, String comune,
 			String provincia, String stato, String indirizzo, String cap,
 			String telefono, String fax, String email,
 			 AsyncCallback<Void> asyncCallback);
@@ -284,7 +284,7 @@ public interface AdministrationServiceAsync {
 			AsyncCallback<List<RiepilogoMeseGiornalieroModel>> asyncCallback);
 	
 	void elaboraDatiOreCollaboratori(RiepilogoOreDipCommesseGiornaliero g,
-			Date data, AsyncCallback<Boolean> asyncCallback);
+			Date data, int numero, AsyncCallback<Boolean> asyncCallback);
 	
 	void getDatiOreCollaboratori(String pm,	Date data,
 			AsyncCallback<List<RiepilogoOreDipCommesseGiornaliero>> asyncCallback);
@@ -489,6 +489,6 @@ public interface AdministrationServiceAsync {
 			AsyncCallback<Boolean> asyncCallback);
 
 	void getDatiSaturazioneRisorsa(int idRisorsa,
-			String anno, AsyncCallback<List<SaturazioneRisorsaModel>> asyncCallback);
+			int idCostingRisorsa, String anno, AsyncCallback<List<SaturazioneRisorsaModel>> asyncCallback);
 
 }

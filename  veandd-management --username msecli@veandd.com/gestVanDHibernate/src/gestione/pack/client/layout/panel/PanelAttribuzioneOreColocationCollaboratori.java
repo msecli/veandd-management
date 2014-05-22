@@ -142,15 +142,13 @@ public class PanelAttribuzioneOreColocationCollaboratori extends LayoutContainer
 			public void componentSelected(ButtonEvent ce) {
 				Date data=dtfldData.getValue();
 				nModificati=store.getModifiedRecords().size();
-						
-				for(Record record: store.getModifiedRecords()){
-					//isnew=true;			
-					
+				int numero=0;		
+				
+				for(Record record: store.getModifiedRecords()){							
+					numero++;
 					RiepilogoOreDipCommesseGiornaliero g= new RiepilogoOreDipCommesseGiornaliero();
 		    		g=(RiepilogoOreDipCommesseGiornaliero) record.getModel();		    		  
-		  
-		    		
-		    				AdministrationService.Util.getInstance().elaboraDatiOreCollaboratori(g, data, new AsyncCallback<Boolean>() {
+		    		AdministrationService.Util.getInstance().elaboraDatiOreCollaboratori(g, data, numero, new AsyncCallback<Boolean>() {
 
 		    					@Override
 		    					public void onFailure(Throwable caught) {
@@ -169,7 +167,7 @@ public class PanelAttribuzioneOreColocationCollaboratori extends LayoutContainer
 		    								caricaDatiTabella();
 		    						}
 		    					}		    			  
-		    				});
+		    		});
 		    			    		  
 				}		    
 				store.commitChanges();	    	

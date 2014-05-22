@@ -25,7 +25,7 @@ public class FatturaModel extends BaseModel  implements IsSerializable{
 			String codiceFornitore, String numeroFattura, Date dataFattura,
 			String condizioni, String filiale, String iban, String numeroOrdine, String numeroOfferta, String lineaOrdine, String bem, String elementoWbs, String conto
 			, String prCenter, String imponibile, String iva, String totaleIva, String totaleImporto, String nomeAzienda, String capitaleSociale, String sedeLegale,
-			String sedeOperativa, String registroImprese, String rea){
+			String sedeOperativa, String registroImprese, String rea, String testoNonImponibile){
 		
 		set("idFattura",idFattura);
 		set("idFoglioFatturazione", idFoglioFatturazione);
@@ -58,6 +58,7 @@ public class FatturaModel extends BaseModel  implements IsSerializable{
 		set("sedeOperativa",sedeOperativa);
 		set("registroImprese", registroImprese);
 		set("rea", rea);
+		set("testoNonImponibile", testoNonImponibile);
 				
 	}
 

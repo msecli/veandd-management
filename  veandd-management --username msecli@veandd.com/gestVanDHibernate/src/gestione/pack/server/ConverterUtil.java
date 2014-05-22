@@ -51,7 +51,8 @@ public class ConverterUtil {
 		
 		try {
 				tx=	session.beginTransaction();
-				listaP = (List<Personale>)session.createQuery("from Personale").list();
+				listaP = (List<Personale>)session.createQuery("from Personale where statoRapporto<>:statoRapporto")
+						.setParameter("statoRapporto", "Cessato").list();
 				tx.commit();
 				
 		    } catch (Exception e) {
@@ -88,7 +89,7 @@ public class ConverterUtil {
 	static ClienteModel clienteToModelConverter(Cliente c) {
 		
 		ClienteModel cliente=new ClienteModel(c.getCodCliente(),c.getRagioneSociale(),c.getCodFiscale(),c.getPartitaIVA(),c.getCodRaggr(), 
-				c.getCodFornitore(), c.getCitta(),c.getProvincia(),
+				c.getCodFornitore(), c.getTestoIvaNonImponibile(), c.getCitta(),c.getProvincia(),
 				c.getStato(),c.getIndirizzo(),c.getCap(),c.getTelefono(),c.getFax(),c.getEmail(),c.getBanca(),c.getValuta(),c.getCodABI(),c.getCodCAB(),
 				c.getCodCIN(),c.getCondizioniPagamento(),c.getRdas());
 			

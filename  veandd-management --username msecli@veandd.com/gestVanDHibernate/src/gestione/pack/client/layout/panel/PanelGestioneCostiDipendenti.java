@@ -183,19 +183,19 @@ public class PanelGestioneCostiDipendenti extends LayoutContainer{
 	    gridRiepilogo.addPlugin(sm);
 	    gridRiepilogo.setSelectionModel(sm);
 	    gridRiepilogo.getView().setShowDirtyCells(true);
-	    gridRiepilogo.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<GestioneCostiDipendentiModel>>() {  
+	    gridRiepilogo.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<GestioneCostiDipendentiModel>>() {
 	          public void handleEvent(SelectionChangedEvent<GestioneCostiDipendentiModel> be) {  
 		        	
 		            if (be.getSelection().size() > 0) { 
 		            	btnConferma.setEnabled(true);
 		            	idSelected=be.getSelectedItem().get("idPersonale");
 		            	txtCognome.setText("Selezionato: "+(String)be.getSelectedItem().get("cognome"));
-		            	caricaListaCostiHwSw(idSelected);           
+		            	caricaListaCostiHwSw(idSelected);
 		            } else {  
 		              
 		            	txtCognome.setText("");
 		            }	            
-		          }		            
+	          }		            
 		}); 
 	    
 	    cmHwSw=new ColumnModel(createColumnsHwSw());

@@ -109,12 +109,12 @@ public interface AdministrationService extends RemoteService {
 
 	void insertDataCliente(int codCliente, String ragSociale,
 			String codFiscale, String partitaIVA, String codRaggr,
-			String codFornitore, String comune, String provincia, String stato,
+			String codFornitore, String testoIva, String comune, String provincia, String stato,
 			String indirizzo, String cap, String telefono, String fax,
 			String email);
 
 	void editDataCliente(int parseInt, String ragSociale, String codFiscale,
-			String partitaIVA, String codRaggr, String codFornitore,
+			String partitaIVA, String codRaggr, String codFornitore, String testoIva,
 			String comune, String provincia, String stato, String indirizzo,
 			String cap, String telefono, String fax, String email);
 
@@ -299,7 +299,7 @@ public interface AdministrationService extends RemoteService {
 	boolean eliminaDatiGiorno(String username, Date giorno)throws IllegalArgumentException;
 	
 	boolean elaboraDatiOreCollaboratori(RiepilogoOreDipCommesseGiornaliero g,
-			Date data);
+			Date data, int numero);
 	
 	List<RiepilogoOreDipCommesseGiornaliero> getDatiOreCollaboratori(String pm,
 			Date data)throws IllegalArgumentException;
@@ -477,6 +477,6 @@ public interface AdministrationService extends RemoteService {
 	boolean setStatoFoglioFatturazione(String mese, String anno);
 
 	List<SaturazioneRisorsaModel> getDatiSaturazioneRisorsa(int idRisorsa,
-			String anno);
+			int idCostingRisorsa, String anno);
 	
 }

@@ -1127,11 +1127,11 @@ public CenterLayout_FoglioFatturazione(){}
 			cp1.setLayout(new RowLayout(Orientation.HORIZONTAL));
 							
 			txtSalTotale.setValue("0.00");
-			txtSalTotale.setFieldLabel("Sal Totale");
+			txtSalTotale.setFieldLabel("SAL Totale");
 			txtSalTotale.setEnabled(false);
 						
 			txtPclTotale.setValue("0.00");
-			txtPclTotale.setFieldLabel("Pcl Totale");
+			txtPclTotale.setFieldLabel("PCL Totale");
 			txtPclTotale.setEnabled(false);
 			
 			txtfldImportoDaFatturare.setAllowBlank(false);
@@ -1341,8 +1341,7 @@ public CenterLayout_FoglioFatturazione(){}
 				    	  		txtSalTotale.setValue(ClientUtility.aggiornaTotGenerale(txtfldSALIniziale.getValue().toString(), txtfldVariazioneSAL.getValue().toString()));
 				    	  	}
 						}	    		
-				      }
-				 
+				 }				 
 			});
 			
 			txtfldVariazionePCL.setFieldLabel("Variazione PCL");
@@ -1795,7 +1794,27 @@ public CenterLayout_FoglioFatturazione(){}
 			column=new ColumnConfig();		
 		    column.setId("numeroOrdine");  
 		    column.setHeader("Ordine");  
-		    column.setWidth(80);  
+		    column.setWidth(50);  
+		    column.setRowHeader(true);  
+		    column.setAlignment(HorizontalAlignment.RIGHT);
+		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
+
+				@Override
+				public Object render(RiepilogoOreTotaliCommesse model,
+						String property, ColumnData config, int rowIndex,
+						int colIndex,
+						ListStore<RiepilogoOreTotaliCommesse> store,
+						Grid<RiepilogoOreTotaliCommesse> grid) {
+					
+					return model.get(property);
+				}
+			});
+		    configs.add(column); 
+		    
+		    column=new ColumnConfig();		
+		    column.setId("numeroRda");  
+		    column.setHeader("RDA");  
+		    column.setWidth(50);  
 		    column.setRowHeader(true);  
 		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
@@ -1914,7 +1933,7 @@ public CenterLayout_FoglioFatturazione(){}
 			{
 				Window.alert("error: Dati selezionati non corretti.");
 			}
-		}		
+		}
 		
 		protected boolean hasValue(TextField<String> field) {
 		    return field.getValue() != null && field.isValid();
@@ -1967,8 +1986,7 @@ public CenterLayout_FoglioFatturazione(){}
 				
 				oreLavoro=oreLavoro+oreStraoC+oreViaggioC;
 				
-				if(!nuovo){
-					
+				if(!nuovo){				
 					//String ruolo=txtRuolo.getText();
 					String statoElaborazione=result.getStato();
 					if (statoElaborazione.compareTo("2")==0 && ruolo.compareTo("AMM")!=0)
@@ -2105,8 +2123,7 @@ public CenterLayout_FoglioFatturazione(){}
 				if(txtfldOreResiduoOrdine.getValue().toString().compareTo("0.00")==0 && r.compareTo("PM")==0)
 					txtfldOreDaFatturare.setEnabled(false);
 				else
-					txtfldOreDaFatturare.setEnabled(true);	
-							
+					txtfldOreDaFatturare.setEnabled(true);						
 				
 			} catch (Exception e) {
 				e.printStackTrace();

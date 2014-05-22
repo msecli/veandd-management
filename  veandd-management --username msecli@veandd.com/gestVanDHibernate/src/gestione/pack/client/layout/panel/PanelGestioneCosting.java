@@ -449,12 +449,13 @@ public class PanelGestioneCosting extends LayoutContainer{
 				
 				String numeroCommessa=(String) cm.getSelectedItem().get("commessa");
 				int idRisorsa=(Integer) cm.getSelectedItem().get("idRisorsa");
+				int idCostingRisorsa=(Integer)cm.getSelectedItem().get("idCostingRisorsa");
 				
 				Dialog dlg= new Dialog();
 				dlg.setHeading("Dati sulla saturazione della risorsa selezionata");
 				dlg.setWidth(1290);
 				dlg.setButtons("");
-				dlg.add(new PanelSaturazioneRisorsa(idRisorsa, numeroCommessa));
+				dlg.add(new PanelSaturazioneRisorsa(idRisorsa, numeroCommessa, idCostingRisorsa));
 				dlg.setModal(false);
 				dlg.setConstrain(false);
 				dlg.setCollapsible(true);
@@ -462,7 +463,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 			}
 		});	        
 	    	    
-		cmCosting = new ColumnModel(createColumnsCosting());		
+	    cmCosting = new ColumnModel(createColumnsCosting());		
 		gridCosting= new EditorGrid<CostingModel>(storeCosting, cmCosting);  
 		gridCosting.setBorders(false);  
 		gridCosting.setItemId("grid");
@@ -902,35 +903,54 @@ public class PanelGestioneCosting extends LayoutContainer{
 	    columnDataDa.setId("dataInizio");
 	    columnDataDa.setHeader("Da");
 	    columnDataDa.setToolTip("Data Inizio");
-	    columnDataDa.setWidth(65);
+	    columnDataDa.setWidth(70);
 	    columnDataDa.setAlignment(HorizontalAlignment.RIGHT);
 	    DateField dtfldInizio= new DateField();
 	    columnDataDa.setEditor(new CellEditor(dtfldInizio));  
 	    columnDataDa.setDateTimeFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
+	    columnDataDa.setRenderer(new GridCellRenderer<CostingRisorsaModel>() {
+			@Override
+			public Object render(CostingRisorsaModel model, String property,
+					ColumnData config, int rowIndex, int colIndex,
+					ListStore<CostingRisorsaModel> store,
+					Grid<CostingRisorsaModel> grid) {
+				config.style = config.style + ";background-color:#d2f5af;";//verde
+        	 	return model.get(property);
+			}
+		});
 	    configs.add(columnDataDa);
 	    
 	    SummaryColumnConfig<Double> columnDataA= new SummaryColumnConfig<Double>();
 	    columnDataA.setId("dataFine");
 	    columnDataA.setHeader("A");
 	    columnDataA.setToolTip("Data Fine");
-	    columnDataA.setWidth(65);
+	    columnDataA.setWidth(70);
 	    columnDataA.setAlignment(HorizontalAlignment.RIGHT);
 	    DateField dtfldFine= new DateField();
 	    columnDataA.setEditor(new CellEditor(dtfldFine));  
 	    columnDataA.setDateTimeFormat(DateTimeFormat.getFormat("dd/MM/yyyy")); 
+	    columnDataA.setRenderer(new GridCellRenderer<CostingRisorsaModel>() {
+			@Override
+			public Object render(CostingRisorsaModel model, String property,
+					ColumnData config, int rowIndex, int colIndex,
+					ListStore<CostingRisorsaModel> store,
+					Grid<CostingRisorsaModel> grid) {
+				config.style = config.style + ";background-color:#d2f5af;";//verde
+        	 	return model.get(property);
+			}
+		});
 	    configs.add(columnDataA);
 	    
 	    column = new SummaryColumnConfig<Double>();  
 	    column.setId("numeroSettimane");  
 	    column.setHeader("# Settimane");
 	    column.setToolTip("Numero Settimane");
-	    column.setWidth(65);  
+	    column.setWidth(65);
 	    column.setRenderer(renderer);
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    column.setSummaryType(SummaryType.SUM);
-	    column.setSummaryRenderer(new SummaryRenderer() {
-			
+	    column.setSummaryRenderer(new SummaryRenderer() {			
 			@Override
 			public String render(Number value, Map<String, Number> data) {
 				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
@@ -942,12 +962,12 @@ public class PanelGestioneCosting extends LayoutContainer{
 		});
 	    configs.add(column);
 	    
-	    column = new SummaryColumnConfig<Double>();  
-	    column.setId("orePerSettimana");  
+	    column = new SummaryColumnConfig<Double>();
+	    column.setId("orePerSettimana");
 	    column.setHeader("Ore/Settimana");
 	    column.setToolTip("Ore per Settimana");
-	    column.setWidth(65);  
-	     column.setRenderer(renderer);
+	    column.setWidth(65);
+	    column.setRenderer(renderer);
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    column.setSummaryType(SummaryType.SUM);
@@ -1367,7 +1387,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 		
 		storeCosting.removeAll();
 		storeCosting.setStoreSorter(new StoreSorter<CostingModel>());  
-	    storeCosting.setDefaultSort("numeroRevisione", SortDir.DESC);
+	    storeCosting.setDefaultSort("numeroRevisione", SortDir.ASC);
 		storeCosting.add(result);
 		caricaTabellaCostingRisorsa(idSelected);
 	}
@@ -1391,14 +1411,16 @@ public class PanelGestioneCosting extends LayoutContainer{
 		});
 	}
 	
+	
 	private void loadTableCostingRisorse(List<CostingRisorsaModel> result) {
 		storeCostingRisorsa.removeAll();
-		storeCostingRisorsa.setStoreSorter(new StoreSorter<CostingRisorsaModel>());  
+		storeCostingRisorsa.setStoreSorter(new StoreSorter<CostingRisorsaModel>()); 
+		storeCostingRisorsa.setDefaultSort("risorsa", SortDir.ASC);
 		storeCostingRisorsa.add(result);
 	}
 	
 	
-	private void getCosting() {			
+	private void getCosting() {
 			//recupero il ruolo dalla sessione
 			SessionManagementService.Util.getInstance().getRuolo(new AsyncCallback<String>() {
 				@Override
@@ -1427,8 +1449,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 										lista.add(result);				
 										cmbbxCosting.clear();
 										cmbbxCosting.setStore(lista);									
-									}
-									
+									}				
 								});								
 							}
 							

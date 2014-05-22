@@ -47,10 +47,12 @@ public class PanelSaturazioneRisorsa extends LayoutContainer{
 	private EditorGrid<SaturazioneRisorsaModel> gridSaturazioneRisorsa2;
 	private String numeroCommessa= new String();
 	private int idRisorsa=0;
+	private int idCostingRisorsa=0;
 	
-	public PanelSaturazioneRisorsa(int idRisorsa, String numeroCommessa){
+	public PanelSaturazioneRisorsa(int idRisorsa, String numeroCommessa, int idCostingRisorsa){
 		this.numeroCommessa=numeroCommessa;
-		this.idRisorsa=idRisorsa;			
+		this.idRisorsa=idRisorsa;	
+		this.idCostingRisorsa=idCostingRisorsa;
 	}
 	
 	protected void onRender(Element target, int index) {  
@@ -141,7 +143,7 @@ public class PanelSaturazioneRisorsa extends LayoutContainer{
 	
 	private void caricaDatiTabellaSaturazioneRisorsa(String anno) {
 		try {
-			AdministrationService.Util.getInstance().getDatiSaturazioneRisorsa(idRisorsa, anno, new AsyncCallback<List<SaturazioneRisorsaModel>>() {
+			AdministrationService.Util.getInstance().getDatiSaturazioneRisorsa(idRisorsa, idCostingRisorsa, anno, new AsyncCallback<List<SaturazioneRisorsaModel>>() {
 					@Override
 					public void onSuccess(List<SaturazioneRisorsaModel> result) {
 						loadTableSaturazione1(result);

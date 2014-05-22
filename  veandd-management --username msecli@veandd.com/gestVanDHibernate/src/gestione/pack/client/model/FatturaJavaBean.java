@@ -8,12 +8,12 @@ public class FatturaJavaBean {
 	private String condizioni; private String filiale; private String iban; private String numeroOrdine; private String numeroOfferta; private String lineaOrdine; private String bem; private String elementoWbs; private String conto
 	; private String prCenter; private String imponibile; private String iva; private String totaleIva; private String totaleImporto; 
 	private String nomeAzienda; private String capitaleSociale; private String sedeLegale; private String sedeOperativa; private String registroImprese; private String rea; 
-	private List<AttivitaFatturateJavaBean> listaA; private String annoFattura;
+	private List<AttivitaFatturateJavaBean> listaA; private String annoFattura; private String testoNonImponibile;
 	
 	public FatturaJavaBean(String ragioneSociale, String indirizzo, String cap, String citta, String piva, String codiceFornitore, String numeroFattura, String dataFattura,
 			String annoFattura, String condizioni, String filiale, String iban, String numeroOrdine, String numeroOfferta, String lineaOrdine, String bem, String elementoWbs, String conto
 			, String prCenter, String imponibile, String iva, String totaleIva, String totaleImporto, List<AttivitaFatturateJavaBean> listaA, 
-			String nomeAzienda, String capitaleSociale, String sedeLegale, String sedeOperativa, String registroImprese, String rea){
+			String nomeAzienda, String capitaleSociale, String sedeLegale, String sedeOperativa, String registroImprese, String rea, String testoNonImponibile){
 		
 		this.ragioneSociale=ragioneSociale;
 		this.indirizzo=indirizzo;
@@ -45,6 +45,7 @@ public class FatturaJavaBean {
 		this.registroImprese= registroImprese;
 		this.rea=rea;
 		this.listaA=listaA;
+		this.testoNonImponibile=testoNonImponibile;
 	}
 	
 	
@@ -165,12 +166,12 @@ public class FatturaJavaBean {
 		return listaA;
 	}
 
-
-
 	public String getAnnoFattura() {
 		return annoFattura;
 	}
 
-
+	public String getTestoNonImponibile() {
+		return testoNonImponibile;
+	}
 
 }

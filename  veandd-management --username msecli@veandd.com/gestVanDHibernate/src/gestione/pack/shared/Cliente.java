@@ -74,6 +74,8 @@ public class Cliente extends LightEntity implements IsSerializable {
 	private String codRaggr;
 	
 	private String codFornitore;
+	
+	private String testoIvaNonImponibile;
 
 	//bi-directional many-to-one association to Rda
 	@OneToMany(mappedBy="cliente", fetch=FetchType.LAZY)
@@ -294,6 +296,14 @@ public class Cliente extends LightEntity implements IsSerializable {
 
 	public void setRiferimentiRtvs(Set<RiferimentiRtv> riferimentiRtvs) {
 		this.riferimentiRtvs = riferimentiRtvs;
+	}
+
+	public String getTestoIvaNonImponibile() {
+		return testoIvaNonImponibile;
+	}
+
+	public void setTestoIvaNonImponibile(String testoIvaNonImponibile) {
+		this.testoIvaNonImponibile = testoIvaNonImponibile;
 	}
 	
 }

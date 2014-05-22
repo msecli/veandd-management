@@ -12,11 +12,12 @@ public class FoglioFatturazioneModel extends BaseModel implements IsSerializable
 
 	public FoglioFatturazioneModel(){}
 	
-	public FoglioFatturazioneModel(String numeroOrdine, String oreOrdine, String residuoOre, String importo, String importoResiduo, Float tariffaOraria,
+	public FoglioFatturazioneModel(String numeroOrdine, String numeroRda, String oreOrdine, String residuoOre, String importo, String importoResiduo, Float tariffaOraria,
 			String oreEseguiteRegistrate, String salAttuale, String pclAttuale, String oreFatturare, String importoFatturare,//importo reale inserito che può differire da tariffa*ore
 			String importoRtv, String variazioneSal, String variazionePcl, String oreScaricate, String note, String stato){
 		
 		set("numeroOrdine", numeroOrdine);
+		set("numeroRda", numeroRda);
 		set("oreOrdine", oreOrdine);
 		set("residuoOre", residuoOre);
 		set("importo", importo);
