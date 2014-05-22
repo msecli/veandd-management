@@ -33,27 +33,31 @@
 		<field name="importo" class="java.lang.String"/>
 	</subDataset>
 	<detail>
-		<band height="25" splitType="Stretch">
+		<band height="93" splitType="Stretch">
 			<componentElement>
-				<reportElement uuid="cc9860b7-1754-44d2-897e-02801bef0233" key="table" style="table" x="0" y="3" width="550" height="20"/>
+				<reportElement uuid="cc9860b7-1754-44d2-897e-02801bef0233" key="table" style="table" x="0" y="0" width="550" height="93"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="Table Dataset 1" uuid="ec6d5881-fdb7-4201-941d-03693283a85a">
 						<dataSourceExpression><![CDATA[$P{REPORT_DATA_SOURCE}]]></dataSourceExpression>
 					</datasetRun>
 					<jr:column width="384" uuid="7f868aed-da92-44c2-8661-2b1d56ab0c7b">
-						<jr:detailCell style="table_TD" height="35" rowSpan="1">
+						<jr:detailCell style="table_TD" height="88" rowSpan="1">
 							<textField isStretchWithOverflow="true">
-								<reportElement uuid="7d47d78c-117c-4599-8e84-1e9ec8b6a1d2" x="0" y="0" width="380" height="35"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<reportElement uuid="7d47d78c-117c-4599-8e84-1e9ec8b6a1d2" x="0" y="0" width="380" height="88"/>
+								<textElement verticalAlignment="Middle">
+									<font size="12"/>
+								</textElement>
 								<textFieldExpression><![CDATA[$F{descrizione}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="145" uuid="60fd89b2-6683-4927-9ae7-e54dd9e82532">
-						<jr:detailCell style="table_TD" height="35" rowSpan="1">
-							<textField isStretchWithOverflow="true">
-								<reportElement uuid="e3e19780-0a81-4c8d-84b8-b1d63a90b053" x="0" y="0" width="145" height="35"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+						<jr:detailCell style="table_TD" height="88" rowSpan="1">
+							<textField isStretchWithOverflow="true" pattern="#,##0.00">
+								<reportElement uuid="e3e19780-0a81-4c8d-84b8-b1d63a90b053" x="0" y="0" width="145" height="88"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12"/>
+								</textElement>
 								<textFieldExpression><![CDATA[$F{importo}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
