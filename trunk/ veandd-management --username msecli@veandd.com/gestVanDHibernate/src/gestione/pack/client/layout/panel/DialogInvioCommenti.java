@@ -1,6 +1,7 @@
 package gestione.pack.client.layout.panel;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import gestione.pack.client.AdministrationService;
@@ -41,8 +42,9 @@ public class DialogInvioCommenti  extends Dialog {
 	private Grid<CommentiModel> gridRiepilogo;
 	private ColumnModel cmCommenti;
 	private RowExpander expander;
+	private Date giorno;
 	
-	public DialogInvioCommenti(final String username){
+	public DialogInvioCommenti(final String username, Date giorno){
 		
 		setLayout(new FitLayout());
 		setBodyBorder(true);
@@ -57,6 +59,7 @@ public class DialogInvioCommenti  extends Dialog {
 		setModal(true);		
 		
 		utente=username;
+		this.giorno=giorno;
 		
 	/*	LayoutContainer bodyContainer = new LayoutContainer();
 		bodyContainer.setLayout(new FitLayout());
@@ -208,7 +211,7 @@ public class DialogInvioCommenti  extends Dialog {
 				public void componentSelected(ButtonEvent ce) {
 					if(txtCommenti.isValid()){
 						String testo= txtCommenti.getValue().toString();
-						AdministrationService.Util.getInstance().invioCommenti(testo, utente, new AsyncCallback<Boolean>() {
+						AdministrationService.Util.getInstance().invioCommenti(testo, utente, giorno, new AsyncCallback<Boolean>() {
 
 							@Override
 							public void onFailure(Throwable caught) {

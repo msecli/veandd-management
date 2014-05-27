@@ -1666,7 +1666,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 
 	
 	@Override
-	public boolean insertDataCommessa(String numCommessa, String estensione, String tipoCommessa, String pM, String statoCommessa, 
+	public boolean insertDataCommessa(String ragioneSociale, String numCommessa, String estensione, String tipoCommessa, String pM, String statoCommessa, 
 			/*Date dataInizio,*/String oreLavoro, String oreLavoroResidue, String tariffaSal, String salAttuale, String pclAttuale,
 			String descrizione, String note) {
 		Boolean esito=true;
@@ -1689,6 +1689,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		c.setDataElaborazione(new Date());//data in cui viene creata sul sistema una nuova commessa
 		c.setDenominazioneAttivita(descrizione);
 		c.setNote(note);
+		c.setRagioneSocialeCliente(ragioneSociale);
 		
 		registrata= verificaPresenza(numCommessa, estensione);
 		
@@ -1721,7 +1722,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 
 
 	@Override
-	public boolean editDataCommessa(int id, String numCommessa, String estensione,
+	public boolean editDataCommessa(int id, String ragioneSociale, String numCommessa, String estensione,
 			String tipoCommessa, String pM, String statoCommessa, String oreLavoro,String oreLavoroResidue,
 			/*Date dataInizio,*/ String tariffaSal, String salAttuale, String pclAttuale, String descrizione, String note)
 			throws IllegalArgumentException {
@@ -1743,6 +1744,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			c.setTipoCommessa(tipoCommessa);
 			c.setMatricolaPM(pM);
 			c.setStatoCommessa(statoCommessa);
+			c.setRagioneSocialeCliente(ragioneSociale);
 			
 			if(statoCommessa.compareTo("Conclusa")==0)//se fosse già stat chiusa, la commessa, non si sarebbe potuto editarla, quindi questa è la prima volta che compare lo stato Conclusa
 				c.setDataChiusura(new Date());				
@@ -5124,7 +5126,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	
 	//----------------------------------------------------------VARIE
 		@Override
-		public boolean invioCommenti(String testo, String username)
+		public boolean invioCommenti(String testo, String username, Date giorno)
 				throws IllegalArgumentException {
 			
 			Commenti c= new Commenti();
@@ -5132,8 +5134,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			Transaction tx= null;
 			Date d= new Date();
 			
-			DateFormat formatter = new SimpleDateFormat("MMM-dd-yyyy") ; 
-			String data=formatter.format(d);
+			DateFormat formatter = new SimpleDateFormat("MMM-dd-yyyy", Locale.ENGLISH) ; 
+			String data=formatter.format(giorno);
 			
 			try {
 				c.setTesto(testo);
@@ -5155,6 +5157,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 		}
 
+		
 		//non usato----------
 		@Override
 		public boolean setRiepilogoOreOnSession(List<RiepilogoFoglioOreModel> lista) {
@@ -9617,8 +9620,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
 		
-		sede="T";
-	
 		int idDip=0;
 		String nome="";	
 		Float costoOrarioTotale=(float)0.00;
@@ -9793,6 +9794,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		Costing cs= new Costing();
 		Commessa c= new Commessa();
+		Cliente cliente=new Cliente();
 		
 		String numeroCommessa= commessa.substring(0,commessa.indexOf("."));
 		String estensione= commessa.substring(commessa.indexOf(".")+1,commessa.length());		
@@ -9812,9 +9814,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			}*/
 			c=(Commessa)session.createQuery("from Commessa where numeroCommessa=:numeroCommessa and estensione=:estensione").setParameter("numeroCommessa", numeroCommessa)
 					 .setParameter("estensione", estensione).uniqueResult();
+			cliente=(Cliente)session.createQuery("from Cliente where codCliente=:idcliente").setParameter("codCliente", idCliente).uniqueResult();
 			
 			if(c==null){
-				insertDataCommessa(numeroCommessa, estensione, "c", usernamePM, "Costing", "0.00", "0.00", 
+				insertDataCommessa(cliente.getRagioneSociale(), numeroCommessa, estensione, "c", usernamePM, "Costing", "0.00", "0.00", 
 						"0.00", "0.00", "0.00", descrizione, "");
 				
 				tx.commit();
@@ -10817,6 +10820,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}	
 	}
 
+	
+	//TODO
 	@Override
 	public boolean insertRichiestaIt(String username, Date dataR, String ora,
 			String pc) {

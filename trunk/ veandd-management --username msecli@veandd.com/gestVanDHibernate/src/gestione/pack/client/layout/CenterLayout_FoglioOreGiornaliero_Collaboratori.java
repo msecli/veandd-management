@@ -159,7 +159,7 @@ public class CenterLayout_FoglioOreGiornaliero_Collaboratori extends LayoutConta
 				
 				@Override
 				public void componentSelected(ButtonEvent ce) {
-					Dialog d =new  DialogInvioCommenti(txtfldUsername.getValue().toString());
+					Dialog d =new  DialogInvioCommenti(txtfldUsername.getValue().toString(), new Date());
 					d.show();
 					//Dialog d= new dlgProva();
 					//d.show();			

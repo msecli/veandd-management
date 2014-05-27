@@ -210,7 +210,7 @@ public class CenterLayout_RilevazioneOreColocation extends LayoutContainer{
 			btnInviaCommenti.addSelectionListener(new SelectionListener<ButtonEvent>() {			
 				@Override
 				public void componentSelected(ButtonEvent ce) {
-					Dialog d =new  DialogInvioCommenti(txtfldUsername.getValue().toString());
+					Dialog d =new  DialogInvioCommenti(txtfldUsername.getValue().toString(), new Date());
 					d.show();
 					
 				}
