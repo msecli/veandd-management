@@ -178,7 +178,7 @@ public class DialogFormInserimentoDatiRtv extends Dialog{
 		
 		txtfldCodiceFornitore= new TextField<String>();
 		txtfldCodiceFornitore.setFieldLabel("Codice Fornitore");
-		layoutCol1.add(txtfldCodiceFornitore, new FormData("80%"));
+		//layoutCol1.add(txtfldCodiceFornitore, new FormData("80%"));
 		
 		txtfldEnte= new TextField<String>();
 		txtfldEnte.setFieldLabel("Ente");

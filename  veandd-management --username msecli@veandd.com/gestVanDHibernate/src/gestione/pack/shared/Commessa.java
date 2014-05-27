@@ -55,6 +55,8 @@ public class Commessa extends LightEntity implements IsSerializable {
 	private String statoCommessa;
 
 	private String tipoCommessa;
+	
+	private String ragioneSocialeCliente;
 
 	//bi-directional many-to-one association to Ordine
 	@OneToMany(mappedBy="commessa", fetch=FetchType.LAZY)
@@ -228,6 +230,14 @@ public class Commessa extends LightEntity implements IsSerializable {
 
 	public void setCostings(Set<Costing> costings) {
 		this.costings = costings;
+	}
+
+	public String getRagioneSocialeCliente() {
+		return ragioneSocialeCliente;
+	}
+
+	public void setRagioneSocialeCliente(String ragioneSocialeCliente) {
+		this.ragioneSocialeCliente = ragioneSocialeCliente;
 	}
 	
 	

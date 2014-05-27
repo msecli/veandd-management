@@ -175,17 +175,17 @@ public interface AdministrationServiceAsync {
 
 	void getAllCommesseModel(String pm, String statoSelezionato, AsyncCallback<List<CommessaModel>> asyncCallback);
 
-	void insertDataCommessa(String numCommessa, String estensione,
+	void insertDataCommessa(String ragioneSociale, String numCommessa, String estensione,
 			String tipoCommessa, String pM, String statoCommessa,
 			String oreLavoro, String oreLavoroResidue, String tariffaSal, 
 			String salAttuale, String pclAttuale, String descrizione,
-			String note, AsyncCallback<Boolean> asyncCallback);
+			String note,  AsyncCallback<Boolean> asyncCallback);
 
-	void editDataCommessa(int i,String numCommessa, String estensione,
+	void editDataCommessa(int i,String ragioneSociale, String numCommessa, String estensione,
 			String tipoCommessa, String pM, String statoCommessa,
 			String oreLavoro, String oreLavoroResidue, String tariffaSal, 
 			String salAttuale, String pclAttuale, String descrizione,
-			String note, AsyncCallback<Boolean> asyncCallback);
+			String note,  AsyncCallback<Boolean> asyncCallback);
 
 	void deleteDataCommessa(int parseInt, AsyncCallback<Boolean> asyncCallback);
 
@@ -322,7 +322,7 @@ public interface AdministrationServiceAsync {
 
 //----------------------------------------------------VARIE
 	void invioCommenti(String testo, String username,
-			AsyncCallback<Boolean> asyncCallback);
+			Date giorno, AsyncCallback<Boolean> asyncCallback);
 	
 	void getAllCommenti(String utente,
 			AsyncCallback<List<CommentiModel>> asyncCallback);

@@ -201,17 +201,17 @@ public interface AdministrationService extends RemoteService {
 	
 	List<CommessaModel> getAllCommesseModel(String pm, String statoSelezionato);
 
-	boolean insertDataCommessa(String numCommessa, String estensione,
-			String tipoCommessa, String pM, String statoCommessa,
-			String oreLavoro, String oreLavoroResidue, String tariffaSal, 
-			String salAttuale, String pclAttuale, String descrizione,
-			String note);
+	boolean insertDataCommessa(String ragioneSociale, String numCommessa,
+			String estensione, String tipoCommessa, String pM,
+			String statoCommessa, String oreLavoro, String oreLavoroResidue,
+			String tariffaSal, String salAttuale, String pclAttuale,
+			String descrizione, String note);
 
-	boolean editDataCommessa(int i,String numCommessa, String estensione,
-			String tipoCommessa, String pM, String statoCommessa,
-			String oreLavoro, String oreLavoroResidue, String tariffaSal, 
-			String salAttuale, String pclAttuale, String descrizione,
-			String note);
+	boolean editDataCommessa(int i, String ragioneSociale, String numCommessa,
+			String estensione, String tipoCommessa, String pM,
+			String statoCommessa, String oreLavoro, String oreLavoroResidue,
+			String tariffaSal, String salAttuale, String pclAttuale,
+			String descrizione, String note);
 
 	boolean deleteDataCommessa(int parseInt)throws IllegalArgumentException;
 
@@ -327,8 +327,7 @@ public interface AdministrationService extends RemoteService {
 	List<RiepilogoOreTotaliCommesse> getElencoCommesseSuFoglioFatturazione(
 			String numCommessa, String numEstensione, String data) throws IllegalArgumentException;
 	
-//---------------------------------VARIE----------------------------------------------------------------------------
-	boolean invioCommenti(String testo, String username)throws IllegalArgumentException;
+boolean invioCommenti(String testo, String username, Date giorno);
 
 	List<CommessaModel> getAllCommesseModelByPm(String cognomePm)throws IllegalArgumentException;
 

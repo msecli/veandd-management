@@ -454,7 +454,7 @@ public class ConverterUtil {
 				}
 
 			} else{
-				cliente = "#";
+				cliente = c.getRagioneSocialeCliente();
 				numeroOrdine="#";
 				numeroRdo="#";
 				numeroOfferta="#";

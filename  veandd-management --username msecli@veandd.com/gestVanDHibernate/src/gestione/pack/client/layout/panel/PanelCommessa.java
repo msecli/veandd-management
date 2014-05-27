@@ -27,6 +27,7 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.Record;
@@ -47,6 +48,7 @@ import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -99,6 +101,7 @@ public class PanelCommessa extends LayoutContainer {
 	private SimpleComboBox<String> smplcmbxStatoCommessa;
 	private SimpleComboBox<String> smplcmbxTipoCommessa;
 	private SimpleComboBox<String> smplcmbxSelectStatoCommessa;
+	private SimpleComboBox<String> smplcmbxCliente;
 	
 	private Button btnOrdine;
 	private Button btnClose;
@@ -290,6 +293,7 @@ public class PanelCommessa extends LayoutContainer {
 	    formBindingsCommessa.addFieldBinding(new SimpleComboBoxFieldBinding(smplcmbxPM, "pm"));
 	    formBindingsCommessa.addFieldBinding(new SimpleComboBoxFieldBinding(smplcmbxStatoCommessa, "statoCommessa"));
 	    formBindingsCommessa.addFieldBinding(new SimpleComboBoxFieldBinding(smplcmbxTipoCommessa, "tipoCommessa"));
+	    formBindingsCommessa.addFieldBinding(new SimpleComboBoxFieldBinding(smplcmbxCliente, "ragioneSociale"));
 	    formBindingsCommessa.setStore((Store<CommessaModel>) gridCommessa.getStore());	    
 		
 	    ContentPanel cntpnlGrid= new ContentPanel();
@@ -365,6 +369,7 @@ public class PanelCommessa extends LayoutContainer {
 									String tariffaSal="0.0";
 									String salAttuale="0.0";
 									String pclAttuale="0.0";
+									String ragioneSociale="";
 									//Date dataInizio=new Date();
 																								
 									if(txtfldNumeroCommessa.getRawValue().isEmpty()){ numCommessa="";}else{numCommessa=txtfldNumeroCommessa.getValue().toString();}
@@ -380,11 +385,14 @@ public class PanelCommessa extends LayoutContainer {
 									if(smplcmbxPM.getRawValue().isEmpty()){ pM="";}else{							
 										pM=smplcmbxPM.getRawValue().toString();		
 									}
+									if(smplcmbxCliente.getRawValue().isEmpty()){ ragioneSociale="";}else{							
+										ragioneSociale=smplcmbxCliente.getRawValue().toString();		
+									}
 									if(smplcmbxStatoCommessa.getRawValue().isEmpty()){ statoCommessa="";}else{statoCommessa=smplcmbxStatoCommessa.getRawValue().toString();}
 														
 									//dataInizio=dtfldData.getValue();
 																		
-									AdministrationService.Util.getInstance().insertDataCommessa(numCommessa, estensione, tipoCommessa, pM, statoCommessa, 
+									AdministrationService.Util.getInstance().insertDataCommessa(ragioneSociale, numCommessa, estensione, tipoCommessa, pM, statoCommessa, 
 											/*dataInizio,*/oreLavoro, oreLavoroResidue, tariffaSal, salAttuale, pclAttuale, descrizione, note,  new AsyncCallback<Boolean>() {
 
 									@Override
@@ -429,6 +437,7 @@ public class PanelCommessa extends LayoutContainer {
 				String tariffaSal="0.0";
 				String salAttuale="0.0";
 				String pclAttuale="0.0";
+				String ragioneSociale="";
 				
 				//Date dataInizio=new Date();
 				/*
@@ -463,8 +472,9 @@ public class PanelCommessa extends LayoutContainer {
 					oreLavoroResidue="0.00";//c.getOreLavoroResidue();
 					descrizione=c.getDescrizione();
 					note=c.getNote();
+					ragioneSociale=c.getRagioneSociale();
 				
-	        		AdministrationService.Util.getInstance().editDataCommessa(id,numCommessa, estensione, tipoCommessa, pM, statoCommessa, 
+	        		AdministrationService.Util.getInstance().editDataCommessa(id, ragioneSociale,numCommessa, estensione, tipoCommessa, pM, statoCommessa, 
 						/*dataInizio,*/oreLavoro,oreLavoroResidue,tariffaSal, salAttuale, pclAttuale, descrizione, note,  new AsyncCallback<Boolean>() {
 
 	        			@Override
@@ -736,6 +746,14 @@ public class PanelCommessa extends LayoutContainer {
 		smplcmbxPM.setAllowBlank(false);
 		smplcmbxPM.setTriggerAction(TriggerAction.ALL);
 		getNomePM();
+		
+		smplcmbxCliente= new SimpleComboBox<String>();
+		frmPanel.add(smplcmbxCliente, new FormData("85%"));
+		smplcmbxCliente.setFieldLabel("Cliente");
+		smplcmbxCliente.setName("ragioneSociale");
+		//smplcmbxCliente.setAllowBlank(false);
+		smplcmbxCliente.setTriggerAction(TriggerAction.ALL);
+		getClienti();
 				
 		smplcmbxStatoCommessa= new SimpleComboBox<String>();
 		smplcmbxStatoCommessa.setFieldLabel("Stato Commessa");
@@ -985,6 +1003,28 @@ public class PanelCommessa extends LayoutContainer {
 	}
 	
 
+	private void getClienti() {
+	
+		AdministrationService.Util.getInstance().getRagioneSociale(new AsyncCallback<List<String>>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					Window.alert("Errore connessione;");
+					caught.printStackTrace();				
+				}
+				@Override
+				public void onSuccess(List<String> result) {
+					if(result!=null){
+						java.util.Collections.sort(result);
+						smplcmbxCliente.add(result);
+						smplcmbxCliente.recalculate();}
+					else Window.alert("error: Errorre durante l'accesso ai dati Clienti.");					
+				}
+		});					
+	
+	}
+
+
 	private void caricaTabellaDati(String cognomePm) {
 		String statoSelezionato=smplcmbxSelectStatoCommessa.getRawValue().toString();
 		
@@ -1079,6 +1119,7 @@ public class PanelCommessa extends LayoutContainer {
 	
 	private void disableForm() {
 		//txtfldEstensione.setEnabled(false);
+		smplcmbxCliente.setEnabled(false);
 		txtfldIdCommessa.setEnabled(false);
 		txtfldNumeroCommessa.setEnabled(false);
 		smplcmbxPM.setEnabled(false);
@@ -1096,7 +1137,7 @@ public class PanelCommessa extends LayoutContainer {
 		txtfldIdCommessa.setEnabled(true);
     	//txtfldNumeroCommessa.setEnabled(true);
     	//txtfldEstensione.setEnabled(true);
-		
+		smplcmbxCliente.setEnabled(true);
 		smplcmbxPM.setEnabled(true);
 		smplcmbxStatoCommessa.setEnabled(true);
 		smplcmbxTipoCommessa.setEnabled(true);

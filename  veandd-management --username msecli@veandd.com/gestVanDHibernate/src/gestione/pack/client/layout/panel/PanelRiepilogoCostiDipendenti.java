@@ -12,7 +12,10 @@ import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.fx.Resizable;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -21,6 +24,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
@@ -48,6 +52,7 @@ public class PanelRiepilogoCostiDipendenti extends LayoutContainer{
 	
 	private EditorGrid<RiepilogoCostiDipendentiModel> gridRiepilogo;
 		
+	private SimpleComboBox<String> smplcmbxSede;
 	private Button btnPrint;
 	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
 	private static String url= "/gestvandhibernate/PrintDataServlet";
@@ -109,7 +114,22 @@ public class PanelRiepilogoCostiDipendenti extends LayoutContainer{
 			}		
 		});
 	  	  	
-		caricaTabellaDati();
+		smplcmbxSede= new SimpleComboBox<String>();
+		smplcmbxSede.setFieldLabel("Sede");
+		smplcmbxSede.setWidth(65);
+		smplcmbxSede.setEmptyText("Sede..");
+		smplcmbxSede.setAllowBlank(false);
+		smplcmbxSede.add("T");
+		smplcmbxSede.add("B");
+		smplcmbxSede.setStyleAttribute("padding-left", "2px");
+		smplcmbxSede.addListener(Events.Select, new Listener<BaseEvent>(){
+			@Override
+			public void handleEvent(BaseEvent be) {	
+				caricaTabellaDati();
+			}		
+		});
+		
+		//caricaTabellaDati();
 				
 		cm = new ColumnModel(createColumns());		
 		gridRiepilogo= new EditorGrid<RiepilogoCostiDipendentiModel>(store, cm);  
@@ -127,7 +147,7 @@ public class PanelRiepilogoCostiDipendenti extends LayoutContainer{
 		cp.add(fp);
 		
 		ToolBar tlBar= new ToolBar();
-		//tlBar.add(cp);
+		tlBar.add(smplcmbxSede);
 				
 		cpGrid.setTopComponent(tlBar);
 		cpGrid.add(gridRiepilogo); 
@@ -226,7 +246,12 @@ public class PanelRiepilogoCostiDipendenti extends LayoutContainer{
 	private void caricaTabellaDati() {
 			
 		try {
-			AdministrationService.Util.getInstance().getRiepilogoDatiCostiPersonale("sede", new AsyncCallback<List<RiepilogoCostiDipendentiModel>>() {
+			if(smplcmbxSede.isValid()){
+				String sede=smplcmbxSede.getRawValue().toString();
+				
+				//TODO check
+				
+				AdministrationService.Util.getInstance().getRiepilogoDatiCostiPersonale(sede, new AsyncCallback<List<RiepilogoCostiDipendentiModel>>() {
 					@Override
 					public void onSuccess(List<RiepilogoCostiDipendentiModel> result) {
 						if(result==null)
@@ -240,7 +265,8 @@ public class PanelRiepilogoCostiDipendenti extends LayoutContainer{
 						Window.alert("Errore connessione on getRiepilogoDatiCostiPersonale();");
 						caught.printStackTrace();
 					}
-			});
+				});
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			Window.alert("Problemi durante il caricamento dei dati sui costi personale.");
