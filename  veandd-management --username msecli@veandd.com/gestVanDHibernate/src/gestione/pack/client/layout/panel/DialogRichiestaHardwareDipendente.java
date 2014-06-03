@@ -6,52 +6,55 @@ import java.util.List;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.model.AnagraficaHardwareModel;
-import gestione.pack.client.model.RdoCompletaModel;
+import gestione.pack.client.model.CommentiModel;
 import gestione.pack.client.model.RiepilogoRichiesteModel;
 import gestione.pack.client.utility.MyImages;
 
 import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
+import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.core.XTemplate;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.store.GroupingStore;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.Time;
 import com.extjs.gxt.ui.client.widget.form.TimeField;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.RowExpander;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public class DialogRichiestaHardwareDipendente extends Dialog{
 
-	private GroupingStore<RiepilogoRichiesteModel>store = new GroupingStore<RiepilogoRichiesteModel>();
+	private ListStore<RiepilogoRichiesteModel>store = new ListStore<RiepilogoRichiesteModel>();
 	private Grid<RiepilogoRichiesteModel> gridRiepilogo;
 	private ColumnModel cm;
 	private RowExpander expander;
 	
 	private DateField dtfldGiorno= new DateField();
 	private TimeField tmfldOra= new TimeField();
-	private SimpleComboBox<String> smplcmbxPc= new SimpleComboBox<String>();
+	private ComboBox<AnagraficaHardwareModel> cmbxPc= new ComboBox<AnagraficaHardwareModel>();
 	private TextArea txtrGuasto= new TextArea();
 	private Button btnConferma= new Button();
 	
@@ -91,8 +94,8 @@ public class DialogRichiestaHardwareDipendente extends Dialog{
 		cntpnlGrid.setWidth(750);
 		cntpnlGrid.setFrame(true);
 		cntpnlGrid.setBorders(false);
+		cntpnlGrid.setLayout(new FitLayout());
 		
-		store.groupBy("numeroCommessa");
 		cm=new ColumnModel(createColumns());
 		caricaDatiTabella();
 			          
@@ -104,7 +107,7 @@ public class DialogRichiestaHardwareDipendente extends Dialog{
 		gridRiepilogo.setColumnReordering(true);
 		gridRiepilogo.getView().setShowDirtyCells(false);
 		gridRiepilogo.addPlugin(expander);
-		gridRiepilogo.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+		//gridRiepilogo.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 		/*gridRiepilogo.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<RiepilogoRichiesteModel>>() {  
 	          public void handleEvent(SelectionChangedEvent<RiepilogoRichiesteModel> be) {  
 	        	
@@ -134,11 +137,35 @@ public class DialogRichiestaHardwareDipendente extends Dialog{
 		tmfldOra.setEmptyText("Orario..");
 		tmfldOra.setAllowBlank(false);
 		
-		smplcmbxPc.setEmptyText("Selezionare..");
-		smplcmbxPc.setAllowBlank(false);
-		smplcmbxPc.setWidth(120);
-		smplcmbxPc.setTriggerAction(TriggerAction.ALL);
-		smplcmbxPc.setAllowBlank(false);
+		ListStore<AnagraficaHardwareModel> listStoreCmbx= new ListStore<AnagraficaHardwareModel>();
+		cmbxPc.setEmptyText("Selezionare PC..");
+		cmbxPc.setAllowBlank(false);
+		cmbxPc.setWidth(120);
+		cmbxPc.setTriggerAction(TriggerAction.ALL);
+		cmbxPc.setAllowBlank(false);
+		cmbxPc.setStore(listStoreCmbx);
+		cmbxPc.setDisplayField("codiceModello");
+		cmbxPc.addListener(Events.OnClick, new Listener<BaseEvent>() {
+			@Override
+			public void handleEvent(BaseEvent be) {
+				AdministrationService.Util.getInstance().getDatiAnagraficaHardware(new AsyncCallback<List<AnagraficaHardwareModel>>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Window.alert("Errore di connessione on getDatiAnagraficaHardware()");						
+					}
+
+					@Override
+					public void onSuccess(List<AnagraficaHardwareModel> result) {
+						if(result!=null)
+							caricaDatiComboBox(result);
+						else
+							Window.alert("Problemi durante l'accesso ai dati dell'anagrafica hardware!");
+						
+					}				
+				});
+			}
+		});
 				
 		txtrGuasto.setWidth(270);
 		txtrGuasto.setHeight(200);
@@ -157,9 +184,10 @@ public class DialogRichiestaHardwareDipendente extends Dialog{
 				
 				Date dataR= dtfldGiorno.getValue();
 				String ora= tmfldOra.getValue().getText();
-				String pc= smplcmbxPc.getRawValue().toString();
+				Integer pc= cmbxPc.getValue().get("idHardware");
+				String richiesta=txtrGuasto.getValue();
 				//tmfldOra.get			
-				AdministrationService.Util.getInstance().insertRichiestaIt(username, dataR, ora, pc, new AsyncCallback<Boolean>() {
+				AdministrationService.Util.getInstance().insertRichiestaIt(username, dataR, ora, pc, richiesta, new AsyncCallback<Boolean>() {
 
 					@Override
 					public void onFailure(Throwable caught) {
@@ -184,7 +212,7 @@ public class DialogRichiestaHardwareDipendente extends Dialog{
 		
 		vpForm.add(dtfldGiorno);
 		vpForm.add(tmfldOra);
-		vpForm.add(smplcmbxPc);
+		vpForm.add(cmbxPc);
 		vpForm.add(txtrGuasto);
 		vpForm.add(btnConferma);
 
@@ -217,6 +245,15 @@ public class DialogRichiestaHardwareDipendente extends Dialog{
 		}); 	  
 	}
 	
+	private void caricaDatiComboBox(List<AnagraficaHardwareModel> result) {
+		ListStore<AnagraficaHardwareModel> lista= new ListStore<AnagraficaHardwareModel>();
+		lista.setStoreSorter(new StoreSorter<AnagraficaHardwareModel>());  
+		lista.setDefaultSort("codiceModello", SortDir.ASC);
+		
+		lista.add(result);				
+		cmbxPc.clear();
+		cmbxPc.setStore(lista);
+	}
 	
 	private void loadTable(List<RiepilogoRichiesteModel> result) {		
 		store.removeAll();
@@ -226,7 +263,7 @@ public class DialogRichiestaHardwareDipendente extends Dialog{
 
 	private List<ColumnConfig> createColumns() {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
-		XTemplate tpl = XTemplate.create("<p><b>Richiesta:</b> {richiesta}</p><br>");  	    
+		XTemplate tpl = XTemplate.create("<p><b>Richiesta:</b> {guasto}</p><br>");  	    
 		expander = new RowExpander();
 		expander.setTemplate(tpl); 
 		expander.setWidth(20);
@@ -239,13 +276,34 @@ public class DialogRichiestaHardwareDipendente extends Dialog{
 	    column.setWidth(120);  
 	    column.setRowHeader(true);  
 	    configs.add(column);
+	    
+	    column=new ColumnConfig();		
+	    column.setId("nodo");  
+	    column.setHeader("PC");  
+	    column.setWidth(120);  
+	    column.setRowHeader(true);  
+	    configs.add(column);
 	    	    
 	    column=new ColumnConfig();		
-	    column.setId("dataEvasione");  
+	    column.setId("oraRichiesta");  
+	    column.setHeader("Ora Richiesta");  
+	    column.setWidth(90);  
+	    column.setRowHeader(true);
+	    configs.add(column);
+	    
+	    column=new ColumnConfig();		
+	    column.setId("dataEvasioneRichiesta");  
 	    column.setHeader("Data Evasione");  
 	    column.setWidth(120);  
 	    column.setRowHeader(true);  
 	    configs.add(column);
+	    
+	    /*column=new ColumnConfig();		
+	    column.setId("guasto");  
+	    column.setHeader("Richiesta");  
+	    column.setWidth(220);  
+	    column.setRowHeader(true);  
+	    configs.add(column);*/
 	    
 	    column=new ColumnConfig();		
 	    column.setId("stato");  
@@ -253,14 +311,6 @@ public class DialogRichiestaHardwareDipendente extends Dialog{
 	    column.setWidth(100);  
 	    column.setRowHeader(true);  
 	    configs.add(column);
-	    
-	  /*  column=new ColumnConfig();		
-	    column.setId("guasto");  
-	    column.setHeader("Richiesta");  
-	    column.setWidth(30);  
-	    column.setRowHeader(true);  
-	    configs.add(column);
-	    */	    
 		
 		return configs;
 	}	

@@ -457,7 +457,8 @@ boolean invioCommenti(String testo, String username, Date giorno);
 			String serialNumber, String sistemaOperativo, String stato,
 			String svga, String tipologia, String utilizzo)	throws IllegalArgumentException;
 
-	boolean insertRichiestaIt(String username, Date dataR, String ora, String pc);
+	boolean insertRichiestaIt(String username, Date dataR, String ora,
+			Integer pc, String richiesta);
 
 	List<RiepilogoRichiesteModel> getRiepilogoRichiesteItUtente(String username);
 
@@ -477,5 +478,7 @@ boolean invioCommenti(String testo, String username, Date giorno);
 
 	List<SaturazioneRisorsaModel> getDatiSaturazioneRisorsa(int idRisorsa,
 			int idCostingRisorsa, String anno);
+
+	List<AnagraficaHardwareModel> getDatiAnagraficaHardware();
 	
 }

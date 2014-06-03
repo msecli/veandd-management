@@ -7,11 +7,8 @@ import java.util.List;
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.UtilityService;
 import gestione.pack.client.layout.panel.DialogRichiestaHardwareDipendente;
-import gestione.pack.client.layout.panel.DialogSceltaPeriodoSbloccoCompilazione;
 import gestione.pack.client.layout.panel.PanelAnagraficaHardware;
-import gestione.pack.client.layout.panel.PanelAttribuzioneOreColocationCollaboratori;
 import gestione.pack.client.layout.panel.PanelEditPasswordUtenti;
-import gestione.pack.client.layout.panel.PanelGestioneCostiDipendenti;
 import gestione.pack.client.layout.panel.PanelGestioneCosting;
 import gestione.pack.client.layout.panel.PanelMensileOrdini;
 import gestione.pack.client.layout.panel.PanelPrintAll;
@@ -48,10 +45,6 @@ import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.extjs.gxt.ui.client.widget.menu.MenuBar;
-import com.extjs.gxt.ui.client.widget.menu.MenuBarItem;
-import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -900,7 +893,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    btnRichieste.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	    
-	        	DialogRichiestaHardwareDipendente d= new DialogRichiestaHardwareDipendente("");
+	        	DialogRichiestaHardwareDipendente d= new DialogRichiestaHardwareDipendente(txtfldUsername.getValue());
 	        	d.show();
 	       }      
 	    });

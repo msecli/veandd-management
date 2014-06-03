@@ -4858,7 +4858,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			//Calcolo il totale delle ore I/U
 			String totaleOreDaIU="0.00";
 			for(DettaglioOreGiornaliere dtt: listaG){
-				if(!dtt.getDettaglioIntervalliIUs().isEmpty()){
+				/*if(!dtt.getDettaglioIntervalliIUs().isEmpty())*/{
 					totaleOreDaIU=ServerUtility.aggiornaTotGenerale(totaleOreDaIU, dtt.getTotaleOreGiorno());
 					totaleOreDaIU=ServerUtility.aggiornaTotGenerale(totaleOreDaIU, dtt.getOreViaggio());					
 				}
@@ -4868,7 +4868,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					giorno18, giorno19, giorno20, giorno21, giorno22, giorno23, giorno24, giorno25, giorno26, giorno27, giorno28, giorno29, giorno30, giorno31, "");
 			listaR.add(riep);	
 			
-			tx.commit();			
+			tx.commit();
 		} catch (Exception e) {
 			if (tx != null)
 				tx.rollback();
@@ -10819,17 +10819,65 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				ServerLogFunction.logOkMessage("creaAssociazionePtoHW", new Date(), username, "Success");
 		}	
 	}
-
 	
-	//TODO
+	
 	@Override
 	public boolean insertRichiestaIt(String username, Date dataR, String ora,
-			String pc) {
+			Integer idHardware, String richiesta) {
+				
+		Personale p= new Personale();
+		AnagraficaHardware h= new AnagraficaHardware();
+		RichiesteIt r= new RichiesteIt();
+		
+		boolean esito=true;
+		String errore="";
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {
+			
+			tx=session.beginTransaction();
+			
+			p=(Personale)session.createQuery("from Personale where username=:username").setParameter("username", username).uniqueResult();
+			h=(AnagraficaHardware)session.createQuery("from AnagraficaHardware where idHardware=:id").setParameter("id", idHardware).uniqueResult();
+			
+			r.setDataRichiesta(dataR);
+			r.setGuasto(richiesta);
+			r.setOraRichiesta(ora);
+			r.setStato("1");//1:inserito dall'utente
+			
+			r.setAnagraficaHardware(h);
+			r.setPersonale(p);
+			
+			p.getRichiesteIts().add(r);
+			h.getRichiesteIts().add(r);
+			
+			session.save(p);
+			session.save(h);
+			
+			tx.commit();
+		}catch (Exception e) {
+			esito=false;
+			e.printStackTrace();
+			errore=e.getMessage();
+			if (tx!=null)
+				tx.rollback();				
+					
+		}finally{
+			session.close();
+			if(!esito){
+	        	ServerLogFunction.logErrorMessage("insertRichiestaIt", new Date(), username, "Error", errore);
+	        	return false;
+			}
+	        else				
+				ServerLogFunction.logOkMessage("insertRichiestaIt", new Date(), username, "Success");
+		}	
 		
 		
-		
-		return false;
+		return true;
 	}
+	
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -10861,13 +10909,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			tx.commit();
 			
 			for(RichiesteIt r:listaR){
-				long timeRich=r.getDataRichiesta().getTime();
-				long timeEvasR= r. getDataEvasioneRichiesta().getTime();
-				Time tRich= new Time(timeRich);
-				Time tEv= new Time(timeEvasR);				
-				
+								
 				rM= new RiepilogoRichiesteModel(r.getIdRichiesta(), r.getAnagraficaHardware().getIdHardware(), idUtente, username, 
-						r.getAnagraficaHardware().getNodo(), r.getDataRichiesta(), tRich.toString(), r.getDataEvasioneRichiesta(), tEv.toString(), r.getStato(), r.getGuasto());
+						r.getAnagraficaHardware().getModello(), r.getDataRichiesta(), r.getOraRichiesta(), r.getDataEvasioneRichiesta(), "oraEvasione", r.getStato(), r.getGuasto());
 				
 				listaRM.add(rM);				
 			}
@@ -10877,8 +10921,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			e.printStackTrace();
 			errore=e.getMessage();
 			if (tx!=null)
-				tx.rollback();				
-					
+				tx.rollback();					
 		}finally{
 			session.close();
 			if(!esito){
@@ -11273,5 +11316,44 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	        	return null;
 		}
 		return listaSM;
+	}
+
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<AnagraficaHardwareModel> getDatiAnagraficaHardware() {
+		
+		List<AnagraficaHardwareModel> listaAM= new ArrayList<AnagraficaHardwareModel>();
+		List<AnagraficaHardware> listaA= new ArrayList<AnagraficaHardware>();
+		AnagraficaHardwareModel aM= new AnagraficaHardwareModel();
+		
+		Boolean esito=true;
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {		
+			tx=session.beginTransaction();
+			
+			listaA=(List<AnagraficaHardware>)session.createQuery("from AnagraficaHardware").list();
+			
+			for(AnagraficaHardware a:listaA){
+				aM=new AnagraficaHardwareModel(a.getIdHardware(), a.getModello());
+				listaAM.add(aM);
+			}
+			
+			tx.commit();
+		}catch (Exception e) {
+			esito=false;
+			e.printStackTrace();
+			if (tx!=null)
+				tx.rollback();				
+		}finally{
+			session.close();
+			if(!esito)
+	        	return null;
+		}		
+		
+		return listaAM;
 	}
 }

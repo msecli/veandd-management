@@ -96,12 +96,13 @@ public class PanelCommessa extends LayoutContainer {
 	private Text txtRuolo=new Text();
 	private Text txtNome=new Text();
 	private Text txtCognome=new Text();
-	
+		
 	private SimpleComboBox<String> smplcmbxPM;
 	private SimpleComboBox<String> smplcmbxStatoCommessa;
 	private SimpleComboBox<String> smplcmbxTipoCommessa;
 	private SimpleComboBox<String> smplcmbxSelectStatoCommessa;
 	private SimpleComboBox<String> smplcmbxCliente;
+	private SimpleComboBox<String> smplcmbxOrderBy;
 	
 	private Button btnOrdine;
 	private Button btnClose;
@@ -142,6 +143,7 @@ public class PanelCommessa extends LayoutContainer {
 		btnRefresh.setStyleAttribute("font-size", "80%");
 		btnRefresh.setStyleAttribute("margin-left", "5px");
 		*/
+		
 		btnClose= new Button();
 		btnClose.setSize(26, 26);
 		btnClose.setEnabled(false);
@@ -169,8 +171,36 @@ public class PanelCommessa extends LayoutContainer {
 			}		
 		});
 		
+		Text txtrderBy= new Text();
+		txtrderBy.setText("OrderBy: ");
+		
+		smplcmbxOrderBy= new SimpleComboBox<String>();
+		smplcmbxOrderBy.add("Project Manager");
+		smplcmbxOrderBy.add("Cliente");
+		smplcmbxOrderBy.setTriggerAction(TriggerAction.ALL);
+		smplcmbxOrderBy.setSimpleValue("Cliente");
+		smplcmbxOrderBy.addListener(Events.Select, new Listener<BaseEvent>(){
+			@Override
+			public void handleEvent(BaseEvent be) {
+				
+				String selezione=smplcmbxOrderBy.getRawValue().toString();
+				if(selezione.compareTo("Project Manager")==0){
+					store.groupBy("pm",true);
+					gridCommessa.reconfigure(store, cmCommessa);
+				}
+				else{
+					store.groupBy("ragioneSociale",true);
+					gridCommessa.reconfigure(store, cmCommessa);
+				}
+			}		
+		});
+		
+		
 		ToolBar toolBar = new ToolBar();
 		toolBar.setLayoutData(new FormLayout());
+		toolBar.add(txtrderBy);
+		toolBar.add(smplcmbxOrderBy);
+		toolBar.add(new SeparatorToolItem());
 		toolBar.add(smplcmbxSelectStatoCommessa);
 		toolBar.add(txtfldsearch);
 		
@@ -634,8 +664,8 @@ public class PanelCommessa extends LayoutContainer {
 		
 	    column=new ColumnConfig();		
 		column.setId("numeroCommessa");  
-		column.setHeader("N. Commessa");  
-		column.setWidth(80);  
+		column.setHeader("Commessa");  
+		column.setWidth(70);  
 		column.setRowHeader(true);  
 		column.setAlignment(HorizontalAlignment.RIGHT);
 		configs.add(column);
@@ -675,7 +705,7 @@ public class PanelCommessa extends LayoutContainer {
 	    column=new ColumnConfig();		
 	    column.setId("tipoCommessa");  
 	    column.setHeader("Tipo.");  
-	    column.setWidth(50);  
+	    column.setWidth(45);  
 	    column.setRowHeader(true);  
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column); 

@@ -466,8 +466,8 @@ public interface AdministrationServiceAsync {
 			String serialNumber, String sistemaOperativo, String stato,
 			String svga, String tipologia, String utilizzo, AsyncCallback<Boolean> asyncCallback);
 
-	void insertRichiestaIt(String username, Date dataR, String ora, String pc,
-			AsyncCallback<Boolean> asyncCallback);
+	void insertRichiestaIt(String username, Date dataR, String ora, Integer pc,
+			String richiesta, AsyncCallback<Boolean> asyncCallback);
 
 	void getRiepilogoRichiesteItUtente(String username,
 			AsyncCallback<List<RiepilogoRichiesteModel>> asyncCallback);
@@ -490,5 +490,7 @@ public interface AdministrationServiceAsync {
 
 	void getDatiSaturazioneRisorsa(int idRisorsa,
 			int idCostingRisorsa, String anno, AsyncCallback<List<SaturazioneRisorsaModel>> asyncCallback);
+
+	void getDatiAnagraficaHardware(AsyncCallback<List<AnagraficaHardwareModel>> asyncCallback);
 
 }

@@ -675,7 +675,7 @@ public CenterLayout_FoglioFatturazione(){}
 				totVariato=(float) (Float.valueOf(ClientUtility.getOreCentesimi(orel))+
 						(Float.valueOf(ClientUtility.getOreCentesimi(orev))*0.85)+(Float.valueOf(ClientUtility.getOreCentesimi(oreS))*1.2));
 				
-				txtOreTotali.setText("Totale: "+totale +" (Con oreViaggio/Ore Strao. compensate: "+ number.format(totVariato) +")");
+				txtOreTotali.setText("Totale: "+totale +" (Con oreViaggio/Ore Strao. corrette: "+ number.format(totVariato) +")");
 				txtOreViaggio.setText("Tot.Ore viaggio: "+ orev);
 				txtOreLavoro.setText("Tot.Ore ordinarie lavoro: "+orel);
 				txtOreStrao.setText("Tot.Ore strao. lavoro: "+oreS);
@@ -2057,7 +2057,7 @@ public CenterLayout_FoglioFatturazione(){}
 	    	  		if(Float.valueOf(result.getResiduoOre())<0)
 	    	  			Window.alert("Il numero di ore residue sull'ordine è negativo! Effettuare le modifiche opportune!");
 	    	  		
-	    	  		txtTotCompensato.setText("Compensate--> ("+oreLavoro+") ");
+	    	  		txtTotCompensato.setText("Corrette--> ("+oreLavoro+") ");
 					
 				}else{
 									
@@ -2109,7 +2109,7 @@ public CenterLayout_FoglioFatturazione(){}
 	    	  		
 	    	  		chbxSalButtare.setValue(false);
 	    	  		
-	    	  		txtTotCompensato.setText("Compensate--> ("+oreLavoro+") ");
+	    	  		txtTotCompensato.setText("Corrette--> ("+oreLavoro+") ");
 				}
 				
 				String r=ruolo;
