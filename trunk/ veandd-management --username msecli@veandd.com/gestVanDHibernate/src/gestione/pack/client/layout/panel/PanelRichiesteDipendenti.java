@@ -248,7 +248,7 @@ public class PanelRichiesteDipendenti extends LayoutContainer{
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 		XTemplate tpl = XTemplate.create("<p><b>Dipendente:</b> {username}</p><br>" +
 				"<p><b>Data:</b> {data}</p><br>" +
-				"<p><b>Richiesta:</b> {testo}</p>");  
+				"<p><b>Richiesta:</b> {testo}</p>");
 		    
 		expander = new RowExpander();
 		expander.setTemplate(tpl); 

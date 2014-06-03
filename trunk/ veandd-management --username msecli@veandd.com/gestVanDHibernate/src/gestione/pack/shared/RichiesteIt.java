@@ -39,6 +39,8 @@ public class RichiesteIt extends LightEntity implements IsSerializable{
 
 	private String stato;
 
+	private String oraRichiesta;
+	
 	//bi-directional many-to-one association to Personale
     @ManyToOne
 	@JoinColumn(name="idPersonale")
@@ -145,6 +147,14 @@ public class RichiesteIt extends LightEntity implements IsSerializable{
 	 */
 	public void setAnagraficaHardware(AnagraficaHardware anagraficaHardware) {
 		this.anagraficaHardware = anagraficaHardware;
+	}
+
+	public String getOraRichiesta() {
+		return oraRichiesta;
+	}
+
+	public void setOraRichiesta(String oraRichiesta) {
+		this.oraRichiesta = oraRichiesta;
 	}
 
     
