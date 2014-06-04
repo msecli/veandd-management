@@ -10892,7 +10892,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Personale p= new Personale();
 		RiepilogoRichiesteModel rM;
 		
-		int idUtente;
+		int idUtente=0;
 		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
@@ -10900,18 +10900,21 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		try {
 			
 			tx=session.beginTransaction();
-		
-			p=(Personale)session.createQuery("from Personale where username=:username ").setParameter("username", username).uniqueResult();
-			idUtente=p.getId_PERSONALE();
+					
+			if(username.compareTo("ALL")!=0){
+				p=(Personale)session.createQuery("from Personale where username=:username ").setParameter("username", username).uniqueResult();
+				idUtente=p.getId_PERSONALE();
+				
+				listaR=(List<RichiesteIt>)session.createQuery("from RichiesteIt where idPersonale=:id").setParameter("id", idUtente).list();
+			}else
+				listaR=(List<RichiesteIt>)session.createQuery("from RichiesteIt").list();
 			
-			listaR=(List<RichiesteIt>)session.createQuery("from RichiesteIt where idPersonale=:id").setParameter("id", idUtente).list();
-									
 			tx.commit();
 			
 			for(RichiesteIt r:listaR){
 								
-				rM= new RiepilogoRichiesteModel(r.getIdRichiesta(), r.getAnagraficaHardware().getIdHardware(), idUtente, username, 
-						r.getAnagraficaHardware().getModello(), r.getDataRichiesta(), r.getOraRichiesta(), r.getDataEvasioneRichiesta(), "oraEvasione", r.getStato(), r.getGuasto());
+				rM= new RiepilogoRichiesteModel(r.getIdRichiesta(), r.getAnagraficaHardware().getIdHardware(), idUtente, r.getPersonale().getUsername(), 
+						r.getAnagraficaHardware().getNodo(), r.getDataRichiesta(), r.getOraRichiesta(), r.getDataEvasioneRichiesta(), "oraEvasione", r.getStato(), r.getGuasto());
 				
 				listaRM.add(rM);				
 			}
@@ -11338,7 +11341,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			listaA=(List<AnagraficaHardware>)session.createQuery("from AnagraficaHardware").list();
 			
 			for(AnagraficaHardware a:listaA){
-				aM=new AnagraficaHardwareModel(a.getIdHardware(), a.getModello());
+				aM=new AnagraficaHardwareModel(a.getIdHardware(), a.getNodo());
 				listaAM.add(aM);
 			}
 			

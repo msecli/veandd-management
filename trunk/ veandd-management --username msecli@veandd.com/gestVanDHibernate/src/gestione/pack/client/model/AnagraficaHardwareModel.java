@@ -46,9 +46,9 @@ public class AnagraficaHardwareModel extends BaseModel{
 		set("utilizzo", utilizzo);
 	}	
 	
-	public AnagraficaHardwareModel(int idHardware, String codiceModello){
+	public AnagraficaHardwareModel(int idHardware, String nodo){
 		set("idHardware",idHardware);
-		set("codiceModello", codiceModello);
+		set("nodo", nodo);
 	}
 
 }
