@@ -144,7 +144,7 @@ public class DialogRichiestaHardwareDipendente extends Dialog{
 		cmbxPc.setTriggerAction(TriggerAction.ALL);
 		cmbxPc.setAllowBlank(false);
 		cmbxPc.setStore(listStoreCmbx);
-		cmbxPc.setDisplayField("codiceModello");
+		cmbxPc.setDisplayField("nodo");
 		cmbxPc.addListener(Events.OnClick, new Listener<BaseEvent>() {
 			@Override
 			public void handleEvent(BaseEvent be) {

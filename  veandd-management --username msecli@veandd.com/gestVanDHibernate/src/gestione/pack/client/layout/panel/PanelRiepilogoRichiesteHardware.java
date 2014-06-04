@@ -1,5 +1,7 @@
 package gestione.pack.client.layout.panel;
 
+import gestione.pack.client.AdministrationService;
+import gestione.pack.client.model.CostingRisorsaModel;
 import gestione.pack.client.model.RiepilogoRichiesteModel;
 import gestione.pack.client.utility.MyImages;
 
@@ -10,28 +12,37 @@ import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.core.XTemplate;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.fx.Resizable;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.DateField;
+import com.extjs.gxt.ui.client.widget.grid.CellEditor;
+import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.RowExpander;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public class PanelRiepilogoRichiesteHardware extends LayoutContainer{
 
 	private ListStore<RiepilogoRichiesteModel>store = new ListStore<RiepilogoRichiesteModel>();
-	private Grid<RiepilogoRichiesteModel> gridRiepilogo;
+	private EditorGrid<RiepilogoRichiesteModel> gridRiepilogo;
 	private ColumnModel cmCommessa;
+	private CellSelectionModel<RiepilogoRichiesteModel> cm;
 	private RowExpander expander;
 	private  CheckBoxSelectionModel<RiepilogoRichiesteModel> sm = new CheckBoxSelectionModel<RiepilogoRichiesteModel>();  
 	
@@ -73,14 +84,17 @@ public class PanelRiepilogoRichiesteHardware extends LayoutContainer{
 			Window.alert("error: Problema createColumns().");			
 		}	
 	    
-	    gridRiepilogo= new Grid<RiepilogoRichiesteModel>(store, cmCommessa);  
+	    caricaDatiTabella();
+	    cm=new CellSelectionModel<RiepilogoRichiesteModel>();
+	    cm.setSelectionMode(SelectionMode.SIMPLE);
+	    gridRiepilogo= new EditorGrid<RiepilogoRichiesteModel>(store, cmCommessa);  
 	    gridRiepilogo.setItemId("grid");
 	    gridRiepilogo.setBorders(false);  
 	    gridRiepilogo.setStripeRows(true);  
 	    gridRiepilogo.setColumnLines(true);  
 	    gridRiepilogo.setColumnReordering(true);  
 	    gridRiepilogo.getView().setShowDirtyCells(false);
-	    gridRiepilogo.addPlugin(expander);  
+	    gridRiepilogo.addPlugin(expander);
 	    gridRiepilogo.addPlugin(sm);
 	    gridRiepilogo.setSelectionModel(sm);
 	   	
@@ -97,9 +111,17 @@ public class PanelRiepilogoRichiesteHardware extends LayoutContainer{
 	    btnConferma.setIconAlign(IconAlign.TOP);
 	    btnConferma.setSize(26, 26);
 	    btnConferma.setToolTip("Conferma dati inseriti");
+	    btnConferma.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	    
 	    ToolBar tlbrButton= new ToolBar();
-	    tlbrButton.add(btnAdd);
+	    //tlbrButton.add(btnAdd);
 	    tlbrButton.add(btnConferma);
 	    
 	    cntpnlGrid.add(gridRiepilogo);
@@ -110,6 +132,27 @@ public class PanelRiepilogoRichiesteHardware extends LayoutContainer{
 	    add(layoutContainer);	    
 	}
 
+	
+	private void caricaDatiTabella() {
+		AdministrationService.Util.getInstance().getRiepilogoRichiesteItUtente("ALL", new AsyncCallback<List<RiepilogoRichiesteModel>>() {
+			
+			@Override
+			public void onSuccess(List<RiepilogoRichiesteModel> result) {
+				loadData(result);
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("Errore di connessione on getRiepilogoRichiesteItUtente();");
+			}
+		});
+	}
+
+	private void loadData(List<RiepilogoRichiesteModel> result) {
+		store.removeAll();
+		store.add(result);
+		gridRiepilogo.reconfigure(store, cmCommessa);
+	}
 	
 	private List<ColumnConfig> createColumns() {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
@@ -142,7 +185,10 @@ public class PanelRiepilogoRichiesteHardware extends LayoutContainer{
 	    column.setId("dataEvasioneRichiesta");  
 	    column.setHeader("Data Evasione");  
 	    column.setWidth(150);  
-	    column.setRowHeader(true);  
+	    column.setRowHeader(true);
+	    DateField dtfldInizio= new DateField();
+	    column.setEditor(new CellEditor(dtfldInizio));  
+	    column.setDateTimeFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
 	    configs.add(column);
 	    
 	    column=new ColumnConfig();		
