@@ -10,6 +10,8 @@ public class GiustificativiModel extends BaseModel implements IsSerializable{
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private PersonaleModel p= new PersonaleModel();
+	
 	public GiustificativiModel(){}
 	
 	public GiustificativiModel(String orePreviste, String totGenerale, String delta, String oreViaggio, String oreDeltaViaggio, 
@@ -93,6 +95,14 @@ public class GiustificativiModel extends BaseModel implements IsSerializable{
 	
 	public String getStatoRevisione(){
 		return get("statoRevisione");
+	}
+
+	public PersonaleModel getPersonale() {
+		return p;
+	}
+
+	public void setPersonale(PersonaleModel p) {
+		this.p = p;
 	}
 	
 }

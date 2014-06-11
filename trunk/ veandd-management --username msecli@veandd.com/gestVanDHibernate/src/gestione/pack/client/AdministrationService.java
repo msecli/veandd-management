@@ -474,11 +474,18 @@ boolean invioCommenti(String testo, String username, Date giorno);
 	List<RiepilogoSALPCLModel> getRiepilogoSalPclOld(String data,
 			String tabSelected) throws IllegalArgumentException;
 
-	boolean setStatoFoglioFatturazione(String mese, String anno);
+	boolean setStatoFoglioFatturazione(String mese, String anno)throws IllegalArgumentException;
 
 	List<SaturazioneRisorsaModel> getDatiSaturazioneRisorsa(int idRisorsa,
-			int idCostingRisorsa, String anno);
+			int idCostingRisorsa, String anno)throws IllegalArgumentException;
 
-	List<AnagraficaHardwareModel> getDatiAnagraficaHardware();
+	List<AnagraficaHardwareModel> getDatiAnagraficaHardware()throws IllegalArgumentException;
+
+	List<PersonaleModel> getListaDipendentiPerPm(String pm)throws IllegalArgumentException;
+
+	List<PersonaleModel> getPersonalManager() throws IllegalArgumentException;
+
+	boolean setDatiAutorizzazioneStraordinario(Integer integer, boolean b,
+			Date date, String string);
 	
 }

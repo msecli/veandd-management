@@ -1,6 +1,7 @@
 package gestione.pack.client.utility;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ClientUtility {
@@ -750,6 +751,25 @@ public class ClientUtility {
 			return totOreCommMese;
 		}else
 			return totOreCommMese;
+	}
+
+
+	public static boolean dataIsIncluded(Date dataInizio, Date dataRiferimento) {
+		
+		//Dalla data di inizio devo considerare 30 giorni
+		
+		long valInizio=dataInizio.getTime();
+		
+		long valTrenta=(long)2592000000.0;
+		
+		valTrenta=valTrenta+valInizio;
+		
+		Date dataFine=new Date(valTrenta);
+		
+		if(dataRiferimento.before(dataFine)&&dataRiferimento.after(dataInizio))
+			return true;
+		else
+			return false;
 	}
 	
 }

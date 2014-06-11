@@ -1,5 +1,6 @@
 package gestione.pack.shared;
 
+import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -71,6 +72,13 @@ public class Personale  extends LightEntity implements IsSerializable {
 	private String nomeFile;
 	
 	private String statoRapporto; //attivo, cessato
+	
+	private String abilitazioneStraordinario;
+	
+	@Temporal( TemporalType.DATE)
+	private Date dataInizioAbilitazioneStrao;
+	
+	private String notaCommesseAbilitate;
 	
 	//bi-directional many-to-one association to AssociazionePtoa
 	@OneToMany(mappedBy="personale", fetch=FetchType.LAZY)
@@ -351,6 +359,31 @@ public class Personale  extends LightEntity implements IsSerializable {
 
 	public void setStatoRapporto(String statoRapporto) {
 		this.statoRapporto = statoRapporto;
+	}
+
+	public String getAbilitazioneStraordinario() {
+		return abilitazioneStraordinario;
+	}
+
+	public void setAbilitazioneStraordinario(String abilitazioneStraordinario) {
+		this.abilitazioneStraordinario = abilitazioneStraordinario;
+	}
+
+	public Date getDataInizioAbilitazioneStrao() {
+		return dataInizioAbilitazioneStrao;
+	}
+
+	public void setDataInizioAbilitazioneStrao(
+			Date dataInizioAbilitazioneStrao) {
+		this.dataInizioAbilitazioneStrao = dataInizioAbilitazioneStrao;
+	}
+
+	public String getNotaCommesseAbilitate() {
+		return notaCommesseAbilitate;
+	}
+
+	public void setNotaCommesseAbilitate(String notaCommesseAbilitate) {
+		this.notaCommesseAbilitate = notaCommesseAbilitate;
 	}
 
 	

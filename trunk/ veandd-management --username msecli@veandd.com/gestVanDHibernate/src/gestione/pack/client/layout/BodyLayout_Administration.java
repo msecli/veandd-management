@@ -7,6 +7,7 @@ import java.util.List;
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.UtilityService;
 import gestione.pack.client.layout.panel.DialogRichiestaHardwareDipendente;
+import gestione.pack.client.layout.panel.PanelAbilitazioneStraordinarioDip;
 import gestione.pack.client.layout.panel.PanelAnagraficaHardware;
 import gestione.pack.client.layout.panel.PanelEditPasswordUtenti;
 import gestione.pack.client.layout.panel.PanelGestioneCosting;
@@ -397,6 +398,22 @@ public class BodyLayout_Administration extends LayoutContainer {
 	      });
 	    btnAnagrP.setWidth("100%");
 	    cp.add(btnRiepilogoCostiDip);
+	    
+	    
+	    Button btnAbilitazioneStrao = new Button();
+	    btnAbilitazioneStrao.setToolTip("Abilitazione Straordinari");
+	    btnAbilitazioneStrao.setHeight(65);
+	    btnAbilitazioneStrao.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnAbilitazioneStrao.setIconAlign(IconAlign.BOTTOM);
+	    btnAbilitazioneStrao.setWidth("100%");
+	    btnAbilitazioneStrao.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelAbilitazioneStraordinarioDip());
+	        	center.layout(true);}
+	        
+	      });
+	    cp.add(btnAbilitazioneStrao);
 	    
 	    panel.add(cp);
    

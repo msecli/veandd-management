@@ -174,6 +174,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			p.setOreExFest(ext);
 			p.setOreRecupero(oreRecupero);
 			p.setStatoRapporto(statoRapporto);
+			p.setAbilitazioneStraordinario("N");
+			p.setDataInizioAbilitazioneStrao(null);
+			p.setNotaCommesseAbilitate("");
 			
 			Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
 			Transaction tx= null;		
@@ -212,8 +215,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			    	 if(!esito){
 				        ServerLogFunction.logErrorMessage("insertDataPersonale", new Date(), "", "Error", errore);
 				        return false;
-			    	 }			    	
-			    }									
+			    	 }
+			    }
 	}
 	
 	
@@ -396,6 +399,44 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		return listaNomi;
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<PersonaleModel> getPersonalManager()
+			throws IllegalArgumentException {
+		
+		List<PersonaleModel> listaPm= new ArrayList<PersonaleModel>();
+		List<Personale> listaP= new ArrayList<Personale>();	
+		
+		boolean esito=true;
+		String errore="";
+		
+		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
+		Transaction tx= null;
+		
+		try {
+			  tx=session.beginTransaction();
+			  listaP=(ArrayList<Personale>)session.createQuery("from Personale where ruolo='PM' or ruolo='DIR' and statoRapporto='Attivo'").list();			  
+			  tx.commit();
+			  
+		} catch (Exception e) {
+	    	esito= false;
+	    	e.printStackTrace();
+    		errore=e.getMessage();
+	    	if (tx!=null)		    		
+	    		tx.rollback();		    	
+	    }finally{
+	    	if(!esito){
+	    		ServerLogFunction.logErrorMessage("getPersonalManager", new Date(), "", "Error",errore);
+	    		return null;
+	    	}else
+	    		ServerLogFunction.logOkMessage("getPersonalManager", new Date(), "", "Success");
+	    }			
+		
+		for(Personale p : listaP)	
+			listaPm.add(ConverterUtil.personaleToModelConverter(p));
+		
+		return listaPm;
+	}
 	
 	@SuppressWarnings("unchecked")
 	public List<String> getListaDipendenti(String ruolo)throws IllegalArgumentException{	
@@ -466,7 +507,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 			for(Personale p: listaP){
 				personaM=new PersonaleModel(p.getId_PERSONALE(), p.getNome(), p.getCognome(), p.getUsername(), 
-						"", "", "", "", "", "", "", "", "",  "",  "",  "",  "",  "",  "",  "", "");
+						"", "", "", "", "", "", "", "", "",  "",  "",  "",  "",  "",  "",  "", "", false, null, "");
 				
 				/*if(ruolo.compareTo("PM")==0)//ruolo di chi effettua la ricerca
 					if(p.getRuolo().compareTo("DIP")==0)//se è il pm a richiederlo allora preleverò solo i dipendenti
@@ -2121,7 +2162,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		try {
 			  cognome=cognome.substring(0,1).toUpperCase()+cognome.substring(1,cognome.length());
 			  tx=session.beginTransaction();
-			  lista=(List<Commessa>)session.createQuery("from Commessa where statoCommessa!='Conclusa'").list();
+			  lista=(List<Commessa>)session.createQuery("from Commessa").list();
 			 		  
 			  for(Commessa c: lista){
 				  if(c.getMatricolaPM().compareTo("Tutti")==0){
@@ -3578,24 +3619,52 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		List<IntervalliCommesseModel> listaDTO = new ArrayList<IntervalliCommesseModel>();			
 		IntervalliCommesseModel intervallo;
+		Personale p= new Personale();
+		
+		PersonaleModel pM= new PersonaleModel();
+		
+		boolean abilitato=false;
 		
 		Set<AssociazionePtoA> listaC = ConverterUtil.getAssociazioniPtoAByUsername(username);		
 		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
 		try {
-			if (listaC != null) {			
+			
+			tx=session.beginTransaction();
+			
+			p=(Personale)session.createQuery("from Personale where username=:username").setParameter("username", username).uniqueResult();
+			
+			tx.commit();
+			
+			if(p.getAbilitazioneStraordinario().compareTo("S")==0)
+				abilitato=true;
+			
+			pM=new PersonaleModel(p.getId_PERSONALE(), username, "", "", "", abilitato, p.getDataInizioAbilitazioneStrao(), "");
+									
+			if (listaC != null) {
 				for (AssociazionePtoA a : listaC) {
 						intervallo=ConverterUtil.intervalliCommesseToModelConverter(a, giornoRiferimento);
-						if(intervallo!=null)
-							listaDTO.add(intervallo);					    			
+						if(intervallo!=null){
+							intervallo.setPersonale(pM);
+							listaDTO.add(intervallo);
+						}
 				}
-			}		
-			return listaDTO;
-
+			}	
+			
 		} catch (Exception e) {
-			e.printStackTrace();
+			if (tx!=null)
+	    		tx.rollback();	
+			e.printStackTrace();		
 			return new ArrayList<IntervalliCommesseModel>();
-		}  			
+		}finally{
+			session.close();
+		}
+		
+		return listaDTO;
 	}
+	
 	
 	@Override
 	public List<IntervalliIUModel> loadIntervalliIU(String username, Date giornoRiferimento)	throws IllegalArgumentException {
@@ -3709,8 +3778,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		List<DettaglioOreGiornaliere> listaGiorni= new ArrayList<DettaglioOreGiornaliere>();
 		
 		String orePreviste=new String();
+		boolean abilitato=false;
 		
 		Personale p= new Personale();
+		PersonaleModel pM= new PersonaleModel();
 		FoglioOreMese foglioOre= new FoglioOreMese();
 		GiustificativiModel giust=new GiustificativiModel();	
 		
@@ -3738,19 +3809,36 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			orePreviste=p.getTipologiaOrario();
 			if(orePreviste.compareTo("A")==0)
 				orePreviste="8";	
+		
+			if(p.getAbilitazioneStraordinario().compareTo("S")==0)
+				abilitato=true;
+			
+			pM=new PersonaleModel(p.getId_PERSONALE(), username, "", "", "", abilitato, p.getDataInizioAbilitazioneStrao(), "");
 			
 			foglioOre=(FoglioOreMese)session.createQuery("from FoglioOreMese where id_personale=:id and meseRiferimento=:mese")
 						.setParameter("id", p.getId_PERSONALE()).setParameter("mese", data).uniqueResult();
-		
+			
 			if(foglioOre!=null)
 				if(!foglioOre.getDettaglioOreGiornalieres().isEmpty()){
 					listaGiorni.addAll(foglioOre.getDettaglioOreGiornalieres());
 					statoRevisione=foglioOre.getStatoRevisioneMese();
 				}
-				else return giust= new GiustificativiModel(orePreviste, "0.00", ("-"+orePreviste+".00"), "0.00", "0.00", "0.00", "","0", "0.00", "0.00", "0.00","0.00", "");
-			else return giust= new GiustificativiModel(orePreviste, "0.00", ("-"+orePreviste+".00"), "0.00", "0.00", "0.00", "","0", "0.00", "0.00", "0.00","0.00", "");
+				else{
+					giust= new GiustificativiModel(orePreviste, "0.00", ("-"+orePreviste+".00"), "0.00", "0.00",
+							"0.00", "","0", "0.00", "0.00", "0.00","0.00", "");
+					giust.setPersonale(pM);
+					return giust;
+				}
+			else{ 
+				giust= new GiustificativiModel(orePreviste, "0.00", ("-"+orePreviste+".00"), "0.00", "0.00", "0.00",
+						"","0", "0.00", "0.00", "0.00","0.00", "");
+				giust.setPersonale(pM);
+				return giust; 
+			}
 			
-			giust=new GiustificativiModel(orePreviste, "0.00", ("-"+orePreviste+".00"), "0.00", "0.00", "0.00", "",statoRevisione, "0.00", "0.00", "0.00","0.00", "");
+			giust=new GiustificativiModel(orePreviste, "0.00", ("-"+orePreviste+".00"), "0.00", "0.00", "0.00", "",statoRevisione,
+					"0.00", "0.00", "0.00","0.00", "");
+			giust.setPersonale(pM);
 			
 			for(DettaglioOreGiornaliere d:listaGiorni){
 				formatter = new SimpleDateFormat("yyyy-MM-dd",Locale.ITALIAN);
@@ -3759,7 +3847,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				if(formattedDate.equals(d.getGiornoRiferimento().toString()))
 				{
 					giust=new GiustificativiModel(orePreviste, d.getTotaleOreGiorno(), d.getDeltaOreGiorno(), d.getOreViaggio(), d.getDeltaOreViaggio()
-							, d.getOreAssenzeRecupero(), d.getGiustificativo(), statoRevisione, d.getOreStraordinario(), d.getOreFerie(), d.getOrePermesso(),d.getOreAbbuono(), d.getNoteAggiuntive());	
+							, d.getOreAssenzeRecupero(), d.getGiustificativo(), statoRevisione, d.getOreStraordinario(), 
+							d.getOreFerie(), d.getOrePermesso(),d.getOreAbbuono(), d.getNoteAggiuntive());	
+					giust.setPersonale(pM);
 				}
 			}
 				
@@ -5983,6 +6073,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				}
 				
 				for (Personale p : listaP)
+				  if(p.getStatoRapporto().compareTo("Cessato")!=0)
 					if(p.getGruppoLavoro().compareTo("Indiretti")!=0){ // per ogni dipendente in questa commessa selezioni i fogli ore del mese desiderato
 						dipendente = p.getCognome() + " " + p.getNome();
 												
@@ -9814,7 +9905,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			}*/
 			c=(Commessa)session.createQuery("from Commessa where numeroCommessa=:numeroCommessa and estensione=:estensione").setParameter("numeroCommessa", numeroCommessa)
 					 .setParameter("estensione", estensione).uniqueResult();
-			cliente=(Cliente)session.createQuery("from Cliente where codCliente=:idcliente").setParameter("codCliente", idCliente).uniqueResult();
+			cliente=(Cliente)session.createQuery("from Cliente where codCliente=:idcliente").setParameter("idcliente", idCliente).uniqueResult();
 			
 			if(c==null){
 				insertDataCommessa(cliente.getRagioneSociale(), numeroCommessa, estensione, "c", usernamePM, "Costing", "0.00", "0.00", 
@@ -9838,7 +9929,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				
 				tx.commit();
 				session.close();
-			}			
+			}
 			return true;
 		} catch (Exception e) {
 			if (tx!=null)
@@ -10438,8 +10529,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			e.printStackTrace();
 			return false;		
 		}finally{
-						
-		}				
+			
+		}		
 	}
 	
 	
@@ -11066,7 +11157,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			esito=false;
 			e.printStackTrace();
 			if (tx!=null)
-				tx.rollback();				
+				tx.rollback();
 					
 		}finally{
 			session.close();
@@ -11312,7 +11403,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			esito=false;
 			e.printStackTrace();
 			if (tx!=null)
-				tx.rollback();				
+				tx.rollback();
 		}finally{
 			session.close();
 			if(!esito)
@@ -11359,4 +11450,92 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		return listaAM;
 	}
+
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<PersonaleModel> getListaDipendentiPerPm(String pm)
+			throws IllegalArgumentException {
+		List<PersonaleModel> listaPM=new ArrayList<PersonaleModel>();
+		List<Personale>listaP=new ArrayList<Personale>();		
+		Personale p =new Personale();
+		PersonaleModel pM=new PersonaleModel();		
+		
+		boolean esito=true;
+		boolean abilitazione=false;
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {		
+			tx=session.beginTransaction();
+			
+			p=(Personale)session.createQuery("from Personale where username=:username").setParameter("username", pm).uniqueResult();
+			
+			listaP=(List<Personale>)session.createQuery("from Personale where gruppoLavoro=:gruppoLavoro and statoRapporto='Attivo'")
+					.setParameter("gruppoLavoro", p.getGruppoLavoro()).list();
+			
+			for(Personale p1:listaP){
+				if(p1.getAbilitazioneStraordinario().compareTo("S")==0)
+					abilitazione= true;
+				else
+					abilitazione=false;
+				
+				pM=new PersonaleModel(p1.getId_PERSONALE(), p1.getUsername(), p1.getCognome(), p1.getNome(),
+						p1.getGruppoLavoro(),abilitazione, p1.getDataInizioAbilitazioneStrao(), p1.getNotaCommesseAbilitate());
+				listaPM.add(pM);
+			}
+			
+			tx.commit();
+		}catch (Exception e) {
+			esito=false;
+			e.printStackTrace();
+			if (tx!=null)
+				tx.rollback();
+		}finally{
+			session.close();
+			if(!esito)
+	        	return null;
+		}	
+		
+		return listaPM;
+	}
+	
+
+	@Override
+	public boolean setDatiAutorizzazioneStraordinario(Integer idPersonale,
+			boolean b, Date date, String note) throws IllegalArgumentException {
+		
+		boolean esito=true;
+		Personale p= new Personale();
+		String abilitazione="N";
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {		
+			tx=session.beginTransaction();
+			
+			p=(Personale)session.createQuery("from Personale where ID_PERSONALE=:idPersonale")
+					.setParameter("idPersonale", idPersonale).uniqueResult();
+			
+			p.setDataInizioAbilitazioneStrao(date);
+			if(b)
+				abilitazione="S";
+			p.setAbilitazioneStraordinario(abilitazione);
+			p.setNotaCommesseAbilitate(note);		
+			
+			tx.commit();
+			
+		}catch (Exception e) {
+			esito=false;
+			e.printStackTrace();
+			if (tx!=null)
+				tx.rollback();				
+		}finally{
+			session.close();
+			if(!esito)
+	        	return false;
+		}	
+		return true;
+	}	
 }
