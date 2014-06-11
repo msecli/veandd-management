@@ -434,7 +434,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 		column.setId("nome");  
 		column.setHeader("Dipendente");  
 		column.setWidth(160);  
-		column.setRowHeader(true);  
+		column.setRowHeader(true);
 		column.setAlignment(HorizontalAlignment.RIGHT);  
 		configs.add(column); 		    
 			

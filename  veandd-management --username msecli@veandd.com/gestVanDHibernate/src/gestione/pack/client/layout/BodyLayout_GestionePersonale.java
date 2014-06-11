@@ -1,6 +1,7 @@
 package gestione.pack.client.layout;
 
 import gestione.pack.client.SessionManagementService;
+import gestione.pack.client.layout.panel.PanelAbilitazioneStraordinarioDip;
 import gestione.pack.client.layout.panel.PanelPrintAll;
 import gestione.pack.client.layout.panel.PanelRiepilogoAnnualeOreDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
@@ -362,8 +363,22 @@ public class BodyLayout_GestionePersonale extends LayoutContainer {
 	      });
 	    btnRiepilogoMese.setWidth("100%");
 	    cp.add(btnRiepilogoMese);
+
+	    Button btnAbilitazioneStrao = new Button();
+	    btnAbilitazioneStrao.setToolTip("Abilitazione Straordinari");
+	    btnAbilitazioneStrao.setHeight(65);
+	    btnAbilitazioneStrao.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnAbilitazioneStrao.setIconAlign(IconAlign.BOTTOM);
+	    btnAbilitazioneStrao.setWidth("100%");
+	    btnAbilitazioneStrao.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelAbilitazioneStraordinarioDip());
+	        	center.layout(true);}
+	        
+	      });
+	    cp.add(btnAbilitazioneStrao);
 	    
-	    cp.setExpanded(false);
 	    panel.add(cp);
 	    
 	 /*   cp = new ContentPanel();

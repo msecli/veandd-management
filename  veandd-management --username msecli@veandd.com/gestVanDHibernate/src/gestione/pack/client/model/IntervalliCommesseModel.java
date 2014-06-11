@@ -10,6 +10,8 @@ public class IntervalliCommesseModel  extends BaseModel implements IsSerializabl
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private PersonaleModel p= new PersonaleModel();
+	
 	public IntervalliCommesseModel(){
 		
 	}
@@ -26,7 +28,15 @@ public class IntervalliCommesseModel  extends BaseModel implements IsSerializabl
 		set("totOreViaggio", totOreViaggio);
 		set("descrizione", descrizione);
 		set("giustificativo", giustificativo);
-		
+				
+	}
+	
+	public PersonaleModel getPersonale(){
+		return this.p;
+	}
+	
+	public void setPersonale(PersonaleModel p){
+		this.p=p;
 	}
 	
 	public String getNumeroCommessa(){

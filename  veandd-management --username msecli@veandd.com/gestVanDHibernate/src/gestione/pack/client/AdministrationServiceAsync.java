@@ -97,7 +97,7 @@ public interface AdministrationServiceAsync {
 
 	void getAllPersonaleModel(AsyncCallback<List<PersonaleModel>> callback);
 
-	
+	void getPersonalManager(AsyncCallback<List<PersonaleModel>> asyncCallback);
 	
 
 //-----------------------------RDA
@@ -492,5 +492,12 @@ public interface AdministrationServiceAsync {
 			int idCostingRisorsa, String anno, AsyncCallback<List<SaturazioneRisorsaModel>> asyncCallback);
 
 	void getDatiAnagraficaHardware(AsyncCallback<List<AnagraficaHardwareModel>> asyncCallback);
+
+	void getListaDipendentiPerPm(String pm, AsyncCallback<List<PersonaleModel>> asyncCallback);
+
+	void setDatiAutorizzazioneStraordinario(Integer integer, boolean b,
+			Date date, String string, AsyncCallback<Boolean> asyncCallback);
+
+	
 
 }

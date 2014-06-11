@@ -10,6 +10,7 @@ import gestione.pack.client.layout.panel.PanelRiepilogoMeseFoglioOre;
 import gestione.pack.client.model.GiustificativiModel;
 import gestione.pack.client.model.IntervalliCommesseModel;
 import gestione.pack.client.model.IntervalliIUModel;
+import gestione.pack.client.model.PersonaleModel;
 import gestione.pack.client.model.RiepilogoOreModel;
 import gestione.pack.client.model.TimbraturaModel;
 
@@ -89,7 +90,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 	public DateField dtfldGiorno= new DateField(); //settato al momento della creazione del form sul valore del datefield interno
 												   //quando viene cambiata la data viene resettato anche questo 
 	
-	protected void onRender(Element target, int index) {  
+	protected void onRender(Element target, int index) {
 	    super.onRender(target, index);   
 	    	    
 		final FitLayout fl= new FitLayout();
@@ -2747,19 +2748,19 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			
 			if(Float.valueOf(delta)>0){
 				fldsetGiustificativo.txtfldFerie.setEnabled(false);
-				fldsetGiustificativo.txtfldPermesso.setEnabled(false);	
-				fldsetGiustificativo.txtfldStraordinario.setEnabled(true);
+				fldsetGiustificativo.txtfldPermesso.setEnabled(false);
+				//fldsetGiustificativo.txtfldStraordinario.setEnabled(true);
 				fldsetGiustificativo.txtfldRecupero.clearInvalid();
 				fldsetGiustificativo.txtfldRecupero.setRegex("[0-9]+[.]?[0-5]{1}[0-9]{1}|0.00|0.0");
-				fldsetGiustificativo.txtfldRecupero.getMessages().setRegexText("Deve essere un numero nel formato 99.59");		
+				fldsetGiustificativo.txtfldRecupero.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
 				fldsetGiustificativo.txtfldRecupero.setEnabled(true);
 				//fldsetGiustificativo.smplcmbxAltroGiustificativo.setAllowBlank(false);
 			}
 			
-			if(Float.valueOf(delta)<0){			
+			if(Float.valueOf(delta)<0){
 				fldsetGiustificativo.txtfldFerie.setEnabled(true);
 				fldsetGiustificativo.txtfldPermesso.setEnabled(true);
-				fldsetGiustificativo.txtfldStraordinario.setEnabled(false);
+				//fldsetGiustificativo.txtfldStraordinario.setEnabled(false);
 				fldsetGiustificativo.txtfldRecupero.clearInvalid();
 				fldsetGiustificativo.txtfldRecupero.setRegex("[-]{1}[0-9]+[.]?[0-5]{1}[0-9]{1}|0.00|0.0");
 				fldsetGiustificativo.txtfldRecupero.getMessages().setRegexText("Deve essere un numero nel formato -99.59");			
@@ -2772,12 +2773,12 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 				fldsetGiustificativo.smplcmbxAltroGiustificativo.setAllowBlank(true);
 				fldsetGiustificativo.txtfldFerie.setEnabled(false);
 				fldsetGiustificativo.txtfldPermesso.setEnabled(false);	
-				fldsetGiustificativo.txtfldStraordinario.setEnabled(false);
+			//	fldsetGiustificativo.txtfldStraordinario.setEnabled(false);
 			}	
 			
 			if(giustificativo.compareTo("23.Abbuono")==0){
 				
-				fldsetGiustificativo.txtfldStraordinario.setEnabled(false);
+				//fldsetGiustificativo.txtfldStraordinario.setEnabled(false);
 				fldsetGiustificativo.txtfldRecupero.setEnabled(false);
 				fldsetGiustificativo.btnAssegnaOrePermesso.setEnabled(false);
 				fldsetGiustificativo.btnAssegnaRecupero.setEnabled(false);
@@ -2788,7 +2789,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		private void enableFieldGiustificativo(FldsetGiustificativi fldsetGiustificativo){	
 			fldsetGiustificativo.txtfldFerie.setEnabled(true);
 			fldsetGiustificativo.txtfldPermesso.setEnabled(true);
-			fldsetGiustificativo.txtfldStraordinario.setEnabled(true);
+			//fldsetGiustificativo.txtfldStraordinario.setEnabled(true);
 			fldsetGiustificativo.txtfldRecupero.setEnabled(true);
 			fldsetGiustificativo.smplcmbxAltroGiustificativo.setEnabled(true);
 		}
@@ -3354,6 +3355,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 				}
 			});		
 			
+			
 			btnAssegnaOreStraordinario.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.arrowdown()));
 			btnAssegnaOreStraordinario.setToolTip("Assegna delta giornaliero.");
 			btnAssegnaOreStraordinario.setStyleAttribute("padding-top", "2px");
@@ -3411,6 +3413,21 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		}	
 		
 		private void load(GiustificativiModel result) {
+			PersonaleModel pM= new PersonaleModel();
+			pM=result.getPersonale();
+			Boolean autorizzato=pM.get("abilitazioneStraordinario");
+						
+			if(!autorizzato){
+				txtfldStraordinario.setVisible(false);
+				btnAssegnaOreStraordinario.setVisible(false);
+			}else
+				if(autorizzato && ClientUtility.dataIsIncluded((Date)pM.get("dataInizioAbilitazioneStrao"), dtfldGiorno.getValue())){
+					txtfldStraordinario.setVisible(true);
+					btnAssegnaOreStraordinario.setVisible(true);
+				}else{
+					txtfldStraordinario.setVisible(false);
+					btnAssegnaOreStraordinario.setVisible(false);
+				}
 			
 			final NumberFormat number = NumberFormat.getFormat("0.00");
 			
@@ -3615,7 +3632,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			}
 				
 			if(Float.valueOf(result.getDelta())<0){		
-				txtfldStraordinario.setEnabled(false);	
+				//txtfldStraordinario.setEnabled(false);	
 				smplcmbxAltroGiustificativo.setEnabled(true);
 				//smplcmbxAltroGiustificativo.setAllowBlank(false);
 				txtfldRecupero.setRegex("[-]{1}[0-9]+[.]?[0-5]{1}[0-9]{1}|0.00|0.0");
@@ -3633,7 +3650,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			if(Float.valueOf(result.getDelta())==0){	
 				txtfldFerie.setEnabled(false);
 				txtfldPermesso.setEnabled(false);	
-				txtfldStraordinario.setEnabled(false);	
+				//txtfldStraordinario.setEnabled(false);	
 				txtfldRecupero.setEnabled(false);
 			}
 						
@@ -3691,7 +3708,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 						
 						txtfldRecupero.setEnabled(false);
 						txtfldRecupero.setValue("0.00");
-						txtfldStraordinario.setEnabled(false);
+						//txtfldStraordinario.setEnabled(false);
 						btnAssegnaOreStraordinario.setEnabled(false);
 						btnAssegnaRecupero.setEnabled(false);
 					}
@@ -3701,7 +3718,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 						
 						txtfldRecupero.setEnabled(true);
 						//txtfldRecupero.setValue("0.00");
-						txtfldStraordinario.setEnabled(true);
+						//txtfldStraordinario.setEnabled(true);
 						btnAssegnaOreStraordinario.setEnabled(true);
 						btnAssegnaRecupero.setEnabled(true);
 					}
@@ -3791,7 +3808,8 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			txtfldStraordinario.setRegex("[0-9]+[.]?[0-5]{1}[0-9]{1}|0.00|0.0");
 			txtfldStraordinario.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
 			txtfldStraordinario.setWidth(50);
-			if(statoRevisione==2)txtfldStraordinario.setEnabled(false);
+			if(statoRevisione==2)
+				txtfldStraordinario.setEnabled(false);
 			txtfldStraordinario.addKeyListener(new KeyListener(){
 				 @Override
 			      public void componentKeyDown(ComponentEvent event) { 	  
@@ -4060,7 +4078,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			add(cp2);
 			layout(true);
 		}	
-		
+	
 		private void disableField() {
 			LayoutContainer lc= new LayoutContainer(); 
    			FldsetIntervalliIU fldsetIntervalliIU= new FldsetIntervalliIU();
@@ -4217,15 +4235,12 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 							@Override
 							public void onFailure(Throwable caught) {
 								Window.alert("Errore di connessione on getAssociazioniPersonaleCommessaByUsername().");
-
 							}
 
 							@Override
-							public void onSuccess(List<IntervalliCommesseModel> result) {
-									
-								caricaFieldSet(result);
-			
-							}				
+							public void onSuccess(List<IntervalliCommesseModel> result) {									
+								caricaFieldSet(result);			
+							}
 			});
 		}
 		
@@ -4233,6 +4248,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		private void caricaFieldSet(List<IntervalliCommesseModel> result) {
 			String descrizioneCompleta= new String();
 			List<IntervalliCommesseModel> lista = new ArrayList<IntervalliCommesseModel>();
+			PersonaleModel pM= new PersonaleModel();
 			frmInsCommesse= new FormInserimentoIntervalloCommessa("1");//indico il tipo di foglio ore che fa da parent
 			
 			Collections.sort(result, new Comparator<IntervalliCommesseModel>(){
@@ -4249,49 +4265,68 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 
 				Window.alert("error: Impossibile accedere alla tabella AssociazioniDipendente;");
 
-			} else {
+			} else{
 
 				if (size == 0) {
 					txtNoCommesse.setText("Nessuna Commessa Associata!");
 					txtNoCommesse.setVisible(true);
 					
-				} else
+				}else
 					{
 					removeAll();
-							
+					
+					pM=result.get(0).getPersonale();
+					
 					for (int i = 0; i < size; i++) {
-					String num = String.valueOf(i);
+						String num = String.valueOf(i);
 
-					frmInsCommesse = new FormInserimentoIntervalloCommessa("1");
-					frmInsCommesse.setItemId(num);
+						frmInsCommesse = new FormInserimentoIntervalloCommessa("1");
+						frmInsCommesse.setItemId(num);
 
-					frmInsCommesse.txtfldNumeroCommessa.setValue(result.get(i).getNumeroCommessa());
-					frmInsCommesse.txtfldOreIntervallo.setValue(result.get(i).getOreLavoro());
-					frmInsCommesse.txtfldOreViaggio.setValue(result.get(i).getOreViaggio());
-					frmInsCommesse.txtfldOreStrao.setValue((String) result.get(i).get("oreStraordinario"));
+						frmInsCommesse.txtfldNumeroCommessa.setValue(result.get(i).getNumeroCommessa());
+						frmInsCommesse.txtfldOreIntervallo.setValue(result.get(i).getOreLavoro());
+						frmInsCommesse.txtfldOreViaggio.setValue(result.get(i).getOreViaggio());
+						frmInsCommesse.txtfldOreStrao.setValue((String) result.get(i).get("oreStraordinario"));
+						
+						Boolean autorizzato=(Boolean)pM.get("abilitazioneStraordinario");
+						
+						if(!autorizzato){
+							frmInsCommesse.txtfldOreStrao.setVisible(false);
+							frmInsCommesse.btnHelp.setVisible(false);
+							//frmInsCommesse.txtAbilitazioneStrao.setVisible(true);
+						}else
+							if(autorizzato && ClientUtility.dataIsIncluded((Date)pM.get("dataInizioAbilitazioneStrao"), dtfldGiorno.getValue())){
+								frmInsCommesse.txtfldOreStrao.setVisible(true);
+								frmInsCommesse.btnHelp.setVisible(true);
+								//frmInsCommesse.txtAbilitazioneStrao.setVisible(false);
+						}else{
+							frmInsCommesse.txtfldOreStrao.setVisible(false);
+							frmInsCommesse.btnHelp.setVisible(false);
+							//frmInsCommesse.txtAbilitazioneStrao.setVisible(true);
+						}
+							
+						if(statoRevisione==2){
+							frmInsCommesse.txtfldOreIntervallo.setEnabled(false);
+							frmInsCommesse.txtfldOreViaggio.setEnabled(false);
+							frmInsCommesse.txtfldOreStrao.setEnabled(false);
+							//frmInsCommesse.txtAbilitazioneStrao.setVisible(false);
+						}
 					
-					if(statoRevisione==2){
-						frmInsCommesse.txtfldOreIntervallo.setEnabled(false);
-						frmInsCommesse.txtfldOreViaggio.setEnabled(false);
-						frmInsCommesse.txtfldOreStrao.setEnabled(false);
-					}
+						//frmInsCommesse.txtfldTotOreLavoro.setValue(result.get(i).getTotOreLavoro());
+						//frmInsCommesse.txtfldTotOreViaggio.setValue(result.get(i).getTotOreViaggio());
 					
-					//frmInsCommesse.txtfldTotOreLavoro.setValue(result.get(i).getTotOreLavoro());
-					//frmInsCommesse.txtfldTotOreViaggio.setValue(result.get(i).getTotOreViaggio());
+						frmInsCommesse.txtOreTotLavoro.setText("Totale nel Mese: "+result.get(i).getTotOreLavoro());
+						frmInsCommesse.txtOreTotViaggio.setText("Totale nel Mese: "+result.get(i).getTotOreViaggio());
 					
-					frmInsCommesse.txtOreTotLavoro.setText("Totale nel Mese: "+result.get(i).getTotOreLavoro());
-					frmInsCommesse.txtOreTotViaggio.setText("Totale nel Mese: "+result.get(i).getTotOreViaggio());
+						descrizioneCompleta=result.get(i).getNumeroCommessa()+" ("+result.get(i).getDescrizione().toLowerCase()+") ";
 					
-					descrizioneCompleta=result.get(i).getNumeroCommessa()+" ("+result.get(i).getDescrizione().toLowerCase()+") ";
+						//frmInsCommesse.txtDescrizione.setText(result.get(i).getDescrizione().toLowerCase());
+						frmInsCommesse.txtDescrizione.setText(descrizioneCompleta);
+						add(frmInsCommesse);
 					
-					//frmInsCommesse.txtDescrizione.setText(result.get(i).getDescrizione().toLowerCase());
-					frmInsCommesse.txtDescrizione.setText(descrizioneCompleta);
-					add(frmInsCommesse);
-			
 					}
 				}
-				add(buttonBar);
-				
+				add(buttonBar);				
 				layout();
 			}		
 		}	
@@ -4338,8 +4373,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			
 			intervallo= new IntervalliCommesseModel(numeroCommessa, txtfldOreLavoro.getValue().toString(), txtfldOreViaggio.getValue().toString(),
 					txtfldOreStrao.getValue().toString(),"","", descrizione, "");
-			intervalliC.add(intervallo);
-			
+			intervalliC.add(intervallo);		
 		}
 		
 		return intervalliC;

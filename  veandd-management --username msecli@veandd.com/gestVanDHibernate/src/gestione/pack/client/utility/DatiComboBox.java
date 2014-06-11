@@ -69,24 +69,23 @@ public class DatiComboBox {
 		
 		List <String> listaR=new ArrayList<String>();
 		
+		listaR.add("Indiretti");
 		listaR.add("Autotelaio");
 		listaR.add("Trasmissioni");
 		listaR.add("Motori");
 		listaR.add("Affidabilita");
-		listaR.add("Trasm. E Dinamica Veicolo");
-		listaR.add("Mov.Terra / Veic.Ind.Agr.");
-		listaR.add("Defence");
-		listaR.add("Defence/Trasm E Din.Veic.");
-		listaR.add("Indiretti");
-			
+		listaR.add("Veicoli Agricoli");/*("Mov.Terra / Veic.Ind.Agr.");*/
+		listaR.add("Difesa-Sistemi di Difesa");/*("Defence");*/
+		listaR.add("Veicoli Industriali");/*("Defence/Trasm E Din.Veic.");*/
+		listaR.add("Trasm. Brescia");	/*Trasm. e dinamica veicoli*/	
 		return listaR;
-		}
+	}
 
 	
 	public static List<String> getRdos() {
 		final List<String> lista= new ArrayList<String>();
 		
-		try {		
+		try {
 			AdministrationService.Util.getInstance().getAllNumeroRdo(new AsyncCallback<List<String>>() {			
 				@Override
 				public void onSuccess(List<String> result) {
@@ -99,10 +98,9 @@ public class DatiComboBox {
 				}					
 			});
 			
-		} catch (Exception e) {		
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 		return lista;
 	}
 	

@@ -3,6 +3,7 @@ package gestione.pack.client.layout;
 //import gestione.pack.client.utility.RecuperoParametriSessione;
 
 import gestione.pack.client.SessionManagementService;
+import gestione.pack.client.layout.panel.PanelAbilitazioneStraordinarioDip;
 import gestione.pack.client.layout.panel.PanelMensileOrdini;
 import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
 import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
@@ -297,6 +298,33 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 		}
 	    panel.add(cp);
 	    
+	    cp = new ContentPanel();
+	    cp.setAnimCollapse(false);
+	    cp.setBodyStyleName("pad-text");
+	    cp.setHeading("Personale");
+	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent be) {
+            	center.removeAll();
+	        	center.add(new PanelAbilitazioneStraordinarioDip());
+	        	center.layout(true);               
+            }
+        });
+	    
+	    Button btnAbilitazioneStrao = new Button();
+	    btnAbilitazioneStrao.setToolTip("Abilitazione Straordinari");
+	    btnAbilitazioneStrao.setHeight(65);
+	    btnAbilitazioneStrao.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnAbilitazioneStrao.setIconAlign(IconAlign.BOTTOM);
+	    btnAbilitazioneStrao.setWidth("100%");
+	    btnAbilitazioneStrao.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelAbilitazioneStraordinarioDip());
+	        	center.layout(true);}
+	        
+	      });
+	    cp.add(btnAbilitazioneStrao);
+	    panel.add(cp);
 	    
 	    cp = new ContentPanel();
 	    cp.setAnimCollapse(false);

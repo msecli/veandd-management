@@ -1,6 +1,8 @@
 package gestione.pack.client.model;
 
 
+import java.util.Date;
+
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -18,7 +20,8 @@ public class PersonaleModel extends BaseModel implements IsSerializable{
 	    public PersonaleModel(int id_PERSONALE2, String nome2, String cognome2, String username2, String password2, String numeroBadge2,
 				String ruolo2, String tipologiaOrario2, String tipologiaLavoratore2, String gruppoLavoro2,
 				String costoOrario2, String costoStruttura2, String sede2, String sedeOperativa, String oreDirette2, String oreIndirette2, String orePermessi2,
-				String oreFerie2, String oreExFest2, String oreRecupero, String statoRapporto) {
+				String oreFerie2, String oreExFest2, String oreRecupero, String statoRapporto, boolean abilitazioneStraordinario, 
+				Date dataInizioAbilitazione, String notaCommesseAbilitate) {
 	    	
 	    	//impostazione della proprietà che dovrà essere uguale al momento della configurazione delle colonne
 			set("idPersonale", id_PERSONALE2);
@@ -43,8 +46,24 @@ public class PersonaleModel extends BaseModel implements IsSerializable{
 	        set("oreRecupero", oreRecupero); 
 	        set("nomeCompleto", cognome2+" "+nome2);//usato nelle ListView
 	        set("rapporto", statoRapporto);
+	        set("abilitazioneStraordinario",abilitazioneStraordinario);
+	        set("dataInizioAbilitazioneStrao", dataInizioAbilitazione);
+	        set("notaCommesseAbilitate", notaCommesseAbilitate);
 		}
 
+	    
+	    public PersonaleModel(int idPersonale, String username, String cognome, String nome, String gruppoLavoro, 
+	    		boolean abilitazioneStraordinario, Date dataInizioAbilitazione, String notaCommesseAbilitate){
+	    	set("idPersonale", idPersonale);
+			set("nome", nome);
+	        set("cognome", cognome);
+	        set("username", username);
+	        set("abilitazioneStraordinario",abilitazioneStraordinario);
+	        set("dataInizioAbilitazioneStrao", dataInizioAbilitazione);
+	        set("gruppoLavoro", gruppoLavoro);
+	        set("completo", cognome+" "+nome);
+	        set("notaCommesseAbilitate", notaCommesseAbilitate);
+	    }
 	    
 	    public String getNome() {
 			return get("nome");

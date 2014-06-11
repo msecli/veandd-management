@@ -305,8 +305,7 @@ public class PanelRichiesteDipendenti extends LayoutContainer{
 			}
 		});
 	    
-	    configs.add(column);
-	    	    	    	    	    
+	    configs.add(column);	    	    	    	    	    
 		return configs;
 	}
 	

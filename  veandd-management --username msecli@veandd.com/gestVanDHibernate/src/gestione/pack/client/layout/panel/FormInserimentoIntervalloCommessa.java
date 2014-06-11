@@ -44,10 +44,11 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 	public Text txtDescrizione = new Text();
 	public Text txtOreTotLavoro = new Text();
 	public Text txtOreTotViaggio = new Text();
+	public Text txtAbilitazioneStrao= new Text();
 	
 	private Button btnAssegnaOre;
-	private Button btnAzzeraOre;
-	private Button btnHelp;
+	public Button btnAzzeraOre;
+	public Button btnHelp= new Button();
 	private String tipoParent;
 		
 	public FormInserimentoIntervalloCommessa(String tipoParent) {
@@ -100,7 +101,7 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 			}
 		});
 	    
-	    btnHelp= new Button();
+	    //btnHelp= new Button();
 	    btnHelp.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.idea()));
 	    btnHelp.setIconAlign(IconAlign.TOP);
 	    btnHelp.setToolTip("Indicare qui le ore straordinarie sulla commessa");
@@ -224,6 +225,12 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 		      }
 		});
 		
+		txtAbilitazioneStrao.setVisible(true);
+		txtAbilitazioneStrao.setStyleAttribute("color", "#d7dbdb");
+		txtAbilitazioneStrao.setStyleAttribute(" font-style", "italic");
+		txtAbilitazioneStrao.setStyleAttribute("padding-top", "4px");
+		txtAbilitazioneStrao.setText("Straordinario non autorizzato.");
+		
 		/*
 		txtfldTotOreLavoro.setFieldLabel("Tot.Mese");
 		txtfldTotOreLavoro.setMaxLength(10);
@@ -304,10 +311,12 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 			layoutCol2.add(txtfldOreIntervallo, new FormData("100%"));
 			layoutCol2.add(txtfldOreViaggio, new FormData("100%"));
 			layoutCol2.add(txtfldOreStrao, new FormData("100%"));
+			//layoutCol2.add(txtAbilitazioneStrao, new FormData("100%"));
 		
 			//layoutCol3.add(cpVuoto, new FormData("74%"));
 			layoutCol3.add(txtOreTotLavoro, new FormData("100%"));
 			layoutCol3.add(txtOreTotViaggio,new FormData("100%"));
+			//layoutCol3.add(txtAbilitazioneStrao, new FormData("100%"));
 		}else{
 			
 			layoutCol2.add(txtfldOreIntervallo, new FormData("100%"));
@@ -316,8 +325,7 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 					
 			layoutCol3.add(txtOreTotLavoro, new FormData("100%"));
 			layoutCol3.add(txtOreTotViaggio,new FormData("100%"));
-		}
-			
+		}			
 		
 		cp.setTopComponent(hp1);
 				
