@@ -1,24 +1,26 @@
 package gestione.pack.client.layout.panel;
 
+import gestione.pack.client.AdministrationService;
+import gestione.pack.client.model.SaturazioneRisorsaModel;
+import gestione.pack.client.utility.DatiComboBox;
+import gestione.pack.client.utility.MyImages;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import gestione.pack.client.AdministrationService;
-import gestione.pack.client.model.SaturazioneRisorsaModel;
-import gestione.pack.client.utility.DatiComboBox;
-
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SortDir;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -34,24 +36,22 @@ import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
-public class PanelSaturazioneRisorsa extends LayoutContainer{
+public class PanelSaturazioneRisorsePerSede extends LayoutContainer{
 
 	private SimpleComboBox<String> smplcmbxAnno;
+	private SimpleComboBox<String> smplcmbxSede;
+	private Button btnAggiorna;
 	
 	private GroupingStore<SaturazioneRisorsaModel> storeSaturazioneRisorsa=new GroupingStore<SaturazioneRisorsaModel>();
 	private ColumnModel cmSaturazioneRisorsa1;
 	private ColumnModel cmSaturazioneRisorsa2;
 	private EditorGrid<SaturazioneRisorsaModel> gridSaturazioneRisorsa1;
 	private EditorGrid<SaturazioneRisorsaModel> gridSaturazioneRisorsa2;
-	private String numeroCommessa= new String();
-	private int idRisorsa=0;
-	private int idCostingRisorsa=0;
 	
-	public PanelSaturazioneRisorsa(int idRisorsa, String numeroCommessa, int idCostingRisorsa){
-		this.numeroCommessa=numeroCommessa;
-		this.idRisorsa=idRisorsa;	
-		this.idCostingRisorsa=idCostingRisorsa;
+	public PanelSaturazioneRisorsePerSede(){
+		
 	}
 	
 	protected void onRender(Element target, int index) {  
@@ -66,7 +66,6 @@ public class PanelSaturazioneRisorsa extends LayoutContainer{
 		Date d= new Date();
 		String data= d.toString();
 		String anno= data.substring(data.length()-4, data.length());
-		caricaDatiTabellaSaturazioneRisorsa(anno);
 		
 		VerticalPanel hp= new VerticalPanel();
 		hp.setSpacing(3);
@@ -75,8 +74,8 @@ public class PanelSaturazioneRisorsa extends LayoutContainer{
 		cpGridSaturazione1.setHeaderVisible(false);
 		cpGridSaturazione1.setBorders(false);
 		cpGridSaturazione1.setFrame(true);
-		cpGridSaturazione1.setHeight(220);
-		cpGridSaturazione1.setWidth(1250);
+		cpGridSaturazione1.setHeight(460);
+		cpGridSaturazione1.setWidth(1400);
 		cpGridSaturazione1.setScrollMode(Scroll.AUTO);
 		cpGridSaturazione1.setLayout(new FitLayout());
 		cpGridSaturazione1.setButtonAlign(HorizontalAlignment.CENTER);
@@ -85,8 +84,8 @@ public class PanelSaturazioneRisorsa extends LayoutContainer{
 		cpGridSaturazione2.setHeaderVisible(false);
 		cpGridSaturazione2.setBorders(false);
 		cpGridSaturazione2.setFrame(true);
-		cpGridSaturazione2.setHeight(220);
-		cpGridSaturazione2.setWidth(1250);
+		cpGridSaturazione2.setHeight(460);
+		cpGridSaturazione2.setWidth(1400);
 		cpGridSaturazione2.setScrollMode(Scroll.AUTO);
 		cpGridSaturazione2.setLayout(new FitLayout());
 		cpGridSaturazione2.setButtonAlign(HorizontalAlignment.CENTER);  
@@ -108,6 +107,21 @@ public class PanelSaturazioneRisorsa extends LayoutContainer{
 	
 		ToolBar tlbrPanel= new ToolBar();
 		
+		btnAggiorna= new Button();
+		btnAggiorna.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.refresh()));
+		btnAggiorna.setIconAlign(IconAlign.TOP);
+		btnAggiorna.setToolTip("Aggiorna");
+		btnAggiorna.setSize(26, 26);
+		btnAggiorna.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+		
+				caricaDatiTabellaSaturazioneRisorsa(smplcmbxSede.getRawValue().toString(), smplcmbxAnno.getRawValue().toString());
+				
+			}
+		});
+		
 		smplcmbxAnno= new SimpleComboBox<String>();
 		smplcmbxAnno.setFieldLabel("Anno");
 		smplcmbxAnno.setName("anno");
@@ -117,14 +131,21 @@ public class PanelSaturazioneRisorsa extends LayoutContainer{
 			 smplcmbxAnno.add(l);}
 		smplcmbxAnno.setTriggerAction(TriggerAction.ALL);
 		smplcmbxAnno.setSimpleValue(anno);
-		smplcmbxAnno.addListener(Events.Select, new Listener<BaseEvent>(){
-			@Override
-			public void handleEvent(BaseEvent be) {
-				caricaDatiTabellaSaturazioneRisorsa(smplcmbxAnno.getRawValue().toString());							
-			}		
-		});				
+				
 		
+		smplcmbxSede= new SimpleComboBox<String>();
+		smplcmbxSede.setFieldLabel("Sede");
+		smplcmbxSede.setName("sede");
+		smplcmbxSede.setEmptyText("Sede..");
+		smplcmbxSede.setAllowBlank(false);
+		 for(String l : DatiComboBox.getSedeOperativa()){
+			 smplcmbxSede.add(l);}
+		smplcmbxSede.setTriggerAction(TriggerAction.ALL);
+		smplcmbxSede.setSimpleValue(anno);
+				
+		tlbrPanel.add(smplcmbxSede);
 		tlbrPanel.add(smplcmbxAnno);
+		tlbrPanel.add(btnAggiorna);
 		
 		cpGridSaturazione1.setTopComponent(tlbrPanel);
 		cpGridSaturazione1.add(gridSaturazioneRisorsa1);
@@ -140,9 +161,9 @@ public class PanelSaturazioneRisorsa extends LayoutContainer{
 	}
 	
 	
-	private void caricaDatiTabellaSaturazioneRisorsa(String anno) {
+	private void caricaDatiTabellaSaturazioneRisorsa(String sede, String anno) {
 		try {
-			AdministrationService.Util.getInstance().getDatiSaturazioneRisorsa(idRisorsa, idCostingRisorsa, anno, new AsyncCallback<List<SaturazioneRisorsaModel>>() {
+			AdministrationService.Util.getInstance().getDatiSaturazioneRisorsa(sede, anno, new AsyncCallback<List<SaturazioneRisorsaModel>>() {
 					@Override
 					public void onSuccess(List<SaturazioneRisorsaModel> result) {
 						loadTableSaturazione1(result);
@@ -194,19 +215,40 @@ public class PanelSaturazioneRisorsa extends LayoutContainer{
             			if(((Float)model.get(property)>0) && ((Float)model.get(property)<100) && (descr.compareTo("Saturazione (%)")==0))
             				config.style = config.style + ";background-color:#d2f5af;" +"font-weight:bold;";
             	
+            	if(descr.compareTo("Disponibili")==0)
+            		config.style = config.style + ";background-color:#cccccc;";
+            	
 				if(n!=null)										
 					return num.format(n);
 				else
 					return num.format(0);
         }};
+        
+        GridCellRenderer<SaturazioneRisorsaModel> renderer1 = new GridCellRenderer<SaturazioneRisorsaModel>() {
+            public String render(SaturazioneRisorsaModel model, String property, ColumnData config, int rowIndex,
+                    int colIndex, ListStore<SaturazioneRisorsaModel> store, Grid<SaturazioneRisorsaModel> grid) {
+            	final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
+            	        	
+            	
+            	String descr=(String)model.get("descrizioneRecord");
+                       
+            	if(descr.compareTo("Disponibili")==0)
+            		config.style = config.style + ";background-color:#cccccc;";
+            	else
+            		config.style = config.style + ";background-color:white;";
+            	
+				return model.get(property);
+        }};
+        
 		
 		ColumnConfig column = new ColumnConfig();
 		
 		column = new ColumnConfig();
 		column.setId("risorsa");
 		column.setHeader("Risorsa");
-		column.setWidth(90);
+		column.setWidth(110);
 		column.setRowHeader(true);
+		column.setRenderer(renderer1);
 		column.setAlignment(HorizontalAlignment.LEFT);
 		configs.add(column);
 		
@@ -215,6 +257,7 @@ public class PanelSaturazioneRisorsa extends LayoutContainer{
 		column.setHeader("Descr.");
 		column.setWidth(90);
 		column.setRowHeader(true);
+		column.setRenderer(renderer1);
 		column.setAlignment(HorizontalAlignment.LEFT);
 		configs.add(column);
 		
@@ -230,7 +273,7 @@ public class PanelSaturazioneRisorsa extends LayoutContainer{
 			column = new ColumnConfig();  
 			column.setId("w"+String.valueOf(i));  
 			column.setHeader("w"+String.valueOf(i));  
-			column.setWidth(40);  
+			column.setWidth(43);  
 			column.setRowHeader(true);
 			column.setAlignment(HorizontalAlignment.RIGHT);
 			column.setRenderer(renderer);
@@ -256,7 +299,7 @@ public class PanelSaturazioneRisorsa extends LayoutContainer{
 	          	
             	Float n=model.get(property);
             	String descr=(String)model.get("descrizioneRecord");
-            	           	
+            	
             	if(((Float)model.get(property)!=0) && (descr.compareTo("Disponibili")!=0))
             		config.style = config.style + ";background-color:#d2f5af;" +"font-weight:bold;";
             	else
@@ -270,15 +313,39 @@ public class PanelSaturazioneRisorsa extends LayoutContainer{
             		else
             			if(((Float)model.get(property)>0) && ((Float)model.get(property)<100) && (descr.compareTo("Saturazione (%)")==0))
             				config.style = config.style + ";background-color:#d2f5af;" +"font-weight:bold;";
-            	        	
             	
+            	if(descr.compareTo("Disponibili")==0)
+            		config.style = config.style + ";background-color:#cccccc;";
+            	            	
 				if(n!=null)										
 					return num.format(n);
 				else
 					return num.format(0);
+        }};    
+        
+        
+        GridCellRenderer<SaturazioneRisorsaModel> renderer1 = new GridCellRenderer<SaturazioneRisorsaModel>() {
+            public String render(SaturazioneRisorsaModel model, String property, ColumnData config, int rowIndex,
+                    int colIndex, ListStore<SaturazioneRisorsaModel> store, Grid<SaturazioneRisorsaModel> grid) {
+            	          	
+            	String descr=(String)model.get("descrizioneRecord");
+                       
+            	if(descr.compareTo("Disponibili")==0)
+            		config.style = config.style + ";background-color:#cccccc;";
+            	else
+            		config.style = config.style + ";background-color:white;";
+            	return model.get(property);
         }};
+        
 		ColumnConfig column = new ColumnConfig();
-		
+		column = new ColumnConfig();
+		column.setId("risorsa");
+		column.setHeader("Risorsa");
+		column.setWidth(110);
+		column.setRowHeader(true);
+		column.setAlignment(HorizontalAlignment.LEFT);
+		column.setRenderer(renderer1);
+		configs.add(column);
 				
 		for(int i=26;i<=53;i++){
 			column = new ColumnConfig();  
@@ -292,6 +359,4 @@ public class PanelSaturazioneRisorsa extends LayoutContainer{
 		}
 	    return configs;
 	}
-	
-	
 }
