@@ -11411,6 +11411,178 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}
 		return listaSM;
 	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SaturazioneRisorsaModel> getDatiSaturazioneRisorsa(String sede,
+			String anno) {
+		
+		
+		List<SaturazioneRisorsaModel> listaSM= new ArrayList<SaturazioneRisorsaModel>();
+		SaturazioneRisorsaModel sM= new SaturazioneRisorsaModel();
+		List<CostingRisorsa>listaC= new ArrayList<CostingRisorsa>();
+		
+		List<Personale> listaP= new ArrayList<Personale>();
+		
+		Boolean esito=true;
+		
+		final long ONE_HOUR = 60 * 60 * 1000L;
+		float[] oreSettimana= new float[54];
+		float[] oreDisponibili= new float[54];
+		float[] saturazionePercentuale= new float[54];
+			
+		Calendar ca1 = Calendar.getInstance();
+		Calendar ca2 = Calendar.getInstance();       
+		
+		Date dataInizio= new Date();
+		Date dataFine= new Date();
+		
+		DateFormat formatterAnno = new SimpleDateFormat("yyyy") ; 
+		DateFormat formatterMese  = new SimpleDateFormat("MM",Locale.ITALIAN);
+		DateFormat formattergiorno = new SimpleDateFormat("dd");
+				
+	    int sett_inizio=0;
+		int sett_fine=0;
+	    Float giorniTotali=(float)0.0;
+	    int nSettimane=0;
+	    Float orePerSettimana=(float)0.0;
+	    int idCostingRisorsa=0;
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {		
+			tx=session.beginTransaction();
+			
+			listaP=(List<Personale>)session.createQuery("from Personale where sedeOperativa=:sede and tipologiaOrario<>'A'").setParameter("sede", sede).list();
+						
+			for(Personale p:listaP){
+				
+				if(p.getCostingRisorsas().iterator().hasNext())
+					listaC.addAll(p.getCostingRisorsas());
+				
+				//inizializzazione
+				for(int j=0; j<54; j++){
+					oreSettimana[j]=0;
+					oreDisponibili[j]=Float.valueOf(p.getTipologiaOrario())*5;
+					saturazionePercentuale[j]=0;
+				}
+				
+				for(CostingRisorsa c:listaC)
+				if(c.getIdCostingRisorsa()==idCostingRisorsa){
+					dataInizio=c.getDataInizioAttivita();
+					dataFine=c.getDataFineAttivita();
+					
+					if((formatterAnno.format(dataInizio).compareTo(anno)==0)&&
+							(formatterAnno.format(dataFine).compareTo(anno)==0)){			
+						//numero settimane
+						
+						int mese=Integer.valueOf(formatterMese.format(dataInizio))-1;
+						ca1.set(Integer.valueOf(formatterAnno.format(dataInizio)), mese
+							, Integer.valueOf(formattergiorno.format(dataInizio)));
+						sett_inizio=ca1.get(Calendar.WEEK_OF_YEAR);
+						
+						mese=Integer.valueOf(formatterMese.format(dataFine))-1;
+						ca2.set(Integer.valueOf(formatterAnno.format(dataFine)), mese
+							, Integer.valueOf(formattergiorno.format(dataFine)));
+						sett_fine=ca2.get(Calendar.WEEK_OF_YEAR);
+					
+						//	calcolo ore per settimana
+						giorniTotali=(float) (((dataFine.getTime() - dataInizio.getTime()) + (ONE_HOUR*24) ) / (ONE_HOUR * 24)) ;
+						nSettimane=(int) (giorniTotali / 7);
+						if(giorniTotali%7>0)
+							nSettimane=nSettimane+1;									
+						orePerSettimana=Float.valueOf(c.getOreLavoro())/nSettimane;
+					
+						//riempio il vettore con tutte le ore per le settimane
+						for(int i=sett_inizio;i<=sett_fine;i++)
+							oreSettimana[i+1]=oreSettimana[i+1]+orePerSettimana;
+					}
+					else
+						if((formatterAnno.format(dataInizio).compareTo(anno)==0)&&
+								(formatterAnno.format(dataFine).compareTo(String.valueOf(Integer.valueOf(anno)+1))==0)){
+							
+							//numero settimane
+							ca1.set(Integer.valueOf(formatterAnno.format(dataInizio)), Integer.valueOf(formatterMese.format(dataInizio))
+								, Integer.valueOf(formattergiorno.format(dataInizio)));
+							sett_inizio=ca1.get(Calendar.WEEK_OF_YEAR);
+							
+							sett_fine=53;
+						
+							//	calcolo ore per settimana
+							giorniTotali=(float) (((dataFine.getTime() - dataInizio.getTime()) + (ONE_HOUR*24) ) / (ONE_HOUR * 24)) ;
+							nSettimane=(int) (giorniTotali / 7);
+							if(giorniTotali%7>0)
+								nSettimane=nSettimane+1;									
+							orePerSettimana=Float.valueOf(c.getOreLavoro())/nSettimane;
+						
+							//riempio il vettore con tutte le ore per le settimane
+							for(int i=sett_inizio;i<=sett_fine;i++)
+								oreSettimana[i+1]=oreSettimana[i+1]+orePerSettimana;					
+						}
+				}
+							
+				//calcolo del vettore saturazione
+				for(int k=1; k<54; k++){
+					if(oreSettimana[k]==0)
+						saturazionePercentuale[k]=0;
+					else
+						saturazionePercentuale[k]=oreSettimana[k]*100/oreDisponibili[k];
+				}
+				
+				//ore disponibili per settimana
+				sM=new SaturazioneRisorsaModel(p.getCognome()+" "+p.getNome(), "1", "Disponibili", oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], 
+						oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1]
+								, oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], 
+								oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], 
+								oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], 
+								oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], 
+								oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], 
+								oreDisponibili[1], oreDisponibili[1], oreDisponibili[1], oreDisponibili[1]);
+				listaSM.add(sM);
+				
+				//ore assegnate per settimana
+				sM=new SaturazioneRisorsaModel(p.getCognome()+" "+p.getNome(), "2", "Assegnate", oreSettimana[1], oreSettimana[2], oreSettimana[3], oreSettimana[4], oreSettimana[5], 
+						oreSettimana[6], oreSettimana[7], oreSettimana[8], oreSettimana[9], oreSettimana[10], oreSettimana[11], oreSettimana[12], oreSettimana[13]
+								, oreSettimana[14], oreSettimana[15], oreSettimana[16], oreSettimana[17], oreSettimana[18], oreSettimana[19], oreSettimana[20], oreSettimana[21], 
+								oreSettimana[22], oreSettimana[23], oreSettimana[24], oreSettimana[25], oreSettimana[26], oreSettimana[27], oreSettimana[28], 
+								oreSettimana[29], oreSettimana[30], oreSettimana[31], oreSettimana[32], oreSettimana[33], oreSettimana[34], oreSettimana[35], 
+								oreSettimana[36], oreSettimana[37], oreSettimana[38], oreSettimana[39], oreSettimana[40], oreSettimana[41], oreSettimana[42], oreSettimana[43], 
+								oreSettimana[44], oreSettimana[45], oreSettimana[46], oreSettimana[47], oreSettimana[48], oreSettimana[49], oreSettimana[50], 
+								oreSettimana[51], oreSettimana[52], oreSettimana[53]);
+				listaSM.add(sM);
+				
+				//saturazione percentuale
+				sM=new SaturazioneRisorsaModel(p.getCognome()+" "+p.getNome(), "3", "Saturazione (%)", saturazionePercentuale[1], saturazionePercentuale[2], saturazionePercentuale[3], saturazionePercentuale[4], saturazionePercentuale[5], 
+						saturazionePercentuale[6], saturazionePercentuale[7], saturazionePercentuale[8], saturazionePercentuale[9], saturazionePercentuale[10], saturazionePercentuale[11], saturazionePercentuale[12], saturazionePercentuale[13]
+								, saturazionePercentuale[14], saturazionePercentuale[15], saturazionePercentuale[16], saturazionePercentuale[17], saturazionePercentuale[18], saturazionePercentuale[19], saturazionePercentuale[20], saturazionePercentuale[21], 
+								saturazionePercentuale[22], saturazionePercentuale[23], saturazionePercentuale[24], saturazionePercentuale[25], saturazionePercentuale[26], saturazionePercentuale[27], saturazionePercentuale[28], 
+								saturazionePercentuale[29], saturazionePercentuale[30], saturazionePercentuale[31], saturazionePercentuale[32], saturazionePercentuale[33], saturazionePercentuale[34], saturazionePercentuale[35], 
+								saturazionePercentuale[36], saturazionePercentuale[37], saturazionePercentuale[38], saturazionePercentuale[39], saturazionePercentuale[40], saturazionePercentuale[41], saturazionePercentuale[42], saturazionePercentuale[43], 
+								saturazionePercentuale[44], saturazionePercentuale[45], saturazionePercentuale[46], saturazionePercentuale[47], saturazionePercentuale[48], saturazionePercentuale[49], saturazionePercentuale[50], 
+								saturazionePercentuale[51], saturazionePercentuale[52], saturazionePercentuale[53]);
+				listaSM.add(sM);
+				
+				listaC.clear();
+				
+		}
+			
+			tx.commit();
+		
+		}catch (Exception e) {
+			esito=false;
+			e.printStackTrace();
+			if (tx!=null)
+				tx.rollback();
+		}finally{
+			session.close();
+			if(!esito)
+	        	return null;
+		}
+		return listaSM;
+	
+	}	
 
 	
 	@SuppressWarnings("unchecked")
@@ -11537,5 +11709,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	        	return false;
 		}	
 		return true;
-	}	
+	}
+
+	
+	
 }

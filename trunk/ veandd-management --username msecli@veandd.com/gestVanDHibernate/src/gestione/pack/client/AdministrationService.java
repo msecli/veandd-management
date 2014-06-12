@@ -487,5 +487,8 @@ boolean invioCommenti(String testo, String username, Date giorno);
 
 	boolean setDatiAutorizzazioneStraordinario(Integer integer, boolean b,
 			Date date, String string);
+
+	List<SaturazioneRisorsaModel> getDatiSaturazioneRisorsa(String sede,
+			String anno);
 	
 }

@@ -20,6 +20,7 @@ import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoRichiesteHardware;
 import gestione.pack.client.layout.panel.PanelRiepilogoSituazioneMensileOreDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoStatoAvanzamentoOreCommesse;
+import gestione.pack.client.layout.panel.PanelSaturazioneRisorsePerSede;
 import gestione.pack.client.layout.panel.PanelToolAmministrativi;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
@@ -599,6 +600,29 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        	center.layout(true);}        
 	      });
 	    cp.add(btnGestioneCosting);
+	    
+	    Button btnRiepilogoSaturazione = new Button();
+	    btnRiepilogoSaturazione.setToolTip("Riepilogo dati saturazione risorse");
+	    btnRiepilogoSaturazione.setHeight(65);
+	    btnRiepilogoSaturazione.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensPers()));
+	    btnRiepilogoSaturazione.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoSaturazione.setWidth("100%");
+	    btnRiepilogoSaturazione.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	int h=Window.getClientHeight();
+	        	int w=Window.getClientWidth();
+	        	Dialog d= new Dialog();
+	        	d.setSize(1430, 980);
+	        	d.add(new PanelSaturazioneRisorsePerSede());
+	        	d.setHeading("Riepilogo dati saturazione risorse");
+	        	d.setCollapsible(true);
+	        	d.setScrollMode(Scroll.NONE);
+	        	d.setButtons("");
+	        	d.setConstrain(false);
+	        	d.show();	        	
+	        }        
+	      });
+	    cp.add(btnRiepilogoSaturazione);
     
 	    panel.add(cp);
 	         

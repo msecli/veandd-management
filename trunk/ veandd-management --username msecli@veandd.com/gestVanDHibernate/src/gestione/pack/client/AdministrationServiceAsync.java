@@ -498,6 +498,9 @@ public interface AdministrationServiceAsync {
 	void setDatiAutorizzazioneStraordinario(Integer integer, boolean b,
 			Date date, String string, AsyncCallback<Boolean> asyncCallback);
 
+	void getDatiSaturazioneRisorsa(String sede, String anno,
+			AsyncCallback<List<SaturazioneRisorsaModel>> asyncCallback);
+
 	
 
 }

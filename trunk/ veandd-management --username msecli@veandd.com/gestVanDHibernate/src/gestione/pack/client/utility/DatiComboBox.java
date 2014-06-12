@@ -65,6 +65,17 @@ public class DatiComboBox {
 	}
 	
 	
+	public static List<String> getSedeOperativa(){
+		
+		List <String> listaR=new ArrayList<String>();
+	
+		listaR.add("T");
+		listaR.add("B");
+		
+		return listaR;
+	}
+	
+	
 	public static List<String> getGruppoLavoro(){
 		
 		List <String> listaR=new ArrayList<String>();
