@@ -157,5 +157,11 @@ public interface MyImages extends ClientBundle{
 	
 	@Source("Icone/riepSaturazione.png")
 	ImageResource riepSaturazione();
+	
+	@Source("Icone/riep1.png")
+	ImageResource riep1();
+	
+	@Source("Icone/generate1.png")
+	ImageResource generate1();
 }
 
