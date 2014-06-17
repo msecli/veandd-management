@@ -11269,7 +11269,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		float[] saturazionePercentuale= new float[54];
 			
 		Calendar ca1 = Calendar.getInstance();
-		Calendar ca2 = Calendar.getInstance();       
+		Calendar ca2 = Calendar.getInstance();
 		
 		Date dataInizio= new Date();
 		Date dataFine= new Date();
@@ -11417,8 +11417,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	@Override
 	public List<SaturazioneRisorsaModel> getDatiSaturazioneRisorsa(String sede,
 			String anno) {
-		
-		
+			
 		List<SaturazioneRisorsaModel> listaSM= new ArrayList<SaturazioneRisorsaModel>();
 		SaturazioneRisorsaModel sM= new SaturazioneRisorsaModel();
 		List<CostingRisorsa>listaC= new ArrayList<CostingRisorsa>();
@@ -11455,7 +11454,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		try {		
 			tx=session.beginTransaction();
 			
-			listaP=(List<Personale>)session.createQuery("from Personale where sedeOperativa=:sede and tipologiaOrario<>'A'").setParameter("sede", sede).list();
+			listaP=(List<Personale>)session.createQuery("from Personale where sedeOperativa=:sede and tipologiaOrario<>'A' and ruolo<>'AU'").setParameter("sede", sede).list();
 						
 			for(Personale p:listaP){
 				

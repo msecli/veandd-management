@@ -218,7 +218,7 @@ public class PanelSaturazioneRisorsePerSede extends LayoutContainer{
             	if(descr.compareTo("Disponibili")==0)
             		config.style = config.style + ";background-color:#cccccc;";
             	
-				if(n!=null)										
+				if(n!=null)
 					return num.format(n);
 				else
 					return num.format(0);
@@ -227,9 +227,7 @@ public class PanelSaturazioneRisorsePerSede extends LayoutContainer{
         GridCellRenderer<SaturazioneRisorsaModel> renderer1 = new GridCellRenderer<SaturazioneRisorsaModel>() {
             public String render(SaturazioneRisorsaModel model, String property, ColumnData config, int rowIndex,
                     int colIndex, ListStore<SaturazioneRisorsaModel> store, Grid<SaturazioneRisorsaModel> grid) {
-            	final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
-            	        	
-            	
+            	        	            	
             	String descr=(String)model.get("descrizioneRecord");
                        
             	if(descr.compareTo("Disponibili")==0)

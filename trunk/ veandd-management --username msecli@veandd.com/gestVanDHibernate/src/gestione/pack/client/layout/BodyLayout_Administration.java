@@ -404,7 +404,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    Button btnAbilitazioneStrao = new Button();
 	    btnAbilitazioneStrao.setToolTip("Abilitazione Straordinari");
 	    btnAbilitazioneStrao.setHeight(65);
-	    btnAbilitazioneStrao.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnAbilitazioneStrao.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riep1()));
 	    btnAbilitazioneStrao.setIconAlign(IconAlign.BOTTOM);
 	    btnAbilitazioneStrao.setWidth("100%");
 	    btnAbilitazioneStrao.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -590,15 +590,16 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    Button btnGestioneCosting = new Button();
 	    btnGestioneCosting.setToolTip("Costing");
 	    btnGestioneCosting.setHeight(65);
-	    btnGestioneCosting.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensPers()));
+	    btnGestioneCosting.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riep1()));
 	    btnGestioneCosting.setIconAlign(IconAlign.BOTTOM);
 	    btnGestioneCosting.setWidth("100%");
 	    btnGestioneCosting.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	        	center.removeAll();
 	        	center.add(new PanelGestioneCosting());
-	        	center.layout(true);}        
-	      });
+	        	center.layout(true);
+	        }
+	    });
 	    cp.add(btnGestioneCosting);
 	    
 	    Button btnRiepilogoSaturazione = new Button();
@@ -609,8 +610,6 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    btnRiepilogoSaturazione.setWidth("100%");
 	    btnRiepilogoSaturazione.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
-	        	int h=Window.getClientHeight();
-	        	int w=Window.getClientWidth();
 	        	Dialog d= new Dialog();
 	        	d.setSize(1430, 980);
 	        	d.add(new PanelSaturazioneRisorsePerSede());
@@ -813,7 +812,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    	    d.add(smplcmbxPeriodo);
 	    	    d.add(cp);
 	    	    d.show();
-	    	    
+   	    
 	    	    
 	    	    smplcmbxPeriodo.addListener(Events.Select, new Listener<BaseEvent>(){
 					@Override
