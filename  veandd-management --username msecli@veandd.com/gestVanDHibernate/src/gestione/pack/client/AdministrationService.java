@@ -345,7 +345,7 @@ boolean invioCommenti(String testo, String username, Date giorno);
 
 	boolean confermaGiorniTuttiDipendenti(String string, Date data)throws IllegalArgumentException;
 
-	List<CommentiModel> getAllCommenti()throws IllegalArgumentException;
+	List<CommentiModel> getAllCommentiPerSede(String sede)throws IllegalArgumentException;
 
 	boolean deleteCommento(int d)throws IllegalArgumentException;
 

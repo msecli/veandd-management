@@ -51,13 +51,15 @@ public class PanelRichiesteDipendenti extends LayoutContainer{
 	private RowExpander expander;
 	private Button btnDeleteRichiesta;
 	private Button btnSetEdit;
+	private Button btnAggiorna;
+	private SimpleComboBox<String>smplcmbxSede;
 	private SimpleComboBox<String >smplcmbxAnno;
 	private SimpleComboBox<String >smplcmbxMese;
 	
 	private  CheckBoxSelectionModel<CommentiModel> sm = new CheckBoxSelectionModel<CommentiModel>();  
 	
 	public PanelRichiesteDipendenti(){
-		
+	
 	}
 	
 	protected void onRender(Element target, int index) {  
@@ -130,8 +132,19 @@ public class PanelRichiesteDipendenti extends LayoutContainer{
 							
 						}
 					});
- 					
  				}			
+			}
+		});
+		
+		btnAggiorna=new Button();
+		btnAggiorna.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.refresh()));
+		btnAggiorna.setIconAlign(IconAlign.TOP);
+		btnAggiorna.setSize(26, 26);
+		btnAggiorna.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				caricaTabella();					
 			}
 		});
 		
@@ -139,6 +152,18 @@ public class PanelRichiesteDipendenti extends LayoutContainer{
 		String data= d.toString();
 		String mese= ClientUtility.meseToLong(ClientUtility.traduciMeseToIt(data.substring(4, 7)));
 		String anno= data.substring(data.length()-4, data.length());
+		
+		smplcmbxSede=new SimpleComboBox<String>();
+		smplcmbxSede.setFieldLabel("Sede");
+		smplcmbxSede.setName("sede");
+		smplcmbxSede.setEmptyText("Sede..");
+		smplcmbxSede.setAllowBlank(false);
+		smplcmbxSede.setWidth(60);
+		 for(String l : DatiComboBox.getSedeOperativa()){
+			 smplcmbxSede.add(l);}
+		smplcmbxSede.setSimpleValue("T");
+		smplcmbxSede.setTriggerAction(TriggerAction.ALL);
+		smplcmbxSede.setSimpleValue(anno);
 		
 		smplcmbxAnno= new SimpleComboBox<String>();
 		smplcmbxAnno.setFieldLabel("Anno");
@@ -197,9 +222,13 @@ public class PanelRichiesteDipendenti extends LayoutContainer{
 	  	toolBar.add(sp);
 	  	toolBar.add(btnSetEdit);
 	  	toolBar.add(new SeparatorToolItem());
+	  	toolBar.add(smplcmbxSede);
+	  	toolBar.add(new SeparatorToolItem());
 	  	toolBar.add(smplcmbxAnno);
 	  	toolBar.add(new SeparatorToolItem());
 	  	toolBar.add(smplcmbxMese);
+	  	toolBar.add(new SeparatorToolItem());
+	  	toolBar.add(btnAggiorna);
 	  	
 		ContentPanel cntpnlGrid= new ContentPanel();
 		cntpnlGrid.setBorders(false);
@@ -212,7 +241,7 @@ public class PanelRichiesteDipendenti extends LayoutContainer{
 							    
 	    try {	    	
 	    	cmCommenti = new ColumnModel(createColumns()); 
-	    	caricaTabella();
+	    	
 		} catch (Exception e) {
 			e.printStackTrace();
 			Window.alert("error: Problema createColumns().");			
@@ -310,7 +339,10 @@ public class PanelRichiesteDipendenti extends LayoutContainer{
 	}
 	
 	private void caricaTabella() {		
-		AdministrationService.Util.getInstance().getAllCommenti(new AsyncCallback<List<CommentiModel>>() {
+		
+		String sede=smplcmbxSede.getRawValue().toString();
+		
+		AdministrationService.Util.getInstance().getAllCommentiPerSede(sede, new AsyncCallback<List<CommentiModel>>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

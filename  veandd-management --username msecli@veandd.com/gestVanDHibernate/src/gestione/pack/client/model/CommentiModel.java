@@ -15,13 +15,14 @@ public class CommentiModel extends BaseModel implements Serializable{
 		
 	}
 	
-	public CommentiModel(int id, String username, String data, String testo, Boolean editated ){
+	public CommentiModel(int id, String username, String data, String testo, Boolean editated, String sedeOperativa ){
 		
 		set("id",id);
 		set("username",username);
 		set("data",data);
 		set("testo",testo);
 		set("editated", editated);
+		set("sedeOperativa", sedeOperativa);
 		
 	}
 	
