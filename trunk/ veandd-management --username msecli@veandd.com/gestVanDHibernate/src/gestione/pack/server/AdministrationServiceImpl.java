@@ -4617,7 +4617,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			tx.commit();
 			
 			for(Commenti c:listaC){
-				cm=new CommentiModel(c.getIdCommenti(),c.getUsername(), c.getDataRichiesta(), c.getTesto(), Boolean.valueOf(c.getEditated()));
+				cm=new CommentiModel(c.getIdCommenti(),c.getUsername(), c.getDataRichiesta(), c.getTesto(),
+						Boolean.valueOf(c.getEditated()), c.getSedeOperativa());
 				listaCommentiM.add(cm);
 			}
 			
@@ -4635,7 +4636,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<CommentiModel> getAllCommenti() throws IllegalArgumentException{
+	public List<CommentiModel> getAllCommentiPerSede(String sede) throws IllegalArgumentException{
 
 		List<Commenti> listaC= new ArrayList<Commenti>();
 		List<CommentiModel> listaCommentiM= new ArrayList<CommentiModel>();
@@ -4648,12 +4649,13 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							
 			tx=session.beginTransaction();
 				
-			listaC=(List<Commenti>)session.createQuery("from Commenti").list();
+			listaC=(List<Commenti>)session.createQuery("from Commenti where sedeOperativa=:sedeOperativa").setParameter("sedeOperativa", sede).list();
 				
 			tx.commit();
 			
 			for(Commenti c:listaC){
-				cm=new CommentiModel(c.getIdCommenti(),c.getUsername(), c.getDataRichiesta(), c.getTesto(), Boolean.valueOf(c.getEditated()));
+				cm=new CommentiModel(c.getIdCommenti(),c.getUsername(), c.getDataRichiesta(), c.getTesto(),
+						Boolean.valueOf(c.getEditated()), c.getSedeOperativa());
 				listaCommentiM.add(cm);
 			}
 			
@@ -5220,6 +5222,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				throws IllegalArgumentException {
 			
 			Commenti c= new Commenti();
+			Personale p= new Personale();
 			Session session= MyHibernateUtil.getSessionFactory().openSession();
 			Transaction tx= null;
 			Date d= new Date();
@@ -5228,10 +5231,15 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			String data=formatter.format(giorno);
 			
 			try {
+				
+				p=(Personale)session.createQuery("from Personale where username=:username").setParameter("username", username).uniqueResult();
+				
 				c.setTesto(testo);
 				c.setUsername(username);
 				c.setDataRichiesta(data);
 				c.setEditated("false");
+				c.setSedeOperativa(p.getSedeOperativa());
+				
 				tx=session.beginTransaction();
 				session.save(c);			
 				tx.commit();
@@ -5244,7 +5252,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			}finally{
 				session.close();
 			}
-			
 		}
 
 		

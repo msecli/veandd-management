@@ -347,7 +347,7 @@ public interface AdministrationServiceAsync {
 	void confermaGiorniTuttiDipendenti(String string, Date data,
 			AsyncCallback<Boolean> asyncCallback);
 
-	void getAllCommenti(AsyncCallback<List<CommentiModel>> asyncCallback);
+	void getAllCommentiPerSede(String sede,AsyncCallback<List<CommentiModel>> asyncCallback);
 
 	void deleteCommento(int id, AsyncCallback<Boolean> asyncCallback);
 

@@ -205,7 +205,7 @@ public class GestVanDHibernate implements EntryPoint {
 		  if(ruolo.equals("UA")){
 			  BodyLayout_UffAmministrazione bl= new BodyLayout_UffAmministrazione();
 			  bl.txtfldUsername.setValue(userName.getValue().toString());
-			  bl.txtfldRuolo.setValue(ruolo);		  	  
+			  bl.txtfldRuolo.setValue(ruolo);
 			  RootPanel.get().add(bl);
 			  LoginDialog.this.hide();
 		  	}

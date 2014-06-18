@@ -22,6 +22,7 @@ private static final long serialVersionUID = 1L;
 	private String username;
 	private String dataRichiesta;
 	private String editated;
+	private String sedeOperativa;
 	
 	public String getTesto() {
 		return testo;
@@ -52,6 +53,12 @@ private static final long serialVersionUID = 1L;
 	}
 	public void setEditated(String editated) {
 		this.editated = editated;
+	}
+	public String getSedeOperativa() {
+		return sedeOperativa;
+	}
+	public void setSedeOperativa(String sedeOperativa) {
+		this.sedeOperativa = sedeOperativa;
 	}
 	
 	

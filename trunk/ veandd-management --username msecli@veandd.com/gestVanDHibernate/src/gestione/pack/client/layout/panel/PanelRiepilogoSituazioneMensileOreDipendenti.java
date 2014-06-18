@@ -82,8 +82,9 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	private DateField dtfldDataRiferimento;
 	private Text txtRuolo;
 	
-	public PanelRiepilogoSituazioneMensileOreDipendenti(){
 	
+	public PanelRiepilogoSituazioneMensileOreDipendenti(){
+		
 	}
 			
 	protected void onRender(Element target, int index) {  
