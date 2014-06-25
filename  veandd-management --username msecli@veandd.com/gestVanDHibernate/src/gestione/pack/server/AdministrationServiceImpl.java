@@ -977,7 +977,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				ServerLogFunction.logErrorMessage("insertDataOfferta", new Date(), "", "Error", errore);
 	    	else
 	    		ServerLogFunction.logOkMessage("insertDataOfferta", new Date(), "", "Success");				
-		}			
+		}
 	}
 	
 	
@@ -1017,9 +1017,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					idAtt="0";
 								
 				editTariffeOrdine(idRdo, Integer.valueOf(idAtt), tariffaAtt, descrizioneAtt);
-			}			
-			
-		   
+			}
 			
 		} catch (Exception e) {
 			esito=false;
@@ -11718,5 +11716,55 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 
 	
+	@Override
+	public boolean saveDataRtvOnly(String numeroOrdine, Date dataEmissione,
+			String importo) throws IllegalArgumentException {
+		
+		boolean esito=true;
+			
+		Ordine o= new Ordine();
+		Rtv rtv= new Rtv();
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {		
+			
+			tx=session.beginTransaction();
+			
+			o=(Ordine)session.createQuery("from Ordine where codiceOrdine=:ordine").setParameter("ordine", numeroOrdine).uniqueResult();
+					
+			if(o!=null){
+				//edit
+				
+				rtv.setDataEmissione(dataEmissione);
+				rtv.setImporto(Float.valueOf(importo));
+				
+			}else{
+				//new
+				o=new Ordine(); 
+				rtv.setDataEmissione(dataEmissione);
+				rtv.setImporto(Float.valueOf(importo));
+				
+				rtv.setOrdine(o);
+				o.getRtvs().add(rtv);
+				
+				session.save(o);
+			}
+				
+			tx.commit();
+			
+		}catch (Exception e) {
+			esito=false;
+			e.printStackTrace();
+			if (tx!=null)
+				tx.rollback();				
+		}finally{
+			session.close();
+			if(!esito)
+	        	return false;
+		}	
+		return true;
+	}
 	
 }

@@ -75,6 +75,7 @@ public class DialogFormInserimentoDatiRtv extends Dialog{
 	private SimpleComboBox<String> smplcmbxTipoModulo;
 	final NumberFormat num= NumberFormat.getFormat("0.00");
 	private Button btnPrintToRTF;
+	private Button btnSaveRtv;
 
 	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
 	private static String url= "/gestvandhibernate/PrintDataServlet";
@@ -294,6 +295,44 @@ public class DialogFormInserimentoDatiRtv extends Dialog{
 			}
 		});
 		
+		btnSaveRtv = new Button();
+		btnSaveRtv.setToolTip("Salva RTV");
+		btnSaveRtv.setHeight(80);
+		btnSaveRtv.setWidth(80);
+		btnSaveRtv.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.saveBig()));
+		btnSaveRtv.setIconAlign(IconAlign.BOTTOM);
+		btnSaveRtv.setStyleAttribute("padding-left", "10px");	
+		btnSaveRtv.setStyleAttribute("margin-top", "10px");
+		btnSaveRtv.addSelectionListener(new SelectionListener<ButtonEvent>() {		
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				
+				if(txtfldImporto.isValid()&&dtfldDataEmissione.isValid()){
+					
+					Date dataEmissione=dtfldDataEmissione.getValue();
+					String importo=txtfldImporto.getRawValue().toString();
+					
+					AdministrationService.Util.getInstance().saveDataRtvOnly(numeroOrdine, dataEmissione, importo, new AsyncCallback<Boolean>() {
+
+						@Override
+						public void onFailure(Throwable caught) {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void onSuccess(Boolean result) {
+							// TODO Auto-generated method stub
+							
+						}				
+						
+					});
+					
+					
+				}
+			}
+		});
+		
 		fp.setMethod(FormPanel.METHOD_POST);
 		fp.setAction(url);
 		fp.addSubmitCompleteHandler(new FormSubmitCompleteHandler()); 
@@ -302,6 +341,7 @@ public class DialogFormInserimentoDatiRtv extends Dialog{
 		cp.setHeaderVisible(false);
 		cp.setHeight(130);
 		cp.add(fp);
+		cp.add(btnSaveRtv);
 
 		RowData data = new RowData(.70, 1);
 		data.setMargins(new Margins(5));

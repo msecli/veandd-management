@@ -163,5 +163,11 @@ public interface MyImages extends ClientBundle{
 	
 	@Source("Icone/generate1.png")
 	ImageResource generate1();
+	
+	@Source("Icone/save.png")
+	ImageResource saveBig();
+	
+	@Source("Icone/check.png")
+	ImageResource check();
 }
 

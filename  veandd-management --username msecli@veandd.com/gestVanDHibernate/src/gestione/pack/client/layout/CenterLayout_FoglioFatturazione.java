@@ -76,6 +76,7 @@ public CenterLayout_FoglioFatturazione(){}
 	private SimpleComboBox<String> smplcmbxAnno=new SimpleComboBox<String>();
 	private SimpleComboBox<String> smplcmbxPM;
 	private Button btnSelect;
+	
 	private TextField<String> txtfldUsername= new TextField<String>();
 	//private Text txtRuolo= new Text("AMM");
 	private HorizontalPanel hpLayout;
@@ -90,7 +91,7 @@ public CenterLayout_FoglioFatturazione(){}
 		this.ruolo=ruolo;
 	}
 		
-	protected void onRender(Element target, int index) {  
+	protected void onRender(Element target, int index) {
 	    super.onRender(target, index);
 
 	    try {
@@ -289,6 +290,7 @@ public CenterLayout_FoglioFatturazione(){}
 		
 		private Button btnShowDettaglioOre;
 		private Button btnEditOreDip;
+		private Button btnCheckOreFatturate;
 		
 		CntpnlRiepilogoOreDipFatturazione(){		
 			setHeading("Riepilogo Ore (Mensile).");
@@ -415,10 +417,25 @@ public CenterLayout_FoglioFatturazione(){}
 				}
 			});
 		    
+		    btnCheckOreFatturate= new Button();
+		    btnCheckOreFatturate.setEnabled(false);
+		    btnCheckOreFatturate.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.check()));
+		    btnCheckOreFatturate.setToolTip("Controllo ore Lavorate/Lavorate Registrate");
+		    btnCheckOreFatturate.setIconAlign(IconAlign.TOP);
+		    btnCheckOreFatturate.setSize(26, 26);
+		    btnCheckOreFatturate.addSelectionListener(new SelectionListener<ButtonEvent>() {
+				@Override
+				public void componentSelected(ButtonEvent ce) {
+					
+					
+					
+				}	    	
+			});
+		    
 		    tlbrRiepilogoOre.add(btnShowDettaglioOre);
 		    tlbrRiepilogoOre.add(btnEditOreDip);
 		    
-		    txtOreTotali.setWidth(435);	
+		    txtOreTotali.setWidth(435);
 		    txtOreTotali.setHeight(23);
 		    txtOreTotali.setStyleAttribute("font-size", "14px");
 		    txtOreLavoro.setWidth(250);	
@@ -562,12 +579,19 @@ public CenterLayout_FoglioFatturazione(){}
 						ListStore<RiepilogoOreDipFatturazione> store,
 						Grid<RiepilogoOreDipFatturazione> grid) {
 					Float n=model.get(property);
+					
+					String dipendente=model.get("dipendente");
+					if(dipendente.compareTo("_TOTALE")==0)
+						config.style = config.style + "font-weight:bold;";
+					else
+						config.style = config.style + "font-weight:normal;";
+					
 					return number.format(n);
 				}			
 			});    
 		    configs.add(columnOreTotali); 	
 		    
-		   /* SummaryColumnConfig<Double> columnOreTotaliIU=new SummaryColumnConfig<Double>();		
+		    /*SummaryColumnConfig<Double> columnOreTotaliIU=new SummaryColumnConfig<Double>();		
 		    columnOreTotaliIU.setId("oreTotaliIU");  
 		    columnOreTotaliIU.setHeader("Totale I/U");  
 		    columnOreTotaliIU.setWidth(63);    
