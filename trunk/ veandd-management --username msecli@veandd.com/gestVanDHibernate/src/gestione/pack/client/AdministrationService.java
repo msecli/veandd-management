@@ -486,9 +486,12 @@ boolean invioCommenti(String testo, String username, Date giorno);
 	List<PersonaleModel> getPersonalManager() throws IllegalArgumentException;
 
 	boolean setDatiAutorizzazioneStraordinario(Integer integer, boolean b,
-			Date date, String string);
+			Date date, String string) throws IllegalArgumentException;
 
 	List<SaturazioneRisorsaModel> getDatiSaturazioneRisorsa(String sede,
-			String anno);
+			String anno) throws IllegalArgumentException;
+
+	boolean saveDataRtvOnly(String numeroOrdine, Date dataEmissione,
+			String importo) throws IllegalArgumentException;
 	
 }

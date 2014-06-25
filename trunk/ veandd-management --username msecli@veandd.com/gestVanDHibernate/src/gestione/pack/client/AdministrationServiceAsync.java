@@ -501,6 +501,9 @@ public interface AdministrationServiceAsync {
 	void getDatiSaturazioneRisorsa(String sede, String anno,
 			AsyncCallback<List<SaturazioneRisorsaModel>> asyncCallback);
 
+	void saveDataRtvOnly(String numeroOrdine, Date dataEmissione,
+			String importo, AsyncCallback<Boolean> asyncCallback);
+
 	
 
 }
