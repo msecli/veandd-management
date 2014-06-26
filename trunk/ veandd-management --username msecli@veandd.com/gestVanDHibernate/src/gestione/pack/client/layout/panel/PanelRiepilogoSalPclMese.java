@@ -419,6 +419,14 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	    configs.add(column); 
 	    
 	    column=new SummaryColumnConfig<Double>();		
+	    column.setId("numeroOrdine");  
+		column.setHeader("# Ordine");  
+		column.setWidth(150);  
+		column.setRowHeader(true); 
+		column.setRenderer(renderer);
+	    configs.add(column); 
+	    
+	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("attivita");  
 	    column.setHeader("Oggetto Att.");  
 	    column.setWidth(140);  

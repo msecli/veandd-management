@@ -315,7 +315,8 @@ public interface AdministrationService extends RemoteService {
 			String pclAttuale, String oreFatturere, String importoFatturare,
 			String variazioneSAL, String variazionePCL, String meseCorrente,
 			String note, String statoElaborazione, String commessaSelezionata,
-			String tariffaUtilizzata, String flagSal, int idAttivita);
+			String tariffaUtilizzata, String flagSal, int idAttivita,
+			String oreRimborsoSpese);
 
 	List<DatiFatturazioneMeseModel> getReportDatiFatturazioneMese(String mese)throws IllegalArgumentException;
 

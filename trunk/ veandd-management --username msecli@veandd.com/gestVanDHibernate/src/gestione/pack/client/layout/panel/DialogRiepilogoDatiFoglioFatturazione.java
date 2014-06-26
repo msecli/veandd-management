@@ -2,7 +2,7 @@ package gestione.pack.client.layout.panel;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.model.DatiFatturazioneCommessaModel;
-import gestione.pack.client.utility.ClientUtility;
+import gestione.pack.client.model.RiepilogoSALPCLModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +15,8 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
+import com.extjs.gxt.ui.client.widget.grid.AggregationRenderer;
+import com.extjs.gxt.ui.client.widget.grid.AggregationRowConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -60,6 +62,9 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 				e.printStackTrace();
 				Window.alert("error: Problema createColumns().");			
 		}
+		
+		AggregationRowConfig<RiepilogoSALPCLModel> agrTotale= new AggregationRowPersonale();		
+		cm.addAggregationRow(agrTotale);
 		
 		store.groupBy("commessaAttivita");
 		store.setSortField("numeroMese");
@@ -270,7 +275,7 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 					Grid<DatiFatturazioneCommessaModel> grid) {
 				Float n=model.get(property);
 				return number.format(n);
-			}  	
+			}
 		});
 	    variazionePcl.setSummaryRenderer(new SummaryRenderer() {  
 	   			@Override
@@ -355,6 +360,32 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 			Window.alert("error: Impossibile effettuare il caricamento dati in tabella.");
 				e.printStackTrace();
 		}			
+	}
+	
+	
+	private class AggregationRowPersonale extends AggregationRowConfig<RiepilogoSALPCLModel>{
+		
+		public AggregationRowPersonale(){
+			final NumberFormat number= NumberFormat.getFormat("#,##0.0#;-#");
+			AggregationRenderer<RiepilogoSALPCLModel> aggrRender= new AggregationRenderer<RiepilogoSALPCLModel>() {			
+				@Override
+				public Object render(Number value, int colIndex, Grid<RiepilogoSALPCLModel> grid, ListStore<RiepilogoSALPCLModel> store) {
+					 if(value!=null)		    		  
+			    		  return number.format(value.doubleValue());
+			    	  else
+			    		  return number.format((float) 0) ;
+				}
+			};			
+						
+			setHtml("commessaAttivita", "<p style=\"font-size:15px; color:#000000; font-weight:bold;\">TOTALE</p>");	
+					
+			setSummaryType("variazionePcl", SummaryType.SUM);  
+			setRenderer("variazionePcl", aggrRender);
+			
+			setSummaryType("variazioneSal", SummaryType.SUM);
+			setRenderer("variazioneSal", aggrRender);
+			
+		}
 	}
 	
 }

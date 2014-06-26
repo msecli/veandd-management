@@ -2734,7 +2734,7 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 	
 	
 	public static Float[] calcolaTotaleSalPclPerEstensione(String numeroCommessa,
-			String estensione, String data) {
+			String estensione, int idAttivita, String data) {
 		
 		List<FoglioFatturazione> listaFF= new ArrayList<FoglioFatturazione>();
 		Commessa c= new Commessa();
@@ -2758,24 +2758,47 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 					.setParameter("estensione", estensione).uniqueResult();
 			
 			listaFF.addAll(c.getFoglioFatturaziones());			
-								
-			//Considero tutti i FF compilati in mesi differenti da quello in esame
-			for(FoglioFatturazione f1:listaFF)										
-				if(ServerUtility.isPrecedente(f1.getMeseCorrente(),data)){
-					sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(f1.getVariazionePCL())));
-					sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)+ Float.valueOf( ServerUtility.getOreCentesimi(f1.getVariazioneSAL())));
-				}
-
-			sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)+ Float.valueOf(ServerUtility.getOreCentesimi(c.getSalAttuale())));
-			sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(c.getPclAttuale())));
-			
-			sommaVariazioniSal=getOreSessantesimi(sommaVariazioniSal);
-			sommaVariazioniPcl=getOreSessantesimi(sommaVariazioniPcl);
-			
-			totaleOre[1]=Float.valueOf(sommaVariazioniPcl);
-			totaleOre[0]=Float.valueOf(sommaVariazioniSal);				
-						
+					
 			tx.commit();
+			
+			//if(idAttivita!=0){
+			
+				//Considero tutti i FF compilati in mesi differenti da quello in esame
+				for(FoglioFatturazione f1:listaFF)	
+					if((f1.getAttivitaOrdine()==idAttivita)||(f1.getAttivitaOrdine()==0))
+						if(ServerUtility.isPrecedente(f1.getMeseCorrente(),data)){
+							sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(f1.getVariazionePCL())));
+							sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)+ Float.valueOf( ServerUtility.getOreCentesimi(f1.getVariazioneSAL())));
+						}
+
+				sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)+ Float.valueOf(ServerUtility.getOreCentesimi(c.getSalAttuale())));
+				sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(c.getPclAttuale())));
+			
+				sommaVariazioniSal=getOreSessantesimi(sommaVariazioniSal);
+				sommaVariazioniPcl=getOreSessantesimi(sommaVariazioniPcl);
+			
+				totaleOre[1]=Float.valueOf(sommaVariazioniPcl);
+				totaleOre[0]=Float.valueOf(sommaVariazioniSal);				
+						
+			/*}else{
+				
+				//Considero tutti i FF compilati in mesi differenti da quello in esame
+				for(FoglioFatturazione f1:listaFF)	
+						if(ServerUtility.isPrecedente(f1.getMeseCorrente(),data)){
+							sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(f1.getVariazionePCL())));
+							sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)+ Float.valueOf( ServerUtility.getOreCentesimi(f1.getVariazioneSAL())));
+						}
+
+				sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)+ Float.valueOf(ServerUtility.getOreCentesimi(c.getSalAttuale())));
+				sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(c.getPclAttuale())));
+			
+				sommaVariazioniSal=getOreSessantesimi(sommaVariazioniSal);
+				sommaVariazioniPcl=getOreSessantesimi(sommaVariazioniPcl);
+			
+				totaleOre[1]=Float.valueOf(sommaVariazioniPcl);
+				totaleOre[0]=Float.valueOf(sommaVariazioniSal);				
+			
+			}*/
 		}catch (Exception e) {
 			e.printStackTrace();
 			if (tx != null)

@@ -14,7 +14,7 @@ public class FoglioFatturazioneModel extends BaseModel implements IsSerializable
 	
 	public FoglioFatturazioneModel(String numeroOrdine, String numeroRda, String oreOrdine, String residuoOre, String importo, String importoResiduo, Float tariffaOraria,
 			String oreEseguiteRegistrate, String salAttuale, String pclAttuale, String oreFatturare, String importoFatturare,//importo reale inserito che può differire da tariffa*ore
-			String importoRtv, String variazioneSal, String variazionePcl, String oreScaricate, String note, String stato){
+			String importoRtv, String variazioneSal, String variazionePcl, String oreScaricate, String note, String stato, String oreRimborsoSpese){
 		
 		set("numeroOrdine", numeroOrdine);
 		set("numeroRda", numeroRda);
@@ -34,6 +34,7 @@ public class FoglioFatturazioneModel extends BaseModel implements IsSerializable
 		set("oreScaricate",oreScaricate);
 		set("note",note);
 		set("stato", stato);
+		set("oreRimborsoSpese", oreRimborsoSpese);		
 	}
 	
 	public String getStato(){
