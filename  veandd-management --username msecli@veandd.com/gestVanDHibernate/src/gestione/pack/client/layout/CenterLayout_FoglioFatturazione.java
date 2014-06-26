@@ -131,7 +131,7 @@ public CenterLayout_FoglioFatturazione(){}
 		cntpnlFoglioFatturazione.setHeaderVisible(false);
 		cntpnlFoglioFatturazione.setCollapsible(false);
 		cntpnlFoglioFatturazione.setBorders(false);
-		cntpnlFoglioFatturazione.setWidth(1300);
+		cntpnlFoglioFatturazione.setWidth(1390);
 		cntpnlFoglioFatturazione.setHeight(900);
 		cntpnlFoglioFatturazione.setFrame(true);
 		cntpnlFoglioFatturazione.setButtonAlign(HorizontalAlignment.CENTER);
@@ -234,7 +234,6 @@ public CenterLayout_FoglioFatturazione(){}
 			//txtRuolo.setText("PM");
 		}		
 		else txtfldUsername.setValue("a.b");
-		
 	}
 	
 	
@@ -699,7 +698,8 @@ public CenterLayout_FoglioFatturazione(){}
 				totVariato=(float) (Float.valueOf(ClientUtility.getOreCentesimi(orel))+
 						(Float.valueOf(ClientUtility.getOreCentesimi(orev))*0.85)+(Float.valueOf(ClientUtility.getOreCentesimi(oreS))*1.2));
 				
-				txtOreTotali.setText("Totale: "+totale +" (Con oreViaggio/Ore Strao. corrette: "+ number.format(totVariato) +")");
+				//txtOreTotali.setText("Totale: "+totale +" (Con oreViaggio/Ore Strao. corrette: "+ number.format(totVariato) +")");
+				txtOreTotali.setText("Totale: "+totale);
 				txtOreViaggio.setText("Tot.Ore viaggio: "+ orev);
 				txtOreLavoro.setText("Tot.Ore ordinarie lavoro: "+orel);
 				txtOreStrao.setText("Tot.Ore strao. lavoro: "+oreS);
@@ -733,6 +733,8 @@ public CenterLayout_FoglioFatturazione(){}
 		private TextField<String> txtPclTotale= new TextField<String>();
 		private TextField<String> txtfldImportoOrdine= new TextField<String>();
 		private TextField<String> txtfldImportoResiduo= new TextField<String>();
+		private TextField<String> txtfldOreRimborsoSpese= new TextField<String>();
+		
 		private Text txtVuoto1= new Text();
 		private Text txtTotCompensato= new Text();
 		private CheckBox chbxSalButtare;
@@ -753,7 +755,6 @@ public CenterLayout_FoglioFatturazione(){}
 		private ColumnModel cmOrdine;
 		private Grid<RiepilogoOreTotaliCommesse> gridOrdine; 
 		
-			    
 		CntpnlDatiFatturazioneOrdine(){
 			
 			NumberFormat number= NumberFormat.getFormat("0.00");
@@ -763,7 +764,7 @@ public CenterLayout_FoglioFatturazione(){}
 			setBorders(false);
 			setBodyBorder(false);
 			setScrollMode(Scroll.NONE);	
-			setWidth(800);
+			setWidth(1000);
 			setHeight(780);
 			setFrame(false);
 			setItemId("panelDatiFatturazione");
@@ -785,8 +786,8 @@ public CenterLayout_FoglioFatturazione(){}
 		    cntpnlGrid.setButtonAlign(HorizontalAlignment.CENTER);  
 		    cntpnlGrid.setLayout(new FitLayout());  
 		    cntpnlGrid.setHeaderVisible(false);
-		    cntpnlGrid.setWidth(760);
-		    cntpnlGrid.setHeight(220);
+		    cntpnlGrid.setWidth(880);
+		    cntpnlGrid.setHeight(320);
 		    cntpnlGrid.setScrollMode(Scroll.AUTO);
 		
 		    ToolBar tlbRiepiloghi= new ToolBar();
@@ -824,6 +825,7 @@ public CenterLayout_FoglioFatturazione(){}
 						String variazionePCL= txtfldVariazionePCL.getValue().toString();
 						String tariffaUtilizzata=txtfldCostoOrario.getValue().toString();
 						String importoDaFatturare=txtfldImportoDaFatturare.getValue().toString();
+						String oreRimborsoSpese= txtfldOreRimborsoSpese.getValue().toString();
 						String salDaButtare= new String();
 						boolean salButtato= chbxSalButtare.getValue();
 																		
@@ -850,7 +852,7 @@ public CenterLayout_FoglioFatturazione(){}
 							Window.alert("E' stato indicato un numero di ore da fatturare maggiore del numero di ore residue sull'ordine!");
 						else
 							AdministrationService.Util.getInstance().insertDatiFoglioFatturazione(oreEseguite,salIniziale,pclIniziale, oreFatturare, importoDaFatturare, variazioneSAL,
-								variazionePCL, data, note, statoElaborazione, commessaSelezionata, tariffaUtilizzata, salDaButtare, idAttivita, new AsyncCallback<Boolean>() {
+								variazionePCL, data, note, statoElaborazione, commessaSelezionata, tariffaUtilizzata, salDaButtare, idAttivita, oreRimborsoSpese, new AsyncCallback<Boolean>() {
 
 									@Override
 									public void onFailure(Throwable caught) {
@@ -1144,7 +1146,7 @@ public CenterLayout_FoglioFatturazione(){}
 			
 			ContentPanel cp1=new ContentPanel();
 			cp1.setHeaderVisible(false);
-			cp1.setSize(575, 90);
+			cp1.setSize(855, 90);
 			cp1.setBorders(false);
 			cp1.setBodyBorder(false);
 			cp1.setFrame(false);
@@ -1180,6 +1182,7 @@ public CenterLayout_FoglioFatturazione(){}
 			    	  		String delta= new String();
 			    	  		String totaleEuro= new String();
 			    	  		String variazionePCL= new String();
+			    	  		String oreRimbSpese=txtfldOreRimborsoSpese.getRawValue().toString();
 			    	  		
 			    	  		NumberFormat number = NumberFormat.getFormat("0.00");
 			    	  		//number=NumberFormat.getCurrencyFormat("EUR");
@@ -1192,6 +1195,7 @@ public CenterLayout_FoglioFatturazione(){}
 			    	  		txtOreScaricate.setText("("+totaleEuro+")");
 			    	  		
 			    	  		delta=ClientUtility.calcoloDelta(scaricate, txtfldOreEseguiteRegistrate.getValue().toString());
+			    	  		delta=ClientUtility.calcoloDelta(delta, oreRimbSpese);
 			    	  		txtfldDiffScaricateEseguite.setValue(delta);
 			    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldDiffScaricateEseguite.getValue().toString()));
 			    	  		txtMargine.setText("("+totaleEuro+")");
@@ -1237,6 +1241,8 @@ public CenterLayout_FoglioFatturazione(){}
 				    	  		String delta= new String();
 				    	  		String totaleEuro= new String();
 				    	  		String variazionePCL= new String();
+				    	  		String oreRimbSpese=txtfldOreRimborsoSpese.getRawValue().toString();
+				    	  		
 				    	  		NumberFormat number = NumberFormat.getFormat("0.00");
 				    	  		//number=NumberFormat.getCurrencyFormat("EUR");
 				    	  		variazionePCL=String.valueOf(Float.valueOf(txtfldVariazionePCL.getValue().toString())*(-1));
@@ -1248,6 +1254,7 @@ public CenterLayout_FoglioFatturazione(){}
 				    	  		txtOreScaricate.setText("("+totaleEuro+")");
 				    	  		
 				    	  		delta=ClientUtility.calcoloDelta(scaricate, txtfldOreEseguiteRegistrate.getValue().toString());
+				    	  		delta=ClientUtility.calcoloDelta(delta, oreRimbSpese);
 				    	  		txtfldDiffScaricateEseguite.setValue(delta);
 				    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldDiffScaricateEseguite.getValue().toString()));
 				    	  		txtMargine.setText("("+totaleEuro+")");
@@ -1278,6 +1285,7 @@ public CenterLayout_FoglioFatturazione(){}
 			    	  		String delta= new String();
 			    	  		String variazionePCL= new String();
 			    	  		String totaleEuro= new String();
+			    	  		String oreRimbSpese=txtfldOreRimborsoSpese.getRawValue().toString();
 			    	  		
 			    	  		NumberFormat number = NumberFormat.getFormat("0.00");
 			    	  		
@@ -1291,6 +1299,7 @@ public CenterLayout_FoglioFatturazione(){}
 			    	  		txtOreScaricate.setText("("+totaleEuro+")");
 			    	  		
 			    	  		delta=ClientUtility.calcoloDelta(scaricate, txtfldOreEseguiteRegistrate.getValue().toString());
+			    	  		delta=ClientUtility.calcoloDelta(delta, oreRimbSpese);
 			    	  		txtfldDiffScaricateEseguite.setValue(delta);
 			    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldDiffScaricateEseguite.getValue().toString()));
 			    	  		txtMargine.setText("("+totaleEuro+")");
@@ -1338,6 +1347,7 @@ public CenterLayout_FoglioFatturazione(){}
 				    	  		String delta= new String();
 				    	  		String variazionePCL= new String();
 				    	  		String totaleEuro= new String();
+				    	  		String oreRimbSpese=txtfldOreRimborsoSpese.getRawValue().toString();
 				    	  		
 				    	  		NumberFormat number = NumberFormat.getFormat("0.00");
 				    	  		
@@ -1351,6 +1361,7 @@ public CenterLayout_FoglioFatturazione(){}
 				    	  		txtOreScaricate.setText("("+totaleEuro+")");
 				    	  		
 				    	  		delta=ClientUtility.calcoloDelta(scaricate, txtfldOreEseguiteRegistrate.getValue().toString());
+				    	  		delta=ClientUtility.calcoloDelta(delta, oreRimbSpese);
 				    	  		txtfldDiffScaricateEseguite.setValue(delta);
 				    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldDiffScaricateEseguite.getValue().toString()));
 				    	  		txtMargine.setText("("+totaleEuro+")");
@@ -1383,6 +1394,7 @@ public CenterLayout_FoglioFatturazione(){}
 			    	  		String variazionePCL= new String();
 			    	  		String totaleEuro=new String();
 			    	  		//String decimali= new String();
+			    	  		String oreRimbSpese=txtfldOreRimborsoSpese.getRawValue().toString();
 			    	  		
 			    	  		txtPclTotale.setValue("0.00");
 			    	  		NumberFormat number = NumberFormat.getFormat("0.00");
@@ -1398,6 +1410,7 @@ public CenterLayout_FoglioFatturazione(){}
 			    	  		txtOreScaricate.setText("("+totaleEuro+")");
 			    	  		
 			    	  		delta=ClientUtility.calcoloDelta(scaricate, txtfldOreEseguiteRegistrate.getValue().toString());
+			    	  		delta=ClientUtility.calcoloDelta(delta, oreRimbSpese);
 			    	  		txtfldDiffScaricateEseguite.setValue(delta);
 			    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldDiffScaricateEseguite.getValue().toString()));
 			    	  		txtMargine.setText("("+totaleEuro+")");
@@ -1447,6 +1460,7 @@ public CenterLayout_FoglioFatturazione(){}
 				    	  		String variazionePCL= new String();
 				    	  		String totaleEuro=new String();
 				    	  		//String decimali= new String();
+				    	  		String oreRimbSpese=txtfldOreRimborsoSpese.getRawValue().toString();
 				    	  		
 				    	  		txtPclTotale.setValue("0.00");
 				    	  		NumberFormat number = NumberFormat.getFormat("0.00");
@@ -1462,6 +1476,8 @@ public CenterLayout_FoglioFatturazione(){}
 				    	  		txtOreScaricate.setText("("+totaleEuro+")");
 				    	  		
 				    	  		delta=ClientUtility.calcoloDelta(scaricate, txtfldOreEseguiteRegistrate.getValue().toString());
+				    	  		delta=ClientUtility.calcoloDelta(delta, oreRimbSpese);
+				    	  		
 				    	  		txtfldDiffScaricateEseguite.setValue(delta);
 				    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldDiffScaricateEseguite.getValue().toString()));
 				    	  		txtMargine.setText("("+totaleEuro+")");
@@ -1474,10 +1490,130 @@ public CenterLayout_FoglioFatturazione(){}
 				    	  		txtVariazionePcl.setText("("+totaleEuro+")");
 				    	  		
 				    	  		txtPclTotale.setValue(ClientUtility.aggiornaTotGenerale(txtfldPCLIniziale.getValue().toString(), txtfldVariazionePCL.getValue().toString()));
+				    	  					    	  					    	  		
 				    	  	}
 						}	    		
 				 }
 			});
+			
+			
+			txtfldOreRimborsoSpese.setFieldLabel("h/Rimborso Spese");
+			txtfldOreRimborsoSpese.setEnabled(true);
+			txtfldOreRimborsoSpese.setAllowBlank(false);
+			txtfldOreRimborsoSpese.setValue("0.00");
+			txtfldOreRimborsoSpese.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[-]{1}[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|[-]{1}[0-9]+[.]{1}[0]{1}|0.00|0.0");
+			txtfldOreRimborsoSpese.getMessages().setRegexText("Deve essere un numero nel formato 99.59 o -99.59");
+			txtfldOreRimborsoSpese.addKeyListener(new KeyListener(){
+				 public void componentKeyUp(ComponentEvent event) {
+					 if(hasValue(txtfldOreRimborsoSpese)){
+			    	  		
+			    	  		String scaricate= new String();
+			    	  		String delta= new String();
+			    	  		String variazionePCL= new String();
+			    	  		String totaleEuro=new String();
+			    	  		String oreRimbSpese=txtfldOreRimborsoSpese.getRawValue().toString();	    	  		
+			    	  		
+			    	  		txtPclTotale.setValue("0.00");
+			    	  		NumberFormat number = NumberFormat.getFormat("0.00");
+			    	  		//number=NumberFormat.getCurrencyFormat("EUR");
+			    	  		
+			    	  		//variazionePCL=String.valueOf(Float.valueOf(txtfldVariazionePCL.getValue().toString())*(-1));
+			    	  		variazionePCL=number.format(Float.valueOf(txtfldVariazionePCL.getValue().toString())*(-1));
+			    	  					    	  		
+			    	  		scaricate=ClientUtility.aggiornaTotGenerale(txtfldOreDaFatturare.getValue().toString(), txtfldVariazioneSAL.getValue().toString());
+			    	  		scaricate=ClientUtility.aggiornaTotGenerale(scaricate, variazionePCL);
+			    	  		txtfldOreScaricate.setValue(scaricate);
+			    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldOreScaricate.getValue().toString()));
+			    	  		txtOreScaricate.setText("("+totaleEuro+")");
+			    	  		
+			    	  		delta=ClientUtility.calcoloDelta(scaricate, txtfldOreEseguiteRegistrate.getValue().toString());
+			    	  		delta=ClientUtility.calcoloDelta(delta, oreRimbSpese);
+			    	  		txtfldDiffScaricateEseguite.setValue(delta);
+			    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldDiffScaricateEseguite.getValue().toString()));
+			    	  		txtMargine.setText("("+totaleEuro+")");
+			    	  		
+			    	  		Float efficienza=(float)0.00;
+			    	  		efficienza=Float.valueOf(ClientUtility.getOreCentesimi(scaricate))/Float.valueOf(ClientUtility.getOreCentesimi(txtfldOreEseguiteRegistrate.getValue().toString()));
+			    	  		txtEfficienza.setText("("+number.format(efficienza)+")");
+			    	  				    	  		
+			    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldDiffScaricateEseguite.getValue().toString()));
+			    	  		txtMargine.setText("("+totaleEuro+")");
+			    	  		
+			    	  		efficienza=(float)0.00;
+			    	  		efficienza=Float.valueOf(ClientUtility.getOreCentesimi(scaricate))/Float.valueOf(ClientUtility.getOreCentesimi(txtfldOreEseguiteRegistrate.getValue().toString()));
+			    	  		txtEfficienza.setText("("+number.format(efficienza)+")");
+			    	  		
+			    	  	}
+				 }	
+				 
+				 public void componentKeyDown(ComponentEvent event){ 	  
+			    	int keyCode=event.getKeyCode();
+					if(keyCode==9){										
+						if(txtfldOreRimborsoSpese.getValue()==null)
+							txtfldOreRimborsoSpese.setValue("0.00");
+						else{
+							String valore= txtfldOreRimborsoSpese.getValue().toString();
+							
+							if(valore.compareTo("")==0)
+								valore ="0.00";
+							else
+								if(valore.indexOf(".")==-1)
+									valore=valore+".00";
+								else{
+									int index=valore.indexOf(".");
+									int length=valore.length();
+									
+									if(valore.substring(index+1, length).length()==1)
+										valore=valore+"0";		
+									else if(valore.substring(index+1, length).length()==0)
+										valore=valore+"00";
+								}
+							txtfldOreRimborsoSpese.setValue(valore);
+						}
+					}
+					
+					if(hasValue(txtfldOreRimborsoSpese)){
+		    	  		
+		    	  		String scaricate= new String();
+		    	  		String delta= new String();
+		    	  		String variazionePCL= new String();
+		    	  		String totaleEuro=new String();
+		    	  		String oreRimbSpese=txtfldOreRimborsoSpese.getRawValue().toString();	    	  		
+		    	  		
+		    	  		txtPclTotale.setValue("0.00");
+		    	  		NumberFormat number = NumberFormat.getFormat("0.00");
+		    	  		//number=NumberFormat.getCurrencyFormat("EUR");
+		    	  		
+		    	  		//variazionePCL=String.valueOf(Float.valueOf(txtfldVariazionePCL.getValue().toString())*(-1));
+		    	  		variazionePCL=number.format(Float.valueOf(txtfldVariazionePCL.getValue().toString())*(-1));
+		    	  					    	  		
+		    	  		scaricate=ClientUtility.aggiornaTotGenerale(txtfldOreDaFatturare.getValue().toString(), txtfldVariazioneSAL.getValue().toString());
+		    	  		scaricate=ClientUtility.aggiornaTotGenerale(scaricate, variazionePCL);
+		    	  		txtfldOreScaricate.setValue(scaricate);
+		    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldOreScaricate.getValue().toString()));
+		    	  		txtOreScaricate.setText("("+totaleEuro+")");
+		    	  		
+		    	  		delta=ClientUtility.calcoloDelta(scaricate, txtfldOreEseguiteRegistrate.getValue().toString());
+		    	  		delta=ClientUtility.calcoloDelta(delta, oreRimbSpese);
+		    	  		txtfldDiffScaricateEseguite.setValue(delta);
+		    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldDiffScaricateEseguite.getValue().toString()));
+		    	  		txtMargine.setText("("+totaleEuro+")");
+		    	  		
+		    	  		Float efficienza=(float)0.00;
+		    	  		efficienza=Float.valueOf(ClientUtility.getOreCentesimi(scaricate))/Float.valueOf(ClientUtility.getOreCentesimi(txtfldOreEseguiteRegistrate.getValue().toString()));
+		    	  		txtEfficienza.setText("("+number.format(efficienza)+")");
+		    	  				    	  		
+		    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldDiffScaricateEseguite.getValue().toString()));
+		    	  		txtMargine.setText("("+totaleEuro+")");
+		    	  		
+		    	  		efficienza=(float)0.00;
+		    	  		efficienza=Float.valueOf(ClientUtility.getOreCentesimi(scaricate))/Float.valueOf(ClientUtility.getOreCentesimi(txtfldOreEseguiteRegistrate.getValue().toString()));
+		    	  		txtEfficienza.setText("("+number.format(efficienza)+")");
+		    	  		
+		    	  	}					
+				}				
+			});
+			
 			
 			txtfldOreScaricate.setFieldLabel("Ore Scaricate");
 			txtfldOreScaricate.setEnabled(false);
@@ -1550,7 +1686,7 @@ public CenterLayout_FoglioFatturazione(){}
 			txtfldImportoRtv.setFieldLabel("Importo da RTV");
 			txtfldImportoRtv.setEnabled(false);
 			
-			RowData data1 = new RowData(.20, 1);
+			RowData data1 = new RowData(.15, 1);
 			data.setMargins(new Margins(5));
 						
 			LayoutContainer layoutColumn=new LayoutContainer();
@@ -1561,15 +1697,14 @@ public CenterLayout_FoglioFatturazione(){}
 			layoutColumn.add(txtfldOreDaFatturare, new FormData("46%"));
 			layoutColumn.add(txtOreDaFatturare);
 			cp1.add(layoutColumn, data1);
-			
+					
 			LayoutContainer layoutColumn1=new LayoutContainer();
 			layout= new FormLayout();
 			layout.setLabelWidth(80);
 			layout.setLabelAlign(LabelAlign.TOP);
 			layoutColumn1.setLayout(layout);
 			layoutColumn1.add(txtfldVariazioneSAL, new FormData("46%"));
-			layoutColumn1.add(txtVariazioneSal);
-						
+			layoutColumn1.add(txtVariazioneSal);					
 			cp1.add(layoutColumn1, data1);
 						
 			LayoutContainer layoutColumn2=new LayoutContainer();
@@ -1598,6 +1733,14 @@ public CenterLayout_FoglioFatturazione(){}
 			layoutColumn4.add(txtfldDiffScaricateEseguite, new FormData("46%"));
 			layoutColumn4.add(txtMargine);
 			cp1.add(layoutColumn4, data1);
+			
+			LayoutContainer layoutColumnOreRimborso=new LayoutContainer();
+			layout= new FormLayout();
+			layout.setLabelWidth(80);
+			layout.setLabelAlign(LabelAlign.TOP);
+			layoutColumnOreRimborso.setLayout(layout);
+			layoutColumnOreRimborso.add(txtfldOreRimborsoSpese, new FormData("46%"));
+			cp1.add(layoutColumnOreRimborso, data1);
 			
 			LayoutContainer layoutColumn6=new LayoutContainer();
 			layout= new FormLayout();
@@ -1711,7 +1854,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    column.setId("sal");  
 		    column.setHeader("Var.SAL"); 
 		    column.setToolTip("Variazione mensile del SAL");
-		    column.setWidth(60);  
+		    column.setWidth(75);  
 		    column.setRowHeader(true); 
 		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
@@ -1731,7 +1874,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    column.setId("totaleSal");  
 		    column.setHeader("SAL su Est."); 
 		    column.setToolTip("Totale delle variazioni di SAL sull'estenzione");
-		    column.setWidth(60);  
+		    column.setWidth(75);  
 		    column.setRowHeader(true); 
 		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
@@ -1780,7 +1923,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    column.setId("pcl");  
 		    column.setHeader("Var.PCL");  
 		    column.setToolTip("Variazione mensile del PCL");
-		    column.setWidth(60);  
+		    column.setWidth(75);  
 		    column.setRowHeader(true); 
 		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
@@ -1800,7 +1943,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    column.setId("totalePcl");  
 		    column.setHeader("PCL su Est."); 
 		    column.setToolTip("Totale delle variazioni di PCL sull'estenzione");
-		    column.setWidth(60);  
+		    column.setWidth(75);  
 		    column.setRowHeader(true); 
 		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
@@ -1818,7 +1961,7 @@ public CenterLayout_FoglioFatturazione(){}
 			column=new ColumnConfig();		
 		    column.setId("numeroOrdine");  
 		    column.setHeader("Ordine");  
-		    column.setWidth(50);  
+		    column.setWidth(60);  
 		    column.setRowHeader(true);  
 		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
@@ -1838,7 +1981,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    column=new ColumnConfig();		
 		    column.setId("numeroRda");  
 		    column.setHeader("RDA");  
-		    column.setWidth(50);  
+		    column.setWidth(60);  
 		    column.setRowHeader(true);  
 		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
@@ -1961,7 +2104,7 @@ public CenterLayout_FoglioFatturazione(){}
 		
 		protected boolean hasValue(TextField<String> field) {
 		    return field.getValue() != null && field.isValid();
-		}		
+		}
 		
 		private void loadFormFatturazione(FoglioFatturazioneModel result, String numeroCommessa) {								
 			ListStore<RiepilogoOreDipFatturazione> store= new ListStore<RiepilogoOreDipFatturazione>();
@@ -2040,12 +2183,14 @@ public CenterLayout_FoglioFatturazione(){}
 					txtfldImportoResiduo.setValue((String)result.get("importoResiduo"));
 					txtfldImportoDaFatturare.setValue((String)result.get("importoDaFatturare"));
 					txtfldImportoRtv.setValue((String)result.get("importoRtv"));
+					txtfldOreRimborsoSpese.setValue((String)result.get("oreRimborsoSpese"));
 						
 					txtfldOreEseguiteRegistrate.setValue(result.getOreEseguiteRegistrate());
 					
 					txtfldTotFatturato.setValue(totaleEuro);
 					
 					delta=ClientUtility.calcoloDelta(scaricate, result.getOreEseguiteRegistrate());//se uso l'inserimento manuale
+					delta=ClientUtility.calcoloDelta(delta, txtfldOreRimborsoSpese.getRawValue().toString());
 					txtfldDiffScaricateEseguite.setValue(delta);
 					
 					txtfldOreScaricate.setValue(scaricate);
@@ -2080,9 +2225,7 @@ public CenterLayout_FoglioFatturazione(){}
 	    	  		
 	    	  		if(Float.valueOf(result.getResiduoOre())<0)
 	    	  			Window.alert("Il numero di ore residue sull'ordine è negativo! Effettuare le modifiche opportune!");
-	    	  		
-	    	  		txtTotCompensato.setText("Corrette--> ("+oreLavoro+") ");
-					
+				
 				}else{
 									
 					txtSalTotale.setValue(ClientUtility.aggiornaTotGenerale(result.getsalAttuale(), result.getVariazioneSal()));
@@ -2100,6 +2243,7 @@ public CenterLayout_FoglioFatturazione(){}
 					txtfldVariazionePCL.setValue(result.getVariazionePcl());
 					txtfldOreScaricate.setValue("0.00");
 					txtfldImportoRtv.setValue((String)result.get("importoRtv"));
+					txtfldOreRimborsoSpese.setValue((String)result.get("oreRimborsoSpese"));
 					
 					txtfldOreEseguiteRegistrate.setValue(totOre);
 					//txtfldOreEseguiteRegistrate.setValue(result.getOreEseguiteRegistrate());
@@ -2133,7 +2277,7 @@ public CenterLayout_FoglioFatturazione(){}
 	    	  		
 	    	  		chbxSalButtare.setValue(false);
 	    	  		
-	    	  		txtTotCompensato.setText("Corrette--> ("+oreLavoro+") ");
+	    	  		//txtTotCompensato.setText("Corrette--> ("+oreLavoro+") ");
 				}
 				
 				String r=ruolo;

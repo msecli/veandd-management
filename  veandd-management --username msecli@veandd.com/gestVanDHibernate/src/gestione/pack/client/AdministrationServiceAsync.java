@@ -300,7 +300,7 @@ public interface AdministrationServiceAsync {
 			String pclAttuale, String oreFatturere, String importoFatturare, String variazioneSAL,
 			String variazionePCL, String meseCorrente,
 			String note, String statoElaborazione, String commessaSelezionata,  
-			String tariffaUtilizzata, String flagSal, int idAttivita, AsyncCallback<Boolean> asyncCallback);
+			String tariffaUtilizzata, String flagSal, int idAttivita, String oreRimborsoSpese, AsyncCallback<Boolean> asyncCallback);
 
 	void getReportDatiFatturazioneMese(String mese,
 			AsyncCallback<List<DatiFatturazioneMeseModel>> asyncCallback);
