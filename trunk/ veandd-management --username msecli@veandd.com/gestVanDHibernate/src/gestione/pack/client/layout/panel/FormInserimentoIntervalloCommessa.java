@@ -304,13 +304,14 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 		cp.setLayout(new RowLayout(Orientation.HORIZONTAL));
 		cp.setItemId("cp");		
 
+		//TODO ore strao
 		
 		if(tipoParent.compareTo("1")==0){
 			layoutCol1.add(cpTxtBtn, new FormData("100%"));
 			layoutCol1.add(cpTxtBtn1, new FormData("100%"));
 			layoutCol2.add(txtfldOreIntervallo, new FormData("100%"));
 			layoutCol2.add(txtfldOreViaggio, new FormData("100%"));
-			layoutCol2.add(txtfldOreStrao, new FormData("100%"));
+			//layoutCol2.add(txtfldOreStrao, new FormData("100%"));
 			//layoutCol2.add(txtAbilitazioneStrao, new FormData("100%"));
 		
 			//layoutCol3.add(cpVuoto, new FormData("74%"));
@@ -321,7 +322,7 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 			
 			layoutCol2.add(txtfldOreIntervallo, new FormData("100%"));
 			layoutCol2.add(txtfldOreViaggio, new FormData("100%"));
-			layoutCol2.add(txtfldOreStrao, new FormData("100%"));
+			//layoutCol2.add(txtfldOreStrao, new FormData("100%"));
 					
 			layoutCol3.add(txtOreTotLavoro, new FormData("100%"));
 			layoutCol3.add(txtOreTotViaggio,new FormData("100%"));
