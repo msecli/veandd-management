@@ -14,8 +14,6 @@ F * Copyright 2011 Google Inc. All Rights Reserved.
  *******************************************************************************/
 package gestione.pack.server;
 
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -40,8 +38,6 @@ import net.sf.gilead.gwt.PersistentRemoteService;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-
-import com.google.gwt.i18n.client.DateTimeFormat;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.model.AnagraficaHardwareModel;
@@ -110,7 +106,6 @@ import gestione.pack.shared.Fattura;
 import gestione.pack.shared.FoglioFatturazione;
 import gestione.pack.shared.FoglioOreMese;
 import gestione.pack.shared.GiorniFestivi;
-import gestione.pack.shared.LogErrori;
 import gestione.pack.shared.Offerta;
 import gestione.pack.shared.Ordine;
 import gestione.pack.shared.PeriodoSbloccoGiorni;
@@ -192,7 +187,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						p1=(Personale)session.createQuery("from Personale where numeroBadge=:numeroBadge or username=:username")
 							.setParameter("numeroBadge", nBadge).setParameter("username", username).uniqueResult();
 					
-					if(p1==null){		
+					if(p1==null){
 						session.save(p);
 						tx.commit();
 						ServerLogFunction.logOkMessage("insertDataPersonale", new Date(), "", "Success");
@@ -3608,7 +3603,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			if (tx!=null)
 	    		tx.rollback();	
 			e.printStackTrace();
-		}	
+		}
 	}
 
 	//LOAD intervalli commesse-------
@@ -3649,7 +3644,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							listaDTO.add(intervallo);
 						}
 				}
-			}	
+			}
 			
 		} catch (Exception e) {
 			if (tx!=null)
@@ -3788,6 +3783,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String anno= new String();
 		String statoRevisione="0";		
 		
+		String giorno= new String();
+		
 		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
 		anno=formatter.format(giornoRiferimento);
 		formatter = new SimpleDateFormat("MMM",Locale.ITALIAN);
@@ -3795,6 +3792,12 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	    mese=(mese.substring(0,1).toUpperCase()+mese.substring(1,3));
 		
 		data=(mese+anno);//sostituito mese con data 
+		
+		formatter=  new SimpleDateFormat("E",Locale.ITALIAN);
+		giorno=formatter.format(giornoRiferimento);
+				
+		formatter = new SimpleDateFormat("yyyy-MMM-dd", Locale.ITALIAN) ;
+		String dataComp=formatter.format(giornoRiferimento);
 		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
@@ -3808,6 +3811,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			if(orePreviste.compareTo("A")==0)
 				orePreviste="8";	
 		
+			if((giorno.compareTo("sab")==0)||(giorno.compareTo("dom")==0)||ServerUtility.isFestivo(dataComp, p.getSedeOperativa()))
+				orePreviste="0";
+			
 			if(p.getAbilitazioneStraordinario().compareTo("S")==0)
 				abilitato=true;
 			
@@ -3988,7 +3994,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 		}finally{
 			session.close();
-		}	
+		}
 	}
 	
 	
@@ -4074,7 +4080,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						formatter=new SimpleDateFormat("dd-MMM-yyyy",Locale.ITALIAN);
 						d=formatter.parse(dataCompLow);
 						giornoW=d.toString().substring(0,3);
-						if(giornoW.compareTo("Sun")!=0 && !ServerUtility.isFestivo(dataCompUpp, p.getSedeOperativa())){		
+						if(giornoW.compareTo("Sun")!=0 && !ServerUtility.isFestivo(dataCompUpp, p.getSedeOperativa())){
 							giorno= new RiepilogoFoglioOreModel(p.getUsername() , p.getCognome()+" "+p.getNome(), data, dataCompLow, false, "0"
 									,"","","","","","","","");
 							listaGiorni.add(giorno);					

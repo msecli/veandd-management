@@ -320,9 +320,9 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	        public void componentSelected(ButtonEvent ce) {
 	        	center.removeAll();
 	        	center.add(new PanelAbilitazioneStraordinarioDip());
-	        	center.layout(true);}
-	        
-	      });
+	        	center.layout(true);
+	        	}	        
+	    });
 	    cp.add(btnAbilitazioneStrao);
 	    panel.add(cp);
 	    
@@ -334,7 +334,7 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
             public void handleEvent(ComponentEvent be) {
             	center.removeAll();
 	        	center.add(new CenterLayout_AssociaPersonale());
-	        	center.layout(true);               
+	        	center.layout(true);
             }
         });	    
 	   /* Button btnGestioneCommessa = new Button();

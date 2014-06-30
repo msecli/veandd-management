@@ -612,11 +612,13 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			}
 		}	
 		
-		for(IntervalliCommesseModel intM:listaC)
+		
+		//TODO check per ore strao
+		/*for(IntervalliCommesseModel intM:listaC)
 			totOreStraoSuIntervalliComm=ClientUtility.aggiornaTotGenerale(totOreStraoSuIntervalliComm, (String) intM.get("oreStraordinario"));
 		if((oreStraordinario.compareTo("0.00")!=0)||(totOreStraoSuIntervalliComm.compareTo("0.00")!=0))
 				if(oreStraordinario.compareTo(totOreStraoSuIntervalliComm)!=0)
-					return controllo="LE ORE DI STRAORDINARIO INSERITE NEL GIUSTIFICATIVO E SUGLI INTERVALLI COMMESSE NON COINCIDONO!";
+					return controllo="LE ORE DI STRAORDINARIO INSERITE NEL GIUSTIFICATIVO E SUGLI INTERVALLI COMMESSE NON COINCIDONO!";*/
 			
 		
 		return controllo;
@@ -3040,8 +3042,11 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			   listaParziali.add(txtfldSomma3.getValue().toString());
 			   listaParziali.add(txtfldSomma4.getValue().toString());
 			   listaParziali.add(txtfldSomma5.getValue().toString());
-  	   	  		   	  		   
+  	   	  		   	  	
+			   //if(!fldsetGiustificativo.txtfldAbbuono.getRawValue().isEmpty())
 			   abbuono="-"+fldsetGiustificativo.txtfldAbbuono.getValue();
+			  // else
+			//	   abbuono="0.00";
 			   totale=ClientUtility.calcolaTempo(listaParziali);
 			   totale=ClientUtility.aggiornaTotGenerale(totale, abbuono);
   		   
@@ -3067,8 +3072,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
   		   	   
 			setFieldGiustificativo(fldsetGiustificativo, delta);			
 		  
-		  }
-		   
+		  }   
 	}
 
 		
@@ -3415,9 +3419,12 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		private void load(GiustificativiModel result) {
 			PersonaleModel pM= new PersonaleModel();
 			pM=result.getPersonale();
-			Boolean autorizzato=pM.get("abilitazioneStraordinario");
-						
-			if(!autorizzato){
+			//Boolean autorizzato=pM.get("abilitazioneStraordinario");
+			
+			
+			
+			//TODO strao autor.
+			/*if(!autorizzato){
 				txtfldStraordinario.setVisible(false);
 				btnAssegnaOreStraordinario.setVisible(false);
 			}else
@@ -3428,6 +3435,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					txtfldStraordinario.setVisible(false);
 					btnAssegnaOreStraordinario.setVisible(false);
 				}
+			*/
 			
 			final NumberFormat number = NumberFormat.getFormat("0.00");
 			
@@ -3456,10 +3464,10 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			txtfldOrePreviste.setName("orePreviste");
 			txtfldOrePreviste.setEnabled(false);
 			txtfldOrePreviste.setFieldLabel("Ore Previste");	
-			if(d.substring(0, 3).compareTo("Sat")==0 || d.substring(0, 3).compareTo("Sun")==0)
+			/*if(d.substring(0, 3).compareTo("Sat")==0 || d.substring(0, 3).compareTo("Sun")==0)
 				txtfldOrePreviste.setValue("0.00");
-			else	
-				txtfldOrePreviste.setValue(result.getOrePreviste());
+			else*/	
+			txtfldOrePreviste.setValue(result.getOrePreviste());
 			
 			txtfldTotGenerale.setEnabled(false);
 			txtfldTotGenerale.setFieldLabel("Tot.Generale");

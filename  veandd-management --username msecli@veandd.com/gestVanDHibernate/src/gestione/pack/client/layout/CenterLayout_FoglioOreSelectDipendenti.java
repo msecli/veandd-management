@@ -3214,10 +3214,10 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			txtfldOrePreviste.setName("orePreviste");
 			txtfldOrePreviste.setEnabled(false);
 			txtfldOrePreviste.setFieldLabel("Ore Previste");	
-			if(d.substring(0, 3).compareTo("Sat")==0 || d.substring(0, 3).compareTo("Sun")==0)
+			/*if(d.substring(0, 3).compareTo("Sat")==0 || d.substring(0, 3).compareTo("Sun")==0)
 				txtfldOrePreviste.setValue("0.00");
-			else	
-				txtfldOrePreviste.setValue(result.getOrePreviste());
+			else*/	
+			txtfldOrePreviste.setValue(result.getOrePreviste());
 			
 			txtfldTotGenerale.setEnabled(false);
 			txtfldTotGenerale.setFieldLabel("Tot.Generale");
