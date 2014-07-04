@@ -307,7 +307,7 @@ public class PanelCommessa extends LayoutContainer {
 	            		enableForm();       		
 	            	}
 	            	
-	            	String cliente=be.getSelectedItem().getRagioneSociale();
+	            	String cliente=be.getSelectedItem().getNumeroOrdine();
 	            	if(cliente.compareTo("#")!=0)
 	            	{
 	            		btnOrdine.setEnabled(false);

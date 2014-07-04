@@ -322,7 +322,8 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 					Window.alert("Controllare i campi inseriti ed eliminare eventuali record vuoti nella tabella Tariffe.");
 				}
 			}
-/*
+			
+			/*
 			private List<TariffaOrdineModel> elaboroStoreTariffe(List<TariffaOrdineModel> models) {
 				
 				List<TariffaOrdineModel> listaT= new ArrayList<TariffaOrdineModel>();

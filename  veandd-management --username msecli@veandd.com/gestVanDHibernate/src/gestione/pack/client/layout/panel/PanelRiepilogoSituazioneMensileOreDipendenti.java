@@ -163,7 +163,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	  	btnConferma.setIconAlign(IconAlign.TOP);
 	  	btnConferma.setToolTip("Conferma mese per singolo dipendente.");
 	  	btnConferma.setSize(26, 26);
-	  	btnConferma.disable();
+	  //	btnConferma.disable();
 	  	btnConferma.addSelectionListener(new SelectionListener<ButtonEvent>() {		
 			@Override
 			public void componentSelected(ButtonEvent ce) {
@@ -182,8 +182,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 						else
 							Window.alert("Non è stato possibile effettuare la conferma!");
 					}
-				});
-				
+				});				
 			}
 		});
 			  	
@@ -193,7 +192,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	  	btnConfermaTutti.setIconAlign(IconAlign.TOP);
 	  	btnConfermaTutti.setSize(26, 26);
 	  	btnConfermaTutti.setToolTip("Conferma mese per tutti i dipendenti.");
-	  	btnConfermaTutti.disable();
+	  	//btnConfermaTutti.disable();
 	  	btnConfermaTutti.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
@@ -491,7 +490,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 		column.setHeader("U");  
 		column.setWidth(40);  
 		column.setRowHeader(true);  
-		column.setAlignment(HorizontalAlignment.RIGHT);  
+		column.setAlignment(HorizontalAlignment.RIGHT);
 		configs.add(column);
 
 		column=new SummaryColumnConfig<Double>();

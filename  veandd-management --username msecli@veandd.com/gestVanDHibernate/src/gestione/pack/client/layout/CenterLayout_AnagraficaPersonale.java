@@ -149,22 +149,27 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    	 public void componentKeyUp(ComponentEvent event) {
 	    		 
 	    		 if(txtfldsearch.getRawValue().isEmpty()){
-	    			 storeResult.removeAll();
+	    			 /*storeResult.removeAll();
 	    			 store.removeAll();
 	    			 store.add(storeCompleto.getModels());
 	    			 //grid.reconfigure(store, cm);
-	    			 impostaPagingConfiguration(store.getModels()); 			 
+	    			 impostaPagingConfiguration(store.getModels());*/
+	    			 
+	    			 storeResult.removeAll();
+	    			 storeResult.add(storeCompleto.getModels());
+	    			 impostaPagingConfiguration(storeResult.getModels());
+	    			 
 	    		 }else{
 	    		 	    		 	    		 
 	    			 String campo= txtfldsearch.getValue().toString().toLowerCase();	    			 	    			 
 	    			 storeResult.removeAll();
-	    			 for(PersonaleModel r:listaStore){
+	    			 
+	    			 for(PersonaleModel r: storeCompleto.getModels()){
 	    				 if(r.getCognome().toLowerCase().contains(campo)){
 	    					 storeResult.add(r);		    				 
 	    				 }
 	    			 }
-	    			 listaStore.clear();
-	    			 listaStore.addAll(store.getModels());
+	    			 
 	    			 impostaPagingConfiguration(storeResult.getModels());	    			 
 	    		 } 
 	    	 }    	  	 
@@ -362,7 +367,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 							@Override
 							public void onSuccess(Boolean result) {
 								if(result){
-									//Window.alert("OK Inserimento Corretto.");
+									Window.alert("Inserimento avvenuto con successo.");
 									caricaTabellaDati();									
 								}else{
 									
@@ -558,7 +563,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    loader.load(0, 30); 
 	    
 	    toolBar.setActivePage(1);
-		grid.reconfigure(store1, cm);
+	    grid.reconfigure(store1, cm);
 		
 		grid.getAriaSupport().setDescribedBy(toolBar.getId() + "-display");
 		btnSend.setEnabled(true);
@@ -1094,13 +1099,18 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	
 	private void loadTable(List<PersonaleModel> lista) {
 	
-		store.add(lista);	
+		/*listaStore.removeAll(lista);
+		listaStore.addAll(lista); //carico il risultato originale e non lo modifico
+		
+		//store.add(lista);	
 		storeResult.removeAll();
 		storeCompleto.removeAll();
-		storeResult.add(store.getModels());
-		storeCompleto.add(store.getModels());
-		listaStore.addAll(store.getModels());
-		
+		storeResult.add(lista);
+		storeCompleto.add(lista);*/
+			
+		storeCompleto.removeAll();
+		storeCompleto.add(lista); //carico il risultato originale e non lo modifico
+				
 	    impostaPagingConfiguration(lista);		
 	}
 		      

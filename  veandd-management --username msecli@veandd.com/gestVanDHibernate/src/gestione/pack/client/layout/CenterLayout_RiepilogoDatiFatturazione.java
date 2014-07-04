@@ -701,8 +701,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					return num.format(n);
 				}  	
 			});  
-		    columnImportoPcl.setSummaryRenderer(new SummaryRenderer() {
-				
+		    columnImportoPcl.setSummaryRenderer(new SummaryRenderer() {			
 				@Override
 				public String render(Number value, Map<String, Number> data) {
 					final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
@@ -760,6 +759,29 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			});
 		    configs.add(oreScaricate);		    
 		    
+		    SummaryColumnConfig<Double> oreRimborso=new SummaryColumnConfig<Double>();		
+		    oreRimborso.setId("oreRimborsoSpese");  
+		    oreRimborso.setHeader("h/Rimborso Spese");  
+		    oreRimborso.setWidth(100);    
+		    oreRimborso.setRowHeader(true);  
+		    oreRimborso.setAlignment(HorizontalAlignment.RIGHT); 
+		    oreRimborso.setSummaryType(SummaryType.SUM);  
+		    oreRimborso.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
+				@Override
+				public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
+						Grid<DatiFatturazioneMeseModel> grid) {
+					Float n=model.get(property);
+					return number.format(n);
+				}  	
+			});
+		    oreRimborso.setSummaryRenderer(new SummaryRenderer() {				
+				@Override
+				public String render(Number value, Map<String, Number> data) {
+					return number.format(value);
+				}
+			});
+		    configs.add(oreRimborso);	
+		    
 		    SummaryColumnConfig<Double> margine=new SummaryColumnConfig<Double>();		
 		    margine.setId("margine");  
 		    margine.setHeader("Margine");  
@@ -784,6 +806,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			});
 		    configs.add(margine);			    
 		    
+		    
 		    SummaryColumnConfig<Double> efficienza=new SummaryColumnConfig<Double>();		
 		    efficienza.setId("efficienza");  
 		    efficienza.setHeader("Eff.");  
@@ -793,7 +816,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		    efficienza.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
 				@Override
 				public Object render(DatiFatturazioneMeseModel model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
-						Grid<DatiFatturazioneMeseModel> grid) {					
+						Grid<DatiFatturazioneMeseModel> grid) {	
 					
 					String efficienza=model.get("efficienza");
 					String numeroCommessa=model.get("numeroCommessa");
@@ -817,8 +840,8 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					return model.get(property);
 				}  	
 			});
-		    configs.add(efficienza);	
-		   		   		    
+		   configs.add(efficienza);	
+		   
 		   SummaryColumnConfig<Double> note=new SummaryColumnConfig<Double>();		
 		   note.setId("note");  
 		   note.setHeader("Note");  

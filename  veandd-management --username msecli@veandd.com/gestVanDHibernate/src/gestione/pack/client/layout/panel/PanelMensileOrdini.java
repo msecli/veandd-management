@@ -156,8 +156,7 @@ public class PanelMensileOrdini extends LayoutContainer{
 				numeroOrdine=sm.getSelectedItem().get("numeroOrdine");
 				pnlRtv.setNumeroOrdine(numeroOrdine);
 				pnlRtv.caricaDatiTabellaRtv(numeroOrdine);	
-				
-								
+										
 				AdministrationService.Util.getInstance().getDettaglioMensileOrdine(numeroOrdine, new AsyncCallback<List<RiepilogoMensileOrdiniModel>>() {
 
 					@Override
@@ -169,7 +168,7 @@ public class PanelMensileOrdini extends LayoutContainer{
 					public void onSuccess(
 							List<RiepilogoMensileOrdiniModel> result) {
 						caricaTabellaDatiDettaglioMensile(result);
-					}				
+					}
 				});			
 			}
 		});
