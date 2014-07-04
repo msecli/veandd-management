@@ -5116,7 +5116,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}
 		
 		intC= new IntervalliCommesseModel(g.getNumeroCommessa(), d.format(g.getOreLavoro()), 
-				d.format(g.getOreViaggio()), "", "",  "", "", "");
+				d.format(g.getOreViaggio()), "0.00", "",  "", "", "");
 		listaIntervalli.add(intC);
 		insertFoglioOreGiorno(username, giornoRiferimento, listaIntervalli);
 	    
@@ -6105,6 +6105,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 											oreViaggio = d.getOreViaggio();
 											oreTotMeseLavoro = ServerUtility.aggiornaTotGenerale(oreTotMeseLavoro,oreLavoro);
 											oreTotMeseViaggio = ServerUtility.aggiornaTotGenerale(oreTotMeseViaggio,oreViaggio);
+											
 											oreStrao=ServerUtility.aggiornaTotGenerale(oreStrao, d.getOreStraordinario());
 																				
 										}
@@ -6693,6 +6694,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String attivitaOrdine="";
 		String statoFattura="N";
 		String cognome="";
+		Float oreRimborsoSpese=(float)0.00;
 		
 		Float[] totaleOreSalPcl={(float)0.0,(float)0.0};
 		
@@ -6729,7 +6731,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					numeroOrdine=o.getCodiceOrdine();
 					oreMargine=ServerUtility.aggiornaTotGenerale(String.valueOf(f.getOreFatturare()), String.valueOf(f.getVariazioneSAL()));
 					oreMargine=ServerUtility.getDifference(oreMargine, String.valueOf(f.getVariazionePCL()));
-					oreScaricate=oreMargine;	
+					oreScaricate=oreMargine;
+					
+					oreRimborsoSpese=Float.valueOf(f.getOreRimborsoSpese());
 					
 					if(f.getOreEseguite().compareTo("0.00")==0 && oreScaricate.compareTo("0.00")==0)
 						efficienza=0;
@@ -6739,6 +6743,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					else
 						efficienza=0;
 					oreMargine=ServerUtility.getDifference(oreMargine, String.valueOf(f.getOreEseguite()));
+					oreMargine=ServerUtility.getDifference(oreMargine, d.format(oreRimborsoSpese));
+					
 					margine=Float.valueOf(ServerUtility.getOreCentesimi(oreMargine));
 					importoEffettivo=Float.valueOf(f.getImportoRealeFatturato());
 					
@@ -6763,14 +6769,16 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					datiModel=new DatiFatturazioneMeseModel(f.getIdFoglioFatturazione(), p.getSedeOperativa(),f.getCommessa().getMatricolaPM(), f.getCommessa().getNumeroCommessa()+"."+f.getCommessa().getEstensione(), o.getRda().getCliente().getRagioneSociale(), 
 							numeroOrdine, o.getCommessa().getDenominazioneAttivita(),attivitaOrdine , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf(ServerUtility.getOreCentesimi(f.getOreFatturare()))
 							, Float.valueOf(f.getTariffaUtilizzata()),	importo, importoEffettivo, Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), importoSal, 
-							Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), importoPcl, Float.valueOf(ServerUtility.getOreCentesimi(oreScaricate)), margine, d.format(efficienza), f.getNote(), statoFattura
-							,totaleOreSalPcl[0], totaleOreSalPcl[1]);
+							Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), importoPcl, Float.valueOf(ServerUtility.getOreCentesimi(oreScaricate)), margine, oreRimborsoSpese, 
+							d.format(efficienza), f.getNote(), statoFattura	,totaleOreSalPcl[0], totaleOreSalPcl[1]);
 				}
 				else{
 					numeroOrdine="";
 					oreMargine=ServerUtility.aggiornaTotGenerale(String.valueOf(f.getOreFatturare()), String.valueOf(f.getVariazioneSAL()));
 					oreMargine=ServerUtility.getDifference(oreMargine, String.valueOf(f.getVariazionePCL()));
 					oreScaricate=oreMargine;
+					oreRimborsoSpese=Float.valueOf(f.getOreRimborsoSpese());
+					
 					if(f.getOreEseguite().compareTo("0.00")==0 && oreScaricate.compareTo("0.00")==0)
 						efficienza=0;
 					else
@@ -6779,7 +6787,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					else
 						efficienza=0;
 					oreMargine=ServerUtility.getDifference(oreMargine, String.valueOf(f.getOreEseguite()));
+					oreMargine=ServerUtility.getDifference(oreMargine, d.format(oreRimborsoSpese));					
+					
 					margine=Float.valueOf(ServerUtility.getOreCentesimi(oreMargine));
+					
 					importoSal=ServerUtility.calcolaImporto(f.getTariffaUtilizzata(),f.getVariazioneSAL());
 					importoPcl=ServerUtility.calcolaImporto(f.getTariffaUtilizzata(),f.getVariazionePCL());
 					
@@ -6788,7 +6799,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					datiModel=new DatiFatturazioneMeseModel(f.getIdFoglioFatturazione(), p.getSedeOperativa(), f.getCommessa().getMatricolaPM(), f.getCommessa().getNumeroCommessa()+"."+f.getCommessa().getEstensione(), "#", numeroOrdine,
 							f.getCommessa().getDenominazioneAttivita(),attivitaOrdine, Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf(ServerUtility.getOreCentesimi(f.getOreFatturare())),
 							Float.valueOf(f.getTariffaUtilizzata()), (float) 0.0, (float)0.0, Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), importoSal, Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), 
-							importoPcl, Float.valueOf(ServerUtility.getOreCentesimi(oreScaricate)), margine, d.format(efficienza), f.getNote(), statoFattura
+							importoPcl, Float.valueOf(ServerUtility.getOreCentesimi(oreScaricate)), margine, oreRimborsoSpese, d.format(efficienza), f.getNote(), statoFattura
 							,totaleOreSalPcl[0], totaleOreSalPcl[1]);	
 				}
 				listaDati.add(datiModel);
@@ -7093,6 +7104,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Float sal=(float) 0.0;
 		Float pcl=(float) 0.0;
 		Float[] totaleSalPcl={(float)0.0,(float)0.0};
+		Float oreFatturate= (float)0.0;		
 
 		numEstensione=numEstensione.toLowerCase();
 				
@@ -7138,6 +7150,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 											sal=Float.valueOf(ff.getVariazioneSAL());
 											pcl=Float.valueOf(ff.getVariazionePCL());
 											salDaButtare=ff.getFlagSalDaButtare();
+											oreFatturate=Float.valueOf(ff.getOreFatturare());
+											
 											if(Float.valueOf(ff.getImportoRealeFatturato())!=0)
 												importoFatturato=ff.getImportoRealeFatturato();
 											else
@@ -7154,9 +7168,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 								totaleSalPcl=ServerUtility.calcolaTotaleSalPclPerEstensione(comm.getNumeroCommessa(), comm.getEstensione(), att.getIdAttivitaOrdine(), data);
 																
 								riep= new RiepilogoOreTotaliCommesse(att.getOrdine().getRda().getCodiceRDA(),comm.getNumeroCommessa(), comm.getEstensione(),sal, totaleSalPcl[0], salDaButtare, pcl,totaleSalPcl[1],
-										numeroOrdine, oggettoOrdine,att.getDescrizioneAttivita(),  att.getIdAttivitaOrdine(), oreEseguite, Float.valueOf("0.00"), flagCompilato, importoFatturato);
+										numeroOrdine, oggettoOrdine,att.getDescrizioneAttivita(),  att.getIdAttivitaOrdine(), oreEseguite, oreFatturate, flagCompilato, importoFatturato);
 							   	listaRiep.add(riep);
 							    oreEseguite="0.00";
+							    oreFatturate=(float)0;
 							    importoFatturato="0.00";
 							    sal=Float.valueOf("0.00");
 								pcl=Float.valueOf("0.00");
@@ -7182,6 +7197,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 										sal=Float.valueOf(ff.getVariazioneSAL());
 										pcl=Float.valueOf(ff.getVariazionePCL());
 										salDaButtare=ff.getFlagSalDaButtare();
+										
+										oreFatturate=Float.valueOf(ff.getOreFatturare());
+												
 										if(Float.valueOf(ff.getImportoRealeFatturato())!=0)
 											importoFatturato=ff.getImportoRealeFatturato();
 										else
@@ -7199,9 +7217,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							totaleSalPcl=ServerUtility.calcolaTotaleSalPclPerEstensione(comm.getNumeroCommessa(), comm.getEstensione(),0, data);
 							
 							riep= new RiepilogoOreTotaliCommesse("#", comm.getNumeroCommessa(), comm.getEstensione(),sal, totaleSalPcl[0], salDaButtare, pcl, totaleSalPcl[1], numeroOrdine,"#", "#",
-									0,oreEseguite, Float.valueOf("0.00"), flagCompilato, importoFatturato);
+									0,oreEseguite, oreFatturate, flagCompilato, importoFatturato);
 							listaRiep.add(riep);
 							oreEseguite="0.00";
+							oreFatturate=(float)0;
 							importoFatturato="0.00";
 							sal=Float.valueOf("0.00");
 							pcl=Float.valueOf("0.00");
@@ -7245,6 +7264,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 								sal=Float.valueOf(ff.getVariazioneSAL());
 								pcl=Float.valueOf(ff.getVariazionePCL());
 								salDaButtare=ff.getFlagSalDaButtare();
+								oreFatturate=Float.valueOf(ff.getOreFatturare());
 								if(Float.valueOf(ff.getImportoRealeFatturato())!=0)
 									importoFatturato=ff.getImportoRealeFatturato();
 								else
@@ -7261,7 +7281,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						totaleSalPcl=ServerUtility.calcolaTotaleSalPclPerEstensione(numCommessa, numEstensione, att.getIdAttivitaOrdine(), data);
 						riep= new RiepilogoOreTotaliCommesse(att.getOrdine().getRda().getCodiceRDA(), numCommessa, numEstensione,sal, totaleSalPcl[0], salDaButtare, pcl, totaleSalPcl[1], numeroOrdine, oggettoOrdine, 
 								att.getDescrizioneAttivita(), att.getIdAttivitaOrdine(), 
-								oreEseguite, Float.valueOf("0.00"), flagCompilato, importoFatturato);
+								oreEseguite, oreFatturate, flagCompilato, importoFatturato);
 						listaRiep.add(riep);					
 					}
 					listaAttOrdine.clear();
@@ -7283,6 +7303,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							sal=Float.valueOf(ff.getVariazioneSAL());
 							pcl=Float.valueOf(ff.getVariazionePCL());
 							salDaButtare=ff.getFlagSalDaButtare();
+							oreFatturate=Float.valueOf(ff.getOreFatturare());
+									
 							if(Float.valueOf(ff.getImportoRealeFatturato())!=0)
 								importoFatturato=ff.getImportoRealeFatturato();
 							else
@@ -7299,7 +7321,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					totaleSalPcl=ServerUtility.calcolaTotaleSalPclPerEstensione(numCommessa, numEstensione,0, data);
 					
 					riep= new RiepilogoOreTotaliCommesse("#", numCommessa, numEstensione,sal, totaleSalPcl[0], salDaButtare, pcl, totaleSalPcl[1], numeroOrdine, "" , "",
-							0,oreEseguite, Float.valueOf("0.00"), flagCompilato, importoFatturato);
+							0,oreEseguite, oreFatturate, flagCompilato, importoFatturato);
 					listaRiep.add(riep);			
 				}					
 			}
@@ -7307,6 +7329,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			tx.commit();
 			
 			oreEseguite="0.00";
+			oreFatturate=(float)0;
+			
 			String salTotale="0.00";
 			String pclTotale="0.00";
 			
@@ -11041,7 +11065,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			}
 	        else				
 				ServerLogFunction.logOkMessage("getRiepilogoRichiesteItUtente", new Date(), username, "Success");
-		}	
+		}
 		return listaRM;
 	}
 	
@@ -11166,8 +11190,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						listaRM.add(riep);					
 					}
 				}							
-			}			
-					
+			}
+
 			tx.commit();
 			
 		}catch (Exception e) {
@@ -11230,7 +11254,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	public List<RtvModel> getDatiRtv(String numeroO) {
 		List<RtvModel> listaRM= new ArrayList<RtvModel>();
 		List<Rtv> listaR= new ArrayList<Rtv>();
-		RtvModel rtvM;	
+		RtvModel rtvM;
 		Ordine o;
 		
 		Boolean esito=true;				

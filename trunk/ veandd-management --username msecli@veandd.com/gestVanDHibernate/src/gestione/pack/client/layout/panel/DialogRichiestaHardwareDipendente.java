@@ -98,7 +98,8 @@ public class DialogRichiestaHardwareDipendente extends Dialog{
 		
 		cm=new ColumnModel(createColumns());
 		caricaDatiTabella();
-			          
+
+		
 		gridRiepilogo= new Grid<RiepilogoRichiesteModel>(store, cm);  
 		gridRiepilogo.setItemId("grid");
 		gridRiepilogo.setBorders(false);  

@@ -562,19 +562,16 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 							
 							if(sommaStrRec.compareTo(delta)!=0 && giustificativo.compareTo("23.Abbuono")==0 && delta.compareTo("0.00")!=0)
 								return controllo="Deve essere indicato un valore di Abbuono che azzeri il Delta giornaliero.";
-						}*/
-												
+						}*/												
 					}				
 				}
-		}
+			}
 			if(totOreLavoro.compareTo(totOreGenerale)!=0)
 				return controllo="Le ore indicate sulle commesse non sono coerenti con il numero di ore ricavate dagli intervalli I/U.";			
 		}
 		
 						
 		if(oreViaggio.compareTo("0.00")==0){//Controlli di coerenza se non sono state inserite ore viaggio
-					
-			
 			if(Float.valueOf(delta)>0){			
 				String sommaStrRec= ClientUtility.sommaOreStrOreRec(oreStraordinario, oreRecupero);
 				
@@ -600,8 +597,9 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					if(sommaGiustificativi.compareTo(delta)==0 && giustificativo.compareTo("")!=0 && giustificativo.compareTo("23.Abbuono")!=0)
 						return controllo="E' stato indicato un numero di ore uguale al valore del delta giornaliero \n" +
 								"ed e' anche stato indicato un giustificativo.";
-			}		
-		}		
+			}
+		}
+		
 		else{
 			if(listaC.size()>0){
 				String totOreViaggioSuCommesse="0.00";
@@ -611,8 +609,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					return controllo="E' stato indicato un numero di ore viaggio non coerente tra intervalli commesse e giustificativo.";
 			}
 		}	
-		
-		
+				
 		//TODO check per ore strao
 		/*for(IntervalliCommesseModel intM:listaC)
 			totOreStraoSuIntervalliComm=ClientUtility.aggiornaTotGenerale(totOreStraoSuIntervalliComm, (String) intM.get("oreStraordinario"));
@@ -620,7 +617,6 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 				if(oreStraordinario.compareTo(totOreStraoSuIntervalliComm)!=0)
 					return controllo="LE ORE DI STRAORDINARIO INSERITE NEL GIUSTIFICATIVO E SUGLI INTERVALLI COMMESSE NON COINCIDONO!";*/
 			
-		
 		return controllo;
 	}
 
@@ -2996,8 +2992,8 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 							txtfld5U.setEnabled(false);
 							txtfldSomma5.setValue(ClientUtility.calcolaParzialeIntervalli(txtfld5I.getValue().toString(), txtfld5U.getValue().toString()));
 							aggiornaTotaleIntervalli();
-					}				
-				}	
+					}
+				}
 				
 				if(txtfldRuolo.getValue().compareTo("PM")==0 || txtfldRuolo.getValue().compareTo("GP")==0 || txtfldRuolo.getValue().compareTo("AMM")==0
 						|| txtfldRuolo.getValue().compareTo("DIR")==0){
@@ -3027,8 +3023,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		   
 		   LayoutContainer lc= new LayoutContainer(); 
 	       LayoutContainer right= new LayoutContainer();
-		   FldsetGiustificativi fldsetGiustificativo;
-		  
+		   FldsetGiustificativi fldsetGiustificativo; 
 		  
 		   if((LayoutContainer) getParent().getParent()!=null)
 			   lc=(LayoutContainer) getParent().getParent();
@@ -3045,8 +3040,8 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
   	   	  		   	  	
 			   //if(!fldsetGiustificativo.txtfldAbbuono.getRawValue().isEmpty())
 			   abbuono="-"+fldsetGiustificativo.txtfldAbbuono.getValue();
-			  // else
-			//	   abbuono="0.00";
+			   // else
+			   // abbuono="0.00";
 			   totale=ClientUtility.calcolaTempo(listaParziali);
 			   totale=ClientUtility.aggiornaTotGenerale(totale, abbuono);
   		   
@@ -3421,8 +3416,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			pM=result.getPersonale();
 			//Boolean autorizzato=pM.get("abilitazioneStraordinario");
 			
-			
-			
+						
 			//TODO strao autor.
 			/*if(!autorizzato){
 				txtfldStraordinario.setVisible(false);
@@ -3463,7 +3457,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			String d=data.toString();
 			txtfldOrePreviste.setName("orePreviste");
 			txtfldOrePreviste.setEnabled(false);
-			txtfldOrePreviste.setFieldLabel("Ore Previste");	
+			txtfldOrePreviste.setFieldLabel("Ore Previste");
 			/*if(d.substring(0, 3).compareTo("Sat")==0 || d.substring(0, 3).compareTo("Sun")==0)
 				txtfldOrePreviste.setValue("0.00");
 			else*/	
@@ -3508,7 +3502,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 								smplcmbxAltroGiustificativo.setAllowBlank(false);
 								smplcmbxAltroGiustificativo.setSimpleValue("27.Ore Viaggio");
 								txtfldOreTotEffettive.setValue(orePreviste);
-							}								
+							}
 							if(Float.valueOf(oreViaggio)<=Math.abs(Float.valueOf(deltaGiorno))){
 								oreTotGenerale=ClientUtility.aggiornaTotGenerale(oreTotGenerale, oreViaggio);
 								//deltaGiorno=;

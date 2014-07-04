@@ -223,6 +223,13 @@ public CenterLayout_FoglioFatturazione(){}
 		hpLayout.add(new CntpnlDatiFatturazioneOrdine());
 		hpLayout.layout();		
 	}
+	private void reloadFoglioFatt1() {
+		CntpnlDatiFatturazioneOrdine cp=new CntpnlDatiFatturazioneOrdine();
+		cp=(CntpnlDatiFatturazioneOrdine) hpLayout.getItemByItemId("panelDatiFatturazione");		
+		hpLayout.remove(cp);
+		hpLayout.add(new CntpnlDatiFatturazioneOrdine());
+		hpLayout.layout();		
+	}
 	
 	
 	private void selectLayout() {
@@ -380,6 +387,8 @@ public CenterLayout_FoglioFatturazione(){}
 					d.setSize(550, 800);
 					d.setButtons("");
 					d.add(new PanelRiepilogoGiornalieroCommesse(idDip, anno, meseRif, "1")); //tipo indica da quale layout creo la classe
+					//d.add(new PanelRiepilogoMeseGiornalieroCommesseHorizontal(username, data, oreTotFerie, oreTotPermessi, oreTotRecupero, oreTotStrao))
+					
 					d.show();
 				}
 			});
@@ -864,15 +873,13 @@ public CenterLayout_FoglioFatturazione(){}
 									public void onSuccess(Boolean result) {
 										if(result){
 											Window.alert("Inserimento avvenuto con successo.");
-											reloadFoglioFatt();
+											reloadFoglioFatt1();
 											
 										}else{
 											Window.alert("error: Impossibile inserire i dati del foglio fatturazione!");
 										}
 									}
 							});	
-						//else
-							//Window.alert("E' stato inserito un numero di ore da fatturare maggiori delle ore residue sull'ordine!");
 					}			
 				}
 
@@ -883,7 +890,8 @@ public CenterLayout_FoglioFatturazione(){}
 					
 					if(((oreRes!=0 && importoRes==0)||(oreRes==0 && importoRes!=0)) && Float.valueOf(txtfldImportoOrdine.getValue().toString())!=0)					
 						return false;
-					else return true;
+					else 
+						return true;
 				}
 			});		    
 		    
@@ -1793,6 +1801,7 @@ public CenterLayout_FoglioFatturazione(){}
 			layout();		
 		}
 		
+				
 		private void caricaTabellaDati() {
 			String data= new String(); //Formato Feb2013
 			data=smplcmbxMese.getRawValue().toString().substring(0,3)+smplcmbxAnno.getRawValue().toString();
@@ -1854,7 +1863,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    column.setId("sal");  
 		    column.setHeader("Var.SAL"); 
 		    column.setToolTip("Variazione mensile del SAL");
-		    column.setWidth(75);  
+		    column.setWidth(70);  
 		    column.setRowHeader(true); 
 		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
@@ -1874,7 +1883,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    column.setId("totaleSal");  
 		    column.setHeader("SAL su Est."); 
 		    column.setToolTip("Totale delle variazioni di SAL sull'estenzione");
-		    column.setWidth(75);  
+		    column.setWidth(70);  
 		    column.setRowHeader(true); 
 		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
@@ -1923,7 +1932,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    column.setId("pcl");  
 		    column.setHeader("Var.PCL");  
 		    column.setToolTip("Variazione mensile del PCL");
-		    column.setWidth(75);  
+		    column.setWidth(70);  
 		    column.setRowHeader(true); 
 		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
@@ -1943,7 +1952,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    column.setId("totalePcl");  
 		    column.setHeader("PCL su Est."); 
 		    column.setToolTip("Totale delle variazioni di PCL sull'estenzione");
-		    column.setWidth(75);  
+		    column.setWidth(70);  
 		    column.setRowHeader(true); 
 		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
@@ -2016,8 +2025,16 @@ public CenterLayout_FoglioFatturazione(){}
 		    
 		    column=new ColumnConfig();		
 		    column.setId("oreOrdine");
-		    column.setHeader("Ore Eseg.");  
-		    column.setWidth(65);  
+		    column.setHeader("h/Eseg.");
+		    column.setWidth(60);  
+		    column.setRowHeader(true);  
+		    column.setAlignment(HorizontalAlignment.RIGHT);
+		    configs.add(column);
+		    
+		    column=new ColumnConfig();		
+		    column.setId("oreLavoro");
+		    column.setHeader("h/Fatt.");
+		    column.setWidth(60);  
 		    column.setRowHeader(true);  
 		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    configs.add(column);

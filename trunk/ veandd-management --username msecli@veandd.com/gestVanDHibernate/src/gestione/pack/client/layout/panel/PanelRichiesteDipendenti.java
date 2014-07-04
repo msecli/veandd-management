@@ -377,9 +377,7 @@ public class PanelRichiesteDipendenti extends LayoutContainer{
 			meseListStore=ClientUtility.traduciMeseToIt(meseListStore);
 			if(meseListStore.compareTo(meseCmbx)==0)
 				storeRes.add(c);
-		}
-						
+		}						
 		gridRiepilogo.reconfigure(storeRes, cmCommenti); 
 	}	
-	
 }

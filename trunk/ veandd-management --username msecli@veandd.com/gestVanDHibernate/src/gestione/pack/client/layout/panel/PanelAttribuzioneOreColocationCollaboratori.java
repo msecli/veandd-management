@@ -167,8 +167,7 @@ public class PanelAttribuzioneOreColocationCollaboratori extends LayoutContainer
 		    								caricaDatiTabella();
 		    						}
 		    					}		    			  
-		    		});
-		    			    		  
+		    		});  
 				}		    
 				store.commitChanges();	    	
 			}		

@@ -117,7 +117,7 @@ public class DialogInvioCommenti  extends Dialog {
 		add(hp);
 	}
 	
-	 private void caricaTabella() {
+	private void caricaTabella() {
 		 AdministrationService.Util.getInstance().getAllCommenti(utente, new AsyncCallback<List<CommentiModel>>() {
 
 				@Override
@@ -131,14 +131,14 @@ public class DialogInvioCommenti  extends Dialog {
 						load(result);					
 				}			
 			});	
-	}
+	 }
 
 	 private void load(List<CommentiModel> result) {
 		 	store.removeAll();
 			store.setSortField("giorno");	  
 			store.add(result);
 			gridRiepilogo.reconfigure(store, cmCommenti);
-		}	
+	}	
 	 
 	private List<ColumnConfig> createColumns() {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 

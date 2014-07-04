@@ -500,11 +500,13 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			//String oreStrao= fldSetGiustificativi.txtfldStraordinario.getValue();
 			String totOreStraoSuIntervalliComm="0.00";
 					
-			for(IntervalliCommesseModel intM:listaC)
+			
+			//TODO
+			/*for(IntervalliCommesseModel intM:listaC)
 				totOreStraoSuIntervalliComm=ClientUtility.aggiornaTotGenerale(totOreStraoSuIntervalliComm, (String) intM.get("oreStraordinario"));
 			if((oreStraordinario.compareTo("0.00")!=0)||(totOreStraoSuIntervalliComm.compareTo("0.00")!=0))
 					if(oreStraordinario.compareTo(totOreStraoSuIntervalliComm)!=0)
-						return controllo="LE ORE DI STRAORDINARIO INSERITE NEL GIUSTIFICATIVO E SUGLI INTERVALLI COMMESSE NON COINCIDONO!";
+						return controllo="LE ORE DI STRAORDINARIO INSERITE NEL GIUSTIFICATIVO E SUGLI INTERVALLI COMMESSE NON COINCIDONO!";*/
 					
 			return controllo;
 		}
