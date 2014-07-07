@@ -105,7 +105,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 				d.setConstrain(false);
 				d.setHeading("Riepilogo dettagliato (Commesse).");
 				d.setSize(1500, 650);
-				d.add(new PanelRiepilogoMeseGiornalieroCommesseHorizontal(username, data, oreTotFerie, oreTotPermessi,oreTotRecupero, oreTotStrao));
+				d.add(new PanelRiepilogoMeseGiornalieroCommesseHorizontal(0, username, data, oreTotFerie, oreTotPermessi,oreTotRecupero, oreTotStrao));
 				d.setButtons("");
 				d.setScrollMode(Scroll.AUTOX);
 				d.show();			

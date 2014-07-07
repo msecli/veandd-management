@@ -379,7 +379,7 @@ boolean invioCommenti(String testo, String username, Date giorno);
 			String data, String sede)throws IllegalArgumentException;
 	
 	List<RiepilogoMeseGiornalieroModel> getRiepilogoMensileDettagliatoCommesseHorizontalLayout(
-			String dipendente, String data)throws IllegalArgumentException;
+			int idDip, String dipendente, String data);
 
 	List<PeriodoSbloccoModel> getDatiPeriodoSblocco();
 	

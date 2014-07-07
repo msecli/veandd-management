@@ -237,7 +237,8 @@ public class CenterLayout_RilevazioneOreColocation extends LayoutContainer{
 					d.setConstrain(false);
 					d.setHeading("Riepilogo dettagliato (Commesse).");
 					d.setSize(1500, 650);
-					d.add(new PanelRiepilogoMeseGiornalieroCommesseHorizontal(txtfldUsername.getValue().toString(), data, "0.00", "0.00", "0.00", "0.00"));
+					d.add(new PanelRiepilogoMeseGiornalieroCommesseHorizontal(0, 
+							txtfldUsername.getValue().toString(), data, "0.00", "0.00", "0.00", "0.00"));
 					d.setButtons("");
 					d.show();	
 				}

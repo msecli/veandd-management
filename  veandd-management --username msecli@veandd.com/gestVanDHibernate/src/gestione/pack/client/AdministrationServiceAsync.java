@@ -280,7 +280,7 @@ public interface AdministrationServiceAsync {
 			AsyncCallback<Boolean> asyncCallback);
 	
 	void getRiepilogoMensileDettagliatoCommesseHorizontalLayout(
-			String dipendente, String data,
+			int idDip, String dipendente, String data,
 			AsyncCallback<List<RiepilogoMeseGiornalieroModel>> asyncCallback);
 	
 	void elaboraDatiOreCollaboratori(RiepilogoOreDipCommesseGiornaliero g,

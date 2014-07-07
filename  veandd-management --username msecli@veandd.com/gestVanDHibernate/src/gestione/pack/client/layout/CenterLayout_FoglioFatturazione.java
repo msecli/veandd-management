@@ -5,9 +5,10 @@ import java.util.Date;
 import java.util.List;
 
 import gestione.pack.client.AdministrationService;
+import gestione.pack.client.layout.panel.DialogCheckCommesseFatturate;
 import gestione.pack.client.layout.panel.DialogRiepilogoDatiFoglioFatturazione;
 import gestione.pack.client.layout.panel.PanelAttribuzioneOreColocationCollaboratori;
-import gestione.pack.client.layout.panel.PanelRiepilogoGiornalieroCommesse;
+import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroCommesseHorizontal;
 import gestione.pack.client.model.RiepilogoOreDipFatturazione;
 import gestione.pack.client.model.RiepilogoOreTotaliCommesse;
 import gestione.pack.client.utility.ClientUtility;
@@ -382,12 +383,12 @@ public CenterLayout_FoglioFatturazione(){}
 					String meseRif= new String(); 
 					String anno=smplcmbxAnno.getRawValue().toString();		
 					meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
-									
+															
 					Dialog d= new Dialog();
-					d.setSize(550, 800);
+					d.setSize(1500, 650);
 					d.setButtons("");
-					d.add(new PanelRiepilogoGiornalieroCommesse(idDip, anno, meseRif, "1")); //tipo indica da quale layout creo la classe
-					//d.add(new PanelRiepilogoMeseGiornalieroCommesseHorizontal(username, data, oreTotFerie, oreTotPermessi, oreTotRecupero, oreTotStrao))
+					//d.add(new PanelRiepilogoGiornalieroCommesse(idDip, anno, meseRif, "1")); //tipo indica da quale layout creo la classe
+					d.add(new PanelRiepilogoMeseGiornalieroCommesseHorizontal(idDip, anno, meseRif));
 					
 					d.show();
 				}
@@ -426,7 +427,7 @@ public CenterLayout_FoglioFatturazione(){}
 			});
 		    
 		    btnCheckOreFatturate= new Button();
-		    btnCheckOreFatturate.setEnabled(false);
+		    btnCheckOreFatturate.disable();
 		    btnCheckOreFatturate.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.check()));
 		    btnCheckOreFatturate.setToolTip("Controllo ore Lavorate/Lavorate Registrate");
 		    btnCheckOreFatturate.setIconAlign(IconAlign.TOP);
@@ -435,13 +436,23 @@ public CenterLayout_FoglioFatturazione(){}
 				@Override
 				public void componentSelected(ButtonEvent ce) {
 					
+					String meseRif= new String(); 
+					String anno=smplcmbxAnno.getRawValue().toString();		
+					meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
+					String pm=smplcmbxPM.getRawValue().toString();	
 					
+					DialogCheckCommesseFatturate d= new DialogCheckCommesseFatturate(pm, anno, meseRif);
+					d.setSize(1200, 650);
+					d.setButtons("");
+										
+					d.show();
 					
 				}	    	
 			});
 		    
 		    tlbrRiepilogoOre.add(btnShowDettaglioOre);
 		    tlbrRiepilogoOre.add(btnEditOreDip);
+		    tlbrRiepilogoOre.add(btnCheckOreFatturate);
 		    
 		    txtOreTotali.setWidth(435);
 		    txtOreTotali.setHeight(23);
@@ -651,7 +662,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    configs.add(column);  
 		    
 			return configs;
-		}	
+		}
 	
 		private void caricaTabellaRiepOreDipFatturazione(String meseRif, String pm) {	
 			
@@ -665,7 +676,7 @@ public CenterLayout_FoglioFatturazione(){}
 							Window.alert("Nessun dato (ore lavoro) rilevato in base ai criteri di ricerca selezionati.");
 							trovato=false;
 						}
-						else loadTable(result);			
+						else loadTable(result);
 				}
 
 				@Override
@@ -682,6 +693,7 @@ public CenterLayout_FoglioFatturazione(){}
 			try {
 				btnEditOreDip.enable();
 				btnShowDettaglioOre.enable();
+				btnCheckOreFatturate.enable();
 				store.removeAll();
 				store.add(result);
 				store.groupBy("numeroCommessa");
@@ -1620,8 +1632,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    	  		
 		    	  	}					
 				}				
-			});
-			
+			});			
 			
 			txtfldOreScaricate.setFieldLabel("Ore Scaricate");
 			txtfldOreScaricate.setEnabled(false);
@@ -1950,9 +1961,9 @@ public CenterLayout_FoglioFatturazione(){}
 		    
 		    column=new ColumnConfig();		
 		    column.setId("totalePcl");  
-		    column.setHeader("PCL su Est."); 
+		    column.setHeader("PCL su Est.");
 		    column.setToolTip("Totale delle variazioni di PCL sull'estenzione");
-		    column.setWidth(70);  
+		    column.setWidth(70);
 		    column.setRowHeader(true); 
 		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
@@ -1968,7 +1979,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    configs.add(column);
 		    
 			column=new ColumnConfig();		
-		    column.setId("numeroOrdine");  
+		    column.setId("numeroOrdine");
 		    column.setHeader("Ordine");  
 		    column.setWidth(60);  
 		    column.setRowHeader(true);  
@@ -1981,6 +1992,21 @@ public CenterLayout_FoglioFatturazione(){}
 						int colIndex,
 						ListStore<RiepilogoOreTotaliCommesse> store,
 						Grid<RiepilogoOreTotaliCommesse> grid) {
+					
+					/*Boolean importoRes=model.get("importoOrdineRes");
+					String numeroCommessa=model.getNumeroCommessa();
+					
+					if(!importoRes)
+					{
+						String color = "#90EE90";					                    
+						config.style = config.style + ";background-color:" + color + ";";
+					}else{
+						String color = "#F08080";					                    
+						config.style = config.style + ";background-color:" + color + ";";
+					}
+					
+					if(numeroCommessa.compareTo("TOTALE")==0)
+						config.style = config.style + ";background-color:#FFFFFF;";*/
 					
 					return model.get(property);
 				}
@@ -2005,8 +2031,8 @@ public CenterLayout_FoglioFatturazione(){}
 					return model.get(property);
 				}
 			});
-		    configs.add(column); 
-		     
+		    configs.add(column);
+		    
 		    column=new ColumnConfig();		
 		    column.setId("oggettoOrdine");  
 		    column.setHeader("Oggetto");  

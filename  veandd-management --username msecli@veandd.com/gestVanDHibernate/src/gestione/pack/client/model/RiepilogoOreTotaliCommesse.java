@@ -22,7 +22,8 @@ public class RiepilogoOreTotaliCommesse extends BaseModel implements IsSerializa
 	}
 	
 	public RiepilogoOreTotaliCommesse(String numeroRda, String numeroCommessa, String estensione, Float sal, Float totaleSal, String salDaButtare, Float pcl, Float totalePcl,
-			String numeroOrdine, String oggettoOrdine, String descrizioneAttivita, int idAttivita, String oreOrdine , Float  oreLavoro, String compilato, String importoFatturato){	
+			String numeroOrdine, String oggettoOrdine, String descrizioneAttivita, int idAttivita, String oreOrdine , Float  oreLavoro, String compilato, 
+			String importoFatturato, Boolean importoOrdineRes){	
 		
 		set("numeroRda", numeroRda);
 		set("numeroCommessa", numeroCommessa);
@@ -40,6 +41,7 @@ public class RiepilogoOreTotaliCommesse extends BaseModel implements IsSerializa
 		set("oreOrdine", oreOrdine);		
 		set("compilato", compilato);
 		set("idAttivita",idAttivita);
+		set("importoOrdineRes",importoOrdineRes);
 	}
 	
 	public String getNumeroCommessa() {
