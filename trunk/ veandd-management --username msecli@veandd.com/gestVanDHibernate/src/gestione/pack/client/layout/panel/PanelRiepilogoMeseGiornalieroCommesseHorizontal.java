@@ -56,13 +56,14 @@ public class PanelRiepilogoMeseGiornalieroCommesseHorizontal  extends LayoutCont
 	
 	private String dataR;
 	private String usernameR;
+	int idDip=0;
 		
 	private RiepilogoFoglioOreModel riepOreTot;
 			
 	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
 	private static String url= "/gestvandhibernate/PrintDataServlet";
 	
-	public PanelRiepilogoMeseGiornalieroCommesseHorizontal(String username, Date data,
+	public PanelRiepilogoMeseGiornalieroCommesseHorizontal(int idDip, String username, Date data,
 			String oreTotFerie, String oreTotPermessi, String oreTotRecupero, String oreTotStrao){
 		
 		String dataRif=data.toString();
@@ -71,9 +72,15 @@ public class PanelRiepilogoMeseGiornalieroCommesseHorizontal  extends LayoutCont
 		
 		this.dataR=mese+anno;
 		this.usernameR=username;
+		this.idDip=idDip;
 		
 		this.riepOreTot=new RiepilogoFoglioOreModel(0, "", "", "", "", "",(float)0, (float)0, (float)0, (float)0, Float.valueOf(oreTotFerie),
 				Float.valueOf(oreTotPermessi), Float.valueOf(oreTotRecupero), Float.valueOf(oreTotStrao), (float)0, "", "", "");
+	}
+	
+	public PanelRiepilogoMeseGiornalieroCommesseHorizontal(int idDip, String anno, String mese){		
+		this.dataR=mese+anno;
+		this.idDip=idDip;		
 	}
 	
 	protected void onRender(Element target, int index) {  
@@ -351,8 +358,7 @@ public class PanelRiepilogoMeseGiornalieroCommesseHorizontal  extends LayoutCont
 				return model.get(property);
 			}
 		});
-		configs.add(column);
-	
+		configs.add(column);	
 		return configs;
 	}
 	
@@ -369,7 +375,7 @@ public class PanelRiepilogoMeseGiornalieroCommesseHorizontal  extends LayoutCont
 		
 		data=mese+anno;
 		*/
-		AdministrationService.Util.getInstance().getRiepilogoMensileDettagliatoCommesseHorizontalLayout(usernameR, dataR, new AsyncCallback<List<RiepilogoMeseGiornalieroModel>>() {
+		AdministrationService.Util.getInstance().getRiepilogoMensileDettagliatoCommesseHorizontalLayout(idDip, usernameR, dataR, new AsyncCallback<List<RiepilogoMeseGiornalieroModel>>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

@@ -4733,7 +4733,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	
 	@Override
 	public List<RiepilogoMeseGiornalieroModel> getRiepilogoMensileDettagliatoCommesseHorizontalLayout(
-			String dipendente, String data) throws IllegalArgumentException {
+			int idDip, String dipendente, String data) throws IllegalArgumentException {
 
 		List<RiepilogoMeseGiornalieroModel> listaR= new ArrayList<RiepilogoMeseGiornalieroModel>();
 		List<FoglioOreMese> listaF= new ArrayList<FoglioOreMese>();
@@ -4772,7 +4772,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		try {
 			tx=session.beginTransaction();
 			
-			p=(Personale)session.createQuery("from Personale where username=:username").setParameter("username", dipendente).uniqueResult();
+			if(idDip!=0)
+				p=(Personale)session.createQuery("from Personale where ID_PERSONALE=:idPersonale").setParameter("idPersonale", idDip).uniqueResult();
+			else
+				p=(Personale)session.createQuery("from Personale where username=:username").setParameter("username", dipendente).uniqueResult();
 						
 			meseN=ServerUtility.traduciMeseToNumber(mese.toLowerCase());
 			
@@ -7105,6 +7108,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Float pcl=(float) 0.0;
 		Float[] totaleSalPcl={(float)0.0,(float)0.0};
 		Float oreFatturate= (float)0.0;		
+		Boolean importoResiduo=false;
 
 		numEstensione=numEstensione.toLowerCase();
 				
@@ -7168,7 +7172,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 								totaleSalPcl=ServerUtility.calcolaTotaleSalPclPerEstensione(comm.getNumeroCommessa(), comm.getEstensione(), att.getIdAttivitaOrdine(), data);
 																
 								riep= new RiepilogoOreTotaliCommesse(att.getOrdine().getRda().getCodiceRDA(),comm.getNumeroCommessa(), comm.getEstensione(),sal, totaleSalPcl[0], salDaButtare, pcl,totaleSalPcl[1],
-										numeroOrdine, oggettoOrdine,att.getDescrizioneAttivita(),  att.getIdAttivitaOrdine(), oreEseguite, oreFatturate, flagCompilato, importoFatturato);
+										numeroOrdine, oggettoOrdine,att.getDescrizioneAttivita(),  att.getIdAttivitaOrdine(), oreEseguite, oreFatturate, flagCompilato, importoFatturato, importoResiduo);
 							   	listaRiep.add(riep);
 							    oreEseguite="0.00";
 							    oreFatturate=(float)0;
@@ -7217,7 +7221,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							totaleSalPcl=ServerUtility.calcolaTotaleSalPclPerEstensione(comm.getNumeroCommessa(), comm.getEstensione(),0, data);
 							
 							riep= new RiepilogoOreTotaliCommesse("#", comm.getNumeroCommessa(), comm.getEstensione(),sal, totaleSalPcl[0], salDaButtare, pcl, totaleSalPcl[1], numeroOrdine,"#", "#",
-									0,oreEseguite, oreFatturate, flagCompilato, importoFatturato);
+									0,oreEseguite, oreFatturate, flagCompilato, importoFatturato, importoResiduo);
 							listaRiep.add(riep);
 							oreEseguite="0.00";
 							oreFatturate=(float)0;
@@ -7281,7 +7285,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						totaleSalPcl=ServerUtility.calcolaTotaleSalPclPerEstensione(numCommessa, numEstensione, att.getIdAttivitaOrdine(), data);
 						riep= new RiepilogoOreTotaliCommesse(att.getOrdine().getRda().getCodiceRDA(), numCommessa, numEstensione,sal, totaleSalPcl[0], salDaButtare, pcl, totaleSalPcl[1], numeroOrdine, oggettoOrdine, 
 								att.getDescrizioneAttivita(), att.getIdAttivitaOrdine(), 
-								oreEseguite, oreFatturate, flagCompilato, importoFatturato);
+								oreEseguite, oreFatturate, flagCompilato, importoFatturato, importoResiduo);
 						listaRiep.add(riep);					
 					}
 					listaAttOrdine.clear();
@@ -7321,9 +7325,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					totaleSalPcl=ServerUtility.calcolaTotaleSalPclPerEstensione(numCommessa, numEstensione,0, data);
 					
 					riep= new RiepilogoOreTotaliCommesse("#", numCommessa, numEstensione,sal, totaleSalPcl[0], salDaButtare, pcl, totaleSalPcl[1], numeroOrdine, "" , "",
-							0,oreEseguite, oreFatturate, flagCompilato, importoFatturato);
+							0,oreEseguite, oreFatturate, flagCompilato, importoFatturato, importoResiduo);
 					listaRiep.add(riep);			
-				}					
+				}
 			}
 								
 			tx.commit();
@@ -7344,7 +7348,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				totImportoFatturato=d.format(Float.valueOf(totImportoFatturato)+Float.valueOf((String)r.get("importoFatturato")));
 			}
 			riep= new RiepilogoOreTotaliCommesse("","TOTALE", "", Float.valueOf(salTotale), (float)0.0, "N", Float.valueOf(pclTotale), (float)0.0, "", "", "",
-					0, oreEseguite , Float.valueOf("0.00"), "", totImportoFatturato);
+					0, oreEseguite , Float.valueOf("0.00"), "", totImportoFatturato, importoResiduo);
 			listaRiep.add(riep);
 	
 			

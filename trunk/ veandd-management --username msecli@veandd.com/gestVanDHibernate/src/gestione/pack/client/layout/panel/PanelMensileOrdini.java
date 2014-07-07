@@ -605,9 +605,9 @@ public class PanelMensileOrdini extends LayoutContainer{
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
 	    
-	    column = new SummaryColumnConfig<Double>();  
+	    column = new SummaryColumnConfig<Double>();
 	    column.setId("numeroOrdine");  
-	    column.setHeader("Ordine");  
+	    column.setHeader("Ordine");
 	    column.setWidth(100);  
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
