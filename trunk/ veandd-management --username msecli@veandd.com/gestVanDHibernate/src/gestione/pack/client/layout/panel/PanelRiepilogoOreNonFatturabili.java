@@ -55,7 +55,8 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 	private Grid<RiepilogoOreNonFatturabiliModel> gridRiepilogo;
 	private ColumnModel cmRiepilogo;
 	
-	private String data;
+	private String anno;
+	private String mese;
 	
 	private SimpleComboBox<String> smplcmbxOrderBy;
 	private Button btnPrint;
@@ -67,8 +68,9 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 	
 	protected Status status;
 	
-	public PanelRiepilogoOreNonFatturabili(String data) {	
-		this.data=data;
+	public PanelRiepilogoOreNonFatturabili(String data, String mese) {	
+		this.anno=data;
+		this.mese=mese;
 	}
 
 	protected void onRender(Element target, int index) {  
@@ -210,7 +212,7 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 		//String groupBy= new String();
 		status.setBusy("Please wait...");
 	    status.show();
-		AdministrationService.Util.getInstance().getRiepilogoOreNonFatturate(data, "", new AsyncCallback<List<RiepilogoOreNonFatturabiliModel>>() {
+		AdministrationService.Util.getInstance().getRiepilogoOreNonFatturate(anno, mese, new AsyncCallback<List<RiepilogoOreNonFatturabiliModel>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				status.hide();
@@ -221,10 +223,12 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 			public void onSuccess(List<RiepilogoOreNonFatturabiliModel> result) {
 				status.hide();
 				btnPrint.setEnabled(true);
-				if(result.size()>0)
-					loadTableRiass(result);
-				else
-					Window.alert("Nessun dato trovato!");
+				
+				if(result!=null)
+					if(result.size()>0)
+						loadTableRiass(result);
+					else
+						Window.alert("Nessun dato trovato!");
 			}
 		 });		
 	}

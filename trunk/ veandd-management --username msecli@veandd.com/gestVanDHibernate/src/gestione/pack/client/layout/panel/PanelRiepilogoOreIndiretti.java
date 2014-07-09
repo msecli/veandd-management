@@ -55,7 +55,8 @@ public class PanelRiepilogoOreIndiretti extends LayoutContainer{
 	private Grid<RiepilogoOreNonFatturabiliModel> gridRiepilogo;
 	private ColumnModel cmRiepilogo;
 	
-	private String data;
+	private String anno;
+	private String meseRif;
 	
 	private SimpleComboBox<String> smplcmbxOrderBy;
 	private Button btnPrint;
@@ -67,8 +68,9 @@ public class PanelRiepilogoOreIndiretti extends LayoutContainer{
 	
 	protected Status status;
 	
-	public PanelRiepilogoOreIndiretti(String data) {	
-		this.data=data;
+	public PanelRiepilogoOreIndiretti(String data, String meseRif) {	
+		this.anno=data;
+		this.meseRif=meseRif;
 	}
 
 	protected void onRender(Element target, int index) {  
@@ -209,7 +211,7 @@ public class PanelRiepilogoOreIndiretti extends LayoutContainer{
 		//String groupBy= new String();
 		status.setBusy("Please wait...");
 	    status.show();
-		AdministrationService.Util.getInstance().getRiepilogoOreIndiretti(data, "", new AsyncCallback<List<RiepilogoOreNonFatturabiliModel>>() {
+		AdministrationService.Util.getInstance().getRiepilogoOreIndiretti(anno, meseRif, new AsyncCallback<List<RiepilogoOreNonFatturabiliModel>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				status.hide();

@@ -439,10 +439,17 @@ public CenterLayout_FoglioFatturazione(){}
 					String meseRif= new String(); 
 					String anno=smplcmbxAnno.getRawValue().toString();		
 					meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
-					String pm=smplcmbxPM.getRawValue().toString();	
+					String pm=smplcmbxPM.getRawValue().toString();
 					
-					DialogCheckCommesseFatturate d= new DialogCheckCommesseFatturate(pm, anno, meseRif);
-					d.setSize(1200, 650);
+					List <RiepilogoOreDipFatturazione> listaCommesse= new ArrayList<RiepilogoOreDipFatturazione>();
+					
+					for(RiepilogoOreDipFatturazione r: store.getModels()){
+						if(r.getDipendente().compareTo("_TOTALE")==0)
+							listaCommesse.add(r);
+					}
+					
+					DialogCheckCommesseFatturate d= new DialogCheckCommesseFatturate(pm, anno, meseRif, listaCommesse);
+					d.setSize(550, 870);
 					d.setButtons("");
 										
 					d.show();

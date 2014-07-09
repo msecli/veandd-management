@@ -504,6 +504,10 @@ public interface AdministrationServiceAsync {
 	void saveDataRtvOnly(String numeroOrdine, Date dataEmissione,
 			String importo, AsyncCallback<Boolean> asyncCallback);
 
+	void checkOreEseguiteFogliopFatturazione(String meseRif,
+			List<RiepilogoOreDipFatturazione> listaC,
+			AsyncCallback<List<RiepilogoOreDipFatturazione>> asyncCallback);
+
 	
 
 }

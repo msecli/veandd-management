@@ -494,5 +494,8 @@ boolean invioCommenti(String testo, String username, Date giorno);
 
 	boolean saveDataRtvOnly(String numeroOrdine, Date dataEmissione,
 			String importo) throws IllegalArgumentException;
+
+	List<RiepilogoOreDipFatturazione> checkOreEseguiteFogliopFatturazione(
+			String meseRif, List<RiepilogoOreDipFatturazione> listaC);
 	
 }
