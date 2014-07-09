@@ -2892,6 +2892,56 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 		
 		return meseCorrente;
 	}
+
+	public static int getIndiceMese(final String meseRif) {
+		
+		int indice=0;
+		
+		switch (meseRif) {
+		case "Gen":
+			indice=0;
+			break;
+		case "Feb":
+			indice=1;
+			break;
+		case "Mar":
+			indice=2;
+			break;
+		case "Apr":
+			indice=3;
+			break;
+
+		case "Mag":
+			indice=4;
+			break;
+		case "Giu":
+			indice=5;
+			break;
+		case "Lug":
+			indice=6;
+			break;
+		case "Ago":
+			indice=7;
+			break;
+
+		case "Set":
+			indice=8;
+			break;
+		case "Ott":
+			indice=9;
+			break;
+		case "Nov":
+			indice=10;
+			break;
+		case "Dic":
+			indice=11;
+			break;
+		default:
+			break;
+		}
+		
+		return indice;
+	}
 		
 }
 

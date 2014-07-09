@@ -8666,7 +8666,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<RiepilogoOreNonFatturabiliModel> getRiepilogoOreNonFatturate(
-			String data, String groupBy) throws IllegalArgumentException {
+			String annoRif, String meseRif) throws IllegalArgumentException {
 		
 		RiepilogoOreNonFatturabiliModel riep;
 		List<RiepilogoOreNonFatturabiliModel> listaRO= new ArrayList<RiepilogoOreNonFatturabiliModel>();
@@ -8687,6 +8687,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String numeroCommessa;
 		Float importoSal=(float)0;
 		
+		int indiceMese=0;
+		
 		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
 	    formatSymbols.setDecimalSeparator('.');
 	    String pattern="0.00";
@@ -8698,10 +8700,18 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		try {
 			tx=session.beginTransaction();
 			
-			listaMesiConsiderati=ServerUtility.getListaMesiPerAnno(data);
+			if(meseRif.compareTo("Tutti")==0)
+				listaMesiConsiderati=ServerUtility.getListaMesiPerAnno(annoRif);
+			else{
+				listaMesiConsiderati.add(meseRif+annoRif);
+				indiceMese=ServerUtility.getIndiceMese(meseRif);
+			}
 			
 			//Le commesse devono essere di tipo "i" interne
 			listaCommAss=(List<Commessa>)session.createQuery("from Commessa where tipoCommessa=:tipo").setParameter("tipo", "i").list();
+			
+			for(int k=0;k<=11;k++)
+				totMesi[k]="0.00";
 			
 			for(Commessa c:listaCommAss){
 				for(String mese:listaMesiConsiderati){
@@ -8711,7 +8721,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							" d.numeroCommessa=:numCommessa and d.estensioneCommessa=:estensione" +
 							" and f.meseRiferimento=:mese").setParameter("numCommessa", c.getNumeroCommessa())
 							.setParameter("estensione", c.getEstensione())
-							.setParameter("mese", mese).list();			
+							.setParameter("mese", mese).list();
 															
 					for(DettaglioIntervalliCommesse d:listaDettComm)					
 						//prendo tutti i dip che hanno lavorato su quella commessa nei mesi considerati
@@ -8720,12 +8730,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					
 					listaDettCommAll.addAll(listaDettComm);
 				}
-			}						
+			}			
 			
 			
 			for(Personale p:listaP){
-				if(p.getCognome().compareTo("Cardano")==0)
-					System.out.print("");
 				if(p.getGruppoLavoro().compareTo("Indiretti")!=0)//i dipendenti considerati non devono essere indiretti
 					for(Commessa c:listaCommAss){
 						for(String mese:listaMesiConsiderati){
@@ -8736,21 +8744,28 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 									totOreCommMese=ServerUtility.aggiornaTotGenerale(totOreCommMese, d.getOreLavorate());
 									totOreCommMese=ServerUtility.aggiornaTotGenerale(totOreCommMese, d.getOreViaggio());											
 								}
+																
 							}
 							totOreCommMese=ServerUtility.getOreCentesimi(totOreCommMese);
 							
-							totMesi[listaMesiConsiderati.indexOf(mese)]=totOreCommMese;
+							if(meseRif.compareTo("Tutti")==0)
+								totMesi[listaMesiConsiderati.indexOf(mese)]=totOreCommMese;
+							else
+								totMesi[indiceMese]=totOreCommMese;
+							
 							totOreCommMese="0.00";						
 						}//mesi	
 						
 						for(int i=0; i<12;i++)
-							totOre=df.format(Float.valueOf(totOre)+Float.valueOf(totMesi[i]));
+							if(totMesi[i]!=null)
+								totOre=df.format(Float.valueOf(totOre)+Float.valueOf(totMesi[i]));
+							else
+								totOre=df.format(Float.valueOf(totOre)+Float.valueOf("0.00"));
 						
 						if(p.getCostoAziendas().iterator().hasNext()){
 							costoP=p.getCostoAziendas().iterator().next();
 							
-							//TODO
-							
+							//TODO	
 							//se non carico i costi mi darà errore!!!
 							//costoOrario=df.format(Float.valueOf(costoP.getCostoAnnuo())/Float.valueOf(costoP.getOrePianificate()));		
 							
@@ -8809,7 +8824,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<RiepilogoOreNonFatturabiliModel> getRiepilogoOreIndiretti(
-			String data, String string) throws IllegalArgumentException {
+			String data, String meseRif) throws IllegalArgumentException {
 		RiepilogoOreNonFatturabiliModel riep;
 		List<RiepilogoOreNonFatturabiliModel> listaRO= new ArrayList<RiepilogoOreNonFatturabiliModel>();
 		List<Personale> listaP= new ArrayList<Personale>();	
@@ -8834,10 +8849,17 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
 		
+		int indiceMese=0;
+		
 		try {
 			tx=session.beginTransaction();
 		
-			listaMesiConsiderati=ServerUtility.getListaMesiPerAnno(data);			
+			if(meseRif.compareTo("Tutti")==0)
+				listaMesiConsiderati=ServerUtility.getListaMesiPerAnno(data);
+			else{
+				listaMesiConsiderati.add(meseRif+data);
+				indiceMese=ServerUtility.getIndiceMese(meseRif);
+			}		
 			
 			/*for(Personale p:listaP){
 				
@@ -8904,6 +8926,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				listaAss.clear();			
 			}	//personale	*/
 			
+			for(int k=0;k<=11;k++)
+				totMesi[k]="0.00";
 			
 			listaCommAss=(List<Commessa>)session.createQuery("from Commessa where tipoCommessa=:tipo").setParameter("tipo", "i").list();
 			
@@ -8942,28 +8966,28 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							}
 							totOreCommMese=ServerUtility.getOreCentesimi(totOreCommMese);
 							
-							totMesi[listaMesiConsiderati.indexOf(mese)]=totOreCommMese;
+							if(meseRif.compareTo("Tutti")==0)
+								totMesi[listaMesiConsiderati.indexOf(mese)]=totOreCommMese;
+							else
+								totMesi[indiceMese]=totOreCommMese;
+														
 							totOreCommMese="0.00";						
 						}//mesi	
 						
 						for(int i=0; i<12;i++)
-							totOre=df.format(Float.valueOf(totOre)+Float.valueOf(totMesi[i]));
-						
+							if(totMesi[i]!=null)
+								totOre=df.format(Float.valueOf(totOre)+Float.valueOf(totMesi[i]));
+							else
+								totOre=df.format(Float.valueOf(totOre)+Float.valueOf("0.00"));
+										
 						if(p.getCostoAziendas().iterator().hasNext()){
 							costoP=p.getCostoAziendas().iterator().next();
-							
-							//se non carico i costi mi darà errore!!!
-							//costoOrario=df.format(Float.valueOf(costoP.getCostoAnnuo())/Float.valueOf(costoP.getOrePianificate()));		
-							
-							
-							//TODO
-							
 							costoEffettivo=Float.valueOf(totOre)* Float.valueOf(costoOrario);
 						}else
-						{
+							{
 							costoOrario="0.00";
 							costoEffettivo=(float)0;
-						}
+							}
 						
 						if(Float.valueOf(totOre)!=0){
 					
@@ -11805,6 +11829,83 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	        	return false;
 		}	
 		return true;
+	}
+
+	
+	@Override
+	public List<RiepilogoOreDipFatturazione> checkOreEseguiteFogliopFatturazione(
+			String meseRif, List<RiepilogoOreDipFatturazione> listaC) {
+		
+		List<RiepilogoOreDipFatturazione> listaCheck= new ArrayList<RiepilogoOreDipFatturazione>();
+		RiepilogoOreDipFatturazione riep;
+		List<FoglioFatturazione> listaFF= new ArrayList<FoglioFatturazione>();
+		
+		String numeroCommessa;
+		String estensioneCommessa;
+		Commessa c= new Commessa();
+		boolean trovato= false;
+		boolean check=false;
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		//oreTotali		
+				
+		try {		
+				tx=session.beginTransaction();
+				
+				//TODO check se pa (se pa non avrà fogli fatturazione quindi prendo le varie sottoestensioni)
+				
+				for(RiepilogoOreDipFatturazione r:listaC){
+					
+					numeroCommessa=r.getNumeroCommessa();
+					estensioneCommessa=numeroCommessa.substring(numeroCommessa.indexOf(".")+1, numeroCommessa.indexOf("(")-1);
+					numeroCommessa=numeroCommessa.substring(0,numeroCommessa.indexOf("."));
+					
+					if(estensioneCommessa.compareTo("pa")!=0){
+						c=(Commessa)session.createQuery("from Commessa where numeroCommessa=:numeroCommessa and estensione=:estensioneCommessa")
+							.setParameter("numeroCommessa", numeroCommessa).setParameter("estensioneCommessa", estensioneCommessa).uniqueResult();
+					
+						if(c!=null)
+							listaFF.addAll(c.getFoglioFatturaziones());
+					
+						for(FoglioFatturazione ff:listaFF){
+							if(ff.getMeseCorrente().compareTo(meseRif)==0){
+								trovato=true;
+							
+								if(Float.valueOf(r.getOreTotali())== Float.valueOf(ff.getOreEseguite()))
+									check=true;
+							
+								riep=new RiepilogoOreDipFatturazione(numeroCommessa, meseRif, "", 0, "", Float.valueOf(r.getOreTotali()), Float.valueOf(ff.getOreEseguite()),
+									(float)0.0, (float)0.00, (float)0.0, check);			
+							
+								listaCheck.add(riep);
+							
+								break;
+							}	
+						}
+						
+						if(!trovato){
+							riep=new RiepilogoOreDipFatturazione(numeroCommessa, meseRif, "", 0, "", (float)0.0, (float)0.0,
+									(float)0.0, (float)0.00, (float)0.0, true);
+							listaCheck.add(riep);
+						}							
+					
+						check=false;
+						trovato=false;
+						listaFF.clear();
+					}
+				}	
+				
+				tx.commit();
+				
+			}catch (Exception e) {	
+				e.printStackTrace();
+				if (tx!=null)
+					tx.rollback();				
+			}finally{
+				session.close();
+			}
+		
+		return listaCheck;
 	}
 	
 }

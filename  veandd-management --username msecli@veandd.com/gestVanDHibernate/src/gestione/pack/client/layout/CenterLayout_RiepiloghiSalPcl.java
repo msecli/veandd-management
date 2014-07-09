@@ -135,6 +135,7 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 			 smplcmbxMese.add(l);}
 		smplcmbxMese.setTriggerAction(TriggerAction.ALL);
 		smplcmbxMese.setSimpleValue(mese);
+		smplcmbxMese.add("Tutti");
 	    tlbScelte.add(smplcmbxMese);
 	    
 	    smplcmbxPM= new SimpleComboBox<String>();
@@ -158,7 +159,7 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 		btnSelect.setToolTip("Load");
 		btnSelect.setIconAlign(IconAlign.TOP);
 		btnSelect.setSize(26, 26);
-		btnSelect.addSelectionListener(new SelectionListener<ButtonEvent>() {		
+		btnSelect.addSelectionListener(new SelectionListener<ButtonEvent>() {				
 			@Override
 			public void componentSelected(ButtonEvent ce) {		
 				if(smplcmbxMese.isValid()&&smplcmbxAnno.isValid()){			
@@ -173,7 +174,7 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 			    	anno= smplcmbxAnno.getRawValue().toString();
 					meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
 					data=meseRif+anno;
-								
+										
 					if(tabSelected.compareTo("sal")==0){
 						tbSal.removeAll();
 						tbSal.add(new PanelRiepilogoSalPclMese(tabSelected, data, pm));
@@ -185,11 +186,23 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 							tbPcl.add(new PanelRiepilogoSalPclMese(tabSelected, data, pm));
 							tbPcl.layout(true);
 							//cpnlContainTab.layout();							
-						}else{
-							tbRiassunto.removeAll();
-							tbRiassunto.add(new PanelRiepilogoSalPclRiassunto("", data));
-							tbRiassunto.layout(true);							
-						}
+						}else
+							if(tabSelected.compareTo("nonFatturabili")==0){
+								tbNonFatturabili.removeAll();
+								tbNonFatturabili.add(new PanelRiepilogoOreNonFatturabili(anno, meseRif));
+								tbNonFatturabili.layout(true);
+							}else
+								if(tabSelected.compareTo("indiretti")==0){
+									tbIndiretti.removeAll();
+									tbIndiretti.add(new PanelRiepilogoOreIndiretti(anno, meseRif));
+									tbIndiretti.layout(true);
+								}						
+								else
+								{
+									tbRiassunto.removeAll();
+									tbRiassunto.add(new PanelRiepilogoSalPclRiassunto("", data));
+									tbRiassunto.layout(true);
+								}
 					
 				}else Window.alert("Controllare i dati selezionati!");
 			}
@@ -325,13 +338,16 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 			public void handleEvent(ComponentEvent be) {
 				//String meseRif= new String(); 
 		    	String anno= new String();
-		    				    				    	
+		    	String mese= new String();
+		    	
 		    	anno= smplcmbxAnno.getRawValue().toString();
+		    	mese= smplcmbxMese.getRawValue().toString();
 				/*meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
 				data=meseRif+anno;*/
 				
+		    	tabSelected="nonFatturabili";
 	        	tbNonFatturabili.removeAll();
-	        	tbNonFatturabili.add(new PanelRiepilogoOreNonFatturabili(anno));//PanelRiepilogoOreNonFatturate
+	        	tbNonFatturabili.add(new PanelRiepilogoOreNonFatturabili(anno, mese.substring(0, 3)));//PanelRiepilogoOreNonFatturate
 	        	tbNonFatturabili.layout(true);
 			}
 		});
@@ -345,13 +361,16 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 			public void handleEvent(ComponentEvent be) {
 				//String meseRif= new String(); 
 		    	String anno= new String();
-		    				    				    	
+		    	String meseRif= new String();			    				    	
+		    	
 		    	anno= smplcmbxAnno.getRawValue().toString();
+		    	meseRif= smplcmbxMese.getRawValue().toString();		    	
 				/*meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
 				data=meseRif+anno;*/
 				
+		    	tabSelected="indiretti";
 		    	tbIndiretti.removeAll();
-		    	tbIndiretti.add(new PanelRiepilogoOreIndiretti(anno));
+		    	tbIndiretti.add(new PanelRiepilogoOreIndiretti(anno, meseRif));
 	        	tbIndiretti.layout(true);
 			}
 		});

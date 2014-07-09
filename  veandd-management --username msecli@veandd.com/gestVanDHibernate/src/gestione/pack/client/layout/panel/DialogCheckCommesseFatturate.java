@@ -3,6 +3,7 @@ package gestione.pack.client.layout.panel;
 import java.util.ArrayList;
 import java.util.List;
 
+import gestione.pack.client.AdministrationService;
 import gestione.pack.client.model.RiepilogoOreDipFatturazione;
 
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -14,6 +15,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class DialogCheckCommesseFatturate  extends Dialog{
 	
@@ -21,13 +23,13 @@ public class DialogCheckCommesseFatturate  extends Dialog{
 	private Grid<RiepilogoOreDipFatturazione> gridRiepilogo;
 	private ColumnModel cm;	
 	
-	public DialogCheckCommesseFatturate(String pm, String anno, String meseRif){
+	public DialogCheckCommesseFatturate(String pm, String anno, String meseRif, List<RiepilogoOreDipFatturazione> listaCommesse){
 		
 		setLayout(new FitLayout());
 		setBodyBorder(true);
 		setBodyStyle("padding: 8px; background: none");
-		setWidth(900);
-		setHeight(550);
+		//setWidth(750);
+		//setHeight(580);
 		setResizable(false);
 		setClosable(true);
 		setButtons("");
@@ -40,8 +42,8 @@ public class DialogCheckCommesseFatturate  extends Dialog{
 		
 		ContentPanel cntpnlGrid= new ContentPanel();
 		cntpnlGrid.setHeaderVisible(false);
-		cntpnlGrid.setHeight(490);
-		cntpnlGrid.setWidth(850);
+		cntpnlGrid.setHeight(820);
+		cntpnlGrid.setWidth(520);
 		cntpnlGrid.setFrame(true);
 		cntpnlGrid.setBorders(false);
 		cntpnlGrid.setLayout(new FitLayout());
@@ -55,6 +57,8 @@ public class DialogCheckCommesseFatturate  extends Dialog{
 		gridRiepilogo.setColumnReordering(true);
 		gridRiepilogo.getView().setShowDirtyCells(false);
 		
+		caricaDatiTabella(meseRif+anno, listaCommesse);
+		
 		cntpnlGrid.add(gridRiepilogo);
 		
 		bodyContainer.add(cntpnlGrid);
@@ -62,9 +66,64 @@ public class DialogCheckCommesseFatturate  extends Dialog{
 		add(bodyContainer);		
 	}
 
+	private void caricaDatiTabella(String meseRif, List<RiepilogoOreDipFatturazione> listaC) {
+		
+		//Per ogni commessa, nel mese di riferimento cerco gli eventuali fogli fatturazione compilati e controllo la differenza ore con un check
+		AdministrationService.Util.getInstance().checkOreEseguiteFogliopFatturazione(meseRif, listaC, new AsyncCallback<List<RiepilogoOreDipFatturazione>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onSuccess(List<RiepilogoOreDipFatturazione> result) {
+				loadTable(result);
+			}
+		});
+	}
+
+		
+	private void loadTable(List<RiepilogoOreDipFatturazione> result) {
+		store.add(result);
+		gridRiepilogo.reconfigure(store, cm);
+	}
+	
+		
 	private List<ColumnConfig> createColumns() {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 		
+		ColumnConfig column=new ColumnConfig();		
+	    column.setId("numeroCommessa");  
+	    column.setHeader("Commessa");  
+	    column.setWidth(140);  
+	    column.setRowHeader(true);  
+	    configs.add(column); 
+	    
+	    //oreLavoro, oreViaggio campi model	
+	    
+	    column=new ColumnConfig();		
+	    column.setId("oreLavoro");  
+		column.setHeader("h/Lavorate");  
+		column.setWidth(90);  
+		column.setRowHeader(true); 
+	    configs.add(column);
+	    
+	    column=new ColumnConfig();		
+	    column.setId("oreViaggio");  
+		column.setHeader("h/Registrate");  
+		column.setWidth(90);  
+		column.setRowHeader(true); 
+	    configs.add(column); 
+		
+	    column=new ColumnConfig();		
+	    column.setId("checkOre");  
+		column.setHeader("Check");  
+		column.setWidth(90);  
+		column.setRowHeader(true); 
+	    configs.add(column); 
+	    
 		return configs;
 	}
 

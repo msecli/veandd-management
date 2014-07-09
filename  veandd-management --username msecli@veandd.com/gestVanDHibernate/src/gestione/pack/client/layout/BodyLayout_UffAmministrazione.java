@@ -188,13 +188,13 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 	    cp.setAnimCollapse(false);
 	    cp.setBodyStyleName("pad-text");
 	    cp.setHeading("Gestione Presenze");
-	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
+	    /*cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
             	center.removeAll();
 	        	center.add(new CenterLayout_FoglioOreGiornalieroAutoTimb());
 	        	center.layout(true);               
             }
-        });
+        });*/
 	    Button btnGestionePresenze = new Button();
 	    btnGestionePresenze.setToolTip("Rilevazione Presenze");
 	    btnGestionePresenze.setHeight(65);
@@ -215,13 +215,13 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 	    cp.setAnimCollapse(false);
 	    cp.setBodyStyleName("pad-text");
 	    cp.setHeading("Clienti");
-	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
+	    /*cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
             	center.removeAll();
 	        	center.add(new CenterLayout_AnagraficaClienti());
 	        	center.layout(true);               
             }
-        });
+        });*/
 	    Button btnAnagrC = new Button();
 	    btnAnagrC.setToolTip("Anagrafica Clienti");
 	    btnAnagrC.setHeight(65);
@@ -243,13 +243,13 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 	    cp.setAnimCollapse(false);
 	    cp.setBodyStyleName("pad-text");
 	    cp.setHeading("Gestione Ordini");   
-	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
+	    /*cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
             	center.removeAll();
 	        	center.add(new CenterLayout_GestioneRdoCompleta());
 	        	center.layout(true);               
             }
-        });
+        });*/
 	    Button btnGestioneRdo = new Button();
 	    btnGestioneRdo.setToolTip("Gestione Dati Rdo");
 	    btnGestioneRdo.setHeight(65);
@@ -296,13 +296,13 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 	    cp.setBodyStyleName("pad-text");
 	    cp.setHeading("Gestione Commesse"); 
 	    cp.setExpanded(true);
-	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
+	    /*cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
             	center.removeAll();
 	        	center.add(new CenterLayout_GestioneCommessa());
 	        	center.layout(true);               
             }
-        });
+        });*/
 	  	      
 	    Button btnGestioneCommessa = new Button();
 	    btnGestioneCommessa.setToolTip("Gestione Dati Commessa");
@@ -365,13 +365,13 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 	    cp.setAnimCollapse(false);
 	    cp.setBodyStyleName("pad-text");
 	    cp.setHeading("Fatturazione");
-	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
+	    /*cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
             	center.removeAll();
 	        	center.add(new CenterLayout_FoglioFatturazione("UA"));
 	        	center.layout(true);               
             }
-        });
+        });*/
 	    Button btnFoglioFatturazione = new Button();
 	    btnFoglioFatturazione.setToolTip("Gestione Dati Fatturazione");
 	    btnFoglioFatturazione.setHeight(65);
