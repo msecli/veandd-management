@@ -185,23 +185,27 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 							tbPcl.removeAll();
 							tbPcl.add(new PanelRiepilogoSalPclMese(tabSelected, data, pm));
 							tbPcl.layout(true);
+							cpnlContainTab.layout();
 							//cpnlContainTab.layout();							
 						}else
 							if(tabSelected.compareTo("nonFatturabili")==0){
 								tbNonFatturabili.removeAll();
 								tbNonFatturabili.add(new PanelRiepilogoOreNonFatturabili(anno, meseRif));
 								tbNonFatturabili.layout(true);
+								cpnlContainTab.layout();
 							}else
 								if(tabSelected.compareTo("indiretti")==0){
 									tbIndiretti.removeAll();
 									tbIndiretti.add(new PanelRiepilogoOreIndiretti(anno, meseRif));
 									tbIndiretti.layout(true);
+									cpnlContainTab.layout();
 								}						
 								else
 								{
 									tbRiassunto.removeAll();
 									tbRiassunto.add(new PanelRiepilogoSalPclRiassunto("", data));
 									tbRiassunto.layout(true);
+									cpnlContainTab.layout();
 								}
 					
 				}else Window.alert("Controllare i dati selezionati!");
@@ -365,12 +369,12 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 		    	
 		    	anno= smplcmbxAnno.getRawValue().toString();
 		    	meseRif= smplcmbxMese.getRawValue().toString();		    	
-				/*meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
-				data=meseRif+anno;*/
+				//meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
+				
 				
 		    	tabSelected="indiretti";
 		    	tbIndiretti.removeAll();
-		    	tbIndiretti.add(new PanelRiepilogoOreIndiretti(anno, meseRif));
+		    	tbIndiretti.add(new PanelRiepilogoOreIndiretti(anno, meseRif.substring(0, 3)));
 	        	tbIndiretti.layout(true);
 			}
 		});
