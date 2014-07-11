@@ -238,7 +238,7 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 	        	tbSal.add(new PanelRiepilogoSalPclMese(tabSelected, data, pm));
 	        	tbSal.layout(true);
 	          }  
-	    });  
+	    }); 
 	    tabpnlRiepSalPcl.add(tbSal);  
 	    	   
 	    tbSalOld.setTitle("SAL old");
