@@ -340,7 +340,7 @@ public class ConverterUtil {
 		}
 		
 		
-		OrdineModel ordine= new OrdineModel(o.getNumeroOrdine(), o.getCodiceOrdine(), codiceRda, commessa,
+		OrdineModel ordine= new OrdineModel(o.getNumeroOrdine(), o.getCodiceOrdine(), o.getEstensioneOrdine(), codiceRda, commessa,
 				dataInizioO, dataFineO, o.getDescrizioneAttivita(), o.getTariffaOraria(), o.getNumRisorse(), o.getOreBudget(), "");
 		
 		return ordine;

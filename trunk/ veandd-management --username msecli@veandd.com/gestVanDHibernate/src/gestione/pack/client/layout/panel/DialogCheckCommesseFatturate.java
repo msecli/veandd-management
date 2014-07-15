@@ -11,8 +11,10 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -28,14 +30,12 @@ public class DialogCheckCommesseFatturate  extends Dialog{
 		setLayout(new FitLayout());
 		setBodyBorder(true);
 		setBodyStyle("padding: 8px; background: none");
-		//setWidth(750);
-		//setHeight(580);
 		setResizable(false);
 		setClosable(true);
 		setButtons("");
 		setHeading("Controllo ore");
-		setModal(true);
-		
+		setModal(false);
+				
 		LayoutContainer bodyContainer = new LayoutContainer();
 		bodyContainer.setLayout(new FlowLayout());
 		bodyContainer.setBorders(false);
@@ -122,6 +122,24 @@ public class DialogCheckCommesseFatturate  extends Dialog{
 		column.setHeader("Check");  
 		column.setWidth(90);  
 		column.setRowHeader(true); 
+		column.setRenderer(new GridCellRenderer<RiepilogoOreDipFatturazione>() {
+	
+			@Override
+			public Object render(RiepilogoOreDipFatturazione model,
+					String property, ColumnData config, int rowIndex,
+					int colIndex, ListStore<RiepilogoOreDipFatturazione> store,
+					Grid<RiepilogoOreDipFatturazione> grid) {
+								
+					Boolean check=model.get("checkOre");
+					if(check!=null)
+					if(check)
+						config.style = config.style + ";background-color:" + "#90EE90" + ";";									
+					else
+						config.style = config.style + ";background-color:" + "#F08080" + ";";
+				
+					return "";
+			}
+		});
 	    configs.add(column); 
 	    
 		return configs;

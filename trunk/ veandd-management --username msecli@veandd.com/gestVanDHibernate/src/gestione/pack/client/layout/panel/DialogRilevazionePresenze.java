@@ -93,7 +93,7 @@ public class DialogRilevazionePresenze extends Dialog {
 		setClosable(true);
 		setButtons("");
 		setButtonAlign(HorizontalAlignment.CENTER);
-		setModal(true);	
+		setModal(false);	
 				
 		layoutContainer.setLayout(new FlowLayout());
 		layoutContainer.setBorders(false);
