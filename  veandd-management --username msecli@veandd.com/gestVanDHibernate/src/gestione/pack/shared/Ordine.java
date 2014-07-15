@@ -76,6 +76,8 @@ public class Ordine extends LightEntity implements IsSerializable {
 	private String prCenter;
 	
 	private String bem;	
+	
+	private String estensioneOrdine;
 
 	//bi-directional many-to-one association to Rda
 	@ManyToOne
@@ -326,6 +328,14 @@ public class Ordine extends LightEntity implements IsSerializable {
 
 	public void setRtvs(Set<Rtv> rtvs) {
 		this.rtvs = rtvs;
+	}
+
+	public String getEstensioneOrdine() {
+		return estensioneOrdine;
+	}
+
+	public void setEstensioneOrdine(String estensioneOrdine) {
+		this.estensioneOrdine = estensioneOrdine;
 	}
 	
 }

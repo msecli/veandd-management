@@ -894,7 +894,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
 		Transaction tx= null;	
 		
-		try {			
+		try {
 			tx=session.beginTransaction();		
 			r = (Rda)session.createQuery("from Rda where numero_rda= :numRda").setParameter("numRda", id).uniqueResult(); 
 			
@@ -1014,12 +1014,12 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				editTariffeOrdine(idRdo, Integer.valueOf(idAtt), tariffaAtt, descrizioneAtt);
 			}
 			
-		} catch (Exception e) {
+		}catch (Exception e){
 			esito=false;
 			errore=e.getMessage();
-			e.printStackTrace();	
+			e.printStackTrace();
 			if (tx!=null)
-	    		tx.rollback();	
+	    		tx.rollback();
 		}finally{
 			session.close();
 			if(!esito){
@@ -1042,7 +1042,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Rda rda= new Rda();
 		AttivitaOrdine att= new AttivitaOrdine();
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
-		Transaction tx= null;	
+		Transaction tx= null;
 		
 		try {
 			
@@ -1069,7 +1069,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				session.save(ordine);
 				tx.commit();			
 			}
-						
+			
 		} catch (Exception e) {
 			esito=false;
 			errore=e.getMessage();
@@ -1284,7 +1284,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	    	 esito=false;
 			 e.printStackTrace();			
 			 if (tx!=null)
-				 tx.rollback();	
+				 tx.rollback();
 	    }finally{
 	    	session.close();
 	    	if(!esito)
@@ -1292,6 +1292,145 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	    }
 		
 		return true;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<RiepilogoMensileOrdiniModel> getRiepilogoOrdini(String statoOrdini)
+			throws IllegalArgumentException {
+		
+		Boolean esito=true;
+		List<RiepilogoMensileOrdiniModel> listaRM= new ArrayList<RiepilogoMensileOrdiniModel>();
+		List<Ordine> listaO=new ArrayList<Ordine>();
+		List<FoglioFatturazione> listaFF= new ArrayList<FoglioFatturazione>();
+		RiepilogoMensileOrdiniModel riep;
+		
+		String commessa= "";
+		Float importoRes= (float)0.0;
+		String oreResidue="0.00";
+		
+		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+	    formatSymbols.setDecimalSeparator('.');
+	    String pattern="0.00";
+	    DecimalFormat d= new DecimalFormat(pattern,formatSymbols);
+		
+	    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd",Locale.ITALIAN);
+		String formattedDate ;
+	    
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {		
+			
+			tx=session.beginTransaction();
+			
+			if(statoOrdini.compareTo("Tutti")==0)
+				listaO=session.createQuery("from Ordine").list();
+			else
+				listaO=session.createQuery("from Ordine where statoOrdine=:stato").setParameter("stato", statoOrdini.substring(0, 1)).list();			
+			
+			for(Ordine o:listaO){
+				
+				if(o.getCommessa()!=null){
+					commessa=o.getCommessa().getNumeroCommessa()+"."+o.getCommessa().getEstensione();
+				
+					importoRes=Float.valueOf(o.getImportoResiduo());
+					oreResidue=o.getOreResidueBudget();
+					if(o.getDataInizio()!=null)
+						formattedDate = formatter.format(o.getDataInizio());
+					else
+						formattedDate="#";
+				
+					listaFF.addAll(o.getCommessa().getFoglioFatturaziones());
+						
+					for(FoglioFatturazione ff:listaFF)
+						if(ff.getMeseCorrente().compareTo("Mag2013")!=0){//escludo anche qui il mese di mag2013
+							importoRes=importoRes- Float.valueOf(ff.getImportoRealeFatturato());
+							oreResidue=ServerUtility.getDifference(oreResidue, ff.getOreFatturare());
+						}
+				
+					for(AttivitaOrdine a:o.getAttivitaOrdines()){
+						riep= new RiepilogoMensileOrdiniModel(a.getIdAttivitaOrdine(),o.getRda().getCliente().getRagioneSociale(), o.getCommessa().getMatricolaPM(), 
+								o.getCodiceOrdine(), formattedDate, commessa, o.getRda().getCodiceRDA(), o.getDescrizioneAttivita(), o.getRda().getOffertas().iterator().next().getCodiceOfferta(), 
+								a.getTariffaAttivita(), Float.valueOf(o.getImporto()),Float.valueOf(ServerUtility.getOreCentesimi(o.getOreBudget())), Float.valueOf(importoRes), 
+								Float.valueOf(ServerUtility.getOreCentesimi(oreResidue)), o.getStatoOrdine());
+						listaRM.add(riep);
+					}
+				
+					listaFF.clear();
+					importoRes=(float)0;
+					oreResidue="0.00";
+				}
+			}
+			
+			tx.commit();
+			
+		}catch (Exception e) {
+			esito=false;
+			e.printStackTrace();
+			if (tx!=null)
+				tx.rollback();				
+					
+		}finally{
+			session.close();
+			if(!esito)	        	
+	        	return null;
+		}
+		return listaRM;
+	}
+
+	
+	@Override
+	public List<RiepilogoMensileOrdiniModel> getDettaglioMensileOrdine(
+			String numeroOrdine) throws IllegalArgumentException {
+		
+		Boolean esito=true;
+		List<RiepilogoMensileOrdiniModel> listaRM= new ArrayList<RiepilogoMensileOrdiniModel>();
+		List<FoglioFatturazione> listaFF= new ArrayList<FoglioFatturazione>();
+		RiepilogoMensileOrdiniModel riep= new RiepilogoMensileOrdiniModel();
+		Ordine o= new Ordine();
+		
+		String numeroOrdinamentoMese=""; //201301....201405....yyyyMM
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {		
+			
+			tx=session.beginTransaction();
+			
+			o=(Ordine) session.createQuery("from Ordine where codiceOrdine=:no").setParameter("no", numeroOrdine).uniqueResult();
+			
+			listaFF.addAll(o.getCommessa().getFoglioFatturaziones());
+			for(AttivitaOrdine a:o.getAttivitaOrdines()){
+				for(FoglioFatturazione ff:listaFF){
+					if(ff.getAttivitaOrdine()==a.getIdAttivitaOrdine()){
+					
+						numeroOrdinamentoMese=ServerUtility.getNumeroOrdinamentoMese(ff.getMeseCorrente());
+						
+						riep= new RiepilogoMensileOrdiniModel(a.getIdAttivitaOrdine(), ff.getMeseCorrente(), o.getCommessa().getMatricolaPM(),	"", "", "", "", "", "", 
+							"", Float.valueOf(ff.getImportoRealeFatturato()), Float.valueOf(ServerUtility.getOreCentesimi(ff.getOreFatturare())), 
+							(float)0, (float)0, numeroOrdinamentoMese);
+						listaRM.add(riep);					
+					}
+				}							
+			}
+
+			tx.commit();
+			
+		}catch (Exception e) {
+			esito=false;
+			e.printStackTrace();
+			if (tx!=null)
+				tx.rollback();
+					
+		}finally{
+			session.close();
+			if(!esito)	        	
+	        	return null;
+		}
+		return listaRM;
 	}
 //---------------------------------------------------------------------------------------
 	
@@ -11100,145 +11239,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<RiepilogoMensileOrdiniModel> getRiepilogoOrdini(String statoOrdini)
-			throws IllegalArgumentException {
-		
-		Boolean esito=true;
-		List<RiepilogoMensileOrdiniModel> listaRM= new ArrayList<RiepilogoMensileOrdiniModel>();
-		List<Ordine> listaO=new ArrayList<Ordine>();
-		List<FoglioFatturazione> listaFF= new ArrayList<FoglioFatturazione>();
-		RiepilogoMensileOrdiniModel riep;
-		
-		String commessa= "";
-		Float importoRes= (float)0.0;
-		String oreResidue="0.00";
-		
-		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
-	    formatSymbols.setDecimalSeparator('.');
-	    String pattern="0.00";
-	    DecimalFormat d= new DecimalFormat(pattern,formatSymbols);
-		
-	    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd",Locale.ITALIAN);
-		String formattedDate ;
-	    
-		Session session= MyHibernateUtil.getSessionFactory().openSession();
-		Transaction tx= null;
-		
-		try {		
-			
-			tx=session.beginTransaction();
-			
-			if(statoOrdini.compareTo("Tutti")==0)
-				listaO=session.createQuery("from Ordine").list();
-			else
-				listaO=session.createQuery("from Ordine where statoOrdine=:stato").setParameter("stato", statoOrdini.substring(0, 1)).list();			
-			
-			for(Ordine o:listaO){
-				
-				if(o.getCommessa()!=null){
-					commessa=o.getCommessa().getNumeroCommessa()+"."+o.getCommessa().getEstensione();
-				
-					importoRes=Float.valueOf(o.getImportoResiduo());
-					oreResidue=o.getOreResidueBudget();
-					if(o.getDataInizio()!=null)
-						formattedDate = formatter.format(o.getDataInizio());
-					else
-						formattedDate="#";
-				
-					listaFF.addAll(o.getCommessa().getFoglioFatturaziones());
-						
-					for(FoglioFatturazione ff:listaFF)
-						if(ff.getMeseCorrente().compareTo("Mag2013")!=0){//escludo anche qui il mese di mag2013
-							importoRes=importoRes- Float.valueOf(ff.getImportoRealeFatturato());
-							oreResidue=ServerUtility.getDifference(oreResidue, ff.getOreFatturare());
-						}
-				
-					for(AttivitaOrdine a:o.getAttivitaOrdines()){
-						riep= new RiepilogoMensileOrdiniModel(a.getIdAttivitaOrdine(),o.getRda().getCliente().getRagioneSociale(), o.getCommessa().getMatricolaPM(), 
-								o.getCodiceOrdine(), formattedDate, commessa, o.getRda().getCodiceRDA(), o.getDescrizioneAttivita(), o.getRda().getOffertas().iterator().next().getCodiceOfferta(), 
-								a.getTariffaAttivita(), Float.valueOf(o.getImporto()),Float.valueOf(ServerUtility.getOreCentesimi(o.getOreBudget())), Float.valueOf(importoRes), 
-								Float.valueOf(ServerUtility.getOreCentesimi(oreResidue)), o.getStatoOrdine());
-						listaRM.add(riep);
-					}
-				
-					listaFF.clear();
-					importoRes=(float)0;
-					oreResidue="0.00";
-				}
-			}
-			
-			tx.commit();
-			
-		}catch (Exception e) {
-			esito=false;
-			e.printStackTrace();
-			if (tx!=null)
-				tx.rollback();				
-					
-		}finally{
-			session.close();
-			if(!esito)	        	
-	        	return null;
-		}
-		return listaRM;
-	}
-
-	
-	@Override
-	public List<RiepilogoMensileOrdiniModel> getDettaglioMensileOrdine(
-			String numeroOrdine) throws IllegalArgumentException {
-		
-		Boolean esito=true;
-		List<RiepilogoMensileOrdiniModel> listaRM= new ArrayList<RiepilogoMensileOrdiniModel>();
-		List<FoglioFatturazione> listaFF= new ArrayList<FoglioFatturazione>();
-		RiepilogoMensileOrdiniModel riep= new RiepilogoMensileOrdiniModel();
-		Ordine o= new Ordine();
-		
-		String numeroOrdinamentoMese=""; //201301....201405....yyyyMM
-		
-		Session session= MyHibernateUtil.getSessionFactory().openSession();
-		Transaction tx= null;
-		
-		try {		
-			
-			tx=session.beginTransaction();
-			
-			o=(Ordine) session.createQuery("from Ordine where codiceOrdine=:no").setParameter("no", numeroOrdine).uniqueResult();
-			
-			listaFF.addAll(o.getCommessa().getFoglioFatturaziones());
-			for(AttivitaOrdine a:o.getAttivitaOrdines()){
-				for(FoglioFatturazione ff:listaFF){
-					if(ff.getAttivitaOrdine()==a.getIdAttivitaOrdine()){
-					
-						numeroOrdinamentoMese=ServerUtility.getNumeroOrdinamentoMese(ff.getMeseCorrente());
-						
-						riep= new RiepilogoMensileOrdiniModel(a.getIdAttivitaOrdine(), ff.getMeseCorrente(), o.getCommessa().getMatricolaPM(),	"", "", "", "", "", "", 
-							"", Float.valueOf(ff.getImportoRealeFatturato()), Float.valueOf(ServerUtility.getOreCentesimi(ff.getOreFatturare())), 
-							(float)0, (float)0, numeroOrdinamentoMese);
-						listaRM.add(riep);					
-					}
-				}							
-			}
-
-			tx.commit();
-			
-		}catch (Exception e) {
-			esito=false;
-			e.printStackTrace();
-			if (tx!=null)
-				tx.rollback();
-					
-		}finally{
-			session.close();
-			if(!esito)	        	
-	        	return null;
-		}
-		return listaRM;
-	}
-
-	
-	@SuppressWarnings("unchecked")
-	@Override
 	public List<RiferimentiRtvModel> getDatiReferenti()	throws IllegalArgumentException {
 		List<RiferimentiRtvModel> listaRM= new ArrayList<RiferimentiRtvModel>();
 		List<RiferimentiRtv> listaR= new ArrayList<RiferimentiRtv>();
@@ -11832,6 +11832,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<RiepilogoOreDipFatturazione> checkOreEseguiteFogliopFatturazione(
 			String meseRif, List<RiepilogoOreDipFatturazione> listaC) {
@@ -11839,6 +11840,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		List<RiepilogoOreDipFatturazione> listaCheck= new ArrayList<RiepilogoOreDipFatturazione>();
 		RiepilogoOreDipFatturazione riep;
 		List<FoglioFatturazione> listaFF= new ArrayList<FoglioFatturazione>();
+		List<Commessa> listaCommesse= new ArrayList<Commessa>();
 		
 		String numeroCommessa;
 		String estensioneCommessa;
@@ -11847,8 +11849,14 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		boolean check=false;
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
-		//oreTotali		
+		String oreTotali="0.00";
+		//oreTotali
 				
+		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+	    formatSymbols.setDecimalSeparator('.');
+	    String pattern="0.00";
+	    DecimalFormat d= new DecimalFormat(pattern,formatSymbols);
+		
 		try {		
 				tx=session.beginTransaction();
 				
@@ -11871,9 +11879,12 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							if(ff.getMeseCorrente().compareTo(meseRif)==0){
 								trovato=true;
 							
-								if(Float.valueOf(r.getOreTotali())== Float.valueOf(ff.getOreEseguite()))
-									check=true;
+								//if(r.getOreTotali()== Float.valueOf(ff.getOreEseguite()))
+									//check=true;
 							
+								if(d.format(r.getOreTotali()).compareTo(ff.getOreEseguite())==0)
+									check=true;
+								
 								riep=new RiepilogoOreDipFatturazione(numeroCommessa, meseRif, "", 0, "", Float.valueOf(r.getOreTotali()), Float.valueOf(ff.getOreEseguite()),
 									(float)0.0, (float)0.00, (float)0.0, check);			
 							
@@ -11893,8 +11904,48 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						trovato=false;
 						listaFF.clear();
 					}
-				}	
-				
+					
+					else{
+					
+						listaCommesse=(List<Commessa>)session.createQuery("from Commessa where numeroCommessa=:numeroCommessa and " +
+							" estensione<>:estensioneCommessa and statoCommessa=:stato").setParameter("numeroCommessa", numeroCommessa)
+							.setParameter("estensioneCommessa", "pa").setParameter("stato", "Aperta").list();
+					
+						if(listaCommesse.size()>0){
+							
+							for(Commessa c1:listaCommesse)
+								for(FoglioFatturazione ff1:c1.getFoglioFatturaziones())
+									if(ff1.getMeseCorrente().compareTo(meseRif)==0){
+									//listaFF.add(ff1);
+										oreTotali=ServerUtility.aggiornaTotGenerale(oreTotali, ff1.getOreEseguite());
+									//break;
+									}								
+					
+							if(d.format(r.getOreTotali()).compareTo(oreTotali)==0){
+								check=true;
+								riep=new RiepilogoOreDipFatturazione(numeroCommessa, meseRif, "", 0, "", Float.valueOf(r.getOreTotali()), Float.valueOf(oreTotali),
+									(float)0.0, (float)0.00, (float)0.0, check);
+								listaCheck.add(riep);
+							}
+							else{
+								check=false;
+								riep=new RiepilogoOreDipFatturazione(numeroCommessa, meseRif, "", 0, "", Float.valueOf(r.getOreTotali()), Float.valueOf(oreTotali),
+									(float)0.0, (float)0.00, (float)0.0, check);
+								listaCheck.add(riep);
+							}																
+						
+							check=false;
+							oreTotali="0.00";
+							listaFF.clear();
+							listaCommesse.clear();
+							
+						}else{
+							riep=new RiepilogoOreDipFatturazione(numeroCommessa, meseRif, "", 0, "", (float)0.0, (float)0.0,
+								(float)0.0, (float)0.00, (float)0.0, true);
+							listaCheck.add(riep);						
+						}					
+					}
+				}
 				tx.commit();
 				
 			}catch (Exception e) {	
