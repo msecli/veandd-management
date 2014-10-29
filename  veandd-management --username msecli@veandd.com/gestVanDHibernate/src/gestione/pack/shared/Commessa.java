@@ -12,11 +12,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import java.util.Date;
 import java.util.Set;
 
-
 /**
  * The persistent class for the commessa database table.
  * 
  */
+
 @Entity
 @Table(name="commessa")
 public class Commessa extends LightEntity implements IsSerializable {
@@ -57,11 +57,16 @@ public class Commessa extends LightEntity implements IsSerializable {
 	private String tipoCommessa;
 	
 	private String ragioneSocialeCliente;
-
+	
+	private String escludiDaPa;
+	
+	
+	//OLD
+	//private Integer codiceOrdine;
 	//bi-directional many-to-one association to Ordine
-	@OneToMany(mappedBy="commessa", fetch=FetchType.LAZY)
+	/*@OneToMany(mappedBy="commessa", fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
-	private Set<Ordine> ordines;
+	private Set<Ordine> ordines;*/
 	
 	//bi-directional many-to-one association to Attivita
 	@OneToMany(mappedBy="commessa", fetch=FetchType.LAZY)
@@ -76,6 +81,10 @@ public class Commessa extends LightEntity implements IsSerializable {
 	@OneToMany(mappedBy="commessa", fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	private Set<Costing> costings;
+	
+	@ManyToOne
+	@JoinColumn(name="codiceOrdine")
+	private Ordine ordine;
 	
     public Commessa() {
     }
@@ -184,13 +193,13 @@ public class Commessa extends LightEntity implements IsSerializable {
 		this.tipoCommessa = tipoCommessa;
 	}
 
-	public Set<Ordine> getOrdines() {
+	/*public Set<Ordine> getOrdines() {
 		return this.ordines;
 	}
 
 	public void setOrdines(Set<Ordine> ordines) {
 		this.ordines = ordines;
-	}
+	}*/
 
 	public Set<Attivita> getAttivitas() {
 		return attivitas;
@@ -239,6 +248,31 @@ public class Commessa extends LightEntity implements IsSerializable {
 	public void setRagioneSocialeCliente(String ragioneSocialeCliente) {
 		this.ragioneSocialeCliente = ragioneSocialeCliente;
 	}
+
+	public Ordine getOrdine() {
+		return ordine;
+	}
+
+	public void setOrdine(Ordine ordine) {
+		this.ordine = ordine;
+	}
+
+	public String getEscludiDaPa() {
+		return escludiDaPa;
+	}
+
+	public void setEscludiDaPa(String escludiDaPa) {
+		this.escludiDaPa = escludiDaPa;
+	}
+
+	//Da togliere dopo il primo upload
+	/*public Integer getCodiceOrdine() {
+		return codiceOrdine;
+	}
+
+	public void setCodiceOrdine(Integer codiceOrdine) {
+		this.codiceOrdine = codiceOrdine;
+	}*/
 	
 	
 }

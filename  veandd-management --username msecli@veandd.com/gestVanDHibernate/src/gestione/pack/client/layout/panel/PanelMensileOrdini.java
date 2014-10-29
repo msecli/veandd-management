@@ -462,8 +462,8 @@ public class PanelMensileOrdini extends LayoutContainer{
 					
 		add(layoutContainer);	
 	}
-		
-	private void caricaTabellaDatiOrdini() {	
+	
+	private void caricaTabellaDatiOrdini() {
 			String stato=smplcmbxStatoOrdini.getRawValue().toString();
 			AdministrationService.Util.getInstance().getRiepilogoOrdini(stato,
 					new AsyncCallback<List<RiepilogoMensileOrdiniModel>>(){
@@ -520,7 +520,7 @@ public class PanelMensileOrdini extends LayoutContainer{
 	    column = new SummaryColumnConfig<Double>();  
 	    column.setId("cliente");  
 	    column.setHeader("Mese");  
-	    column.setWidth(140);  
+	    column.setWidth(100);  
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
@@ -528,7 +528,7 @@ public class PanelMensileOrdini extends LayoutContainer{
 	    column = new SummaryColumnConfig<Double>();  
 	    column.setId("importoOrdine");  
 	    column.setHeader("Importo Fatturato");  
-	    column.setWidth(160);  
+	    column.setWidth(100);  
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    column.setSummaryType(SummaryType.SUM);
@@ -546,7 +546,7 @@ public class PanelMensileOrdini extends LayoutContainer{
 	    column = new SummaryColumnConfig<Double>();  
 	    column.setId("oreOrdine");  
 	    column.setHeader("Ore Fatturate");  
-	    column.setWidth(120);  
+	    column.setWidth(100);  
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    column.setSummaryType(SummaryType.SUM); 
@@ -559,6 +559,22 @@ public class PanelMensileOrdini extends LayoutContainer{
 				return num.format(value);
 			}
 		});
+	    configs.add(column);
+	    
+	    column = new SummaryColumnConfig<Double>();  
+	    column.setId("numeroOrdine");  
+	    column.setHeader("Tariffa");  
+	    column.setWidth(100);  
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
+	    configs.add(column);
+	    
+	    column = new SummaryColumnConfig<Double>();  
+	    column.setId("dataOrdine");  
+	    column.setHeader("Descrizione");
+	    column.setWidth(200);
+	    column.setRowHeader(true);
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
 	    	    
 		return configs;		

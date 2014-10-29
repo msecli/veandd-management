@@ -179,13 +179,13 @@ public interface AdministrationServiceAsync {
 			String tipoCommessa, String pM, String statoCommessa,
 			String oreLavoro, String oreLavoroResidue, String tariffaSal, 
 			String salAttuale, String pclAttuale, String descrizione,
-			String note,  AsyncCallback<Boolean> asyncCallback);
+			String note,  Boolean escludiDaPa, AsyncCallback<Boolean> asyncCallback);
 
 	void editDataCommessa(int i,String ragioneSociale, String numCommessa, String estensione,
 			String tipoCommessa, String pM, String statoCommessa,
 			String oreLavoro, String oreLavoroResidue, String tariffaSal, 
 			String salAttuale, String pclAttuale, String descrizione,
-			String note,  AsyncCallback<Boolean> asyncCallback);
+			String note,  Boolean escludiDaPa, AsyncCallback<Boolean> asyncCallback);
 
 	void deleteDataCommessa(int parseInt, AsyncCallback<Boolean> asyncCallback);
 
@@ -363,8 +363,8 @@ public interface AdministrationServiceAsync {
 			String data,
 			AsyncCallback<List<RiepilogoMeseGiornalieroModel>> asyncCallback);
 
-	void getRiepilogoAnnualeOreDipendenti(String anno, String sede,
-			AsyncCallback<List<RiepilogoOreAnnualiDipendente>> asyncCallback);
+	void getRiepilogoAnnualeOreDipendenti(String annoI, 
+			String meseI, String annoF, String meseF, String sede,AsyncCallback<List<RiepilogoOreAnnualiDipendente>> asyncCallback);
 
 	void getRiepilogoOreNonFatturate(String data, String groupBy,
 			AsyncCallback<List<RiepilogoOreNonFatturabiliModel>> asyncCallback);
@@ -507,6 +507,15 @@ public interface AdministrationServiceAsync {
 	void checkOreEseguiteFogliopFatturazione(String meseRif,
 			List<RiepilogoOreDipFatturazione> listaC,
 			AsyncCallback<List<RiepilogoOreDipFatturazione>> asyncCallback);
+
+	//procedura temporanea per copiare il codice ordine nella commessa relativa
+	void copyCodOrdine(AsyncCallback<Boolean> asyncCallback);
+
+	void getCommessePerIdRda(String numeroOrdine,
+			AsyncCallback<List<CommessaModel>> asyncCallback);
+
+	void associaEstensioneCommessaAttivitaOrdine(String valueOf,
+			Integer idAttivita, AsyncCallback<Boolean> asyncCallback);
 
 	
 

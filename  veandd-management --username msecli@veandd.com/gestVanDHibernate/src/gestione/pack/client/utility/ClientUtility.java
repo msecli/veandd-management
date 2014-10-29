@@ -651,8 +651,14 @@ public class ClientUtility {
 		String ore= new String();
 		String minuti= new String();
 		
-		ore=totOre.substring(0,totOre.indexOf("."));
-		minuti=totOre.substring(totOre.indexOf(".")+1, totOre.length());
+		if(totOre.indexOf(".")>=0){
+			ore=totOre.substring(0,totOre.indexOf("."));
+			minuti=totOre.substring(totOre.indexOf(".")+1, totOre.length());
+		}
+		else{
+			ore="0";
+			minuti="0";
+		}
 		
 		
 		if(minuti.compareTo("15")==0)
@@ -721,9 +727,10 @@ public class ClientUtility {
 				codiceGiustificativo="02";
 				
 		}
-		else codiceGiustificativo="00";
+		else 
+			codiceGiustificativo="00";
 		
-		return codiceGiustificativo;	
+		return codiceGiustificativo;
 	}
 	
 	
@@ -770,6 +777,24 @@ public class ClientUtility {
 			return true;
 		else
 			return false;
+	}
+
+
+	/*
+	 * Se le ore che inserisco da fatturare sommate alle ore di SAL sono maggiori delle ore residue sull'ordine, genero un errore
+	 */
+	public static boolean checkOreOrdineOreSal(String oreFatturare, String oreSal,
+			String oreOrdine) {
+		
+		Float oreF=Float.valueOf(oreFatturare);
+		Float oreS=Float.valueOf(oreSal);
+		Float oreO=Float.valueOf(oreOrdine);
+		
+		if((oreF+oreS)>oreO)
+			return false;
+		else 
+			return true;
+		
 	}
 	
 }

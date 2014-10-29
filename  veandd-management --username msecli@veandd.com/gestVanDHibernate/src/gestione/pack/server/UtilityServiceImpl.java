@@ -102,6 +102,7 @@ private static final long serialVersionUID = 1L;
 	}	
 	
 	
+	//metodo temporaneo per l'inserimento degli idAttività ordine in fogli fatturazione già presenti
 	@Override
 	public void insertIdAttivitaOrdineInFoglioFatturazione() {
 		
@@ -120,7 +121,7 @@ private static final long serialVersionUID = 1L;
 			
 			for(Commessa c:listaCommesse){
 				
-				if(c.getOrdines().iterator().hasNext()){
+				/*if(c.getOrdines().iterator().hasNext()){
 					o=c.getOrdines().iterator().next();
 					
 					if(c.getFoglioFatturaziones().iterator().hasNext())
@@ -134,9 +135,9 @@ private static final long serialVersionUID = 1L;
 							}
 						listaFF.clear();						
 					}
-				}
-			}		
-					
+				}*/
+			}
+			
 			tx.commit();
 			
 		    } catch (Exception e) {
@@ -194,7 +195,7 @@ private static final long serialVersionUID = 1L;
 								listaCheck.add(c.getNumeroCommessa()+" "+c.getEstensione()+" "+String.valueOf(d.getIdDettaglioOreGiornaliere())+" "+p.getCognome());
 						
 							listaDC.clear();
-						}				
+						}		
 				}	
 				listaD.clear();
 				listaF.clear();

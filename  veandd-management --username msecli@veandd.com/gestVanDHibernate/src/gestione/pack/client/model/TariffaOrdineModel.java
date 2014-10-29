@@ -10,16 +10,24 @@ public class TariffaOrdineModel extends BaseModel implements IsSerializable{
 	 */
 	private static final long serialVersionUID = 1L;
 
+	
+	
 	public TariffaOrdineModel(){
 		
 	}
 	
-	public TariffaOrdineModel(String idAttivitaOrdine, String tariffaAttivita, String descrizione){
+	public TariffaOrdineModel(String idAttivitaOrdine, String tariffaAttivita, String descrizione
+			, Float oreOrdine, Float oreResidueOrdine, Float importoOrdine, Float importoResiduoOrdine, Integer idCommessaSelezionata, String numeroCommessa){
 		
 		set("idAttivitaOrdine",idAttivitaOrdine);
 		set("tariffaAttivita",tariffaAttivita);
 		set("descrizione",descrizione);
+		set("oreOrdine", oreOrdine);
+		set("oreResidueOrdine", oreResidueOrdine);
+		set("importoOrdine",importoOrdine);
+		set("importoResiduoOrdine",importoResiduoOrdine);
+		set("idCommessaSelezionata", idCommessaSelezionata);
+		set("numeroCommessa", numeroCommessa);
 		
 	}
-	
 }

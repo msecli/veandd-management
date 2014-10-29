@@ -6,6 +6,8 @@ import java.util.List;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.layout.panel.DialogAssociaCommessaToOrdine;
+import gestione.pack.client.layout.panel.DialogSelectCommessaAttivitaOrdine;
+import gestione.pack.client.model.CommessaModel;
 import gestione.pack.client.model.RdoCompletaModel;
 import gestione.pack.client.model.TariffaOrdineModel;
 import gestione.pack.client.utility.MyImages;
@@ -16,6 +18,7 @@ import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -32,7 +35,9 @@ import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
@@ -66,7 +71,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 	public CenterLayout_GestioneRdoCompleta(){}
 	
 	private TextField<String> txtfldNumeroRda;
-	private TextField<String> txtfldIdRda=new TextField<String>();	
+	private TextField<String> txtfldIdRda=new TextField<String>();
 	private TextField<String> txtfldNumeroOfferta;
 	private TextArea txtrDescrizione;
 	private TextField<String> txtfldElementoWbs;
@@ -81,10 +86,10 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 	private DateField dtfldDataInizioOrdine;
 	private DateField dtfldDataFineOrdine;
 	private TextField<String> txtfldNumeroRisorse;
-	private TextField<String> txtfldNumeroOre;
-	private TextField<String> txtfldNumeroOreResidue;
-	private TextField<String> txtfldImportoOrdine;
-	private TextField<String> txtfldImportoResiduoOrdine;
+	private TextField<String> txtfldNumeroOreOrdineCompl;
+	private TextField<String> txtfldNumeroOreResidueOrdineCompl;
+	private TextField<String> txtfldImportoOrdineCompl;
+	private TextField<String> txtfldImportoResiduoOrdineCompl;
 	private SimpleComboBox<String> smplcmbxCliente = new SimpleComboBox<String>();
 	
 	private VerticalPanel hpLayout;
@@ -105,11 +110,10 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 	private Button btnReset;
 	private Button btnDelete;
 	
-	
 	private int h=Window.getClientHeight();
 	private int w=Window.getClientWidth();
 	
-	protected void onRender(Element target, int index) {  
+	protected void onRender(Element target, int index) {
 		super.onRender(target, index);
 		
 		final FitLayout fl= new FitLayout();
@@ -124,7 +128,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		bodyContainer.setBorders(false);		
 				
 		hpLayout= new VerticalPanel();
-		hpLayout.setSpacing(10);
+		hpLayout.setSpacing(1);
 		hpLayout.setItemId("hpLayout");
 				
 		ContentPanel cntpnlLayout= new ContentPanel();
@@ -132,8 +136,8 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		cntpnlLayout.setHeaderVisible(false);
 		cntpnlLayout.setCollapsible(false);
 		cntpnlLayout.setBorders(false);
-		cntpnlLayout.setWidth(970);
-		cntpnlLayout.setHeight(980);
+		cntpnlLayout.setWidth(1000);
+		cntpnlLayout.setHeight(1080);
 		cntpnlLayout.setFrame(true);
 		cntpnlLayout.setButtonAlign(HorizontalAlignment.CENTER);
 		//cntpnlLayout.setStyleAttribute("padding-left", "7px");
@@ -173,12 +177,12 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 				String oreRes="0.0";
 				String importoOrdine="0.00";
 				String importoResiduoOrdine="0.00";
-				
-				
-				CntpnlFormRdo cpfrm=(CntpnlFormRdo) hpLayout.getItemByItemId("cpfrm");
-				ContentPanel cp=(ContentPanel) cpfrm.getItemByItemId("cp");
-				LayoutContainer layout=(LayoutContainer) cp.getItemByItemId("layout");
-				CntpnlGridTariffeOrdine cpTariffa=(CntpnlGridTariffeOrdine) layout.getItemByItemId("cpTariffa");
+								
+				//CntpnlFormRdo cpfrm=(CntpnlFormRdo) hpLayout.getItemByItemId("cpfrm");
+				//ContentPanel cp=(ContentPanel) cpfrm.getItemByItemId("cp");
+				//LayoutContainer layout=(LayoutContainer) cp.getItemByItemId("layout");
+				//CntpnlGridTariffeOrdine cpTariffa=(CntpnlGridTariffeOrdine) layout.getItemByItemId("cpTariffa");
+				CntpnlGridTariffeOrdine cpTariffa=(CntpnlGridTariffeOrdine) hpLayout.getItemByItemId("cpTariffa");
 				List<TariffaOrdineModel> listaTar= (List<TariffaOrdineModel>) cpTariffa.storeTariffe.getModels();
 				
 				if(formIsValid()&&!arePresent()&&areValid(listaTar)){
@@ -200,10 +204,10 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 					if(!dtfldDataFineOrdine.getRawValue().isEmpty())dataFine=dtfldDataFineOrdine.getValue();
 					if(!txtfldTariffaOraria.getRawValue().isEmpty())tariffa=txtfldTariffaOraria.getValue().toString();
 					if(!txtfldNumeroRisorse.getRawValue().isEmpty())numRisorse=txtfldNumeroRisorse.getValue().toString();
-					if(!txtfldNumeroOre.getRawValue().isEmpty())oreDisp=txtfldNumeroOre.getValue().toString();
-					if(!txtfldNumeroOreResidue.getRawValue().isEmpty())oreRes=txtfldNumeroOreResidue.getValue().toString();
-					if(!txtfldImportoOrdine.getRawValue().isEmpty())importoOrdine=txtfldImportoOrdine.getValue().toString();
-					if(!txtfldImportoResiduoOrdine.getRawValue().isEmpty())importoResiduoOrdine=txtfldImportoResiduoOrdine.getValue().toString();
+					if(!txtfldNumeroOreOrdineCompl.getRawValue().isEmpty())oreDisp=txtfldNumeroOreOrdineCompl.getValue().toString();
+					if(!txtfldNumeroOreResidueOrdineCompl.getRawValue().isEmpty())oreRes=txtfldNumeroOreResidueOrdineCompl.getValue().toString();
+					if(!txtfldImportoOrdineCompl.getRawValue().isEmpty())importoOrdine=txtfldImportoOrdineCompl.getValue().toString();
+					if(!txtfldImportoResiduoOrdineCompl.getRawValue().isEmpty())importoResiduoOrdine=txtfldImportoResiduoOrdineCompl.getValue().toString();
 					
 					AdministrationService.Util.getInstance().saveRdoCompleta(numRdo, cliente, numOfferta, dataOfferte, importo, numOrdine, descrizione,
 							elementoWbs, conto, prCenter, bem
@@ -263,11 +267,13 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 				String importoOrdine="0.00";
 				String importoResiduoOrdine="0.00";
 				
-				CntpnlFormRdo cpfrm=(CntpnlFormRdo) hpLayout.getItemByItemId("cpfrm");
-				ContentPanel cp=(ContentPanel) cpfrm.getItemByItemId("cp");
-				LayoutContainer layout=(LayoutContainer) cp.getItemByItemId("layout");
-				CntpnlGridTariffeOrdine cpTariffa=(CntpnlGridTariffeOrdine) layout.getItemByItemId("cpTariffa");
+				//CntpnlFormRdo cpfrm=(CntpnlFormRdo) hpLayout.getItemByItemId("cpfrm");
+				//ContentPanel cp=(ContentPanel) cpfrm.getItemByItemId("cp");
+				//LayoutContainer layout=(LayoutContainer) cp.getItemByItemId("layout");
+				//CntpnlGridTariffeOrdine cpTariffa=(CntpnlGridTariffeOrdine) layout.getItemByItemId("cpTariffa");
 				//List<TariffaOrdineModel> listaTar= elaboroStoreTariffe((List<TariffaOrdineModel>) cpTariffa.storeTariffe.getModels());
+				CntpnlGridTariffeOrdine cpTariffa=(CntpnlGridTariffeOrdine) hpLayout.getItemByItemId("cpTariffa");
+				
 				List<TariffaOrdineModel> listaTar=(List<TariffaOrdineModel>) cpTariffa.storeTariffe.getModels();
 			
 				if(formIsValid()&&areValid(listaTar)){
@@ -290,10 +296,10 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 					if(!dtfldDataFineOrdine.getRawValue().isEmpty())dataFine=dtfldDataFineOrdine.getValue();
 					if(!txtfldTariffaOraria.getRawValue().isEmpty())tariffa=txtfldTariffaOraria.getValue().toString();
 					if(!txtfldNumeroRisorse.getRawValue().isEmpty())numRisorse=txtfldNumeroRisorse.getValue().toString();
-					if(!txtfldNumeroOre.getRawValue().isEmpty())oreDisp=txtfldNumeroOre.getValue().toString();
-					if(!txtfldNumeroOreResidue.getRawValue().isEmpty())oreRes=txtfldNumeroOreResidue.getValue().toString();
-					if(!txtfldImportoOrdine.getRawValue().isEmpty())importoOrdine=txtfldImportoOrdine.getValue().toString();
-					if(!txtfldImportoResiduoOrdine.getRawValue().isEmpty())importoResiduoOrdine=txtfldImportoResiduoOrdine.getValue().toString();
+					if(!txtfldNumeroOreOrdineCompl.getRawValue().isEmpty())oreDisp=txtfldNumeroOreOrdineCompl.getValue().toString();
+					if(!txtfldNumeroOreResidueOrdineCompl.getRawValue().isEmpty())oreRes=txtfldNumeroOreResidueOrdineCompl.getValue().toString();
+					if(!txtfldImportoOrdineCompl.getRawValue().isEmpty())importoOrdine=txtfldImportoOrdineCompl.getValue().toString();
+					if(!txtfldImportoResiduoOrdineCompl.getRawValue().isEmpty())importoResiduoOrdine=txtfldImportoResiduoOrdineCompl.getValue().toString();
 									
 					AdministrationService.Util.getInstance().editRdoCompleta(idRdo, numRdo, cliente, numOfferta, dataOfferte, importo, numOrdine, descrizione,
 							elementoWbs, conto, prCenter, bem
@@ -354,7 +360,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		
 		btnDelete.setToolTip("Elimina i dati.");
 		btnDelete.setWidth("65px");
-		btnDelete.addSelectionListener(new SelectionListener<ButtonEvent>() {			
+		btnDelete.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
 				
@@ -372,7 +378,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 						}else{
 							Window.alert("error: Impossibile eliminare i dati dell'Rdo!");
 						}				
-					}			
+					}
 
 					@Override
 					public void onFailure(Throwable caught) {
@@ -417,6 +423,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		*/
 		txtfldIdRda.setFieldLabel("id");
 		hpLayout.add(new CntpnlFormRdo());
+		hpLayout.add(new CntpnlGridTariffeOrdine());
 		hpLayout.add(new CntpnlGridRdo());
 		
 		cntpnlLayout.add(hpLayout);	
@@ -434,8 +441,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			tariffa=(String)t.get("tariffaAttivita");			
 			if(tariffa==null)
 				return false;
-		}
-		
+		}	
 		return true;
 	}
 	
@@ -449,15 +455,15 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			setBorders(false);
 			setBodyBorder(false);
 			setScrollMode(Scroll.NONE);	
-			setWidth(940);
-			setHeight(315);
+			setWidth(1050);
+			setHeight(300);
 			setFrame(false);
 			setStyleAttribute("margin-top", "0px");
 			setItemId("cpfrm");
 						
 			ContentPanel cp= new ContentPanel();
 			cp.setHeaderVisible(false);
-			cp.setSize(920, 330);
+			cp.setSize(1300, 330);
 			cp.setBorders(false);
 			cp.setBodyBorder(false);
 			cp.setFrame(false);
@@ -614,15 +620,15 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			txtfldNumeroRisorse.setRegex("[0-9]*");
 			txtfldNumeroRisorse.getMessages().setRegexText("Deve essere un numero");
 			
-			txtfldNumeroOre=new TextField<String>();
-			txtfldNumeroOre.setWidth(120);
-			txtfldNumeroOre.setToolTip("Numero Ore");
-			txtfldNumeroOre.setEmptyText("Ore...");
-			txtfldNumeroOre.setName("numeroOre");
-			txtfldNumeroOre.setRegex("^([0-9]+).(00|15|30|45)$");
+			txtfldNumeroOreOrdineCompl=new TextField<String>();
+			txtfldNumeroOreOrdineCompl.setWidth(120);
+			txtfldNumeroOreOrdineCompl.setToolTip("Numero Ore");
+			txtfldNumeroOreOrdineCompl.setEmptyText("Ore...");
+			txtfldNumeroOreOrdineCompl.setName("numeroOre");
+			txtfldNumeroOreOrdineCompl.setRegex("^([0-9]+).(00|15|30|45)$");
 			//txtfldNumeroOre.setRegex("[0-9]+[.][0-5]{1}[0-9]{1}|0.00|0.0");
-			txtfldNumeroOre.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
-			txtfldNumeroOre.addKeyListener(new KeyListener(){
+			txtfldNumeroOreOrdineCompl.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+			txtfldNumeroOreOrdineCompl.addKeyListener(new KeyListener(){
 				
 			/*	public void componentKeyUp(ComponentEvent event) {				
 					txtfldNumeroOreResidue.setValue(txtfldNumeroOre.getValue());		
@@ -632,10 +638,10 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 				    	int keyCode=event.getKeyCode();
 						if(keyCode==9){			
 							
-							if(txtfldNumeroOre.getValue()==null)
-								txtfldNumeroOre.setValue("0.00");
+							if(txtfldNumeroOreOrdineCompl.getValue()==null)
+								txtfldNumeroOreOrdineCompl.setValue("0.00");
 							else{
-								String valore= txtfldNumeroOre.getValue().toString();
+								String valore= txtfldNumeroOreOrdineCompl.getValue().toString();
 														
 								if(valore.compareTo("")==0)
 									valore ="0.00";
@@ -651,30 +657,30 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 										else if(valore.substring(index+1, length).length()==0)
 											valore=valore+"00";
 									}
-								txtfldNumeroOre.setValue(valore);
-								txtfldNumeroOreResidue.setValue(valore);
+								txtfldNumeroOreOrdineCompl.setValue(valore);
+								txtfldNumeroOreResidueOrdineCompl.setValue(valore);
 							}						
 						}
 				 }
 			});
 			
-			txtfldNumeroOreResidue=new TextField<String>();
-			txtfldNumeroOreResidue.setWidth(120);
-			txtfldNumeroOreResidue.setStyleAttribute("padding-left", "5px");
-			txtfldNumeroOreResidue.setEmptyText("Ore Residue...");
-			txtfldNumeroOreResidue.setName("numeroOreResidue");
-			txtfldNumeroOreResidue.setToolTip("Ore Residue");
-			txtfldNumeroOreResidue.setRegex("^([0-9]+).(00|15|30|45)$");
-			txtfldNumeroOreResidue.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
-			txtfldNumeroOreResidue.addKeyListener(new KeyListener(){
+			txtfldNumeroOreResidueOrdineCompl=new TextField<String>();
+			txtfldNumeroOreResidueOrdineCompl.setWidth(120);
+			txtfldNumeroOreResidueOrdineCompl.setStyleAttribute("padding-left", "5px");
+			txtfldNumeroOreResidueOrdineCompl.setEmptyText("Ore Residue...");
+			txtfldNumeroOreResidueOrdineCompl.setName("numeroOreResidue");
+			txtfldNumeroOreResidueOrdineCompl.setToolTip("Ore Residue");
+			txtfldNumeroOreResidueOrdineCompl.setRegex("^([0-9]+).(00|15|30|45)$");
+			txtfldNumeroOreResidueOrdineCompl.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+			txtfldNumeroOreResidueOrdineCompl.addKeyListener(new KeyListener(){
 				 public void componentKeyDown(ComponentEvent event) { 	  
 				    	int keyCode=event.getKeyCode();
 						if(keyCode==9){			
 							
-							if(txtfldNumeroOreResidue.getValue()==null)
-								txtfldNumeroOreResidue.setValue("0.00");
+							if(txtfldNumeroOreResidueOrdineCompl.getValue()==null)
+								txtfldNumeroOreResidueOrdineCompl.setValue("0.00");
 							else{
-								String valore= txtfldNumeroOreResidue.getValue().toString();
+								String valore= txtfldNumeroOreResidueOrdineCompl.getValue().toString();
 														
 								if(valore.compareTo("")==0)
 									valore ="0.00";
@@ -690,28 +696,28 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 										else if(valore.substring(index+1, length).length()==0)
 											valore=valore+"00";
 									}
-								txtfldNumeroOreResidue.setValue(valore);
+								txtfldNumeroOreResidueOrdineCompl.setValue(valore);
 							}						
 						}
 				 }
 			});
 			
-			txtfldImportoOrdine= new TextField<String>();
-			txtfldImportoOrdine.setWidth(120);
-			txtfldImportoOrdine.setEmptyText("Importo...");
-			txtfldImportoOrdine.setToolTip("Importo Ordine");
-			txtfldImportoOrdine.setRegex("[0-9]+[.][0-9]{1}[0-9]{1}|0.00|0.0");
+			txtfldImportoOrdineCompl= new TextField<String>();
+			txtfldImportoOrdineCompl.setWidth(120);
+			txtfldImportoOrdineCompl.setEmptyText("Importo...");
+			txtfldImportoOrdineCompl.setToolTip("Importo Ordine");
+			txtfldImportoOrdineCompl.setRegex("[0-9]+[.][0-9]{1}[0-9]{1}|0.00|0.0");
 			//txtfldImportoOrdine.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
-			txtfldImportoOrdine.addKeyListener(new KeyListener(){
+			txtfldImportoOrdineCompl.addKeyListener(new KeyListener(){
 				
 					 public void componentKeyDown(ComponentEvent event) { 	  
 					    	int keyCode=event.getKeyCode();
 							if(keyCode==9){			
 								
-								if(txtfldImportoOrdine.getValue()==null)
-									txtfldImportoOrdine.setValue("0.00");
+								if(txtfldImportoOrdineCompl.getValue()==null)
+									txtfldImportoOrdineCompl.setValue("0.00");
 								else{
-									String valore= txtfldImportoOrdine.getValue().toString();
+									String valore= txtfldImportoOrdineCompl.getValue().toString();
 															
 									if(valore.compareTo("")==0)
 										valore ="0.00";
@@ -727,28 +733,27 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 											else if(valore.substring(index+1, length).length()==0)
 												valore=valore+"00";
 										}
-									txtfldImportoOrdine.setValue(valore);
-									txtfldImportoResiduoOrdine.setValue(valore);
+									txtfldImportoOrdineCompl.setValue(valore);
+									txtfldImportoResiduoOrdineCompl.setValue(valore);
 								}						
 							}
 					 }
-				});
+			});
 			
-			txtfldImportoResiduoOrdine=new TextField<String>();
-			txtfldImportoResiduoOrdine.setWidth(120);
-			txtfldImportoResiduoOrdine.setEmptyText("Importo Residuo...");
-			txtfldImportoResiduoOrdine.setStyleAttribute("padding-left", "5px");
-			txtfldImportoResiduoOrdine.setToolTip("Importo Residuo");
-			txtfldImportoResiduoOrdine.setRegex("[0-9]+[.][0-9]{1}[0-9]{1}|0.00|0.0");
-			txtfldImportoResiduoOrdine.addKeyListener(new KeyListener(){
+			txtfldImportoResiduoOrdineCompl=new TextField<String>();
+			txtfldImportoResiduoOrdineCompl.setWidth(120);
+			txtfldImportoResiduoOrdineCompl.setEmptyText("Importo Residuo...");
+			txtfldImportoResiduoOrdineCompl.setStyleAttribute("padding-left", "5px");
+			txtfldImportoResiduoOrdineCompl.setToolTip("Importo Residuo");
+			txtfldImportoResiduoOrdineCompl.setRegex("[0-9]+[.][0-9]{1}[0-9]{1}|0.00|0.0");
+			txtfldImportoResiduoOrdineCompl.addKeyListener(new KeyListener(){
 				 public void componentKeyDown(ComponentEvent event) { 	  
 				    	int keyCode=event.getKeyCode();
-						if(keyCode==9){			
-							
-							if(txtfldImportoResiduoOrdine.getValue()==null)
-								txtfldImportoResiduoOrdine.setValue("0.00");
+						if(keyCode==9){							
+							if(txtfldImportoResiduoOrdineCompl.getValue()==null)
+								txtfldImportoResiduoOrdineCompl.setValue("0.00");
 							else{
-								String valore= txtfldImportoResiduoOrdine.getValue().toString();
+								String valore= txtfldImportoResiduoOrdineCompl.getValue().toString();
 														
 								if(valore.compareTo("")==0)
 									valore ="0.00";
@@ -764,21 +769,21 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 										else if(valore.substring(index+1, length).length()==0)
 											valore=valore+"00";
 									}
-								txtfldImportoResiduoOrdine.setValue(valore);
-							}						
+								txtfldImportoResiduoOrdineCompl.setValue(valore);
+							}
 						}
 				 }
 			});
 			
 			HorizontalPanel hp1= new HorizontalPanel();
 			hp1.setSpacing(2);
-			hp1.add(txtfldImportoOrdine);
-			hp1.add(txtfldImportoResiduoOrdine);
+			hp1.add(txtfldImportoOrdineCompl);
+			hp1.add(txtfldImportoResiduoOrdineCompl);
 			
 			HorizontalPanel hp2=new HorizontalPanel();
 			hp2.setSpacing(2);
-			hp2.add(txtfldNumeroOre);
-			hp2.add(txtfldNumeroOreResidue);
+			hp2.add(txtfldNumeroOreOrdineCompl);
+			hp2.add(txtfldNumeroOreResidueOrdineCompl);
 			
 			layoutCol3.add(txtfldNumeroOrdine,new FormData("85%"));
 			layoutCol3.add(dtfldDataInizioOrdine,new FormData("85%"));
@@ -786,11 +791,14 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			//layoutCol3.add(txtfldTariffaOraria, new FormData("60%"));
 			layoutCol3.add(txtfldNumeroRisorse, new FormData("60%"));
 			layoutCol3.add(hp2);
-			layoutCol3.add(hp1);			
-			layoutCol3.add(new CntpnlGridTariffeOrdine(),new FormData("85%"));
+			layoutCol3.add(hp1);
+			//layoutCol3.add(new CntpnlGridTariffeOrdine(),new FormData("85%"));
 			
-			RowData data = new RowData(.35, 1);
+			RowData data = new RowData(.25, 1);
 			data.setMargins(new Margins(5));
+			
+			RowData data1 = new RowData(.50, 1);
+			data1.setMargins(new Margins(5));
 			
 			cp.add(layoutCol1, data);
 			cp.add(layoutCol2, data);
@@ -808,6 +816,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 					Window.alert("Errore connessione;");
 					caught.printStackTrace();				
 				}
+				
 				@Override
 				public void onSuccess(List<String> result) {
 					if(result!=null){
@@ -816,8 +825,8 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 						smplcmbxCliente.recalculate();}
 					else Window.alert("error: Errorre durante l'accesso ai dati Clienti.");					
 				}
-			});		
-		}	
+			});
+		}
 	}
 	
 	
@@ -833,6 +842,12 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		private ListStore<TariffaOrdineModel> storeTariffe=new ListStore<TariffaOrdineModel>();
 		private ColumnModel cmTariffe;
 		
+		private TextField<String> txtfldOreOrdine= new TextField<String>();
+		private TextField<String> txtfldOreResidueOrdine= new TextField<String>();
+		private TextField<String> txtfldImporto= new TextField<String>();
+		private TextField<String> txtfldImportoResiduo= new TextField<String>();
+		private TextField<String> txtfldCommessaAssociata=new TextField<String>();
+				
 		public CntpnlGridTariffeOrdine(){
 			
 			setHeaderVisible(false);
@@ -840,7 +855,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			setBorders(false);
 			setBodyBorder(false);
 			setScrollMode(Scroll.AUTO);	
-			setWidth(150);
+			setWidth(940);
 			setHeight(150);
 			setFrame(true);
 			setLayout(new FitLayout());
@@ -850,6 +865,210 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			cs=new CellSelectionModel<TariffaOrdineModel>();
 		    cs.setSelectionMode(SelectionMode.SIMPLE);
 	   
+		    txtfldTariffa= new TextField<String>();
+		    txtfldTariffa.setRegex("^([0-9]{1}|[0-9][0-9])[.]{1}(0|00|[0-9]{2})$");
+		    txtfldTariffa.getMessages().setRegexText("Deve essere un numero!");
+		    txtfldTariffa.setValue("0.00");
+		    txtfldTariffa.setAllowBlank(false);
+		    txtfldTariffa.addKeyListener(new KeyListener(){
+				 public void componentKeyDown(ComponentEvent event) {
+				    	int keyCode=event.getKeyCode();
+						if(keyCode==9){			
+							
+							if(txtfldTariffa.getValue()==null)
+								txtfldTariffa.setValue("0.00");
+							else{
+								String valore= txtfldTariffa.getValue().toString();
+														
+								if(valore.compareTo("")==0)
+									valore ="0.00";
+								else
+									if(valore.indexOf(".")==-1)
+										valore=valore+".00";
+									else{
+										int index=valore.indexOf(".");
+										int length=valore.length();
+										
+										if(valore.substring(index+1, length).length()==1)
+											valore=valore+"0";		
+										else if(valore.substring(index+1, length).length()==0)
+											valore=valore+"00";
+									}
+								txtfldTariffa.setValue(valore);
+							}
+						}
+				 }
+			});
+		    
+		    txtfldOreOrdine.setRegex("^([0-9]+).(00|15|30|45)$");
+		    txtfldOreOrdine.getMessages().setRegexText("Deve essere un numero!");
+		    txtfldOreOrdine.setValue("0.00");
+		    txtfldOreOrdine.setAllowBlank(false);
+		    txtfldOreOrdine.addKeyListener(new KeyListener(){
+				
+				 public void componentKeyDown(ComponentEvent event) { 	  
+				    	int keyCode=event.getKeyCode();
+						if(keyCode==9){	
+							
+							if(txtfldOreOrdine.getValue()==null)
+								txtfldOreOrdine.setValue("0.00");
+							else{
+								String valore= txtfldOreOrdine.getValue().toString();
+														
+								if(valore.compareTo("")==0)
+									valore ="0.00";
+								else
+									if(valore.indexOf(".")==-1)
+										valore=valore+".00";
+									else{
+										int index=valore.indexOf(".");
+										int length=valore.length();
+										
+										if(valore.substring(index+1, length).length()==1)
+											valore=valore+"0";		
+										else if(valore.substring(index+1, length).length()==0)
+											valore=valore+"00";
+									}
+								txtfldOreOrdine.setValue(valore);
+							}		
+						}
+				 }
+		    });
+		    
+		    txtfldOreResidueOrdine.setRegex("^([0-9]+).(00|15|30|45)$");
+		    txtfldOreResidueOrdine.getMessages().setRegexText("Deve essere un numero!");
+		    txtfldOreResidueOrdine.setValue("0.00");
+		    txtfldOreResidueOrdine.setAllowBlank(false);
+		    txtfldOreResidueOrdine.addListener(Events.OnFocus, new Listener<BaseEvent>() {
+
+				@Override
+				public void handleEvent(BaseEvent be) {
+					txtfldOreResidueOrdine.setValue(txtfldOreOrdine.getValue());
+				}
+			});
+		    txtfldOreResidueOrdine.addKeyListener(new KeyListener(){
+				 public void componentKeyDown(ComponentEvent event) { 	  
+				    	int keyCode=event.getKeyCode();
+						if(keyCode==9){
+							
+							if(txtfldOreResidueOrdine.getValue()==null)
+								txtfldOreResidueOrdine.setValue("0.00");
+							else{
+								String valore= txtfldOreResidueOrdine.getValue().toString();
+														
+								if(valore.compareTo("")==0)
+									valore ="0.00";
+								else
+									if(valore.indexOf(".")==-1)
+										valore=valore+".00";
+									else{
+										int index=valore.indexOf(".");
+										int length=valore.length();
+										
+										if(valore.substring(index+1, length).length()==1)
+											valore=valore+"0";		
+										else if(valore.substring(index+1, length).length()==0)
+											valore=valore+"00";
+									}
+								txtfldOreResidueOrdine.setValue(valore);
+							}						
+						}
+				 }
+			});
+		    
+		    txtfldImporto.setRegex("[0-9]+[.][0-9]{1}[0-9]{1}|0.00|0.0");
+		    txtfldImporto.getMessages().setRegexText("Deve essere un numero!");
+		    txtfldImporto.setValue("0.00");
+		    txtfldImporto.setAllowBlank(false);	
+		    txtfldImporto.addKeyListener(new KeyListener(){
+				
+				 public void componentKeyDown(ComponentEvent event) { 	  
+				    	int keyCode=event.getKeyCode();
+						if(keyCode==9){			
+							
+							if(txtfldImporto.getValue()==null)
+								txtfldImporto.setValue("0.00");
+							else{
+								String valore= txtfldImporto.getValue().toString();
+														
+								if(valore.compareTo("")==0)
+									valore ="0.00";
+								else
+									if(valore.indexOf(".")==-1)
+										valore=valore+".00";
+									else{
+										int index=valore.indexOf(".");
+										int length=valore.length();
+										
+										if(valore.substring(index+1, length).length()==1)
+											valore=valore+"0";		
+										else if(valore.substring(index+1, length).length()==0)
+											valore=valore+"00";
+									}
+								txtfldImporto.setValue(valore);
+							}
+						}
+				 }
+		    });
+		    
+		    txtfldImportoResiduo.setRegex("[0-9]+[.][0-9]{1}[0-9]{1}|0.00|0.0");
+		    txtfldImportoResiduo.getMessages().setRegexText("Deve essere un numero!");
+		    txtfldImportoResiduo.setValue("0.00");
+		    txtfldImportoResiduo.setAllowBlank(false);	
+		    txtfldImportoResiduo.addListener(Events.OnFocus, new Listener<BaseEvent>() {
+				@Override
+				public void handleEvent(BaseEvent be) {
+					txtfldImportoResiduo.setValue(txtfldImporto.getValue());
+				}
+			});
+		    txtfldImportoResiduo.addKeyListener(new KeyListener(){
+				 public void componentKeyDown(ComponentEvent event) {
+				    	int keyCode=event.getKeyCode();
+						if(keyCode==9){	
+							
+							if(txtfldImportoResiduo.getValue()==null)
+								txtfldImportoResiduo.setValue("0.00");
+							else{
+								String valore= txtfldImportoResiduo.getValue().toString();
+														
+								if(valore.compareTo("")==0)
+									valore ="0.00";
+								else
+									if(valore.indexOf(".")==-1)
+										valore=valore+".00";
+									else{
+										int index=valore.indexOf(".");
+										int length=valore.length();
+										
+										if(valore.substring(index+1, length).length()==1)
+											valore=valore+"0";		
+										else if(valore.substring(index+1, length).length()==0)
+											valore=valore+"00";
+									}
+								txtfldImportoResiduo.setValue(valore);
+							}
+						}
+				 }
+			});
+		    
+		    
+		    txtfldCommessaAssociata.setValue("#");
+		    txtfldCommessaAssociata.addListener(Events.OnFocus, new Listener<BaseEvent>() {
+				@Override
+				public void handleEvent(BaseEvent be) {
+					
+					if(txtfldIdRda.getRawValue()!=null){
+						//TODO null exception
+						String idRda=txtfldIdRda.getValue().toString();
+						String idAttivita= cs.getSelectedItem().get("idAttivitaOrdine");
+						
+						DialogSelectCommessaAttivitaOrdine d= new DialogSelectCommessaAttivitaOrdine(idRda, Integer.valueOf(idAttivita));
+						d.show();
+					}
+				}
+			});
+		    
+		    
 		    cmTariffe=new ColumnModel(createColumns());
 		    gridTariffa= new EditorGrid<TariffaOrdineModel>(storeTariffe, cmTariffe);
 		    gridTariffa.setBorders(false);
@@ -860,7 +1079,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    //TariffaOrdineModel tm=new TariffaOrdineModel();
 		    //storeTariffe.insert(tm, 0);//inserisco una riga vuota pronta per l'inserimento
 		    //gridTariffa.startEditing(storeTariffe.indexOf(tm), 0);
-		    		    
+		   
 		    btnAddTariffa= new Button();
 		    btnAddTariffa.setSize(26, 26);
 		    btnAddTariffa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.add()));
@@ -889,7 +1108,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 				}
 			});
 		    
-		    		    				
+		   
 			ToolBar tlbGrid= new ToolBar();
 			tlbGrid.add(btnAddTariffa);
 			tlbGrid.add(new SeparatorToolItem());
@@ -904,7 +1123,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		
 		
 		public void caricaTabella(int idRdo){
-			
+									
 			AdministrationService.Util.getInstance().loadTariffePerOrdine(idRdo, new AsyncCallback<List<TariffaOrdineModel>>() {
 				@Override
 				public void onFailure(Throwable caught) {
@@ -914,10 +1133,11 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 				@Override
 				public void onSuccess(List<TariffaOrdineModel> result) {
 					loadTable(result);					
-				}			
-			});		
+				}
+			});
 		}
 		
+		//TODO faccio coincidere l'id dell'estensione e visualizzo sulla cmbx il numero
 		private void loadTable(List<TariffaOrdineModel> result) {
 			try {
 				storeTariffe.removeAll();
@@ -927,30 +1147,27 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 				Window.alert("error: Impossibile effettuare il caricamento dati nella tabella Tariffe.");
 					e.printStackTrace();
 			}
-		}		
+		}
 		
 		private List<ColumnConfig> createColumns() {
-			List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
+			List <ColumnConfig> configs = new ArrayList<ColumnConfig>();
 			CellEditor editorTxt;
 			
-			ColumnConfig column = new ColumnConfig();  
-		    column.setId("tariffaAttivita");  
-		    column.setHeader("Tariffa");  
-		    column.setWidth(60);  
+			TextField<String> txtfldDescrizione= new TextField<String>();
+						
+			ColumnConfig column = new ColumnConfig();
+		    column.setId("tariffaAttivita");
+		    column.setHeader("Tariffa");
+		    column.setWidth(60);
 		    column.setRowHeader(true);
-		    column.setAlignment(HorizontalAlignment.RIGHT);	    
-		    txtfldTariffa= new TextField<String>();
-		    txtfldTariffa.setRegex("^([0-9]{1}|[0-9][0-9])[.]{1}(0|00|[0-9]{2})$");
-		    txtfldTariffa.getMessages().setRegexText("Deve essere un numero!");
-		    txtfldTariffa.setValue("0.00");
-		    txtfldTariffa.setAllowBlank(false);		    
+		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    editorTxt= new CellEditor(txtfldTariffa){
 		    	@Override  
-		        public Object preProcessValue(Object value) {  
+		        public Object preProcessValue(Object value) {
 		          if (value == null) {  
 		            return value;  
 		          }  
-		          return value.toString();  
+		          return value.toString();
 		        }  
 		    
 		        @Override  
@@ -971,7 +1188,6 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    column.setWidth(180);  
 		    column.setRowHeader(true);
 		    column.setAlignment(HorizontalAlignment.RIGHT);
-		    TextField<String> txtfldDescrizione= new TextField<String>();
 		    editorTxt= new CellEditor(txtfldDescrizione){
 		    	@Override  
 		        public Object preProcessValue(Object value) {  
@@ -981,8 +1197,140 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		          return value.toString();  
 		        }  
 		    
+		        @Override
+		        public Object postProcessValue(Object value) {  
+		          if (value == null) {  
+		            return value;  
+		          }  
+		          return value.toString();  
+		        }  
+		    };	    
+		    column.setEditor(editorTxt);
+		    configs.add(column);
+		    
+		    column = new ColumnConfig();  
+		    column.setId("oreOrdine");  
+		    column.setHeader("h/Ordine");  
+		    column.setWidth(80);  
+		    column.setRowHeader(true);
+		    column.setAlignment(HorizontalAlignment.RIGHT);
+		    editorTxt= new CellEditor(txtfldOreOrdine){
+		    	@Override  
+		        public Object preProcessValue(Object value) {  
+		          if (value == null) {  
+		            return value;  
+		          }  
+		          return Float.valueOf(value.toString());  
+		        }  
+		    
 		        @Override  
 		        public Object postProcessValue(Object value) {  
+		          if (value == null) {  
+		            return value;  
+		          }  
+		          return Float.valueOf(value.toString());  
+		        }  
+		    };	    
+		    column.setEditor(editorTxt);
+		    configs.add(column);
+		    
+		    column = new ColumnConfig();  
+		    column.setId("oreResidueOrdine");  
+		    column.setHeader("h/Res.Ordine");  
+		    column.setWidth(80);  
+		    column.setRowHeader(true);
+		    column.setAlignment(HorizontalAlignment.RIGHT);
+		    editorTxt= new CellEditor(txtfldOreResidueOrdine){
+		    	@Override  
+		        public Object preProcessValue(Object value) {
+		          if (value == null) {
+		            return value;  
+		          }
+		          return Float.valueOf(value.toString());  
+		        }  
+		    
+		        @Override  
+		        public Object postProcessValue(Object value) {  
+		          if (value == null) {  
+		            return value;  
+		          }  
+		          return Float.valueOf(value.toString());  
+		        }  
+		    };	    
+		    column.setEditor(editorTxt);
+		    configs.add(column);
+		    
+		    column = new ColumnConfig();  
+		    column.setId("importoOrdine");  
+		    column.setHeader("Importo Ordine");  
+		    column.setWidth(120);  
+		    column.setRowHeader(true);
+		    column.setAlignment(HorizontalAlignment.RIGHT);
+		    editorTxt= new CellEditor(txtfldImporto){
+		    	@Override  
+		        public Object preProcessValue(Object value) {  
+		          if (value == null) {  
+		            return value;  
+		          }  
+		          return Float.valueOf(value.toString());  
+		        }  
+		    
+		        @Override  
+		        public Object postProcessValue(Object value) {
+		          if (value == null) {  
+		            return value;  
+		          }
+		          return Float.valueOf(value.toString());  
+		        }
+		    };
+		    column.setEditor(editorTxt);
+		    configs.add(column);
+		    
+		    
+		    column = new ColumnConfig();  
+		    column.setId("importoResiduoOrdine");  
+		    column.setHeader("Importo Res.Ordine");  
+		    column.setWidth(120);  
+		    column.setRowHeader(true);
+		    column.setAlignment(HorizontalAlignment.RIGHT);
+		    editorTxt= new CellEditor(txtfldImportoResiduo){
+		    	@Override  
+		        public Object preProcessValue(Object value) {
+		          if (value == null) {
+		            return value;  
+		          }  
+		          return Float.valueOf(value.toString());  
+		        }  
+		    
+		        @Override  
+		        public Object postProcessValue(Object value) {
+		          if (value == null) {  
+		            return value;  
+		          }  
+		          return Float.valueOf(value.toString());
+		        }
+		    };	    
+		    column.setEditor(editorTxt);
+		    configs.add(column);
+		    
+		    
+		    column = new ColumnConfig();  
+		    column.setId("numeroCommessa");  
+		    column.setHeader("Commessa");  
+		    column.setWidth(120);  
+		    column.setRowHeader(true);
+		    column.setAlignment(HorizontalAlignment.RIGHT);
+		    editorTxt= new CellEditor(txtfldCommessaAssociata){
+		    	@Override  
+		        public Object preProcessValue(Object value) {
+		          if (value == null) {
+		            return value;  
+		          }
+		          return value.toString();  
+		        }
+		    
+		        @Override  
+		        public Object postProcessValue(Object value) {
 		          if (value == null) {  
 		            return value;  
 		          }  
@@ -1001,6 +1349,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		
 		private Button btnEliminaAssociazioneCommessa;
 		private Button btnAssociaCommessa;
+		private SimpleComboBox<String> smplcmbxStatoOrdini;
 		
 		public CntpnlGridRdo(){
 		
@@ -1009,7 +1358,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			setBorders(false);
 			setBodyBorder(false);
 			setScrollMode(Scroll.NONE);	
-			setWidth(940);
+			setWidth(960);
 			setFrame(false);
 			setStyleAttribute("margin-top", "10px");
 		
@@ -1018,35 +1367,34 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    	cm = new ColumnModel(createColumns());	
 			} catch (Exception e) {
 				e.printStackTrace();
-				Window.alert("error: Problema createColumns().");			
+				Window.alert("error: Problema createColumns().");
 			}	
 					
-			store.groupBy("cliente");
+			store.groupBy("numeroOrdine");
 		 
 			//Vista per permettere il grouping
 			GroupingView view = new GroupingView();  
 		    view.setShowGroupedColumn(false);  
 		    view.setForceFit(true);  
-		    view.setGroupRenderer(new GridGroupRenderer() {  
-		      public String render(GroupColumnData data) {  
+		    view.setGroupRenderer(new GridGroupRenderer() {
+		      public String render(GroupColumnData data) {
 		        String f = cm.getColumnById(data.field).getHeader();  
 		        //String l = data.models.size() == 1 ? "Item" : "Items";  
 		        return f + ": " + data.group ;//+ " (" + data.models.size() + " " + l + ")";  
 		      }  
-		    });  
+		    });
 			    
 		    gridRiepilogo= new Grid<RdoCompletaModel>(store, cm);  
-		    gridRiepilogo.setBorders(false);  
+		    gridRiepilogo.setBorders(false);
 		    gridRiepilogo.setStripeRows(true);  
-		    gridRiepilogo.setColumnLines(true);  
-		    gridRiepilogo.setColumnReordering(true);  
+		    gridRiepilogo.setColumnLines(true);
+		    gridRiepilogo.setColumnReordering(true);
 		    gridRiepilogo.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);  
-		    gridRiepilogo.setView(view);
-	        
+		    gridRiepilogo.setView(view);       
 		    gridRiepilogo.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<RdoCompletaModel>>() {  
 		          public void handleEvent(SelectionChangedEvent<RdoCompletaModel> be) {  
 		        	
-		            if (be.getSelection().size() > 0) {      
+		            if (be.getSelection().size() > 0) {
 		            	Date dataOff = null, dataInizio=null, dataFine=null;
 		            	String statoOrdine=be.getSelectedItem().get("statoOrdine");
 		            	btnEliminaAssociazioneCommessa.setEnabled(true);
@@ -1088,18 +1436,20 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 									
 						txtfldTariffaOraria.setValue(String.valueOf(be.getSelectedItem().getTariffa()));
 						txtfldNumeroRisorse.setValue(String.valueOf(be.getSelectedItem().getNumeroRisorse()));
-						txtfldNumeroOre.setValue(String.valueOf(be.getSelectedItem().getNumeroOre()));
-						txtfldNumeroOreResidue.setValue(String.valueOf(be.getSelectedItem().getNumeroOreResidue()));
+						txtfldNumeroOreOrdineCompl.setValue(String.valueOf(be.getSelectedItem().getNumeroOre()));
+						txtfldNumeroOreResidueOrdineCompl.setValue(String.valueOf(be.getSelectedItem().getNumeroOreResidue()));
 						
-						txtfldImportoOrdine.setValue((String)be.getSelectedItem().get("importoOrdine"));
-						txtfldImportoResiduoOrdine.setValue((String)be.getSelectedItem().get("importoResiduo"));
+						txtfldImportoOrdineCompl.setValue((String)be.getSelectedItem().get("importoOrdine"));
+						txtfldImportoResiduoOrdineCompl.setValue((String)be.getSelectedItem().get("importoResiduo"));
 		               
 						VerticalPanel vp= new VerticalPanel();
 						vp=(VerticalPanel) getParent();
-						CntpnlFormRdo cpfrm=(CntpnlFormRdo) vp.getItemByItemId("cpfrm");
-						ContentPanel cp=(ContentPanel) cpfrm.getItemByItemId("cp");
-						LayoutContainer layout=(LayoutContainer) cp.getItemByItemId("layout");
-						CntpnlGridTariffeOrdine cpTariffa=(CntpnlGridTariffeOrdine) layout.getItemByItemId("cpTariffa");
+						//CntpnlFormRdo cpfrm=(CntpnlFormRdo) vp.getItemByItemId("cpfrm");
+						//ContentPanel cp=(ContentPanel) cpfrm.getItemByItemId("cp");
+						//LayoutContainer layout=(LayoutContainer) cp.getItemByItemId("layout");
+						//CntpnlGridTariffeOrdine cpTariffa=(CntpnlGridTariffeOrdine) layout.getItemByItemId("cpTariffa");
+						
+						CntpnlGridTariffeOrdine cpTariffa=(CntpnlGridTariffeOrdine) vp.getItemByItemId("cpTariffa");
 						
 						cpTariffa.caricaTabella(be.getSelectedItem().getIdRdo());
 												
@@ -1108,8 +1458,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 						}else{
 							enableField();
 						}
-							
-						
+												
 		            } else {  
 		              
 		            }
@@ -1130,7 +1479,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 					AdministrationService.Util.getInstance().eliminaAssociazioneOrdine(numeroOrdine, new AsyncCallback<Boolean>(){
 
 						@Override
-						public void onFailure(Throwable caught) {						
+						public void onFailure(Throwable caught) {
 							System.out.println("Errore di connessione on eliminaAssociazioneOrdine()");
 						}
 
@@ -1143,7 +1492,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 						}
 					});
 				}
-			});
+			});		    
 		    
 		    btnAssociaCommessa= new Button();
 		    btnAssociaCommessa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.datiTimb()));
@@ -1151,7 +1500,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    btnAssociaCommessa.setToolTip("Associa una commessa all'ordine");
 		    btnAssociaCommessa.setEnabled(false);
 		    btnAssociaCommessa.setSize(26, 26);
-		    btnAssociaCommessa.addSelectionListener(new SelectionListener<ButtonEvent>() {			
+		    btnAssociaCommessa.addSelectionListener(new SelectionListener<ButtonEvent>() {
 				@Override
 				public void componentSelected(ButtonEvent ce) {
 					String numeroOrdine= txtfldNumeroOrdine.getValue().toString();
@@ -1160,14 +1509,57 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 					d.show();					
 					d.addListener(Events.Hide, new Listener<ComponentEvent>() {
 						@Override
-						public void handleEvent(ComponentEvent be) {						
+						public void handleEvent(ComponentEvent be) {
 							caricaTabellaDati();
 						}
 					});
 				}
 			});
 		    
-		    
+		    smplcmbxStatoOrdini= new SimpleComboBox<String>();
+		    smplcmbxStatoOrdini.setFieldLabel("Stato Ordini");
+		    smplcmbxStatoOrdini.setName("statoOrdine");
+			smplcmbxStatoOrdini.add("Aperti");
+			smplcmbxStatoOrdini.add("Chiusi");
+			smplcmbxStatoOrdini.add("Tutti");
+			smplcmbxStatoOrdini.setTriggerAction(TriggerAction.ALL);
+			smplcmbxStatoOrdini.setSimpleValue("Aperti");
+			smplcmbxStatoOrdini.addListener(Events.Select, new Listener<BaseEvent>(){
+				@Override
+				public void handleEvent(BaseEvent be) {
+					String statoSel=smplcmbxStatoOrdini.getRawValue().toString().substring(0, 1).toUpperCase();
+					String statoL="";
+					boolean tutti=false;
+					
+					List<RdoCompletaModel> listaApp= new ArrayList<RdoCompletaModel>();
+ 					List<RdoCompletaModel> listaRdo= new ArrayList<RdoCompletaModel>();
+					listaRdo.addAll(storeCompleto.getModels());
+					
+					for(RdoCompletaModel rdo:listaRdo){
+						statoL=rdo.get("statoOrdine");
+						
+						if(statoSel.compareTo("T")==0){
+							store.removeAll();
+							store.add(listaRdo);
+							gridRiepilogo.reconfigure(store, cm);
+							tutti=true;
+							break;
+						}
+						else
+							if(statoL.compareTo(statoSel)==0)
+								listaApp.add(rdo);							
+					}
+					
+					if(!tutti) {
+						store.removeAll();
+						store.add(listaApp);
+						gridRiepilogo.reconfigure(store, cm);
+					}
+					
+				}		
+			});
+			
+			
 		    //barra per casella ricerca
 		    ToolBar tlbarSearchField= new ToolBar();
 		    final TextField<String> txtfldsearch= new TextField<String>();
@@ -1209,6 +1601,8 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    tlbarSearchField.add(btnAssociaCommessa);
 		    tlbarSearchField.add(new SeparatorToolItem());		    
 		    tlbarSearchField.add(btnEliminaAssociazioneCommessa);
+		    tlbarSearchField.add(new SeparatorToolItem());
+		    tlbarSearchField.add(smplcmbxStatoOrdini);
 		    
 		    ContentPanel cntpnlGrid= new ContentPanel();
 		    cntpnlGrid.setBodyBorder(false);  
@@ -1216,7 +1610,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    cntpnlGrid.setFrame(true);
 		    cntpnlGrid.setLayout(new FitLayout());  
 		    cntpnlGrid.setHeaderVisible(false);
-		    cntpnlGrid.setWidth(920);
+		    cntpnlGrid.setWidth(940);
 		    cntpnlGrid.setHeight(560);
 		    cntpnlGrid.setScrollMode(Scroll.AUTOY);
 		    cntpnlGrid.add(gridRiepilogo);
@@ -1243,16 +1637,15 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 						
 			txtfldTariffaOraria.setEnabled(true);
 			txtfldNumeroRisorse.setEnabled(true);
-			txtfldNumeroOre.setEnabled(true);
-			txtfldNumeroOreResidue.setEnabled(true);
-			txtfldImportoOrdine.setEnabled(true);
-			txtfldImportoResiduoOrdine.setEnabled(true);
+			txtfldNumeroOreOrdineCompl.setEnabled(true);
+			txtfldNumeroOreResidueOrdineCompl.setEnabled(true);
+			txtfldImportoOrdineCompl.setEnabled(true);
+			txtfldImportoResiduoOrdineCompl.setEnabled(true);
 			
 			dtfldDataFineOrdine.setEnabled(true);
 			dtfldDataInizioOrdine.setEnabled(true);
 			dtfldDataOfferta.setEnabled(true);
 		}
-		
 
 		private void disableField() {
 			txtfldIdRda.setEnabled(false);
@@ -1271,10 +1664,10 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 						
 			txtfldTariffaOraria.setEnabled(false);
 			txtfldNumeroRisorse.setEnabled(false);
-			txtfldNumeroOre.setEnabled(false);
-			txtfldNumeroOreResidue.setEnabled(false);	
-			txtfldImportoOrdine.setEnabled(false);
-			txtfldImportoResiduoOrdine.setEnabled(false);
+			txtfldNumeroOreOrdineCompl.setEnabled(false);
+			txtfldNumeroOreResidueOrdineCompl.setEnabled(false);	
+			txtfldImportoOrdineCompl.setEnabled(false);
+			txtfldImportoResiduoOrdineCompl.setEnabled(false);
 			
 			dtfldDataFineOrdine.setEnabled(true);
 			dtfldDataInizioOrdine.setEnabled(true);
@@ -1295,7 +1688,15 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    column=new ColumnConfig();		
 		    column.setId("numeroCommessa");  
 		    column.setHeader("Commessa");  
-		    column.setWidth(80);  
+		    column.setWidth(100);  
+		    column.setRowHeader(true);  
+		    column.setAlignment(HorizontalAlignment.RIGHT);
+		    configs.add(column);
+		    
+		    column=new ColumnConfig();		
+		    column.setId("attivitaCommessa");  
+		    column.setHeader("Attivita' Commessa");  
+		    column.setWidth(200);  
 		    column.setRowHeader(true);  
 		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    configs.add(column);
@@ -1303,20 +1704,20 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    column=new ColumnConfig();		
 			column.setId("numeroRdo");  
 			column.setHeader("N. Rdo");  
-			column.setWidth(80);  
+			column.setWidth(120);  
 			column.setRowHeader(true); 
 			column.setAlignment(HorizontalAlignment.RIGHT); 
 			configs.add(column);
 		    
-			column=new ColumnConfig();		
-			column.setId("numeroOfferta");  
-			column.setHeader("N. Offerta");  
-			column.setWidth(60);  
+			column=new ColumnConfig();
+			column.setId("numeroOfferta");
+			column.setHeader("N. Offerta");
+			column.setWidth(100);  
 			column.setRowHeader(true);  
 			column.setAlignment(HorizontalAlignment.RIGHT);
 			configs.add(column);
 			    
-			/*column=new ColumnConfig();		
+			/*column=new ColumnConfig();
 		    column.setId("importo");  
 		    column.setHeader("Importo");  
 		    column.setWidth(70);  
@@ -1327,7 +1728,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    column=new ColumnConfig();		
 		    column.setId("numeroOrdine");  
 		    column.setHeader("N. Ordine");  
-		    column.setWidth(80);  
+		    column.setWidth(100);  
 		    column.setRowHeader(true);  
 		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    configs.add(column); 
@@ -1348,7 +1749,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    configs.add(column);*/
 		    
-		    column=new ColumnConfig();		
+		   /* column=new ColumnConfig();		
 		    column.setId("numeroOre");  
 		    column.setHeader("N. Ore");  
 		    column.setWidth(55);  
@@ -1372,17 +1773,18 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    configs.add(column);
 		    
-		    column=new ColumnConfig();		
-		    column.setId("importoResiduo");  
-		    column.setHeader("Importo Res.");  
-		    column.setWidth(75);  
-		    column.setRowHeader(true);  
+		    column=new ColumnConfig();
+		    column.setId("importoResiduo");
+		    column.setHeader("Importo Res.");
+		    column.setWidth(75);
+		    column.setRowHeader(true);
 		    column.setAlignment(HorizontalAlignment.RIGHT);
-		    configs.add(column);
+		    configs.add(column);*/
 		    
 		    return configs;
-		}	
+		}
 	}
+	
 	
 	private void caricaTabellaDati() {	
 		AdministrationService.Util.getInstance().getAllRdoCompletaModel(new AsyncCallback<List<RdoCompletaModel>>() {
@@ -1401,26 +1803,39 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 				caught.printStackTrace();
 			
 			}
-		}); //AsyncCallback	      
+		}); //AsyncCallback
 	}
 
 	
 	private void loadTable(List<RdoCompletaModel> lista) {
 		
 		try {
+			
+			List<RdoCompletaModel> listaApp= new ArrayList<RdoCompletaModel>();
+			String stato="";
+			
+			for(RdoCompletaModel rdo:lista){
+				 stato=(String)rdo.get("statoOrdine");
+				if(stato.compareTo("A")==0)
+					listaApp.add(rdo);
+			}
+			
 			store.removeAll();
 			store.setStoreSorter(new StoreSorter<RdoCompletaModel>());  
 		    store.setDefaultSort("numeroCommessa", SortDir.ASC);
-			store.add(lista);
+			
+		    store.add(listaApp);
+			
 			storeResult.removeAll();
 			storeCompleto.removeAll();
-			storeResult.add(store.getModels());
-			storeCompleto.add(store.getModels());
-			listaStore.addAll(store.getModels());
-						    		    	
+			storeResult.add(lista);
+			storeCompleto.add(lista);
+			listaStore.addAll(lista);
+			
 		} catch (NullPointerException e) {
 				e.printStackTrace();
-		}	
+		}
+		
 	}
 	
 	private boolean arePresent() {
@@ -1484,13 +1899,13 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			return false;
 		if(!txtfldNumeroRisorse.isValid())
 			return false;
-		if(!txtfldNumeroOre.isValid())
+		if(!txtfldNumeroOreOrdineCompl.isValid())
 			return false;
-		if(!txtfldNumeroOreResidue.isValid())
+		if(!txtfldNumeroOreResidueOrdineCompl.isValid())
 			return false;
-		if(!txtfldImportoOrdine.isValid())
+		if(!txtfldImportoOrdineCompl.isValid())
 			return false;
-		if(!txtfldImportoResiduoOrdine.isValid())
+		if(!txtfldImportoResiduoOrdineCompl.isValid())
 			return false;					
 		
 		return true;
@@ -1513,10 +1928,10 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		dtfldDataFineOrdine.clear();
 		dtfldDataInizioOrdine.clear();
 		txtfldNumeroRisorse.clear();
-		txtfldNumeroOre.clear();
-		txtfldNumeroOreResidue.clear();
-		txtfldImportoOrdine.clear();
-		txtfldImportoResiduoOrdine.clear();
+		txtfldNumeroOreOrdineCompl.clear();
+		txtfldNumeroOreResidueOrdineCompl.clear();
+		txtfldImportoOrdineCompl.clear();
+		txtfldImportoResiduoOrdineCompl.clear();
 		gridRiepilogo.getSelectionModel().deselectAll();
 		txtfldIdRda.setEnabled(true);
     	txtfldNumeroRda.setEnabled(true);
@@ -1530,10 +1945,10 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 					
 		txtfldTariffaOraria.setEnabled(true);
 		txtfldNumeroRisorse.setEnabled(true);
-		txtfldNumeroOre.setEnabled(true);
-		txtfldNumeroOreResidue.setEnabled(true);
-		txtfldImportoOrdine.setEnabled(true);
-		txtfldImportoResiduoOrdine.setEnabled(true);
+		txtfldNumeroOreOrdineCompl.setEnabled(true);
+		txtfldNumeroOreResidueOrdineCompl.setEnabled(true);
+		txtfldImportoOrdineCompl.setEnabled(true);
+		txtfldImportoResiduoOrdineCompl.setEnabled(true);
 	}
 	
 }

@@ -10,7 +10,7 @@ private static final long serialVersionUID = 1L;
     public RdoCompletaModel() {
     }
     
-    public RdoCompletaModel(int idRdo, String numeroRdo, String cliente, String numOfferta, String dataOfferta, String descrizione,
+    public RdoCompletaModel(int idRdo, String numeroRdo, String cliente, String numOfferta, String dataOfferta, String descrizione,  String attivitaCommessa,
     		String elementoWbs, String conto, String prCenter, String bem,
     		String importo, String numOrdine, String commessa, String dataInizioOrdine, String dataFineOrdine, String tariffaOraria, String numeroRisorse,
     		String numeroOre, String numeroOreResidue, String importoOrdine, String importoResiduo, String statoOrdine)
@@ -19,6 +19,7 @@ private static final long serialVersionUID = 1L;
     	set("idRdo", idRdo);
     	set("cliente", cliente);
     	set("descrizione", descrizione);
+    	set("attivitaCommessa", attivitaCommessa);
     	set("elementoWbs", elementoWbs);
     	set("conto", conto);
     	set("prCenter", prCenter);

@@ -15,6 +15,7 @@ import gestione.pack.client.model.RiepilogoMensileOrdiniJavaBean;
 import gestione.pack.client.model.RiepilogoMensileOrdiniModel;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroJavaBean;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
+import gestione.pack.client.model.RiepilogoOreAnnualiDipendente;
 import gestione.pack.client.model.RiepilogoOreDipFatturazione;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliJavaBean;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
@@ -1363,117 +1364,23 @@ public class ServerUtility {
 	}
 	
 	
-	@SuppressWarnings("unchecked")
-	public static List<RiepilogoAnnualeJavaBean> PrintRiepilogoOreAnnuale(String anno,
-			String sede) {
+	public static List<RiepilogoAnnualeJavaBean> PrintRiepilogoOreAnnuale(List<RiepilogoOreAnnualiDipendente> listaRiep) {
 		
-		List<RiepilogoAnnualeJavaBean> listaR= new ArrayList<RiepilogoAnnualeJavaBean>();
-		List<Personale> listaP= new ArrayList<Personale>();
-		List<FoglioOreMese> listaF= new ArrayList<FoglioOreMese>();
-		List<DettaglioOreGiornaliere> listaG= new ArrayList<DettaglioOreGiornaliere>();
-		RiepilogoAnnualeJavaBean riep= new RiepilogoAnnualeJavaBean();
+		List<RiepilogoAnnualeJavaBean> listaRJB= new ArrayList<RiepilogoAnnualeJavaBean>();
 		
-		Session session= MyHibernateUtil.getSessionFactory().openSession();
-		Transaction tx= null;
+		RiepilogoAnnualeJavaBean rB;
 		
-		String oreOrdinarie="0.00";
-		String oreStraOrdinarie="0.00";
-		String orePermessoROL="0.00";
-		String oreRecupero="0.00";
-		String oreViaggio="0.00";
-		String oreTotali="0.00";
-		String oreFerie="0.00";
-		String oreMutua="0.00";
-		String oreCassa="0.00";
-		String oreLegge104="0.00";
-		String oreMaternita="0.00";
-		String oreTotaliGiustificativi="0.00";
+		for(RiepilogoOreAnnualiDipendente r:listaRiep){
+			
+			rB= new RiepilogoAnnualeJavaBean((String)r.get("anno"), (String)r.get("cognome"), (String)r.get("nome"), 
+					(Float)r.get("oreOrdinarie"), (Float)r.get("oreStraordinarie"), (Float)r.get("oreRecupero"), (Float)r.get("oreViaggio"), 
+					(Float)r.get("totaleOreLavoro"), (Float)r.get("oreFerie"), (Float)r.get("orePermesso"), (Float)r.get("oreMutua"), (Float)r.get("oreCig"), 
+					(Float)r.get("oreLegge104"), (Float)r.get("oreMaternita"), (Float)r.get("oreTotaliGiustificativi"));			
+			
+			listaRJB.add(rB);
+		}		
 		
-		try {
-			tx=session.beginTransaction();
-			
-			listaP=(List<Personale>)session.createQuery("from Personale where sedeOperativa=:sede order by cognome ASC").setParameter("sede", sede).list();
-			
-			for(Personale p:listaP){
-				
-				listaF.addAll(p.getFoglioOreMeses());
-				
-				for(FoglioOreMese f: listaF){
-					if(f.getMeseRiferimento().compareTo("Feb2013")!=0 && f.getMeseRiferimento().compareTo("Mar2013")!=0 &&
-						f.getMeseRiferimento().compareTo("Apr2013")!=0 && f.getMeseRiferimento().compareTo("Mag2013")!=0 )
-						listaG.addAll(f.getDettaglioOreGiornalieres());
-				}				
-				
-				for(DettaglioOreGiornaliere d:listaG){
-					if(d.getGiustificativo().compareTo("")!=0)
-						if(d.getGiustificativo().compareTo("06.Malattia")==0 || d.getGiustificativo().compareTo("07.Infortunio")==0)
-							oreMutua=ServerUtility.aggiornaTotGenerale(oreMutua, d.getDeltaOreGiorno());
-						else if(d.getGiustificativo().compareTo("24.Cassa Integrazione")==0)
-							oreCassa=ServerUtility.aggiornaTotGenerale(oreCassa, d.getDeltaOreGiorno());
-						else if(d.getGiustificativo().compareTo("25.Permesso Legge 104")==0)
-							oreLegge104=ServerUtility.aggiornaTotGenerale(oreLegge104, d.getDeltaOreGiorno());
-						else if(d.getGiustificativo().compareTo("08.Maternita' Obblig.")==0 || d.getGiustificativo().compareTo("09.Maternita' Facolt.")==0
-								|| d.getGiustificativo().compareTo("09.1.Maternita' Antic.")==0)
-							oreMaternita=ServerUtility.aggiornaTotGenerale(oreMaternita, d.getDeltaOreGiorno());		
-								
-					oreViaggio=ServerUtility.aggiornaTotGenerale(oreViaggio, d.getDeltaOreViaggio());
-					oreFerie=ServerUtility.aggiornaTotGenerale(oreFerie, d.getOreFerie());
-					orePermessoROL=ServerUtility.aggiornaTotGenerale(orePermessoROL, d.getOrePermesso());
-					oreStraOrdinarie=ServerUtility.aggiornaTotGenerale(oreStraOrdinarie, d.getOreStraordinario());
-					oreRecupero=ServerUtility.aggiornaTotGenerale(oreRecupero, d.getOreAssenzeRecupero());
-					oreOrdinarie=ServerUtility.aggiornaTotGenerale(oreOrdinarie, d.getTotaleOreGiorno());												
-				}
-				
-				if(Float.valueOf(oreRecupero)>0)
-					oreOrdinarie=ServerUtility.getDifference(oreOrdinarie, oreRecupero);
-				oreOrdinarie=ServerUtility.getDifference(oreOrdinarie, oreStraOrdinarie);
-				
-				oreTotali=ServerUtility.aggiornaTotGenerale(oreTotali, oreOrdinarie);
-				oreTotali=ServerUtility.aggiornaTotGenerale(oreTotali, oreViaggio);
-				oreTotali=ServerUtility.aggiornaTotGenerale(oreTotali, oreStraOrdinarie);
-				oreTotaliGiustificativi=ServerUtility.aggiornaTotGenerale(oreTotaliGiustificativi, oreMaternita);
-				oreTotaliGiustificativi=ServerUtility.aggiornaTotGenerale(oreTotaliGiustificativi, oreMutua);
-				oreTotaliGiustificativi=ServerUtility.aggiornaTotGenerale(oreTotaliGiustificativi, oreFerie);
-				oreTotaliGiustificativi=ServerUtility.aggiornaTotGenerale(oreTotaliGiustificativi, orePermessoROL);
-				oreTotaliGiustificativi=ServerUtility.aggiornaTotGenerale(oreTotaliGiustificativi, oreLegge104);
-				oreTotaliGiustificativi=ServerUtility.aggiornaTotGenerale(oreTotaliGiustificativi, oreCassa);
-				
-				
-				riep=new RiepilogoAnnualeJavaBean(anno, p.getCognome(), p.getNome(), Float.valueOf(oreOrdinarie), Float.valueOf(oreStraOrdinarie), Float.valueOf(oreRecupero),
-						Float.valueOf(oreViaggio), Float.valueOf(oreTotali), Float.valueOf(oreFerie), Float.valueOf(orePermessoROL), Float.valueOf(oreMutua), Float.valueOf(oreCassa)
-						, Float.valueOf(oreLegge104), Float.valueOf(oreMaternita), Float.valueOf(oreTotaliGiustificativi));
-						
-				listaR.add(riep);
-				
-				oreOrdinarie="0.00";
-				oreStraOrdinarie="0.00";
-				oreRecupero="0.00";
-				oreViaggio="0.00";
-				oreTotali="0.00";
-				oreFerie="0.00";
-				oreMutua="0.00";
-				oreCassa="0.00";
-				oreLegge104="0.00";
-				oreMaternita="0.00";
-				oreTotaliGiustificativi="0.00";
-				orePermessoROL="0.00";
-				
-				listaF.clear();
-				listaG.clear();			
-			}			
-			
-			tx.commit();
-			return listaR;
-			
-		} catch (Exception e) {
-		if (tx != null)
-			tx.rollback();
-		e.printStackTrace();
-		return null;
-	}finally{
-		session.close();
-	}	
-	
+		return listaRJB;
 	}
 	
 	
@@ -2439,7 +2346,6 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 			session.close();
 		}		
 		return sbloccata;
-		
 	}
 
 	public static boolean isNotIncludedPersonale(List<Personale> listaP,
@@ -2488,7 +2394,11 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 				String oreResidue=getOreCentesimi(d.format((r.get("oreResidue"))));
 				
 				o=(Ordine)session.createQuery("from Ordine where codiceOrdine=:nOrdine").setParameter("nOrdine", r.get("numeroOrdine")).uniqueResult();
-				listaFF.addAll(o.getCommessa().getFoglioFatturaziones());
+				
+				//TODO prendo i FF di tutte le commesse dell'ordine
+				for(Commessa c1:o.getCommessas())
+					listaFF.addAll(c1.getFoglioFatturaziones());
+				//listaFF.addAll(o.getCommessa().getFoglioFatturaziones());
 						
 				//for(AttivitaOrdine atto:o.getAttivitaOrdines()){
 					for(FoglioFatturazione ff:listaFF){
@@ -2496,7 +2406,7 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 							if((ff.getMeseCorrente().compareTo(mese)==0)&&(ff.getAttivitaOrdine()==(int)r.get("idAttivitaOrdine"))){							
 								oreMese[listaMesiConsiderati.indexOf(mese)]=getOreCentesimi(ff.getOreFatturare());
 								break;
-							}							
+							}
 						}//mesi
 					}
 					
@@ -2548,6 +2458,8 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 	    Date inizio=(Date)rtv.get("dataInizioAttivita");
 	    Date fine=(Date)rtv.get("dataFineAttivita");
 	    
+	    String matricolaPM="";
+	    
 	    if(inizio!=null)
 	    	dataInizioAttivita=formatter.format(inizio);
 	    else
@@ -2564,10 +2476,11 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 			tx=session.beginTransaction();
 			
 			o=(Ordine)session.createQuery("from Ordine where codiceOrdine=:numeroOrdine").setParameter("numeroOrdine", numeroOrdine).uniqueResult();
-						
 			
+			matricolaPM=o.getCommessas().iterator().next().getMatricolaPM();
 			
-			rtvJB=new RtvJavaBean(numeroOrdine, (String)rtv.get("numeroRtv"), (String)rtv.get("codiceFornitore"), o.getCommessa().getMatricolaPM(), 
+			//TODO prendere la matricola dalla prima commessa che capita
+			rtvJB=new RtvJavaBean(numeroOrdine, (String)rtv.get("numeroRtv"), (String)rtv.get("codiceFornitore"), matricolaPM, 
 					formatter.format(rtv.get("dataOrdine")), formatter.format(rtv.get("dataEmissione")),
 					d.format(imp), o.getImporto(), "", "", (String)rtv.get("attivita"), "", (String)rtv.get("cdcRichiedente"), (String)rtv.get("commessaCliente"), (String)rtv.get("ente"), 
 					dataInizioAttivita, dataFineAttivita, o.getRda().getCliente().getRagioneSociale(), (String)rifM.get("sezione"), (String)rifM.get("reparto"), 
@@ -2942,6 +2855,45 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 		
 		return indice;
 	}
+
+	public static boolean commessaIsIncluded(int codCommessa,
+			Set<Commessa> listaCommesse) {
+				
+		for(Commessa c:listaCommesse)
+			if(c.getCodCommessa()==codCommessa)
+				return true;
+				
+		return false;
+	}
+
+	public static String getNumeroCommessaById(Integer idCommessa) {
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
 		
+		Commessa c= new Commessa();
+		String numCommmessa="#";
+		
+		try{
+			
+			tx=session.beginTransaction();
+			
+			c=(Commessa)session.createQuery("from Commessa where codCommessa=:idCommessa").setParameter("idCommessa", idCommessa).uniqueResult();
+			
+			if(c!=null)
+				numCommmessa=c.getNumeroCommessa()+"."+c.getEstensione();
+						
+			tx.commit();
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+			if (tx != null)
+				tx.rollback();
+		
+		}finally{
+			session.close();
+		}	
+		
+		return numCommmessa;
+	}		
 }
 

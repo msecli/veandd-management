@@ -77,17 +77,17 @@ public class Ordine extends LightEntity implements IsSerializable {
 	
 	private String bem;	
 	
-	private String estensioneOrdine;
-
+	
 	//bi-directional many-to-one association to Rda
 	@ManyToOne
 	@JoinColumn(name="NUMERO_RDA")
 	private Rda rda;
-
+	
+	//OLD
 	//bi-directional many-to-one association to Commessa
-	@ManyToOne
+	/*@ManyToOne
 	@JoinColumn(name="COD_COMMESSA")
-	private Commessa commessa;
+	private Commessa commessa;*/
 	
 	//bi-directional many-to-one association to AttivitaOrdine
 	@OneToMany(mappedBy="ordine", fetch=FetchType.LAZY)
@@ -102,6 +102,12 @@ public class Ordine extends LightEntity implements IsSerializable {
 	@OneToMany(mappedBy="ordine", fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	private Set<Rtv> rtvs;
+	
+	//bi-directional many-to-one association to Ordine
+	@OneToMany(mappedBy="ordine", fetch=FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	private Set<Commessa> commessas;
+	
 
     public Ordine() {
     }
@@ -250,13 +256,14 @@ public class Ordine extends LightEntity implements IsSerializable {
 		this.rda = rda;
 	}
 	
-	public Commessa getCommessa() {
+	//OLD
+	/*public Commessa getCommessa() {
 		return this.commessa;
 	}
 
 	public void setCommessa(Commessa commessa) {
 		this.commessa = commessa;
-	}
+	}*/
 
 	public Set<AttivitaOrdine> getAttivitaOrdines() {
 		return attivitaOrdines;
@@ -330,12 +337,12 @@ public class Ordine extends LightEntity implements IsSerializable {
 		this.rtvs = rtvs;
 	}
 
-	public String getEstensioneOrdine() {
-		return estensioneOrdine;
+	public Set<Commessa> getCommessas() {
+		return commessas;
 	}
 
-	public void setEstensioneOrdine(String estensioneOrdine) {
-		this.estensioneOrdine = estensioneOrdine;
+	public void setCommessas(Set<Commessa> commessas) {
+		this.commessas = commessas;
 	}
 	
 }

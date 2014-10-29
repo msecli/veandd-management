@@ -65,7 +65,7 @@ public class CenterLayout_GestioneRdoCommesseAll extends LayoutContainer {
 	private int h=Window.getClientHeight();
 	private int w=Window.getClientWidth();
 	
-	protected void onRender(Element target, int index) {  
+	protected void onRender(Element target, int index) {
 		super.onRender(target, index);
 		
 		final FitLayout fl= new FitLayout();
@@ -278,7 +278,7 @@ public class CenterLayout_GestioneRdoCommesseAll extends LayoutContainer {
 	    
 	    column=new ColumnConfig();		
 	    column.setId("numeroCommessa");  
-	    column.setHeader("Commessa");  
+	    column.setHeader("Commessa");
 	    column.setWidth(70);  
 	    column.setRowHeader(true);  
 	    column.setAlignment(HorizontalAlignment.RIGHT);
@@ -287,7 +287,7 @@ public class CenterLayout_GestioneRdoCommesseAll extends LayoutContainer {
 	    configs.add(column);
 	          
 	    column=new ColumnConfig();		
-	    column.setId("estensioneCommessa");  
+	    column.setId("estensioneCommessa");
 	    column.setHeader("Est.");  
 	    column.setWidth(40);  
 	    column.setRowHeader(true);  
@@ -308,15 +308,15 @@ public class CenterLayout_GestioneRdoCommesseAll extends LayoutContainer {
 	    column.setId("tipologiaCommessa");  
 	    column.setHeader("Tipo C.");  
 	    column.setWidth(50);  
-	    column.setRowHeader(true);  
+	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
 	    
-	    column=new ColumnConfig();		
+	    column=new ColumnConfig();
 	    column.setId("tariffaSalPcl");  
 	    column.setHeader("Tariffa Sal/Pcl");  
-	    column.setWidth(70);  
-	    column.setRowHeader(true);  
+	    column.setWidth(70);
+	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    TextField<String> txtfldTariffaSalPcl= new TextField<String>();
 	    column.setEditor(new CellEditor(txtfldTariffaSalPcl));

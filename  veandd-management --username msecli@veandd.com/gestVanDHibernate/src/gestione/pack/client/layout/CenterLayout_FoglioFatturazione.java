@@ -842,6 +842,11 @@ public CenterLayout_FoglioFatturazione(){}
 							&& Float.valueOf(txtfldImportoOrdine.getValue().toString())!=0)
 						Window.alert("L'importo da fatturare non puo' essere 0!");
 					else
+						//controllo per impedire caricamento ore sal se ordine esaurito
+					if(!ClientUtility.checkOreOrdineOreSal(txtfldOreDaFatturare.getValue().toString(), txtfldVariazioneSAL.getValue().toString(), 
+							txtfldOreResiduoOrdine.getValue().toString())&&(txtfldOreOrdine.getValue().toString().compareTo("0.0")!=0))
+						Window.alert("Non e' possibile inserire una variazione di SAL a chiusura ordine!");
+					else
 					if(txtfldOreDaFatturare.isValid()&&txtfldVariazioneSAL.isValid()&&txtfldVariazionePCL.isValid()
 							&&txtfldImportoDaFatturare.isValid()){
 						
@@ -1680,7 +1685,7 @@ public CenterLayout_FoglioFatturazione(){}
 					}else{
 						txtfldVariazioneSAL.setValue("0.00");
 						txtfldVariazioneSAL.fireEvent(Events.KeyUp);
-					}				
+					}
 				}
 			});
 			
@@ -1819,7 +1824,8 @@ public CenterLayout_FoglioFatturazione(){}
 			layout();		
 		}
 		
-				
+		
+		//Caricamento record estensioni commesse/ordini della commessa selezionata
 		private void caricaTabellaDati() {
 			String data= new String(); //Formato Feb2013
 			data=smplcmbxMese.getRawValue().toString().substring(0,3)+smplcmbxAnno.getRawValue().toString();
@@ -2147,9 +2153,8 @@ public CenterLayout_FoglioFatturazione(){}
 					}
 				}); //AsyncCallback	  		
 			}else
-			{
 				Window.alert("error: Dati selezionati non corretti.");
-			}
+			
 		}
 		
 		protected boolean hasValue(TextField<String> field) {
@@ -2169,12 +2174,12 @@ public CenterLayout_FoglioFatturazione(){}
 			Float oreViaggioC=(float)0.0;
 			Float oreStraoC=(float)0.0;
 			Float oreLavoro=(float)0.0;
-				
+			
 			NumberFormat number= NumberFormat.getFormat("0.00");
-						
+			
 			HorizontalPanel hp= new HorizontalPanel();
 			CntpnlRiepilogoOreDipFatturazione cp;
-								
+			
 			try {
 				totOre= "0.0";			
 				hp=(HorizontalPanel) getParent();//se non è presente una lista faccio comunque apparire gli ordini da "fatturare" in modo tale da permettere l'inserimento di ore di sal
@@ -2234,7 +2239,7 @@ public CenterLayout_FoglioFatturazione(){}
 					txtfldImportoDaFatturare.setValue((String)result.get("importoDaFatturare"));
 					txtfldImportoRtv.setValue((String)result.get("importoRtv"));
 					txtfldOreRimborsoSpese.setValue((String)result.get("oreRimborsoSpese"));
-						
+					
 					txtfldOreEseguiteRegistrate.setValue(result.getOreEseguiteRegistrate());
 					
 					txtfldTotFatturato.setValue(totaleEuro);
@@ -2304,7 +2309,7 @@ public CenterLayout_FoglioFatturazione(){}
 					//txtfldDiffScaricateEseguite.setValue("0.00");
 					txtfldOreScaricate.setValue("0.00");
 					txtfldOreDaFatturare.setValue("0.00");
-					txtfldImportoDaFatturare.setValue("0.00");					
+					txtfldImportoDaFatturare.setValue("0.00");
 					
 					totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldOreDaFatturare.getValue().toString()));
 	    	  		txtOreDaFatturare.setText("("+totaleEuro+")");

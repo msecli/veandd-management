@@ -27,7 +27,6 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.Record;
@@ -45,10 +44,11 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.gwtext.client.widgets.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -92,6 +92,7 @@ public class PanelCommessa extends LayoutContainer {
 	private Button btnDelete;
 	private Button btnEdit;
 	private Button btnReset;
+	private CheckBox chbxEscludiDaPa;
 	
 	private Text txtRuolo=new Text();
 	private Text txtNome=new Text();
@@ -116,8 +117,7 @@ public class PanelCommessa extends LayoutContainer {
 		LayoutContainer layoutContainer= new LayoutContainer();
 		layoutContainer.setBorders(false);
 		layoutContainer.setLayout(fl);
-		
-		
+				
 		LayoutContainer bodyContainer = new LayoutContainer();
 		bodyContainer.setLayout(new FlowLayout());
 		bodyContainer.setBorders(false);
@@ -205,7 +205,7 @@ public class PanelCommessa extends LayoutContainer {
 		toolBar.add(txtfldsearch);
 		
 		toolBar.add(btnClose);
-		toolBar.add(btnOrdine);
+		//toolBar.add(btnOrdine);
 		toolBar.setBorders(true);
 		toolBar.setHeight("30px");
 		toolBar.setAlignment(HorizontalAlignment.RIGHT);
@@ -232,8 +232,8 @@ public class PanelCommessa extends LayoutContainer {
 		    			 listaStore.clear();
 		    			 listaStore.addAll(store.getModels());
 		    			 gridCommessa.reconfigure(storeResult, cmCommessa);			 
-		    		 } 
-		    	 }	    	  	 
+		    		 }
+		    	 }
 		});	
 		
 		ContentPanel cntpnlVistaDati= new ContentPanel();
@@ -246,7 +246,7 @@ public class PanelCommessa extends LayoutContainer {
 	    cntpnlVistaDati.setStyleAttribute("padding-top", "0px");
 	    	    	        		
 		try {
-			frmpnlCommessa= createForm();			
+			frmpnlCommessa= createForm();
 		} catch (Exception e) {
 			e.printStackTrace();
 			Window.alert("error: Problema durante la generazione del FormCommessa.");
@@ -400,6 +400,7 @@ public class PanelCommessa extends LayoutContainer {
 									String salAttuale="0.0";
 									String pclAttuale="0.0";
 									String ragioneSociale="";
+									Boolean escludiDaPa= chbxEscludiDaPa.getValue();
 									//Date dataInizio=new Date();
 																								
 									if(txtfldNumeroCommessa.getRawValue().isEmpty()){ numCommessa="";}else{numCommessa=txtfldNumeroCommessa.getValue().toString();}
@@ -423,7 +424,7 @@ public class PanelCommessa extends LayoutContainer {
 									//dataInizio=dtfldData.getValue();
 																		
 									AdministrationService.Util.getInstance().insertDataCommessa(ragioneSociale, numCommessa, estensione, tipoCommessa, pM, statoCommessa, 
-											/*dataInizio,*/oreLavoro, oreLavoroResidue, tariffaSal, salAttuale, pclAttuale, descrizione, note,  new AsyncCallback<Boolean>() {
+											/*dataInizio,*/oreLavoro, oreLavoroResidue, tariffaSal, salAttuale, pclAttuale, descrizione, note, escludiDaPa,  new AsyncCallback<Boolean>() {
 
 									@Override
 									public void onFailure(Throwable caught) {
@@ -468,6 +469,7 @@ public class PanelCommessa extends LayoutContainer {
 				String salAttuale="0.0";
 				String pclAttuale="0.0";
 				String ragioneSociale="";
+				Boolean escludiDaPa= chbxEscludiDaPa.getValue();
 				
 				//Date dataInizio=new Date();
 				/*
@@ -505,7 +507,7 @@ public class PanelCommessa extends LayoutContainer {
 					ragioneSociale=c.getRagioneSociale();
 				
 	        		AdministrationService.Util.getInstance().editDataCommessa(id, ragioneSociale,numCommessa, estensione, tipoCommessa, pM, statoCommessa, 
-						/*dataInizio,*/oreLavoro,oreLavoroResidue,tariffaSal, salAttuale, pclAttuale, descrizione, note,  new AsyncCallback<Boolean>() {
+						/*dataInizio,*/oreLavoro,oreLavoroResidue,tariffaSal, salAttuale, pclAttuale, descrizione, note,  escludiDaPa, new AsyncCallback<Boolean>() {
 
 	        			@Override
 	        			public void onFailure(Throwable caught) {
@@ -524,7 +526,8 @@ public class PanelCommessa extends LayoutContainer {
 	        		});	//Asynch
 				}//for
 	        	
-	          }else{Window.alert("Controllare i campi inseriti!");}	
+	          }else
+	        	  Window.alert("Controllare i campi inseriti!");	
 	        }
 	      });	
 		
@@ -759,6 +762,12 @@ public class PanelCommessa extends LayoutContainer {
 		txtfldEstensione.setMaxLength(10);
 		txtfldEstensione.setAllowBlank(false);
 		txtfldEstensione.setValue("0");
+		
+		chbxEscludiDaPa= new CheckBox();
+		chbxEscludiDaPa.setValue(false);
+		chbxEscludiDaPa.setFieldLabel("Escludi da .PA");
+		chbxEscludiDaPa.setName("escludiDaPa");
+		frmPanel.add(chbxEscludiDaPa, new FormData("60%")); 
 		
 		smplcmbxTipoCommessa=new SimpleComboBox<String>();
 		smplcmbxTipoCommessa.setFieldLabel("Tipo. Commessa");
@@ -1185,7 +1194,7 @@ public class PanelCommessa extends LayoutContainer {
 			}
 			
 			@Override
-			public void onFailure(Throwable caught) {				
+			public void onFailure(Throwable caught) {
 				Window.alert("Error on getRuolo();");
 			}
 		});				
@@ -1211,7 +1220,7 @@ public class PanelCommessa extends LayoutContainer {
 			}
 			
 			@Override
-			public void onFailure(Throwable caught) {		
+			public void onFailure(Throwable caught) {
 				Window.alert("Error on getUserName();");
 			}
 		});		

@@ -83,8 +83,8 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 		this.data=data;
 		this.pm=pm;
 	}
-			
-	protected void onRender(Element target, int index) {  
+	
+	protected void onRender(Element target, int index) {
 	    super.onRender(target, index);
 	
 	    final FitLayout fl= new FitLayout();
@@ -460,7 +460,7 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	    column.setStyle("color:#e71d2b;");
 	    column.setSummaryType(SummaryType.SUM); 
 	    column.setRenderer(rendererSum); 
-	    column.setSummaryRenderer(new SummaryRenderer() {	
+	    column.setSummaryRenderer(new SummaryRenderer() {
 			@Override
 			public String render(Number value, Map<String, Number> data) {
 				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
@@ -477,7 +477,7 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	    column.setAlignment(HorizontalAlignment.RIGHT); 
 	    column.setSummaryType(SummaryType.SUM); 
 	    column.setRenderer(rendererSum);  
-	    column.setSummaryRenderer(new SummaryRenderer() {	
+	    column.setSummaryRenderer(new SummaryRenderer() {
 			@Override
 			public String render(Number value, Map<String, Number> data) {
 				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
@@ -495,7 +495,7 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	    column.setRenderer(renderer);
 	    configs.add(column);	    
 	    
-	    SummaryColumnConfig<Double> columnImporto=new SummaryColumnConfig<Double>();		
+	    SummaryColumnConfig<Double> columnImporto=new SummaryColumnConfig<Double>();	
 	    columnImporto.setId("importoComplessivo");  
 	    columnImporto.setHeader("Tot.Euro");  
 	    columnImporto.setWidth(80);    
@@ -504,7 +504,7 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	    columnImporto.setStyle("color:#e71d2b;");
 	    columnImporto.setSummaryType(SummaryType.SUM); 
 	    columnImporto.setRenderer(rendererSum);   
-	    columnImporto.setSummaryRenderer(new SummaryRenderer() {	
+	    columnImporto.setSummaryRenderer(new SummaryRenderer() {
 			@Override
 			public String render(Number value, Map<String, Number> data) {
 				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
@@ -521,7 +521,7 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	    columnOreLavoro.setAlignment(HorizontalAlignment.RIGHT);  	
 	    columnOreLavoro.setRenderer(rendererSum); 
 	    columnOreLavoro.setSummaryType(SummaryType.SUM); 
-	    columnOreLavoro.setSummaryRenderer(new SummaryRenderer() {	
+	    columnOreLavoro.setSummaryRenderer(new SummaryRenderer() {
 			@Override
 			public String render(Number value, Map<String, Number> data) {
 				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
@@ -625,13 +625,15 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 			setRenderer("attuale", aggrRender);
 			
 			setSummaryType("importoMese", SummaryType.SUM);
-			setSummaryFormat("importoMese", NumberFormat.getCurrencyFormat("EUR"));
+			//setSummaryFormat("importoMese", NumberFormat.getCurrencyFormat("EUR"));
+			setRenderer("importoMese", aggrRender);
 			
 			setSummaryType("precedente", SummaryType.SUM);
 			setRenderer("precedente", aggrRender);
 			
 			setSummaryType("importoComplessivo", SummaryType.SUM);
-			setSummaryFormat("importoComplessivo", NumberFormat.getCurrencyFormat("EUR"));
+			//setSummaryFormat("importoComplessivo", NumberFormat.getCurrencyFormat("EUR"));
+			setRenderer("importoComplessivo", aggrRender);
 			
 			setSummaryType("oreEseguite", SummaryType.SUM);
 			setRenderer("oreEseguite", aggrRender);

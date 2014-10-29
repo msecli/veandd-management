@@ -30,8 +30,9 @@ public class DialogCheckCommesseFatturate  extends Dialog{
 		setLayout(new FitLayout());
 		setBodyBorder(true);
 		setBodyStyle("padding: 8px; background: none");
-		setResizable(false);
+		setResizable(true);
 		setClosable(true);
+		setConstrain(false);
 		setButtons("");
 		setHeading("Controllo ore");
 		setModal(false);
@@ -53,7 +54,7 @@ public class DialogCheckCommesseFatturate  extends Dialog{
 		gridRiepilogo.setItemId("grid");
 		gridRiepilogo.setBorders(false);  
 		gridRiepilogo.setStripeRows(true);  
-		gridRiepilogo.setColumnLines(true);  
+		gridRiepilogo.setColumnLines(true);
 		gridRiepilogo.setColumnReordering(true);
 		gridRiepilogo.getView().setShowDirtyCells(false);
 		

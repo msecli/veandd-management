@@ -7,6 +7,7 @@ import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
 import gestione.pack.client.model.RiepilogoMensileOrdiniModel;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
+import gestione.pack.client.model.RiepilogoOreAnnualiDipendente;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 import gestione.pack.client.model.RiepilogoSALPCLModel;
 import gestione.pack.client.model.RiferimentiRtvModel;
@@ -36,8 +37,8 @@ public interface SessionManagementServiceAsync {
 
 	void getSede(AsyncCallback<String> asyncCallback);
 
-	void setDataReportAnnualeInSession(String anno, String sede,
-			String operazione, AsyncCallback<Boolean> asyncCallback);
+	void setDataReportAnnualeInSession(List<RiepilogoOreAnnualiDipendente> listaRiep, String string,
+			AsyncCallback<Boolean> asyncCallback);
 
 	void setDataReportDatiFatturazioneInSession(String anno, String mese,
 			List<DatiFatturazioneMeseModel> lista, String string, AsyncCallback<Boolean> asyncCallback);
