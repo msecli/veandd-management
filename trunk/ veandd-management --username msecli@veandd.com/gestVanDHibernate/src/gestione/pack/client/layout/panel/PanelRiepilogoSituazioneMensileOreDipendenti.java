@@ -163,7 +163,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	  	btnConferma.setIconAlign(IconAlign.TOP);
 	  	btnConferma.setToolTip("Conferma mese per singolo dipendente.");
 	  	btnConferma.setSize(26, 26);
-	  //	btnConferma.disable();
+	  	//btnConferma.disable();
 	  	btnConferma.addSelectionListener(new SelectionListener<ButtonEvent>() {		
 			@Override
 			public void componentSelected(ButtonEvent ce) {
@@ -200,7 +200,6 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 
 					@Override
 					public void onFailure(Throwable caught) {
-						
 						Window.alert("Errore connessione on confermaGiorniTuttiDipendenti();");
 					}
 
@@ -211,7 +210,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 						else
 							Window.alert("Non è stato possibile effettuare la conferma!");
 					}
-				});			
+				});
 			}
 		});
 	  	
@@ -228,12 +227,12 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 				Dialog d =new  DialogRilevazionePresenze(data,username);
 				d.show();
 								
-				d.addListener(Events.Hide, new Listener<ComponentEvent>() {			     
+				d.addListener(Events.Hide, new Listener<ComponentEvent>() {
 					@Override
 					public void handleEvent(ComponentEvent be) {
-						caricaTabellaDati();			
+						caricaTabellaDati();
 				    }
-				});				
+				});
 			}
 		});
 	  	
@@ -261,7 +260,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 		cntpnlGrid.setScrollMode(Scroll.AUTO);
 					    
 	    try {	    	
-	    	cmCommessa = new ColumnModel(createColumns());    	
+	    	cmCommessa = new ColumnModel(createColumns());
 		} catch (Exception e) {
 			e.printStackTrace();
 			Window.alert("error: Problema createColumns().");			
@@ -269,18 +268,18 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	    
 	    store.groupBy("nome");
 	    store.setSortField("giorno");
-	    	        
+	    
 	    GroupingView view = new GroupingView();  
 	    view.setShowGroupedColumn(false);  
 	    view.setForceFit(false);  
 	    view.setStartCollapsed(true);
-	    view.setGroupRenderer(new GridGroupRenderer() {  
-	      public String render(GroupColumnData data) {  
-	        String f = cmCommessa.getColumnById(data.field).getHeader();  
-	       // String l = data.models.size() == 1 ? "Item" : "Items";  
+	    view.setGroupRenderer(new GridGroupRenderer() {
+	      public String render(GroupColumnData data) { 
+	        String f = cmCommessa.getColumnById(data.field).getHeader();
+	        //String l = data.models.size() == 1 ? "Item" : "Items";
 	        return f + ": " + data.group ;//+ " (" + data.models.size() + " " + l + ")";  
-	      }  
-	    });  
+	      }
+	    });
 	    
 	    gridRiepilogo= new Grid<RiepilogoFoglioOreModel>(store, cmCommessa);  
 	    gridRiepilogo.setItemId("grid");
@@ -388,7 +387,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 		String sede= smplcmbxSede.getRawValue().toString();
 		
 		AdministrationService.Util.getInstance().getRiepilogoMeseFoglioOre(dtfldDataRiferimento.getValue(),
-				pm, sede, cognome,  new AsyncCallback<List<RiepilogoFoglioOreModel>>() {	
+				pm, sede, cognome,  new AsyncCallback<List<RiepilogoFoglioOreModel>>() {
 			
 			@Override
 			public void onSuccess(List<RiepilogoFoglioOreModel> result) {
@@ -398,7 +397,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 					if(result.size()==0){
 						//Window.alert("Nessun dato rilevato in base ai criteri di ricerca selezionati.");				
 					}
-					else loadTable(result);			
+					else loadTable(result);
 			}
 			@Override
 			public void onFailure(Throwable caught) {

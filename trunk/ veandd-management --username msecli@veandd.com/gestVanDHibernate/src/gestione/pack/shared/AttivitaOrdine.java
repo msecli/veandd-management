@@ -20,6 +20,12 @@ public class AttivitaOrdine implements Serializable {
 	private String descrizioneAttivita;
 
 	private String tariffaAttivita;
+	
+	private Float	oreOrdine;
+	private Float oreResidueOrdine;
+	private Float importoOrdine;
+	private Float importoResiduoOrdine;
+	private Integer idEstensioneCommessa;
 
 	//bi-directional many-to-one association to Ordine
     @ManyToOne
@@ -60,5 +66,71 @@ public class AttivitaOrdine implements Serializable {
 	public void setOrdine(Ordine ordine) {
 		this.ordine = ordine;
 	}
+
+	/**
+	 * @return the oreOrdine
+	 */
+	public Float getOreOrdine() {
+		return oreOrdine;
+	}
+
+	/**
+	 * @param oreOrdine the oreOrdine to set
+	 */
+	public void setOreOrdine(Float oreOrdine) {
+		this.oreOrdine = oreOrdine;
+	}
+
+	/**
+	 * @return the oreResidueOrdine
+	 */
+	public Float getOreResidueOrdine() {
+		return oreResidueOrdine;
+	}
+
+	/**
+	 * @param oreResidueOrdine the oreResidueOrdine to set
+	 */
+	public void setOreResidueOrdine(Float oreResidueOrdine) {
+		this.oreResidueOrdine = oreResidueOrdine;
+	}
+
+	/**
+	 * @return the importoOrdine
+	 */
+	public Float getImportoOrdine() {
+		return importoOrdine;
+	}
+
+	/**
+	 * @param importoOrdine the importoOrdine to set
+	 */
+	public void setImportoOrdine(Float importoOrdine) {
+		this.importoOrdine = importoOrdine;
+	}
+
+	/**
+	 * @return the importoResiduoOrdine
+	 */
+	public Float getImportoResiduoOrdine() {
+		return importoResiduoOrdine;
+	}
+
+	/**
+	 * @param importoResiduoOrdine the importoResiduoOrdine to set
+	 */
+	public void setImportoResiduoOrdine(Float importoResiduoOrdine) {
+		this.importoResiduoOrdine = importoResiduoOrdine;
+	}
+
+	public Integer getIdEstensioneCommessa() {
+		return idEstensioneCommessa;
+	}
+
+	public void setIdEstensioneCommessa(Integer idEstensioneCommessa) {
+		this.idEstensioneCommessa = idEstensioneCommessa;
+	}
+	
+	
 	
 }

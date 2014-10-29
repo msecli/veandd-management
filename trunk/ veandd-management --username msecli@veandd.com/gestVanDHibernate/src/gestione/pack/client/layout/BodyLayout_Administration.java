@@ -4,6 +4,7 @@ package gestione.pack.client.layout;
 
 import java.util.List;
 
+import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.UtilityService;
 import gestione.pack.client.layout.panel.DialogRichiestaHardwareDipendente;
@@ -976,12 +977,40 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    btnTools.setWidth("100%");
 	    cp.add(btnRiepRichiesteHardware);
 	    
+	    
+	    Button btnProcedure = new Button();
+	    btnProcedure.setToolTip("Procedure X");
+	    btnProcedure.setHeight(65);
+	    btnProcedure.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.tools()));
+	    btnProcedure.setIconAlign(IconAlign.BOTTOM);
+	    btnProcedure.setWidth("100%");
+	    btnProcedure.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	    
+	        	AdministrationService.Util.getInstance().copyCodOrdine(new AsyncCallback<Boolean>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void onSuccess(Boolean result) {
+						Window.alert("Ok");
+					}
+				});
+	       }      
+	    });
+	    btnTools.setWidth("100%");
+	    cp.add(btnProcedure);
+	    
 	    panel.add(cp);
 	    	    
 	    panel.setSize(180,Window.getClientHeight()-70);
 	    panel.setBorders(false);
 	    west.add(panel);
-	        
+	    
 //----------------------------------------------------------------------------------------------
 	    
 	    

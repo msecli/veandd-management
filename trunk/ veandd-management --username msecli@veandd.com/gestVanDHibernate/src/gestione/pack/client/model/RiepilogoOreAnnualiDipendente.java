@@ -15,7 +15,8 @@ public class RiepilogoOreAnnualiDipendente extends BaseModel implements IsSerial
 	}
 	
 	public RiepilogoOreAnnualiDipendente(String anno,String cognome, String nome, Float oreOrdinarie, Float oreStraordinarie,Float oreRecupero
-			, Float oreViaggio, Float totaleOreLavoro, Float oreFerie, Float orePermessoRol, Float oreMutua, Float oreCig, Float oreLegge104, Float oreMaternita,   Float oreTotaliGiustificativi ){
+			, Float oreViaggio, Float totaleOreLavoro, Float oreFerie, Float orePermessoRol, Float oreMutua, Float oreCig, 
+			Float oreLegge104, Float oreMaternita,   Float oreTotaliGiustificativi ){
 		
 		set("anno",anno);
 		set("cognome",cognome);

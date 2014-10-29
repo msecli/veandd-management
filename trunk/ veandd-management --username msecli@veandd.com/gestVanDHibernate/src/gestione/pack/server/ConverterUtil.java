@@ -305,6 +305,7 @@ public class ConverterUtil {
 		String dataInizioO=new String();
 		String dataFineO=new String();
 		String commessa= new String();
+		List<CommessaModel> listaC=new ArrayList<CommessaModel>();
 		
 		String codiceRda= new String();
 		
@@ -326,28 +327,60 @@ public class ConverterUtil {
 			} else{
 				formatter=new SimpleDateFormat("dd-MMM-yyyy",Locale.ITALIAN);
 				dataFine=o.getDataFine();
-				dataFineO=formatter.format(dataFine);		
+				dataFineO=formatter.format(dataFine);
 			}
 						
 			if(o.getRda()==null){
 				codiceRda="#";	
 			}else codiceRda= o.getRda().getCodiceRDA()+"("+o.getRda().getCliente().getRagioneSociale()+")";
 				
-			commessa= getCommessaByOrdine(o);								
+			listaC.addAll(getCommessaByOrdine(o));
+			//commessa= getCommessaByOrdine(o);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		
-		OrdineModel ordine= new OrdineModel(o.getNumeroOrdine(), o.getCodiceOrdine(), o.getEstensioneOrdine(), codiceRda, commessa,
+				
+		OrdineModel ordine= new OrdineModel(o.getNumeroOrdine(), o.getCodiceOrdine(), null, codiceRda, commessa,
 				dataInizioO, dataFineO, o.getDescrizioneAttivita(), o.getTariffaOraria(), o.getNumRisorse(), o.getOreBudget(), "");
+		ordine.setListaCommesse(listaC);
 		
 		return ordine;
 	}
 
 	
-	private static String getCommessaByOrdine(Ordine o) {
+	private static List<CommessaModel> getCommessaByOrdine(Ordine o){
+		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
+		Transaction tx= null;
+		
+		List <Commessa> listaC=new ArrayList<Commessa>();
+		List <CommessaModel> listaCM=new ArrayList<CommessaModel>();
+		CommessaModel cM= new CommessaModel();
+		
+		try {
+			  tx=	session.beginTransaction();
+			  
+			  listaC.addAll(o.getCommessas());
+			  
+			  tx.commit();
+			  
+			  for(Commessa c: listaC){
+				  cM=new CommessaModel(c.getCodCommessa(), c.getNumeroCommessa(), c.getEstensione(), c.getDenominazioneAttivita());
+				  listaCM.add(cM);
+			  }				  
+			  
+		    } catch (Exception e) {
+		    	if (tx!=null)
+		    		tx.rollback();		    	
+		    	e.printStackTrace();
+		    	return null;
+		    }
+		
+		return listaCM;
+	}
+	
+	//TODO restituire lista commesse
+	/*private static String getCommessaByOrdine(Ordine o) {
 		
 		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
 		Transaction tx= null;
@@ -357,8 +390,11 @@ public class ConverterUtil {
 		try {
 			  tx=	session.beginTransaction();
 			  
-			  if(o.getCommessa()==null) commessa="#";
-				  else commessa=o.getCommessa().getNumeroCommessa()+"."+o.getCommessa().getEstensione();
+			  //if(o.getCommessa()==null)
+			  if(!o.getCommessas().iterator().hasNext())
+				  commessa="#";
+			  else 
+				  commessa=o.getCommessa().getNumeroCommessa()+"."+o.getCommessa().getEstensione();
 			  
 			  tx.commit();
 		     
@@ -369,14 +405,13 @@ public class ConverterUtil {
 		    		tx.rollback();		    	
 		    	e.printStackTrace();
 		    	return "#";
-		    }	
-		
-	}
-
+		    }
+	}*/
 
 //----------------------------------COMMESSE-------------------------------------------------
-	
 
+
+	//TODO 
 	public static CommessaModel commesseToModelConverter(Commessa c, Ordine o) {
 		String cliente = new String();
 		String numRisorse= new String();
@@ -398,7 +433,7 @@ public class ConverterUtil {
 		try {
 			
 			//formattazione data
-			if(c.getDataElaborazione()==null){			
+			if(c.getDataElaborazione()==null){
 				dataElaborazione="00-00-0000";	
 			} else{
 				formatter=new SimpleDateFormat("dd-MMM-yyyy",Locale.ITALIAN);
@@ -407,22 +442,23 @@ public class ConverterUtil {
 			}
 			
 			//formattazione data
-			if(c.getDataChiusura()==null){		
+			if(c.getDataChiusura()==null){
 				dataChiusura="00-00-0000";	
 			} else{
 				formatter=new SimpleDateFormat("dd-MMM-yyyy",Locale.ITALIAN);
 				dataC=c.getDataChiusura();
 				dataChiusura=formatter.format(dataC);
-			}
-				
+			}				
 
-			if (o != null) {
+			if (o != null)
+				if(o.getCodiceOrdine().compareTo("#")!=0 /*&& o.getCodiceOrdine()!=null*/) {
 
 				Session session = MyHibernateUtil.getSessionFactory().openSession();
 				Transaction tx = null;
 
 				try {
 					tx = session.beginTransaction();
+					
 					cliente = o.getRda().getCliente().getRagioneSociale();
 					numeroOrdine= o.getCodiceOrdine();
 					
@@ -454,21 +490,28 @@ public class ConverterUtil {
 					session.close();
 				}
 
-			} else{
+			}else{
 				cliente = c.getRagioneSocialeCliente();
 				numeroOrdine="#";
 				numeroRdo="#";
 				numeroOfferta="#";
-			}
+			} 
+				
+		else{
+			cliente = c.getRagioneSocialeCliente();
+			numeroOrdine="#";
+			numeroRdo="#";
+			numeroOfferta="#";
+		}
 								
-			CommessaModel cm= new CommessaModel( c.getCodCommessa(),  c.getNumeroCommessa(), numeroRdo, numeroOfferta, numeroOrdine,  c.getEstensione(),  c.getTipoCommessa(), cliente ,  c.getMatricolaPM(),  c.getStatoCommessa(),
+		CommessaModel cm= new CommessaModel( c.getCodCommessa(),  c.getNumeroCommessa(), numeroRdo, numeroOfferta, numeroOrdine,  c.getEstensione(),  c.getTipoCommessa(), cliente ,  c.getMatricolaPM(),  c.getStatoCommessa(),
 					String.valueOf(c.getOreLavoro()), String.valueOf(c.getResiduoOreLavoro()),String.valueOf(c.getTariffaSal()), c.getSalAttuale(), c.getPclAttuale(), dataElaborazione, dataChiusura, c.getDenominazioneAttivita(), c.getNote(), numRisorse);
-			return cm;			
+		return cm;			
 		
-			} catch (Exception e) {
-				e.printStackTrace();
-				return null;
-		}		
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 

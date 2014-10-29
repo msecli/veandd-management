@@ -35,6 +35,7 @@ import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
 import gestione.pack.client.model.RiepilogoMensileOrdiniModel;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
+import gestione.pack.client.model.RiepilogoOreAnnualiDipendente;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 import gestione.pack.client.model.RiepilogoSALPCLModel;
 import gestione.pack.client.model.RiferimentiRtvModel;
@@ -204,14 +205,13 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 
 
 	@Override
-	public boolean setDataReportAnnualeInSession(String anno, String sede,
-			String operazione) throws IllegalArgumentException{
+	public boolean setDataReportAnnualeInSession(List<RiepilogoOreAnnualiDipendente> listaRiep, String operazione) throws IllegalArgumentException{
 		try {
 			 HttpServletRequest request = this.getThreadLocalRequest();
 		   	 HttpSession httpSession = request.getSession();
 		   	   
-		   	 httpSession.setAttribute("anno", anno);
-		   	 httpSession.setAttribute("sede", sede);
+		   	 httpSession.setAttribute("listaRiep", listaRiep);
+		   	
 		     httpSession.setAttribute("operazione", operazione);
 		     
 			 return true;
@@ -224,7 +224,7 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 
 	@Override
 	public boolean setDataReportDatiFatturazioneInSession(String anno,
-			String mese, List<DatiFatturazioneMeseModel> listaD,String operazione) throws IllegalArgumentException {
+			String mese, List<DatiFatturazioneMeseModel> listaD, String operazione) throws IllegalArgumentException {
 		try {
 			 HttpServletRequest request = this.getThreadLocalRequest();
 		   	 HttpSession httpSession = request.getSession();

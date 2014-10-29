@@ -205,13 +205,13 @@ public interface AdministrationService extends RemoteService {
 			String estensione, String tipoCommessa, String pM,
 			String statoCommessa, String oreLavoro, String oreLavoroResidue,
 			String tariffaSal, String salAttuale, String pclAttuale,
-			String descrizione, String note);
+			String descrizione, String note, Boolean escludiDaPa);
 
 	boolean editDataCommessa(int i, String ragioneSociale, String numCommessa,
 			String estensione, String tipoCommessa, String pM,
 			String statoCommessa, String oreLavoro, String oreLavoroResidue,
 			String tariffaSal, String salAttuale, String pclAttuale,
-			String descrizione, String note);
+			String descrizione, String note, Boolean escludiDaPa);
 
 	boolean deleteDataCommessa(int parseInt)throws IllegalArgumentException;
 
@@ -364,7 +364,7 @@ boolean invioCommenti(String testo, String username, Date giorno);
 			String sede, String data)throws IllegalArgumentException;
 
 	List<RiepilogoOreAnnualiDipendente> getRiepilogoAnnualeOreDipendenti(
-			String anno, String sede)throws IllegalArgumentException;
+			String annoI, String meseI, String annoF, String meseF, String sede);
 
 	List<RiepilogoOreNonFatturabiliModel> getRiepilogoOreNonFatturate(
 			String data, String groupBy)throws IllegalArgumentException;
@@ -497,5 +497,12 @@ boolean invioCommenti(String testo, String username, Date giorno);
 
 	List<RiepilogoOreDipFatturazione> checkOreEseguiteFogliopFatturazione(
 			String meseRif, List<RiepilogoOreDipFatturazione> listaC);
+
+	boolean copyCodOrdine();
+
+	List<CommessaModel> getCommessePerIdRda(String numeroOrdine) throws IllegalArgumentException;
+
+	boolean associaEstensioneCommessaAttivitaOrdine(String valueOf,
+			Integer idAttivita);
 	
 }

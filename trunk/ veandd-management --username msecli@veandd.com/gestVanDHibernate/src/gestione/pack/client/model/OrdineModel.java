@@ -2,13 +2,19 @@ package gestione.pack.client.model;
 
 import com.extjs.gxt.ui.client.data.BaseModel;
 
+import gestione.pack.shared.Commessa;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OrdineModel  extends BaseModel implements Serializable {
 
 
 	private static final long serialVersionUID = 1L;
 
+	private List<CommessaModel> listaCommesse;
+	
 	public OrdineModel(){}
 	
 	public OrdineModel(int idordine, String numOrdine, String estensioneOrdine, String numRda, String commessa, String dataInizioOrdine,
@@ -26,7 +32,15 @@ public class OrdineModel  extends BaseModel implements Serializable {
     	set("numeroRisorse", numeroRisorse);
     	set("numeroOre", numeroOre);
     	set("importo", importo);
-		
+		    	
+	}
+	
+	public List<CommessaModel> getListaCommesse() {
+		return listaCommesse;
+	}
+
+	public void setListaCommesse(List<CommessaModel> listaCommesse) {
+		this.listaCommesse = listaCommesse;
 	}
 	
 	public String getNumeroRda() {

@@ -60,6 +60,11 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
 	private static String url= "/gestvandhibernate/PrintDataServlet";
 	
+	private SimpleComboBox<String> smplcmbxAnnoInizio;
+	private SimpleComboBox<String> smplcmbxMeseInizio;
+	private SimpleComboBox<String> smplcmbxAnnoFine;
+	private SimpleComboBox<String> smplcmbxMeseFine;
+	
 	private SimpleComboBox<String> smplcmbxAnno;
 	private SimpleComboBox<String> smplcmbxSede;
 	private Button btnSelect;
@@ -72,7 +77,7 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 		
 	}
 	
-	protected void onRender(Element target, int index) {  
+	protected void onRender(Element target, int index) {
 		super.onRender(target, index);
 		
 		final FitLayout fl= new FitLayout();
@@ -101,8 +106,9 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 		Date d= new Date();
 		String dt= d.toString();
 		String anno= dt.substring(dt.length()-4, dt.length());
-		
-		smplcmbxAnno= new SimpleComboBox<String>();
+		String mese= ClientUtility.meseToLong(ClientUtility.traduciMeseToIt(dt.substring(4, 7)));
+				
+		/*smplcmbxAnno= new SimpleComboBox<String>();
 		smplcmbxAnno.setFieldLabel("Anno");
 		smplcmbxAnno.setName("anno");
 		smplcmbxAnno.setEmptyText("Anno..");
@@ -112,9 +118,62 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 			 smplcmbxAnno.add(l);}
 		smplcmbxAnno.setTriggerAction(TriggerAction.ALL);
 		smplcmbxAnno.setSimpleValue(anno);
-		smplcmbxAnno.setWidth(100);
-		tlbrOperazioni.add(smplcmbxAnno);
-		   
+		smplcmbxAnno.setWidth(100);*/
+		//tlbrOperazioni.add(smplcmbxAnno);
+		
+		smplcmbxAnnoInizio= new SimpleComboBox<String>();
+		smplcmbxAnnoInizio.setFieldLabel("Anno Inizio");
+		smplcmbxAnnoInizio.setName("annoI");
+		smplcmbxAnnoInizio.setEmptyText("Anno Inizio..");
+		smplcmbxAnnoInizio.setAllowBlank(false);
+		smplcmbxAnnoInizio.setEnabled(true);
+		smplcmbxAnnoInizio.setTriggerAction(TriggerAction.ALL);
+		smplcmbxAnnoInizio.setSimpleValue(anno);
+		smplcmbxAnnoInizio.setWidth(100);
+		tlbrOperazioni.add(smplcmbxAnnoInizio);
+		
+		smplcmbxMeseInizio= new SimpleComboBox<String>();
+		smplcmbxMeseInizio.setFieldLabel("Mese Inizio");
+		smplcmbxMeseInizio.setName("meseI");
+		smplcmbxMeseInizio.setEmptyText("Mese Inizio..");
+		smplcmbxMeseInizio.setAllowBlank(false);
+		smplcmbxMeseInizio.setEnabled(true);
+		smplcmbxMeseInizio.setTriggerAction(TriggerAction.ALL);
+		smplcmbxMeseInizio.setSimpleValue(anno);
+		smplcmbxMeseInizio.setWidth(100);
+		tlbrOperazioni.add(smplcmbxMeseInizio);
+		
+		smplcmbxAnnoFine= new SimpleComboBox<String>();
+		smplcmbxAnnoFine.setFieldLabel("Anno Fine");
+		smplcmbxAnnoFine.setName("annoF");
+		smplcmbxAnnoFine.setEmptyText("Anno Fine..");
+		smplcmbxAnnoFine.setAllowBlank(false);
+		smplcmbxAnnoFine.setEnabled(true);
+		smplcmbxAnnoFine.setTriggerAction(TriggerAction.ALL);
+		smplcmbxAnnoFine.setSimpleValue(anno);
+		smplcmbxAnnoFine.setWidth(100);
+		for(String l : DatiComboBox.getAnno()){
+			 smplcmbxAnnoInizio.add(l);
+			 smplcmbxAnnoFine.add(l);
+		}
+		tlbrOperazioni.add(smplcmbxAnnoFine);
+		
+		smplcmbxMeseFine= new SimpleComboBox<String>();
+		smplcmbxMeseFine.setFieldLabel("Mese Fine");
+		smplcmbxMeseFine.setName("meseF");
+		smplcmbxMeseFine.setEmptyText("Mese Fine..");
+		smplcmbxMeseFine.setAllowBlank(false);
+		smplcmbxMeseFine.setEnabled(true);
+		smplcmbxMeseFine.setTriggerAction(TriggerAction.ALL);
+		smplcmbxMeseFine.setSimpleValue(anno);
+		smplcmbxMeseFine.setWidth(100);
+		for(String l : DatiComboBox.getMese()){
+			smplcmbxMeseInizio.add(l);
+			smplcmbxMeseFine.add(l);			 
+		}
+		//smplcmbxMeseFine.setSimpleValue(mese);
+		tlbrOperazioni.add(smplcmbxMeseFine);
+		
 		smplcmbxSede=new SimpleComboBox<String>();
 		smplcmbxSede.setFieldLabel("Sede");
 		smplcmbxSede.setName("sede");
@@ -139,8 +198,8 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 			@Override
 			public void componentSelected(ButtonEvent ce) {
 				String sede=smplcmbxSede.getRawValue().toString();
-				String anno=smplcmbxAnno.getRawValue().toString();
-				caricaTabella(anno,sede);
+				//String anno=smplcmbxAnno.getValue().toString();
+				caricaTabella(sede);
 			}
 		});
 		tlbrOperazioni.add(btnSelect);
@@ -153,13 +212,13 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 		btnPrint.setSize(26, 26);
 		btnPrint.setEnabled(true);
 		btnPrint.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			
+			//TODO passare la lista
 			@Override
 			public void componentSelected(ButtonEvent ce) {
-				String sede=smplcmbxSede.getRawValue().toString();
-				String anno=smplcmbxAnno.getRawValue().toString();
-
-				SessionManagementService.Util.getInstance().setDataReportAnnualeInSession(anno, sede, "RIEP.ANNUALE",
+				List<RiepilogoOreAnnualiDipendente> listaRiep= new ArrayList<RiepilogoOreAnnualiDipendente>();
+				listaRiep=store.getModels();
+				
+				SessionManagementService.Util.getInstance().setDataReportAnnualeInSession(listaRiep, "RIEP.ANNUALE",
 						new AsyncCallback<Boolean>() {
 
 					@Override
@@ -174,8 +233,7 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 						else
 							Window.alert("Problemi durante il settaggio dei parametri in Sessione (http)");
 					}
-				});
-				
+				});			
 			}
 		});
 		    
@@ -188,8 +246,7 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 		cp.add(fp);
 		tlbrOperazioni.add(cp);
 		
-		
-		try {	    	
+		try {
 			cmRiepilogo = new ColumnModel(createColumns()); 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -230,10 +287,15 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 	}
 	
 	
-	private void caricaTabella(String anno, String sede) {
-		
+	private void caricaTabella(String sede) {		
 				
-		AdministrationService.Util.getInstance().getRiepilogoAnnualeOreDipendenti(anno, sede, new AsyncCallback<List<RiepilogoOreAnnualiDipendente>>() {
+		String annoI=smplcmbxAnnoInizio.getRawValue().toString();
+		String meseI=smplcmbxMeseInizio.getRawValue().toString();
+		String annoF=smplcmbxAnnoFine.getRawValue().toString();
+		String meseF=smplcmbxMeseFine.getRawValue().toString();
+		
+		if(smplcmbxAnnoInizio.isValid()&&smplcmbxAnnoFine.isValid()&&smplcmbxMeseInizio.isValid()&&smplcmbxMeseFine.isValid())
+		AdministrationService.Util.getInstance().getRiepilogoAnnualeOreDipendenti(annoI,meseI,annoF,meseF,sede, new AsyncCallback<List<RiepilogoOreAnnualiDipendente>>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -247,9 +309,10 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 					Window.alert("Problema all'accesso ai dati di RiepilogoAnnualeOreDipendenti()");
 				else
 					loadData(result);
-				
 			}
 		});		
+		else
+			Window.alert("Controllare i campi inseriti!");
 	}
 		
 	
@@ -274,7 +337,8 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
             	config.style = config.style + ";background-color:#d2f5af;" +"font-weight:bold;" ;
             	//config.style = config.style + ";background-color:#FFFFFF;" +"font-weight:normal;";    	
 				return model.get(property);				
-            }};
+            }
+		};
 		
 		SummaryColumnConfig<Double> column=new SummaryColumnConfig<Double>();		
 	    column.setId("cognome");  
@@ -313,10 +377,9 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 					Grid<RiepilogoOreAnnualiDipendente> grid) {
 				Float n=model.get(property);
 				return number.format(n);
-			}
-			  	
+			}			  	
 		});
-	    columnOreOrdinarie.setSummaryRenderer(new SummaryRenderer() {  
+	    columnOreOrdinarie.setSummaryRenderer(new SummaryRenderer() {
 	   			@Override
 	   			public String render(Number value, Map<String, Number> data) {
 	   				GroupingStore<RiepilogoOreAnnualiDipendente>store1 = new GroupingStore<RiepilogoOreAnnualiDipendente>();
@@ -330,8 +393,8 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 	   				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
 	   				Float n=Float.valueOf(tot);
 					return num.format(n);
-	   			}  
-	      });  
+	   			}
+	    });  
 	    configs.add(columnOreOrdinarie);
 	    
 	    SummaryColumnConfig<Double> columnOreStrao=new SummaryColumnConfig<Double>();		
@@ -369,15 +432,14 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 	   			}  
 	      });  
 	    configs.add(columnOreStrao);
-	    
-	    
+	    	    
 	    SummaryColumnConfig<Double> columnOreRecupero=new SummaryColumnConfig<Double>();		
-	    columnOreRecupero.setId("oreRecupero");  
-	    columnOreRecupero.setHeader("Ore Recupero");  
-	    columnOreRecupero.setWidth(100);    
-	    columnOreRecupero.setRowHeader(true); 
-	    columnOreRecupero.setSummaryType(SummaryType.SUM);  
-	    columnOreRecupero.setAlignment(HorizontalAlignment.RIGHT);  	
+	    columnOreRecupero.setId("oreRecupero");
+	    columnOreRecupero.setHeader("Ore Recupero");
+	    columnOreRecupero.setWidth(100);
+	    columnOreRecupero.setRowHeader(true);
+	    columnOreRecupero.setSummaryType(SummaryType.SUM);
+	    columnOreRecupero.setAlignment(HorizontalAlignment.RIGHT);
 	    columnOreRecupero.setRenderer(new GridCellRenderer<RiepilogoOreAnnualiDipendente>() {
 			@Override
 			public Object render(RiepilogoOreAnnualiDipendente model,

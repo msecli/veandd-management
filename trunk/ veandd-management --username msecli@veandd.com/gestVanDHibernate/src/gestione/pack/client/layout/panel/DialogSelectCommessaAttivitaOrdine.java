@@ -29,14 +29,16 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class DialogAssociaCommessaToOrdine extends Dialog{
+public class DialogSelectCommessaAttivitaOrdine extends Dialog{
 
 	private ComboBox<CommessaModel> smplcmbxListaCommesse;
 	private String numeroOrdine;
+	private Integer idAttivita;
 	
-	public DialogAssociaCommessaToOrdine(String numeroOrdine){
+	public DialogSelectCommessaAttivitaOrdine(String idRda, Integer idAttivita){
 		
-		this.numeroOrdine=numeroOrdine;
+		this.numeroOrdine=idRda;
+		this.idAttivita=idAttivita;
 		
 		setLayout(new FitLayout());
 		setBodyBorder(true);
@@ -92,7 +94,6 @@ public class DialogAssociaCommessaToOrdine extends Dialog{
 		
 	}
 	
-	
 	private FormPanel createFormListaCommesse() {
 		
 		final FormPanel frmPanel= new FormPanel();
@@ -147,14 +148,14 @@ public class DialogAssociaCommessaToOrdine extends Dialog{
 	    btnR.setWidth("65px");
 	    
 	    //Asociazione di un ordine già presente alla commessa selezionata
-	    btnR.addSelectionListener(new SelectionListener<ButtonEvent>() {			
+	    btnR.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
 				
-				if(frmPanel.isValid()){
-									
+				if(frmPanel.isValid()){					
+					
 					int idCommessa=smplcmbxListaCommesse.getValue().get("idCommessa");
-					AdministrationService.Util.getInstance().associaOrdinePresenteCommessa(String.valueOf(idCommessa), numeroOrdine, new AsyncCallback<Boolean>() {
+					AdministrationService.Util.getInstance().associaEstensioneCommessaAttivitaOrdine(String.valueOf(idCommessa), idAttivita, new AsyncCallback<Boolean>() {
 
 					@Override
 					public void onFailure(Throwable caught) {
@@ -195,12 +196,13 @@ public class DialogAssociaCommessaToOrdine extends Dialog{
 
 
 	private void getListaCommesse() {
+				
 		
-		AdministrationService.Util.getInstance().getCommesseAperteSenzaOrdine( new AsyncCallback<List<CommessaModel>>() {
+		AdministrationService.Util.getInstance().getCommessePerIdRda(numeroOrdine, new AsyncCallback<List<CommessaModel>>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				Window.alert("Errore connessione on getCommesseByPM();");
+				Window.alert("Errore connessione on getCommessePerIdRda();");
 				caught.printStackTrace();
 			}
 

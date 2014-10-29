@@ -15,6 +15,7 @@ import gestione.pack.client.model.RiepilogoMensileOrdiniJavaBean;
 import gestione.pack.client.model.RiepilogoMensileOrdiniModel;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroJavaBean;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
+import gestione.pack.client.model.RiepilogoOreAnnualiDipendente;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliJavaBean;
 import gestione.pack.client.model.RiepilogoOreNonFatturabiliModel;
 import gestione.pack.client.model.RiepilogoSALPCLJavaBean;
@@ -210,24 +211,24 @@ public class PrintDataServlet extends HttpServlet  {
 		else 
 			if(operazione.compareTo("RIEP.ANNUALE")==0)
 			{
-				String anno=(String) httpSession.getAttribute("anno");
-				String sede=(String) httpSession.getAttribute("sede");
+				List<RiepilogoOreAnnualiDipendente> listaRiep= new ArrayList<RiepilogoOreAnnualiDipendente>();
+				listaRiep=(List<RiepilogoOreAnnualiDipendente>) httpSession.getAttribute("listaRiep");
 				
 				List<RiepilogoAnnualeJavaBean> listaR= new ArrayList<RiepilogoAnnualeJavaBean> ();
-				listaR = ServerUtility.PrintRiepilogoOreAnnuale(anno, sede);
+				listaR = ServerUtility.PrintRiepilogoOreAnnuale(listaRiep);
 				
 				Map parameters = new HashMap();
 				/*parameters.put(JRHibernateQueryExecuterFactory.PARAMETER_HIBERNATE_SESSION,
 									session);// Parametri che usa il file jasper per
 											 // connettersi!*/
-					
+				
 				JasperPrint jasperPrint;
 				FileInputStream fis;
 				BufferedInputStream bufferedInputStream;
 
 				try {
 
-					fis = new FileInputStream(Constanti.PATHAmazon+"JasperReport/ReportRiepilogoAnnuale.jasper");
+					fis = new FileInputStream(Constanti.PATHLocal+"JasperReport/ReportRiepilogoAnnuale.jasper");
 											
 					bufferedInputStream = new BufferedInputStream(fis);
 
@@ -243,10 +244,10 @@ public class PrintDataServlet extends HttpServlet  {
 					exporterXLS.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
 					exporterXLS.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
 					exporterXLS.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
-					exporterXLS.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, Constanti.PATHAmazon+"FileStorage/RiepilogoAnnuale.xls");
+					exporterXLS.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, Constanti.PATHLocal+"FileStorage/RiepilogoAnnuale.xls");
 					exporterXLS.exportReport();
-						
-					File f=new File(Constanti.PATHAmazon+"FileStorage/RiepilogoAnnuale.xls");
+
+					File f=new File(Constanti.PATHLocal+"FileStorage/RiepilogoAnnuale.xls");
 					FileInputStream fin = new FileInputStream(f);
 					ServletOutputStream outStream = response.getOutputStream();
 					// SET THE MIME TYPE.
@@ -258,8 +259,8 @@ public class PrintDataServlet extends HttpServlet  {
 					byte[] buffer = new byte[1024];
 					int n = 0;
 					while ((n = fin.read(buffer)) != -1) {
-					outStream.write(buffer, 0, n);
-					System.out.println(buffer);
+						outStream.write(buffer, 0, n);
+						System.out.println(buffer);
 					}
 					
 					outStream.flush();
@@ -267,7 +268,7 @@ public class PrintDataServlet extends HttpServlet  {
 					outStream.close();
 					
 				} catch (JRException e) {
-						e.printStackTrace();
+					e.printStackTrace();
 				}
 			
 			}				
