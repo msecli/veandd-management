@@ -7571,6 +7571,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Ordine ordine=new Ordine(); 
 		List<AttivitaOrdine> listaAttOrdine= new ArrayList<AttivitaOrdine>();
 		
+		String attivitaCommessa="";
 		String salDaButtare= new String();
 		String flagCompilato= new String();
 		String oreEseguite= "0.00";
@@ -7604,6 +7605,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						setParameter("numeroCommessa", numCommessa).setParameter("stato", "Aperta").setParameter("escludi", "N").list();
 							
 				for(Commessa comm:listaC){
+					attivitaCommessa=comm.getDenominazioneAttivita();
+					
 					if(comm.getEstensione().toLowerCase().compareTo("pa")!=0){	//se non è la .pa la inserisco in lista
 						
 						//TODO cambio controllo
@@ -7650,7 +7653,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 								
 								totaleSalPcl=ServerUtility.calcolaTotaleSalPclPerEstensione(comm.getNumeroCommessa(), comm.getEstensione(), att.getIdAttivitaOrdine(), data);
 																
-								riep= new RiepilogoOreTotaliCommesse(att.getOrdine().getRda().getCodiceRDA(),comm.getNumeroCommessa(), comm.getEstensione(),sal, totaleSalPcl[0], salDaButtare, pcl,totaleSalPcl[1],
+								riep= new RiepilogoOreTotaliCommesse(att.getOrdine().getRda().getCodiceRDA(),comm.getNumeroCommessa(), comm.getEstensione(),attivitaCommessa,sal, totaleSalPcl[0], salDaButtare, pcl,totaleSalPcl[1],
 										numeroOrdine, oggettoOrdine, att.getDescrizioneAttivita(), att.getIdAttivitaOrdine(), oreEseguite, oreFatturate, flagCompilato, importoFatturato, importoResiduo);
 							   	
 								listaRiep.add(riep);
@@ -7700,7 +7703,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							
 							totaleSalPcl=ServerUtility.calcolaTotaleSalPclPerEstensione(comm.getNumeroCommessa(), comm.getEstensione(),0, data);
 							
-							riep= new RiepilogoOreTotaliCommesse("#", comm.getNumeroCommessa(), comm.getEstensione(),sal, totaleSalPcl[0], salDaButtare, pcl, totaleSalPcl[1], numeroOrdine,"#", "#",
+							riep= new RiepilogoOreTotaliCommesse("#", comm.getNumeroCommessa(), comm.getEstensione(),attivitaCommessa,sal, totaleSalPcl[0], salDaButtare, pcl, totaleSalPcl[1], numeroOrdine,"#", "#",
 									0,oreEseguite, oreFatturate, flagCompilato, importoFatturato, importoResiduo);
 							listaRiep.add(riep);
 							oreEseguite="0.00";
@@ -7724,6 +7727,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				
 			    c=(Commessa)session.createQuery("from Commessa where numeroCommessa=:numCommessa and estensione=:numEstensione").
 						setParameter("numCommessa", numCommessa).setParameter("numEstensione", numEstensione).uniqueResult();
+				attivitaCommessa=c.getDenominazioneAttivita();
 				
 			    //TODO cambio controllo
 			    //if(!c.getOrdines().isEmpty()){
@@ -7779,7 +7783,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						}
 						
 						totaleSalPcl=ServerUtility.calcolaTotaleSalPclPerEstensione(numCommessa, numEstensione, att.getIdAttivitaOrdine(), data);
-						riep= new RiepilogoOreTotaliCommesse(att.getOrdine().getRda().getCodiceRDA(), numCommessa, numEstensione,sal, totaleSalPcl[0], salDaButtare, pcl, totaleSalPcl[1], numeroOrdine, oggettoOrdine, 
+						riep= new RiepilogoOreTotaliCommesse(att.getOrdine().getRda().getCodiceRDA(), numCommessa, numEstensione, attivitaCommessa,sal, totaleSalPcl[0], salDaButtare, pcl, totaleSalPcl[1], numeroOrdine, oggettoOrdine, 
 								att.getDescrizioneAttivita(), att.getIdAttivitaOrdine(), 
 								oreEseguite, oreFatturate, flagCompilato, importoFatturato, importoResiduo);
 						listaRiep.add(riep);					
@@ -7831,7 +7835,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							}	
 							
 							totaleSalPcl=ServerUtility.calcolaTotaleSalPclPerEstensione(numCommessa, numEstensione, att.getIdAttivitaOrdine(), data);
-							riep= new RiepilogoOreTotaliCommesse(att.getOrdine().getRda().getCodiceRDA(), numCommessa, numEstensione,sal, totaleSalPcl[0], salDaButtare, pcl, totaleSalPcl[1], numeroOrdine, oggettoOrdine, 
+							riep= new RiepilogoOreTotaliCommesse(att.getOrdine().getRda().getCodiceRDA(), numCommessa, numEstensione, attivitaCommessa,sal, totaleSalPcl[0], salDaButtare, pcl, totaleSalPcl[1], numeroOrdine, oggettoOrdine, 
 									att.getDescrizioneAttivita(), att.getIdAttivitaOrdine(), 
 									oreEseguite, oreFatturate, flagCompilato, importoFatturato, importoResiduo);
 							listaRiep.add(riep);	
@@ -7872,7 +7876,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					
 					totaleSalPcl=ServerUtility.calcolaTotaleSalPclPerEstensione(numCommessa, numEstensione,0, data);
 					
-					riep= new RiepilogoOreTotaliCommesse("#", numCommessa, numEstensione,sal, totaleSalPcl[0], salDaButtare, pcl, totaleSalPcl[1], numeroOrdine, "" , "",
+					riep= new RiepilogoOreTotaliCommesse("#", numCommessa, numEstensione, attivitaCommessa,sal, totaleSalPcl[0], salDaButtare, pcl, totaleSalPcl[1], numeroOrdine, "" , "",
 							0,oreEseguite, oreFatturate, flagCompilato, importoFatturato, importoResiduo);
 					listaRiep.add(riep);		
 					listaFF.clear();
@@ -7896,7 +7900,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				//totImportoFatturato=ServerUtility.aggiornaTotGenerale(totImportoFatturato, (String)r.get("importoFatturato"));
 				totImportoFatturato=d.format(Float.valueOf(totImportoFatturato)+Float.valueOf((String)r.get("importoFatturato")));
 			}
-			riep= new RiepilogoOreTotaliCommesse("","TOTALE", "", Float.valueOf(salTotale), (float)0.0, "N", Float.valueOf(pclTotale), (float)0.0, "", "", "",
+			riep= new RiepilogoOreTotaliCommesse("","TOTALE", "","", Float.valueOf(salTotale), (float)0.0, "N", Float.valueOf(pclTotale), (float)0.0, "", "", "",
 					0, oreEseguite , Float.valueOf("0.00"), "", totImportoFatturato, importoResiduo);
 			listaRiep.add(riep);
 		
@@ -7970,6 +7974,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				commessa=c.getNumeroCommessa();
 				codCommessa=c.getCodCommessa(); //id commessa
 					
+				if(commessa.compareTo("14093")==0)
+					System.out.print("");
+				
 				//o=(Ordine)session.createQuery("from Ordine where cod_commessa=:id").setParameter("id", codCommessa).uniqueResult();
 				
 				o=c.getOrdine();

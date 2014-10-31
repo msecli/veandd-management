@@ -51,8 +51,12 @@ public class ConverterUtil {
 		
 		try {
 				tx=	session.beginTransaction();
-				listaP = (List<Personale>)session.createQuery("from Personale where statoRapporto<>:statoRapporto")
-						.setParameter("statoRapporto", "Cessato").list();
+				/*listaP = (List<Personale>)session.createQuery("from Personale where statoRapporto<>:statoRapporto")
+						.setParameter("statoRapporto", "Cessato").list();*/
+				
+				listaP = (List<Personale>)session.createQuery("from Personale")
+						.list();
+				
 				tx.commit();
 				
 		    } catch (Exception e) {
@@ -82,7 +86,7 @@ public class ConverterUtil {
 				,p.getDataInizioAbilitazioneStrao(), "");
 		
 		return pm;	
-	}	
+	}
 	
 
 //----------------Clienti---------------------------------------
