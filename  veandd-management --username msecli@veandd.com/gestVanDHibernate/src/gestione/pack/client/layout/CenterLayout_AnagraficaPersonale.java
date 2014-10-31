@@ -18,6 +18,7 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoader;
 import com.extjs.gxt.ui.client.data.PagingModelMemoryProxy;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -65,6 +66,7 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	private TextField<String> txtfldPassword;
 	private TextField<String> txtfldBadge;
 	private SimpleComboBox <String> smplcmbxStatoRapporto;
+	private SimpleComboBox <String> smplcmbxStatoRapportoView;
 	private SimpleComboBox <String> smplcmbxTipoOrario;
 	private SimpleComboBox <String> smplcmbxTipoLavoratore;
 	private SimpleComboBox <String> smplcmbxRuolo;
@@ -88,6 +90,8 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	private Button btnEdit;
 	private Button btnDelete;
 	
+	
+	private List<PersonaleModel> listaCompleta= new ArrayList<PersonaleModel>();
 	private ListStore<PersonaleModel> store=new ListStore<PersonaleModel>();
 	private ListStore<PersonaleModel> storeCompleto=new ListStore<PersonaleModel>();
 	private ListStore<PersonaleModel> storeResult=new ListStore<PersonaleModel>();
@@ -174,7 +178,25 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    		 } 
 	    	 }    	  	 
 		});	
+		
+		smplcmbxStatoRapportoView=new SimpleComboBox<String>();
+	    smplcmbxStatoRapportoView.setFieldLabel("Rapporto");
+	    smplcmbxStatoRapportoView.setName("rapporto");
+	    smplcmbxStatoRapportoView.setTriggerAction(TriggerAction.ALL);
+	    smplcmbxStatoRapportoView.add("Attivo");
+	    smplcmbxStatoRapportoView.add("Cessato");
+	    smplcmbxStatoRapportoView.add("Tutti");
+	    smplcmbxStatoRapportoView.setSimpleValue("Tutti");
+	    smplcmbxStatoRapportoView.addListener(Events.Select, new Listener<BaseEvent>(){
+			@Override
+			public void handleEvent(BaseEvent be) {
+				selectData();	
+			}
+	
+		});
+		
 	    tlbrSearch.add(txtfldsearch);
+	    tlbrSearch.add(smplcmbxStatoRapportoView);
 		cntpnlGrid.setTopComponent(tlbrSearch);
 		
 //Definizione colonne griglia    
@@ -188,16 +210,16 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    grid.setColumnReordering(true);	    
 	    grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);	   	      
 	    grid.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<PersonaleModel>>() {  
-	          public void handleEvent(SelectionChangedEvent<PersonaleModel> be) {  
+	          public void handleEvent(SelectionChangedEvent<PersonaleModel> be) {
 	        	
-	            if (be.getSelection().size() > 0) {      
+	            if (be.getSelection().size() > 0) { 
 	              
 	              formBindings.bind((ModelData) be.getSelection().get(0));
 	              btnSend.setEnabled(false);
 	              btnDelete.setEnabled(true);
 	              btnEdit.setEnabled(true);
 	              
-	            } else {  
+	            } else {
 	            	
 	              formBindings.unbind();  
 	            }	            
@@ -1107,11 +1129,33 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 		storeCompleto.removeAll();
 		storeResult.add(lista);
 		storeCompleto.add(lista);*/
-			
+		
+		listaCompleta.clear();
+		listaCompleta.addAll(lista);
+		
 		storeCompleto.removeAll();
 		storeCompleto.add(lista); //carico il risultato originale e non lo modifico
 				
 	    impostaPagingConfiguration(lista);		
 	}
+	
 		      
+	private void selectData() {
+		List<PersonaleModel> listaPM=new ArrayList<PersonaleModel>();
+		String statoRapporto="";
+		String statoRapportoSelected=smplcmbxStatoRapportoView.getRawValue().toString();
+		
+		for(PersonaleModel pm:listaCompleta){
+			statoRapporto=pm.get("rapporto");
+			
+			if(statoRapportoSelected.compareTo("Tutti")==0)
+				listaPM.add(pm);
+			else
+				if(statoRapporto.compareTo(statoRapportoSelected)==0)
+					listaPM.add(pm);
+				
+		}
+		 impostaPagingConfiguration(listaPM);
+	}	
+	
 }

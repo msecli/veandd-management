@@ -952,6 +952,7 @@ public CenterLayout_FoglioFatturazione(){}
 		            		commessaSelezionata=(numeroC+"."+be.getSelectedItem().getEstensione());
 		            		btnSalva.setEnabled(true);
 		            		btnRiep.setEnabled(true);
+		            		
 		            	}		            	
 		             } 	
 		          }          
@@ -1881,13 +1882,20 @@ public CenterLayout_FoglioFatturazione(){}
 		    column.setRowHeader(true);
 		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    configs.add(column);
-		   
+		    
+		    column=new ColumnConfig();		
+		    column.setId("attivitaCommessa");  
+		    column.setHeader("Att.Commessa"); 
+		    column.setWidth(60);  
+		    column.setRowHeader(true);
+		    column.setAlignment(HorizontalAlignment.RIGHT);
+		    configs.add(column);		   
 		    
 		    column=new ColumnConfig();		
 		    column.setId("sal");  
-		    column.setHeader("Var.SAL"); 
+		    column.setHeader("Var.SAL");
 		    column.setToolTip("Variazione mensile del SAL");
-		    column.setWidth(70);  
+		    column.setWidth(60);  
 		    column.setRowHeader(true); 
 		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
@@ -1898,6 +1906,7 @@ public CenterLayout_FoglioFatturazione(){}
 					
 					Float n=model.get(property);
 					return number.format(n);
+					
 				}
 			});
 		    configs.add(column);
@@ -1956,7 +1965,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    column.setId("pcl");  
 		    column.setHeader("Var.PCL");  
 		    column.setToolTip("Variazione mensile del PCL");
-		    column.setWidth(70);  
+		    column.setWidth(60);  
 		    column.setRowHeader(true); 
 		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    column.setRenderer(new GridCellRenderer<RiepilogoOreTotaliCommesse>() {
