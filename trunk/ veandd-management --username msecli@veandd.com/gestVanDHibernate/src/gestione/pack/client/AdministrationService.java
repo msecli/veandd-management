@@ -504,5 +504,8 @@ boolean invioCommenti(String testo, String username, Date giorno);
 
 	boolean associaEstensioneCommessaAttivitaOrdine(String valueOf,
 			Integer idAttivita);
+
+	List<RiepilogoSALPCLModel> getRiepilogoSalPcl1(String data,
+			String tabSelected, String pm);
 	
 }

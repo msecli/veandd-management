@@ -60,6 +60,7 @@ public class PanelRiepilogoSalPclMeseOld  extends LayoutContainer{
      
      private String tabSelected="";
      private String data;
+     private String pm;
      
      private SimpleComboBox<String> smplcmbxScelta= new SimpleComboBox<String>();
      private SimpleComboBox<String> smplcmbxOrderBy;
@@ -72,9 +73,10 @@ public class PanelRiepilogoSalPclMeseOld  extends LayoutContainer{
      private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
      private static String url= "/gestvandhibernate/PrintDataServlet";
      
-     public PanelRiepilogoSalPclMeseOld(String tabSelected, String data){
+     public PanelRiepilogoSalPclMeseOld(String tabSelected, String data, String pm){
              this.tabSelected=tabSelected;
              this.data=data;
+             this.pm=pm;
      }
                      
      protected void onRender(Element target, int index) {  
@@ -192,7 +194,10 @@ public class PanelRiepilogoSalPclMeseOld  extends LayoutContainer{
              tlbrPrint.add(cp);
              tlbrPrint.add(btnRiep);
              
-         store.groupBy("pm");
+         AggregationRowConfig<RiepilogoSALPCLModel> agrTotale= new AggregationRowPersonale();		
+     	 cmRiepilogo.addAggregationRow(agrTotale);
+     				
+     	 store.groupBy("numeroCommessa");
          
          GroupSummaryView summary = new GroupSummaryView();  
          summary.setForceFit(false);  
@@ -292,7 +297,7 @@ public class PanelRiepilogoSalPclMeseOld  extends LayoutContainer{
 
      private void caricaTabella() {
                              
-             AdministrationService.Util.getInstance().getRiepilogoSalPclOld(data, tabSelected, new AsyncCallback<List<RiepilogoSALPCLModel>>() {
+             AdministrationService.Util.getInstance().getRiepilogoSalPcl1(data, tabSelected, pm, new AsyncCallback<List<RiepilogoSALPCLModel>>() {
 
                      @Override
                      public void onFailure(Throwable caught) {
@@ -482,7 +487,7 @@ public class PanelRiepilogoSalPclMeseOld  extends LayoutContainer{
              try {
                      store.removeAll();
                      store.setStoreSorter(new StoreSorter<RiepilogoSALPCLModel>());  
-                 store.setDefaultSort("numeroCommessa", SortDir.ASC);
+                     store.setDefaultSort("numeroCommessa", SortDir.ASC);
                      store.add(result);
                      store.groupBy(raggruppamento);
                      gridRiepilogo.reconfigure(store, cmRiepilogo);                          
@@ -494,16 +499,55 @@ public class PanelRiepilogoSalPclMeseOld  extends LayoutContainer{
      
      private void loadTable(List<RiepilogoSALPCLModel> result) {
              try {
-                     store.removeAll();
-                     store.setStoreSorter(new StoreSorter<RiepilogoSALPCLModel>());  
-                 store.setDefaultSort("numeroCommessa", SortDir.ASC);
-                     store.add(result);
-                     store.groupBy("pm");
-                     gridRiepilogo.reconfigure(store, cmRiepilogo);                          
+            	 store.removeAll();
+     			store.setStoreSorter(new StoreSorter<RiepilogoSALPCLModel>());  
+     		    store.setDefaultSort("estensione", SortDir.ASC);
+     			store.add(result);
+     			store.groupBy("numeroCommessa");
+     			gridRiepilogo.reconfigure(store, cmRiepilogo);	                     
              } catch (NullPointerException e) {
                      Window.alert("error: Impossibile effettuare il caricamento dati in tabella.");
                              e.printStackTrace();
              }
              
      }
+     
+     
+     private class AggregationRowPersonale extends AggregationRowConfig<RiepilogoSALPCLModel>{
+ 		
+ 		public AggregationRowPersonale(){
+ 			final NumberFormat number= NumberFormat.getFormat("#,##0.0#;-#");
+ 			AggregationRenderer<RiepilogoSALPCLModel> aggrRender= new AggregationRenderer<RiepilogoSALPCLModel>() {			
+ 				@Override
+ 				public Object render(Number value, int colIndex, Grid<RiepilogoSALPCLModel> grid, ListStore<RiepilogoSALPCLModel> store) {
+ 					 if(value!=null)		    		  
+ 			    		  return number.format(value.doubleValue());
+ 			    	  else
+ 			    		  return number.format((float) 0) ;
+ 				}
+ 			};			
+ 						
+ 			setHtml("estensione", "<p style=\"font-size:15px; color:#000000; font-weight:bold;\">TOTALE</p>");	
+ 			setSummaryType("variazione", SummaryType.SUM);
+ 			setRenderer("variazione", aggrRender);
+ 			
+ 			setSummaryType("attuale", SummaryType.SUM);  
+ 			setRenderer("attuale", aggrRender);
+ 			
+ 			setSummaryType("importoMese", SummaryType.SUM);
+ 			//setSummaryFormat("importoMese", NumberFormat.getCurrencyFormat("EUR"));
+ 			setRenderer("importoMese", aggrRender);
+ 			
+ 			setSummaryType("precedente", SummaryType.SUM);
+ 			setRenderer("precedente", aggrRender);
+ 			
+ 			setSummaryType("importoComplessivo", SummaryType.SUM);
+ 			//setSummaryFormat("importoComplessivo", NumberFormat.getCurrencyFormat("EUR"));
+ 			setRenderer("importoComplessivo", aggrRender);
+ 			
+ 			setSummaryType("oreEseguite", SummaryType.SUM);
+ 			setRenderer("oreEseguite", aggrRender);
+ 			setCellStyle("oreEseguite", "font-size:15px; color:#000000; font-weight:bold;");
+ 		}
+ 	}
 }

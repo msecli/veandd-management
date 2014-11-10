@@ -259,7 +259,7 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 				
 	        	tabSelected="sal";
 	        	tbSalOld.removeAll();
-	        	tbSalOld.add(new PanelRiepilogoSalPclMeseOld(tabSelected, data));
+	        	tbSalOld.add(new PanelRiepilogoSalPclMeseOld(tabSelected, data, pm));
 	        	tbSalOld.layout(true);
 	          }  
 	    });  
@@ -308,7 +308,7 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 				
 	        	tabSelected="pcl";
 	        	tbPclOld.removeAll();
-	        	tbPclOld.add(new PanelRiepilogoSalPclMeseOld(tabSelected, data));
+	        	tbPclOld.add(new PanelRiepilogoSalPclMeseOld(tabSelected, data, pm));
 	        	tbPclOld.layout(true);
 	          }  
 	    });  
