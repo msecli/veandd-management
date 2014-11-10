@@ -209,6 +209,9 @@ public interface AdministrationServiceAsync {
 
 	void getAllRdoCommesse(AsyncCallback<List<GestioneRdoCommesse>> asyncCallback);
 	
+	void getRiepilogoSalPcl1(String data, String tabSelected, String pm,
+			AsyncCallback<List<RiepilogoSALPCLModel>> asyncCallback);
+	
 	//--------------------------------------Associazioni Commesse Attivita Dipend
 	void createAssociazioneCommessaDipendenti(String pm, String commessa,
 			List<String> listaDipendenti, AsyncCallback<Boolean> asyncCallback);
@@ -516,6 +519,8 @@ public interface AdministrationServiceAsync {
 
 	void associaEstensioneCommessaAttivitaOrdine(String valueOf,
 			Integer idAttivita, AsyncCallback<Boolean> asyncCallback);
+
+	
 
 	
 

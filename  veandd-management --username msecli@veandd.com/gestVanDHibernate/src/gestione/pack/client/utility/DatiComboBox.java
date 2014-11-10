@@ -133,7 +133,8 @@ public class DatiComboBox {
 		
 		List <String> listaR=new ArrayList<String>();	
 		listaR.add("c");
-		listaR.add("e");
+		listaR.add("p");
+		//listaR.add("e");
 		listaR.add("i");
 		return listaR;
 	}
