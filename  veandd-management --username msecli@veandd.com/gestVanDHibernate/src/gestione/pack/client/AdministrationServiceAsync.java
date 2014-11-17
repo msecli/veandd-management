@@ -485,9 +485,7 @@ public interface AdministrationServiceAsync {
 
 	void getDatiRtv(String numeroO, AsyncCallback<List<RtvModel>> asyncCallback);
 
-	void getRiepilogoSalPclOld(String data, String tabSelected,
-			AsyncCallback<List<RiepilogoSALPCLModel>> callback);
-
+	
 	void setStatoFoglioFatturazione(String mese, String anno,
 			AsyncCallback<Boolean> asyncCallback);
 

@@ -353,8 +353,8 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	}
 
 	private void caricaTabella() {
-				
-		AdministrationService.Util.getInstance().getRiepilogoSalPcl(data, tabSelected, pm, new AsyncCallback<List<RiepilogoSALPCLModel>>() {
+				//TODO
+		AdministrationService.Util.getInstance().getRiepilogoSalPcl1(data, tabSelected, pm, new AsyncCallback<List<RiepilogoSALPCLModel>>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

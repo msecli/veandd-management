@@ -297,7 +297,7 @@ public class PanelRiepilogoSalPclMeseOld  extends LayoutContainer{
 
      private void caricaTabella() {
                              
-             AdministrationService.Util.getInstance().getRiepilogoSalPcl1(data, tabSelected, pm, new AsyncCallback<List<RiepilogoSALPCLModel>>() {
+             AdministrationService.Util.getInstance().getRiepilogoSalPcl(data, tabSelected, pm, new AsyncCallback<List<RiepilogoSALPCLModel>>() {
 
                      @Override
                      public void onFailure(Throwable caught) {
