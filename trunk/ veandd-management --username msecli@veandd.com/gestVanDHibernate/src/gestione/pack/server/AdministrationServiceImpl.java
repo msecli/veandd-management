@@ -7985,14 +7985,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				commessa=c.getNumeroCommessa();
 				codCommessa=c.getCodCommessa(); //id commessa
 					
-				if(commessa.compareTo("14093")==0)
-					System.out.print("");
-				
-				//o=(Ordine)session.createQuery("from Ordine where cod_commessa=:id").setParameter("id", codCommessa).uniqueResult();
-				
 				o=c.getOrdine();
 				
-				//--------------------------controllo che ci sia del Sal o Pcl residuo sulla commessa dopo tutte le variazioni altrimenti non proseguo
 				listaC=(List<Commessa>)session.createQuery("from Commessa where numeroCommessa=:numeroCommessa ")
 						.setParameter("numeroCommessa", commessa).list();
 			
@@ -8214,471 +8208,18 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	
 	
 	@SuppressWarnings("unchecked")
-	@Override
-	public List<RiepilogoSALPCLModel> getRiepilogoSalPclOld(String data,
-			String tabSelected) throws IllegalArgumentException {
-		
-		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
-	    formatSymbols.setDecimalSeparator('.');
-	    String pattern="0.00";
-	    DecimalFormat d= new DecimalFormat(pattern,formatSymbols);
-		
-		List<RiepilogoSALPCLModel> listaM= new ArrayList<RiepilogoSALPCLModel>();
-		String commessa= new String();
-		//String estensione= new String();
-		String tariffaUtilizzata= new String();
-		String sommaVariazioniSal= "0.00";
-		String sommaVariazioniPcl= "0.00";
-		String cliente="#";
-				
-		Boolean esistePa= false; //controllo l'esistenza di una eventuale commessa madre .pa
-		
-		List<Commessa> listaCommesse= new ArrayList<Commessa>();
-		List<Commessa> listaC= new ArrayList<Commessa>();
-		List<FoglioFatturazione> listaFF= new ArrayList<FoglioFatturazione>();
-		Commessa c_pa= new Commessa();
-		Ordine o= new Ordine();
-		FoglioFatturazione f= new FoglioFatturazione();
-		RiepilogoSALPCLModel riepM= new RiepilogoSALPCLModel();
-		
-		int codCommessa;
-		Float importo=(float) 0.00;
-		Float importoMese=(float) 0.00;
-		
-		Session session= MyHibernateUtil.getSessionFactory().openSession();
-		Transaction tx= null;
-		
-		try {
-			
-			tx=session.beginTransaction();
-				
-			/*listaCommesse=(List<Commessa>)session.createQuery("from Commessa where statoCommessa=:stato and estensione<>:estensione").
-					setParameter("stato", "Aperta").setParameter("estensione", "pa").list();*/
-			listaCommesse=(List<Commessa>)session.createQuery("from Commessa where estensione<>:estensione").
-					setParameter("estensione", "pa").list();
-			
-			for(Commessa c: listaCommesse){
-								
-			 	commessa=c.getNumeroCommessa();
-				codCommessa=c.getCodCommessa(); //id commessa
-				o=(Ordine)session.createQuery("from Ordine where cod_commessa=:id").setParameter("id", codCommessa).uniqueResult();
-										
-				//controllo la presenza di una commessa .pa 
-				c_pa=(Commessa)session.createQuery("from Commessa where numeroCommessa=:commessa and estensione=:estensione").setParameter("commessa", commessa)
-						.setParameter("estensione", "pa").uniqueResult();
-				if(c_pa!=null)
-					esistePa=true;
-												
-				if(esistePa){		
-					
-					// se esiste la Pa devo ciclare sulle attivita ordine perchè potrebbero essercene più di una altrimenti basta prendere la prima sotto l'ordine
-				 
-					/*listaC=(List<Commessa>)session.createQuery("from Commessa where numeroCommessa=:commessa and estensione<>:estensione and statoCommessa<>:stato").setParameter("commessa", commessa)
-							.setParameter("estensione", "pa").setParameter("stato", "Chiusa").list();*/
-					listaC=(List<Commessa>)session.createQuery("from Commessa where numeroCommessa=:commessa and estensione<>:estensione").setParameter("commessa", commessa)
-							.setParameter("estensione", "pa").list();
-					
-					for(Commessa c1:listaC)
-						listaFF.addAll(c1.getFoglioFatturaziones());			
-					
-					for(FoglioFatturazione f1:listaFF){ 
-						
-						if(ServerUtility.isPrecedente(f1.getMeseCorrente(), data)){
-							//sommaVariazioniPcl=ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, f1.getVariazionePCL());
-							//sommaVariazioniSal=ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f1.getVariazioneSAL());
-							sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(f1.getVariazionePCL())));
-							sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)+ Float.valueOf( ServerUtility.getOreCentesimi(f1.getVariazioneSAL())));
-						}
-					}
-				
-					//sommaVariazioniSal=ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, c_pa.getSalAttuale());
-					//sommaVariazioniPcl=ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, c_pa.getPclAttuale());
-					sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)+ Float.valueOf(ServerUtility.getOreCentesimi(c_pa.getSalAttuale())));
-					sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(c_pa.getPclAttuale())));
-										
-					if(o==null){
-						tariffaUtilizzata=c.getTariffaSal();
-						f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:id and meseCorrente=:mese").setParameter("id", codCommessa)
-								.setParameter("mese", data).uniqueResult();
-						
-						if(f==null){//non c'è foglio di fatturazione quindi non ci sarà variazione nel mese
-							
-							if(tabSelected.compareTo("pcl")==0){
-								//importo=ServerUtility.calcolaImporto(tariffaUtilizzata, sommaVariazioniPcl);
-								importo=Float.valueOf(tariffaUtilizzata)*Float.valueOf(sommaVariazioniPcl);
-								if(Float.valueOf(sommaVariazioniPcl)!=0 && c.getStatoCommessa().compareTo("Conclusa")!=0){
-										riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
-							    			"#", "#",c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniPcl),Float.valueOf("0.00"), 
-							    			Float.valueOf(sommaVariazioniPcl), tariffaUtilizzata,importo , Float.valueOf("0.00"), Float.valueOf("0.00"), Float.valueOf("0.00"));
-										listaM.add(riepM);
-								}
-							}
-							else{
-								importo=Float.valueOf(tariffaUtilizzata)*Float.valueOf(sommaVariazioniSal);
-								if(Float.valueOf(sommaVariazioniSal)!=0 && c.getStatoCommessa().compareTo("Conclusa")!=0){
-										riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
-												"#", "#",c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniSal),Float.valueOf("0.00"), 
-												Float.valueOf(sommaVariazioniSal), tariffaUtilizzata,importo , Float.valueOf("0.00"), Float.valueOf("0.00"), Float.valueOf("0.00"));
-										listaM.add(riepM);
-									
-								}
-							}
-						}
-						else{	
-							//il foglio fatturazione era già stato compilato quindi tolgo alla sommavariazioni quella in esame
-							//sommaVariazioniSal=ServerUtility.getDifference(sommaVariazioniSal, f.getVariazioneSAL());
-							//sommaVariazioniPcl=ServerUtility.getDifference(sommaVariazioniPcl, f.getVariazionePCL());
-							sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)- Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())));
-							sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)- Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())));
-							
-							if(tabSelected.compareTo("pcl")==0){
-								//importo=ServerUtility.calcolaImporto(tariffaUtilizzata, ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, f.getVariazionePCL()));
-								//importoMese=ServerUtility.calcolaImporto(tariffaUtilizzata, f.getVariazionePCL());
-								importo=Float.valueOf(tariffaUtilizzata)*
-										(Float.valueOf(sommaVariazioniPcl)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())));
-								importoMese=Float.valueOf(tariffaUtilizzata)*Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL()));
-								
-								//if(Float.valueOf(ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, f.getVariazionePCL()))!=0){
-								if(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL()))!=0){
-									if(!(Float.valueOf(f.getVariazionePCL())==0 && c.getStatoCommessa().compareTo("Conclusa")==0)){
-										riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
-												"#", "#",c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniPcl), Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), 
-												Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), tariffaUtilizzata, 
-												importo , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf("0.00"), importoMese);
-										listaM.add(riepM);
-									}
-								}else
-									if(Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL()))!=0){
-										riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
-												"#", "#",c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniPcl), Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), 
-												Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), tariffaUtilizzata, 
-												importo , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf("0.00"), importoMese);
-										listaM.add(riepM);										
-									}
-							}
-							else{
-								//importo=ServerUtility.calcolaImporto(tariffaUtilizzata, ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f.getVariazioneSAL()));
-								//importoMese=ServerUtility.calcolaImporto(tariffaUtilizzata, f.getVariazioneSAL());
-								importo=Float.valueOf(tariffaUtilizzata)*(Float.valueOf(sommaVariazioniSal)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())));
-								importoMese=Float.valueOf(tariffaUtilizzata)*Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL()));
-								//if(Float.valueOf(ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f.getVariazioneSAL()))!=0){
-								if(Float.valueOf(sommaVariazioniSal)+ Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL()))!=0){
-									if(!(Float.valueOf(f.getVariazioneSAL())==0 && c.getStatoCommessa().compareTo("Conclusa")==0)){
-										riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
-												"#", "#",c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniSal),Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), 
-												Float.valueOf(sommaVariazioniSal)+ Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), tariffaUtilizzata, 
-												importo , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf("0.00"), importoMese);
-										listaM.add(riepM);
-									}
-								}else
-									//if(Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL()))!=0){
-									if(Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL()))!=0){
-										riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
-												"#", "#",c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniSal),Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), 
-												Float.valueOf(sommaVariazioniSal)+ Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), tariffaUtilizzata, 
-												importo , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf("0.00"), importoMese);
-											listaM.add(riepM);
-									}
-							}
-						}						
-						
-					}else{
-						
-						cliente=o.getRda().getCliente().getRagioneSociale();
-						
-						for(AttivitaOrdine att:o.getAttivitaOrdines()){
-						
-							tariffaUtilizzata=att.getTariffaAttivita();
-								
-							f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:id and meseCorrente=:mese and attivitaOrdine=:idAttivita")
-									.setParameter("id", codCommessa).setParameter("idAttivita", att.getIdAttivitaOrdine()).setParameter("mese", data).uniqueResult();
-							if(f==null)//doppio controllo per verificare che l'ordine non sia stato inserito successivamente e quindi il foglio fatturazione non abbia regist
-								f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:id and meseCorrente=:mese and attivitaOrdine=:idAttivita")
-									.setParameter("id", codCommessa).setParameter("idAttivita", 0).setParameter("mese", data).uniqueResult();
-														
-							if(f==null){//non c'è foglio di fatturazione quindi non ci sarà variazione nel mese
-							
-								if(tabSelected.compareTo("pcl")==0){
-									//importo=ServerUtility.calcolaImporto(tariffaUtilizzata, sommaVariazioniPcl);
-									importo=Float.valueOf(tariffaUtilizzata)*Float.valueOf(sommaVariazioniPcl);
-									if(Float.valueOf(sommaVariazioniPcl)!=0 && c.getStatoCommessa().compareTo("Conclusa")!=0){
-											riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(), cliente, o.getCodiceOrdine(),
-													c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniPcl),Float.valueOf("0.00"), 
-													Float.valueOf(sommaVariazioniPcl), tariffaUtilizzata,importo , Float.valueOf("0.00"), Float.valueOf("0.00"), Float.valueOf("0.00"));
-											listaM.add(riepM);
-										
-									}
-								}
-								else{
-									//importo=ServerUtility.calcolaImporto(tariffaUtilizzata, sommaVariazioniSal);
-									importo=Float.valueOf(tariffaUtilizzata)*Float.valueOf(sommaVariazioniSal);
-									if(Float.valueOf(sommaVariazioniSal)!=0 && c.getStatoCommessa().compareTo("Conclusa")!=0){
-											riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(), o.getCodiceOrdine(),
-												cliente, c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniSal),Float.valueOf("0.00"), 
-												Float.valueOf(sommaVariazioniSal), tariffaUtilizzata,importo , Float.valueOf("0.00"), Float.valueOf("0.00"), Float.valueOf("0.00"));
-											listaM.add(riepM);
-									}
-									
-								}
-							}
-							else{	
-								//il foglio fatturazione era già stato compilato quindi tolgo alla sommavariazioni quella in esame
-								//sommaVariazioniSal=ServerUtility.getDifference(sommaVariazioniSal, f.getVariazioneSAL());
-								//sommaVariazioniPcl=ServerUtility.getDifference(sommaVariazioniPcl, f.getVariazionePCL());
-								sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)- Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())));
-								sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)- Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())));
-								
-								if(tabSelected.compareTo("pcl")==0){
-									//importo=ServerUtility.calcolaImporto(tariffaUtilizzata, ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, f.getVariazionePCL()));
-									//importoMese=ServerUtility.calcolaImporto(tariffaUtilizzata, f.getVariazionePCL());
-									importo=Float.valueOf(tariffaUtilizzata)*
-											(Float.valueOf(sommaVariazioniPcl)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())));
-									importoMese=Float.valueOf(tariffaUtilizzata)*Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL()));
-									
-									//if(Float.valueOf(ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, f.getVariazionePCL()))!=0){
-									if(Float.valueOf(sommaVariazioniPcl)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL()))!=0){
-										if(!(Float.valueOf(f.getVariazionePCL())==0 && c.getStatoCommessa().compareTo("Conclusa")==0)){
-											riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
-												cliente, o.getCodiceOrdine(),c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniPcl), Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), 
-												Float.valueOf(sommaVariazioniPcl)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), tariffaUtilizzata, 
-												importo , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf("0.00"), importoMese);
-											listaM.add(riepM);
-										}
-									}else
-										if(Float.valueOf(f.getVariazionePCL())!=0){
-											riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
-													cliente, o.getCodiceOrdine(),c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniPcl), Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), 
-													Float.valueOf(sommaVariazioniPcl)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), tariffaUtilizzata, 
-													importo , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf("0.00"), importoMese);
-											listaM.add(riepM);										
-										}
-								}
-								else{
-									//importo=ServerUtility.calcolaImporto(tariffaUtilizzata, ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f.getVariazioneSAL()));
-									//importoMese=ServerUtility.calcolaImporto(tariffaUtilizzata, f.getVariazioneSAL());
-									importo=Float.valueOf(tariffaUtilizzata)*
-											(Float.valueOf(sommaVariazioniSal)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())));
-									importoMese=Float.valueOf(tariffaUtilizzata)*Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL()));
-									//if(Float.valueOf(ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f.getVariazioneSAL()))!=0){
-									if(Float.valueOf(sommaVariazioniSal)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL()))!=0){
-										if(!(Float.valueOf(f.getVariazioneSAL())==0 && c.getStatoCommessa().compareTo("Conclusa")==0)){
-											riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
-												cliente, o.getCodiceOrdine(),c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniSal),Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), 
-												Float.valueOf(sommaVariazioniSal)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), tariffaUtilizzata, 
-												importo , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf("0.00"), importoMese);
-											listaM.add(riepM);
-										}
-									}else
-										if(Float.valueOf(f.getVariazioneSAL())!=0){
-											riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
-													cliente, o.getCodiceOrdine(),c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniSal),Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), 
-													Float.valueOf(sommaVariazioniSal)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), tariffaUtilizzata, 
-													importo , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf("0.00"), importoMese);
-											listaM.add(riepM);
-										}
-											
-								}
-							}						
-						}
-					}	
-				}else
-				{ //Non esiste la Pa e quindi non potranno esserci ordini con più tariffe
-					
-					f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:id and meseCorrente=:mese").setParameter("id", codCommessa)
-							.setParameter("mese", data).uniqueResult();
-				
-					listaFF.addAll(c.getFoglioFatturaziones());			
-									
-					//Considero tutti i FF compilati in mesi differenti da quello in esame
-					for(FoglioFatturazione f1:listaFF)										
-						if(ServerUtility.isPrecedente(f1.getMeseCorrente(),data))
-							if(f1.getMeseCorrente().compareTo(data)!=0){
-								//sommaVariazioniPcl=ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, f1.getVariazionePCL());
-								//sommaVariazioniSal=ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f1.getVariazioneSAL());
-								sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(f1.getVariazionePCL())));
-								sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)+ Float.valueOf( ServerUtility.getOreCentesimi(f1.getVariazioneSAL())));
-							}
-									
-					//Aggiungo anche un eventuale SAL/PCL iniziale sulla commessa
-					//sommaVariazioniSal=ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, c.getSalAttuale());
-					//sommaVariazioniPcl=ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, c.getPclAttuale());
-					sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)+ Float.valueOf(ServerUtility.getOreCentesimi(c.getSalAttuale())));
-					sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(c.getPclAttuale())));
-					
-					
-					if(o==null){//se non c'è un ordine associato, permetto l'inserimento di eventuali sal pcl
-						tariffaUtilizzata=c.getTariffaSal();//prendo la tariffa della commessa
-						cliente="#";
-					}
-					else{
-						if(o.getAttivitaOrdines().iterator().hasNext())
-							tariffaUtilizzata=o.getAttivitaOrdines().iterator().next().getTariffaAttivita();
-						cliente=o.getRda().getCliente().getRagioneSociale();
-					}
-					
-					if(f==null){						
-						if(tabSelected.compareTo("pcl")==0){
-							//importo=ServerUtility.calcolaImporto(tariffaUtilizzata, sommaVariazioniPcl);
-							importo=Float.valueOf(tariffaUtilizzata)*Float.valueOf(sommaVariazioniPcl);
-							if(Float.valueOf(sommaVariazioniPcl)!=0 && c.getStatoCommessa().compareTo("Cocnlusa")!=0){
-								riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
-										cliente, o.getCodiceOrdine(),c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniPcl),Float.valueOf("0.00"), 
-										Float.valueOf(sommaVariazioniPcl), tariffaUtilizzata,importo , Float.valueOf("0.00"), Float.valueOf("0.00"), Float.valueOf("0.00"));
-								listaM.add(riepM);
-							}
-						}
-						else{
-							//importo=ServerUtility.calcolaImporto(tariffaUtilizzata, sommaVariazioniSal);
-							importo=Float.valueOf(tariffaUtilizzata)*Float.valueOf(sommaVariazioniSal);
-							if(Float.valueOf(sommaVariazioniSal)!=0 && c.getStatoCommessa().compareTo("Cocnlusa")!=0){
-								riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
-									cliente, o.getCodiceOrdine(),c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniSal),Float.valueOf("0.00"), 
-									Float.valueOf(sommaVariazioniSal), tariffaUtilizzata, importo , Float.valueOf("0.00"), Float.valueOf("0.00"), Float.valueOf("0.00"));
-								listaM.add(riepM);
-							}
-						}						
-						
-					}
-					else{	
-							
-						if(tabSelected.compareTo("pcl")==0){
-							//importo=ServerUtility.calcolaImporto(tariffaUtilizzata, ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, f.getVariazionePCL()));
-							//importoMese=ServerUtility.calcolaImporto(tariffaUtilizzata, f.getVariazionePCL());
-							importo=Float.valueOf(tariffaUtilizzata)*
-									(Float.valueOf(sommaVariazioniPcl)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())));
-							importoMese=Float.valueOf(tariffaUtilizzata)*Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL()));
-							//if(Float.valueOf(ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, f.getVariazionePCL()))!=0){
-							if(Float.valueOf(sommaVariazioniPcl)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL()))!=0){
-								if(!(Float.valueOf(f.getVariazionePCL())==0 && c.getStatoCommessa().compareTo("Conclusa")==0)){
-									riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
-										cliente, o.getCodiceOrdine(),c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniPcl), Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), 
-										Float.valueOf(sommaVariazioniPcl)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), tariffaUtilizzata, 
-										importo , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf("0.00"), importoMese);
-									listaM.add(riepM);	
-								}
-							}else 
-								if(Float.valueOf(f.getVariazionePCL())!=0){
-									riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
-											cliente, o.getCodiceOrdine(),c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniPcl), Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), 
-											Float.valueOf(sommaVariazioniPcl)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), tariffaUtilizzata, 
-											importo , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf("0.00"), importoMese);
-									listaM.add(riepM);	
-								}
-						}
-						else{
-							//importo=ServerUtility.calcolaImporto(tariffaUtilizzata, ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f.getVariazioneSAL()));
-							//importoMese=ServerUtility.calcolaImporto(tariffaUtilizzata, f.getVariazioneSAL());
-							importo=Float.valueOf(tariffaUtilizzata)*
-									(Float.valueOf(sommaVariazioniSal)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())));
-							importoMese=Float.valueOf(tariffaUtilizzata)*Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL()));
-							if(Float.valueOf(ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f.getVariazioneSAL()))!=0){
-								if(!(Float.valueOf(f.getVariazioneSAL())==0 && c.getStatoCommessa().compareTo("Conclusa")==0)){
-									riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
-										cliente, o.getCodiceOrdine(),c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniSal),Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), 
-										Float.valueOf(sommaVariazioniSal)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), tariffaUtilizzata, 
-										importo , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf("0.00"), importoMese);
-									listaM.add(riepM);
-								}
-							}else
-								if(Float.valueOf(f.getVariazioneSAL())!=0){
-									riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa, c.getEstensione(),
-											cliente, o.getCodiceOrdine(),c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniSal),Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), 
-											Float.valueOf(sommaVariazioniSal)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), tariffaUtilizzata, 
-											importo , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf("0.00"), importoMese);
-									listaM.add(riepM);
-								}
-						}
-						
-					}														
-				}
-				
-				//listaM.add(riepM);
-				listaFF.clear();
-				listaC.clear();
-				sommaVariazioniPcl="0.00";
-				sommaVariazioniSal="0.00";
-				importo=(float)0.00;
-				importoMese=(float)0.00;
-				esistePa=false;
-			}
-			
-			
-			//-------------Calcolo totali---------------------------//
-			List<String> listaPM= new ArrayList<String>();
-			List<RiepilogoSALPCLModel> listaTot= new ArrayList<RiepilogoSALPCLModel>();
-			List<RiepilogoSALPCLModel> listaApp= new ArrayList<RiepilogoSALPCLModel>();
-			List<String> listaComm= new ArrayList<String>();
-			
-			listaPM=getNomePM();
-			String pm=new String();
-			
-			String totVarMese="0.00";
-			String totAttuale="0.00";
-			String totPrecedente="0.00";
-			
-			Float totTotEuro=(float)0.00;
-			Float totVarEuro=(float)0.00;
-			
-			listaApp.addAll(listaM);
-						
-			for(String nome:listaPM){
-				for(RiepilogoSALPCLModel r:listaApp){
-					pm=(String)r.get("pm");					
-					if(nome.compareTo(pm)==0){						
-						if((Float)r.get("variazione")!=0){
-							totVarMese=d.format(Float.valueOf(totVarMese)+(Float) r.get("variazione"));
-							totVarEuro=totVarEuro+ (Float) r.get("importoMese");							
-						}
-						
-						if(!isIncluded(listaComm, (String)r.get("numeroCommessa"))){
-							listaComm.add((String)r.get("numeroCommessa"));
-							totAttuale=d.format(Float.valueOf(totAttuale)+(Float) r.get("attuale"));
-							totTotEuro=totTotEuro + (Float) r.get("importoComplessivo");
-						}
-					}						
-				}	
-				
-				totPrecedente=d.format(Float.valueOf(totAttuale)-Float.valueOf(totVarMese));				
-				
-				riepM=new RiepilogoSALPCLModel(nome, "TOTALE", "", "", "", "",Float.valueOf(totPrecedente) , Float.valueOf(totVarMese), 
-						Float.valueOf(totAttuale), "", totTotEuro, (float)0.00, (float)0.00, totVarEuro);
-				listaTot.add(riepM);
-				listaComm.clear();
-				totVarMese="0.00";
-				totAttuale="0.00";
-				totPrecedente="0.00";
-				totTotEuro=(float)0.00;
-				totVarEuro=(float)0.00;
-			}
-			
-			listaM.addAll(listaTot);
-			
-			tx.commit();
-			return listaM;
-			
-		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
-			e.printStackTrace();
-			return null;
-		}finally{
-			session.close();
-		}
-	}
-	
-	
-	@SuppressWarnings("unchecked")
 	//@Override
 	public List<RiepilogoSALPCLModel> getRiepilogoSalPcl1(String data,
 			String tabSelected, String pm) throws IllegalArgumentException {
 		
 		List<Commessa> listaCommesse= new ArrayList<Commessa>();
 		List<Commessa> listaC= new ArrayList<Commessa>();
+		List<Commessa> listaCommessePa= new ArrayList<Commessa>();
 		List<FoglioFatturazione> listaFF= new ArrayList<FoglioFatturazione>();
 		List<FoglioFatturazione> listaFF1= new ArrayList<FoglioFatturazione>();
 		
 		Ordine o= new Ordine();
-		FoglioFatturazione f= new FoglioFatturazione();
+		//FoglioFatturazione f= new FoglioFatturazione();
 		Commessa cPa= new Commessa();
 		
 		RiepilogoSALPCLModel riepM= new RiepilogoSALPCLModel();
@@ -8690,9 +8231,13 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String sommaVariazioniPcl= "0.00";
 		String sommaVar="0.00";
 		String cliente="#";
+		String estensione="";
+		String numeroOrdine="";
+		int codAttivitaOrdine=0;
 		
 		Boolean esito= true;
 		Boolean esistePa=false;
+		Boolean trovato=false;
 		
 		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
 	    formatSymbols.setDecimalSeparator('.');
@@ -8710,42 +8255,150 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 			tx=session.beginTransaction();
 			
-			listaCommesse=(List<Commessa>)session.createQuery("from Commessa where matricolaPM=:pm and estensioneCommessa<>:estensione").
-					setParameter("pm", pm).setParameter("estensione", "pa").list();
+			listaCommesse=(List<Commessa>)session.createQuery("from Commessa where matricolaPM=:pm").
+					setParameter("pm", pm).list();
 			
 			for(Commessa c: listaCommesse){
 				
 				commessa=c.getNumeroCommessa();
-								
-				cPa=(Commessa)session.createQuery("from Commessa where numeroCommessa=:numeroCommessa and estensioneCommessa=:estensione")
-						.setParameter("numeroCommessa", c.getNumeroCommessa()).setParameter("estensioneCommessa", c.getEstensione()).uniqueResult();
+				codCommessa=c.getCodCommessa();
 				
-				if(cPa!=null)
+				if(commessa.compareTo("13097")==0)
+					System.out.print("");
+				
+				cPa=(Commessa)session.createQuery("from Commessa where numeroCommessa=:numeroCommessa and estensione=:estensione")
+						.setParameter("numeroCommessa", c.getNumeroCommessa()).setParameter("estensione", "pa").uniqueResult();
+				
+				if(cPa!=null){
 					esistePa=true;
-				else
-					esistePa=false;
-				
-				
-				if(esistePa){
-					
-					
-				}else{
-					
-					
+					estensione="pa";
 				}
-								
+				else{
+					esistePa=false;
+					estensione=c.getEstensione();
+				}
+							
+				listaFF=(List<FoglioFatturazione>)session.createQuery("from FoglioFatturazione where cod_commessa=:id")
+							.setParameter("id", codCommessa).list();
+				if(listaFF!=null)
+					for(FoglioFatturazione f1:listaFF){
+						if(ServerUtility.isPrecedente(f1.getMeseCorrente(), data)){
+							sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(f1.getVariazionePCL())));
+							sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)+ Float.valueOf( ServerUtility.getOreCentesimi(f1.getVariazioneSAL())));
+						}
+					}
+					
+				sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)+ Float.valueOf(ServerUtility.getOreCentesimi(c.getSalAttuale())));
+				sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(c.getPclAttuale())));
+					
+				tariffaUtilizzata=c.getTariffaSal();
+				o=c.getOrdine();
 				
+				if(o!=null){
+					cliente=o.getRda().getCliente().getRagioneSociale();
+					numeroOrdine=o.getCodiceOrdine();
+				}else{
+					cliente=c.getRagioneSocialeCliente();
+					numeroOrdine="#";					
+				}
+				
+								
+				listaFF1=(List<FoglioFatturazione>)session.createQuery("from FoglioFatturazione where cod_commessa=:id and meseCorrente=:mese")
+						.setParameter("id", codCommessa).setParameter("mese", data).list();
+			
+				if(listaFF1.size()==0){//non c'è foglio di fatturazione quindi non ci sarà variazione nel mese
+					
+					if(tabSelected.compareTo("pcl")==0)
+						sommaVar=sommaVariazioniPcl;
+					else
+						sommaVar=sommaVariazioniSal;
+						
+					importo=Float.valueOf(tariffaUtilizzata)*Float.valueOf(sommaVar);
+						
+					if(Float.valueOf(sommaVar)!=0 ){
+								riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa+"."+estensione, c.getEstensione(), cliente, numeroOrdine,
+										c.getDenominazioneAttivita(), Float.valueOf(sommaVar),Float.valueOf("0.00"), 
+										Float.valueOf(sommaVar), tariffaUtilizzata,importo , Float.valueOf("0.00"), Float.valueOf("0.00"), Float.valueOf("0.00"));
+								listaM.add(riepM);
+					}
+					
+					sommaVariazioniPcl="0.00";
+					sommaVariazioniSal="0.00";
+					
+					importo=(float)0.00;
+					importoMese=(float)0.00;
+				}
+				else{
+						//il foglio fatturazione era già stato compilato quindi tolgo alla sommavariazioni quella in esame
+						
+					for(FoglioFatturazione f:listaFF1){
+					
+						sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)- Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())));
+						sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)- Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())));
+						
+						if(tabSelected.compareTo("pcl")==0){
+							importo=Float.valueOf(tariffaUtilizzata)*
+									(Float.valueOf(sommaVariazioniPcl)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())));
+							importoMese=Float.valueOf(tariffaUtilizzata)*Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL()));
+							
+							//if(Float.valueOf(ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, f.getVariazionePCL()))!=0){
+							if(Float.valueOf(sommaVariazioniPcl)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL()))!=0){
+								if(!(Float.valueOf(f.getVariazionePCL())==0 && c.getStatoCommessa().compareTo("Conclusa")==0)){
+									riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa+"."+estensione, c.getEstensione(),
+										cliente,"", c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniPcl), Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), 
+										Float.valueOf(sommaVariazioniPcl)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), tariffaUtilizzata, 
+										importo , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf("0.00"), importoMese);
+									listaM.add(riepM);
+								}
+							}else
+								if(Float.valueOf(f.getVariazionePCL())!=0){
+									riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa+"."+estensione, c.getEstensione(),
+											cliente,numeroOrdine, c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniPcl), Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), 
+											Float.valueOf(sommaVariazioniPcl)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazionePCL())), tariffaUtilizzata, 
+											importo , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf("0.00"), importoMese);
+									listaM.add(riepM);							
+								}
+						}
+						else{
+							importo=Float.valueOf(tariffaUtilizzata)*
+									(Float.valueOf(sommaVariazioniSal)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())));
+							importoMese=Float.valueOf(tariffaUtilizzata)*Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL()));
+							//if(Float.valueOf(ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f.getVariazioneSAL()))!=0){
+							if(Float.valueOf(sommaVariazioniSal)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL()))!=0){
+								if(!(Float.valueOf(f.getVariazioneSAL())==0 && c.getStatoCommessa().compareTo("Conclusa")==0)){
+									riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa+"."+estensione, c.getEstensione(),
+										cliente, numeroOrdine,c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniSal),Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), 
+										Float.valueOf(sommaVariazioniSal)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), tariffaUtilizzata, 
+										importo , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf("0.00"), importoMese);
+									listaM.add(riepM);
+								}
+							}else
+								if(Float.valueOf(f.getVariazioneSAL())!=0){
+									riepM= new RiepilogoSALPCLModel(c.getMatricolaPM(), commessa+"."+estensione, c.getEstensione(),
+											cliente, numeroOrdine, c.getDenominazioneAttivita(), Float.valueOf(sommaVariazioniSal),Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), 
+											Float.valueOf(sommaVariazioniSal)+Float.valueOf(ServerUtility.getOreCentesimi(f.getVariazioneSAL())), tariffaUtilizzata, 
+											importo , Float.valueOf(ServerUtility.getOreCentesimi(f.getOreEseguite())), Float.valueOf("0.00"), importoMese);
+									listaM.add(riepM);
+								}
+						}
+						
+						sommaVariazioniPcl="0.00";
+						sommaVariazioniSal="0.00";
+						
+						importo=(float)0.00;
+						importoMese=(float)0.00;
+						
+						cPa=null;
+					}
+				
+				}
+							
 				if(listaFF!=null)
 					listaFF.clear();
-				listaFF1.clear();
+				if(listaFF1!=null)
+					listaFF1.clear();
 				listaC.clear();
-				sommaVariazioniPcl="0.00";
-				sommaVariazioniSal="0.00";
-				
-				importo=(float)0.00;
-				importoMese=(float)0.00;
-				cPa=null;
-				
+									
 			}//for commessa
 			
 			tx.commit();
@@ -8759,7 +8412,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}finally{
 			if(esito)
 				session.close();
-		}		
+		}
 		return listaM;
 		
 	}
@@ -8770,7 +8423,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			if(c.compareTo(commessa)==0)
 				return true;			
 		}
-		return false;		
+		return false;
 	}
 	
 
@@ -12366,5 +12019,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		return true;
 	}
-	
+
+		
 }

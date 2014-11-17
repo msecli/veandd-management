@@ -324,21 +324,7 @@ public class BodyLayout_Direzione extends LayoutContainer {
 		    btnGestioneRdo.setWidth("100%");
 		    cp.add(btnGestioneRdo);
 		    	    
-		    Button btnGestioneRdoAll = new Button();
-		    btnGestioneRdoAll.setToolTip("All Toghether");
-		    btnGestioneRdoAll.setHeight(65);
-		    btnGestioneRdoAll.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.anagrafica()));
-		    btnGestioneRdoAll.setIconAlign(IconAlign.BOTTOM);
-		    btnGestioneRdoAll.setWidth("100%");
-		    btnGestioneRdoAll.addSelectionListener(new SelectionListener<ButtonEvent>() {
-		        public void componentSelected(ButtonEvent ce) {
-		          center.removeAll();
-		        	center.add(new CenterLayout_GestioneRdoCommesseAll());
-		        	center.layout(true);}
-		        
-		      });
-		    cp.add(btnGestioneRdoAll);
-		    
+		  		    
 		    Button btnRiepilogoMensile = new Button();
 		    btnRiepilogoMensile.setToolTip("Riepilogo Mensile");
 		    btnRiepilogoMensile.setHeight(65);

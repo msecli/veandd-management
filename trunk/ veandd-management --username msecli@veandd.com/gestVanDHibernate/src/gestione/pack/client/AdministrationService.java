@@ -472,9 +472,7 @@ boolean invioCommenti(String testo, String username, Date giorno);
 
 	List<RtvModel> getDatiRtv(String numeroO);
 
-	List<RiepilogoSALPCLModel> getRiepilogoSalPclOld(String data,
-			String tabSelected) throws IllegalArgumentException;
-
+	
 	boolean setStatoFoglioFatturazione(String mese, String anno)throws IllegalArgumentException;
 
 	List<SaturazioneRisorsaModel> getDatiSaturazioneRisorsa(int idRisorsa,
