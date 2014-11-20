@@ -7287,6 +7287,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				
 				importoSal= (float) 0;
 				importoPcl= (float) 0;
+				attivitaOrdine="";
 			}			
 			
 			tx.commit();
@@ -7349,7 +7350,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			}
 			else
 				ServerLogFunction.logOkMessage("setStatoFoglioFatturazione", new Date(), "", "Success");
-	    }	
+	    }
 		
 		return true;
 	}
@@ -8214,7 +8215,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		List<Commessa> listaCommesse= new ArrayList<Commessa>();
 		List<Commessa> listaC= new ArrayList<Commessa>();
-		List<Commessa> listaCommessePa= new ArrayList<Commessa>();
 		List<FoglioFatturazione> listaFF= new ArrayList<FoglioFatturazione>();
 		List<FoglioFatturazione> listaFF1= new ArrayList<FoglioFatturazione>();
 		
@@ -8233,12 +8233,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String cliente="#";
 		String estensione="";
 		String numeroOrdine="";
-		int codAttivitaOrdine=0;
-		
+				
 		Boolean esito= true;
 		Boolean esistePa=false;
-		Boolean trovato=false;
-		
+				
 		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
 	    formatSymbols.setDecimalSeparator('.');
 	    String pattern="0.00";
