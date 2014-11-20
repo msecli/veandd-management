@@ -139,7 +139,7 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 		smplcmbxMeseInizio.setAllowBlank(false);
 		smplcmbxMeseInizio.setEnabled(true);
 		smplcmbxMeseInizio.setTriggerAction(TriggerAction.ALL);
-		smplcmbxMeseInizio.setSimpleValue(anno);
+		smplcmbxMeseInizio.setSimpleValue(mese);
 		smplcmbxMeseInizio.setWidth(100);
 		tlbrOperazioni.add(smplcmbxMeseInizio);
 		
@@ -165,7 +165,7 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 		smplcmbxMeseFine.setAllowBlank(false);
 		smplcmbxMeseFine.setEnabled(true);
 		smplcmbxMeseFine.setTriggerAction(TriggerAction.ALL);
-		smplcmbxMeseFine.setSimpleValue(anno);
+		smplcmbxMeseFine.setSimpleValue(mese);
 		smplcmbxMeseFine.setWidth(100);
 		for(String l : DatiComboBox.getMese()){
 			smplcmbxMeseInizio.add(l);

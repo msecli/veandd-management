@@ -22,6 +22,7 @@ import gestione.pack.client.layout.panel.PanelRiepilogoRichiesteHardware;
 import gestione.pack.client.layout.panel.PanelRiepilogoSituazioneMensileOreDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoStatoAvanzamentoOreCommesse;
 import gestione.pack.client.layout.panel.PanelSaturazioneRisorsePerSede;
+import gestione.pack.client.layout.panel.PanelStrumentiAmministrativi_TabellaFogliFatturazione;
 import gestione.pack.client.layout.panel.PanelToolAmministrativi;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
@@ -979,6 +980,22 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    
 	    
 	    Button btnProcedure = new Button();
+	    btnProcedure.setToolTip("Edit Tebelle");
+	    btnProcedure.setHeight(65);
+	    btnProcedure.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.generate1()));
+	    btnProcedure.setIconAlign(IconAlign.BOTTOM);
+	    btnProcedure.setWidth("100%");
+	    btnProcedure.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelStrumentiAmministrativi_TabellaFogliFatturazione());
+	        	center.layout(true);	        	
+	       }      
+	    });
+	    btnTools.setWidth("100%");
+	    cp.add(btnProcedure);
+	    
+	   /* Button btnProcedure = new Button();
 	    btnProcedure.setToolTip("Procedure X");
 	    btnProcedure.setHeight(65);
 	    btnProcedure.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.tools()));
@@ -1004,7 +1021,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    });
 	    btnTools.setWidth("100%");
 	    cp.add(btnProcedure);
-	    
+	    */
 	    panel.add(cp);
 	    	    
 	    panel.setSize(180,Window.getClientHeight()-70);
