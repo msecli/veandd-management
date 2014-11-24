@@ -6888,6 +6888,40 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 
 	
 	@Override
+	public boolean deleteFoglioFatturazione(DatiFatturazioneMeseModel dm)
+			throws IllegalArgumentException {
+		
+		Boolean result=true;
+		FoglioFatturazione f= new FoglioFatturazione();
+		Integer idFF=dm.get("idFoglioFatturazione");
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {
+			tx = session.beginTransaction();
+			
+			f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where idFoglioFatturazione=:id")
+					.setParameter("id", idFF).uniqueResult();
+			
+			session.delete(f);
+			
+			tx.commit();
+							
+		}catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return false;
+		}finally{
+			session.close();
+		}
+		
+		return result;
+	}
+	
+	
+	@Override
 	public FatturaModel elaboraDatiPerFattura(String numeroOrdine,
 			int idFoglioFatturazione) {
 		
@@ -7127,6 +7161,59 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}			
 	}
 
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<DatiFatturazioneMeseModel> getDatiFogliFatturazioneMese(
+			String anno, String mese) throws IllegalArgumentException {
+		
+		List<DatiFatturazioneMeseModel> listaDati= new ArrayList<DatiFatturazioneMeseModel>();
+		List<FoglioFatturazione> listaFF=new ArrayList<FoglioFatturazione>();
+		DatiFatturazioneMeseModel dm= new DatiFatturazioneMeseModel();
+		
+		String numeroCommessa="";
+		String numeroOrdine="";
+		Ordine o = new Ordine();
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		mese=mese.substring(0,3);
+		anno=mese+anno;
+		
+		try {
+			tx = session.beginTransaction();
+			
+			listaFF=(List<FoglioFatturazione>)session.createQuery("from FoglioFatturazione where meseCorrente=:mese")
+					.setParameter("mese", anno).list();
+			
+			for(FoglioFatturazione f:listaFF){
+				numeroCommessa=f.getCommessa().getNumeroCommessa()+"."+f.getCommessa().getEstensione();
+				o=f.getCommessa().getOrdine();
+				if(o!=null)
+					numeroOrdine=f.getCommessa().getOrdine().getCodiceOrdine();
+				else
+					numeroOrdine="";
+				
+				dm=new DatiFatturazioneMeseModel(f.getIdFoglioFatturazione(), numeroCommessa, numeroOrdine , f.getCommessa().getDenominazioneAttivita(), 
+						f.getOreEseguite(), f.getOreFatturare(), f.getVariazioneSAL(), f.getVariazionePCL());
+				listaDati.add(dm);
+			}
+			
+			tx.commit();			
+			
+		}catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return null;
+		}finally{
+			session.close();
+		}	
+		
+		return listaDati;
+	}
+	
 
 	@SuppressWarnings("unchecked")
 	@Override

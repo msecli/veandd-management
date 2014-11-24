@@ -322,6 +322,12 @@ public interface AdministrationServiceAsync {
 	
 	void elaboraDatiPerFattura(String numeroOrdine, int idFoglioFatturazione,
 			AsyncCallback<FatturaModel> asyncCallback);
+	
+	void getDatiFogliFatturazioneMese(String anno, String mese,
+			AsyncCallback<List<DatiFatturazioneMeseModel>> asyncCallback);
+	
+	void deleteFoglioFatturazione(DatiFatturazioneMeseModel dm,
+			AsyncCallback<Boolean> asyncCallback);
 
 //----------------------------------------------------VARIE
 	void invioCommenti(String testo, String username,
@@ -518,8 +524,5 @@ public interface AdministrationServiceAsync {
 	void associaEstensioneCommessaAttivitaOrdine(String valueOf,
 			Integer idAttivita, AsyncCallback<Boolean> asyncCallback);
 
-	
-
-	
 
 }
