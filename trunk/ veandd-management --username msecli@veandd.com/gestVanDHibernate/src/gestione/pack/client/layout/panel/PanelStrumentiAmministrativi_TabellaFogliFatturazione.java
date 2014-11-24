@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import gestione.pack.client.AdministrationService;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.DatiComboBox;
@@ -12,6 +13,7 @@ import gestione.pack.client.utility.MyImages;
 import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
+import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.fx.Resizable;
@@ -32,6 +34,7 @@ import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public class PanelStrumentiAmministrativi_TabellaFogliFatturazione extends LayoutContainer{
@@ -43,7 +46,7 @@ public class PanelStrumentiAmministrativi_TabellaFogliFatturazione extends Layou
 	
 	private SimpleComboBox<String> smplcmbxMese;
 	private SimpleComboBox<String> smplcmbxAnno;
-	private SimpleComboBox<String> smplcmbxSede;
+	
 	private Button btnSelect;
 	private Button btnDelete;
 	
@@ -122,9 +125,10 @@ public class PanelStrumentiAmministrativi_TabellaFogliFatturazione extends Layou
 			
 			@Override
 			public void componentSelected(ButtonEvent ce) {
-				
+				caricaDatiTabella();
 				
 			}
+
 		});
 		tlbrOperazioni.add(btnSelect);
 						 
@@ -138,16 +142,33 @@ public class PanelStrumentiAmministrativi_TabellaFogliFatturazione extends Layou
 			
 			@Override
 			public void componentSelected(ButtonEvent ce) {
-				
-				
+				List<DatiFatturazioneMeseModel> listaSelected= new ArrayList<DatiFatturazioneMeseModel>();
+				listaSelected.addAll(sm.getSelectedItems());
+				if(listaSelected.size()>0)
+					for(DatiFatturazioneMeseModel dm:listaSelected){
+						AdministrationService.Util.getInstance().deleteFoglioFatturazione(dm, new AsyncCallback<Boolean>() {
+
+							@Override
+							public void onFailure(Throwable caught) {
+								Window.alert("Errore di connessione on deleteFoglioFatturazione()!");
+							}
+
+							@Override
+							public void onSuccess(Boolean result) {
+								caricaDatiTabella();
+							}						
+							
+						});				
+					}
 			}
 		});
 		tlbrOperazioni.add(btnDelete);
 		
 		cmRiepilogo = new ColumnModel(createColumns()); 
+		store.setDefaultSort("numeroCommessa", SortDir.ASC);
 		gridRiepilogo= new EditorGrid<DatiFatturazioneMeseModel>(store, cmRiepilogo);  
-		gridRiepilogo.setBorders(false);  
-		gridRiepilogo.setStripeRows(true);  
+		gridRiepilogo.setBorders(false);
+		gridRiepilogo.setStripeRows(true);
 		gridRiepilogo.setColumnLines(true);  
 		gridRiepilogo.setColumnReordering(true);
 		gridRiepilogo.addPlugin(sm);
@@ -158,6 +179,38 @@ public class PanelStrumentiAmministrativi_TabellaFogliFatturazione extends Layou
 		
 		layoutContainer.add(cpGrid, new FitData(3,3,3,3));
 		add(layoutContainer);
+	}
+	
+	
+	private void caricaDatiTabella() {
+		String anno=smplcmbxAnno.getRawValue().toString();
+		String mese=smplcmbxMese.getRawValue().toString();
+		
+		AdministrationService.Util.getInstance().getDatiFogliFatturazioneMese(anno,mese,new AsyncCallback<List<DatiFatturazioneMeseModel>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("Errore di connessione on getDatiFogliFatturazioneMese()!");
+				
+			}
+
+			@Override
+			public void onSuccess(List<DatiFatturazioneMeseModel> result) {
+				if(result!=null){
+					loadData(result);
+				}else
+					Window.alert("Errore durante il caricamento ");
+			}
+		
+		});
+	}
+	
+	
+	private void loadData(List<DatiFatturazioneMeseModel> result) {
+		store.removeAll();
+		store.add(result);
+		store.setDefaultSort("numeroCommessa", SortDir.ASC);
+		gridRiepilogo.reconfigure(store, cmRiepilogo);
 	}
 	
 	
@@ -176,7 +229,7 @@ public class PanelStrumentiAmministrativi_TabellaFogliFatturazione extends Layou
 	    column=new ColumnConfig();		
 	    column.setId("numeroOrdine");  
 	    column.setHeader("Ordine");  
-	    column.setWidth(150);  
+	    column.setWidth(150);
 	    column.setRowHeader(true);  
 	    configs.add(column);
 	    

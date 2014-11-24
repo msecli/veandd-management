@@ -42,6 +42,21 @@ public class DatiFatturazioneMeseModel extends BaseModel implements IsSerializab
 		set("totaleOreSal", totaleOreSal);
 	}
 	
+	
+	public DatiFatturazioneMeseModel(Integer idFoglioFatturazione, String commessa, String ordine, String attivita, String oreEseguite, 
+			String oreFatturate, String variazioneSal, String variazionePcl){
+			
+		set("idFoglioFatturazione", idFoglioFatturazione);
+		set("numeroCommessa", commessa);		
+		set("numeroOrdine", ordine);
+		set("oggettoAttivita", attivita);		
+		set("oreEseguite", oreEseguite);
+		set("oreFatturate", oreFatturate);
+		set("variazioneSal",variazioneSal);		
+		set("variazionePcl",variazionePcl);
+		
+	}
+	
 	public String getPM(){
 		return get("pm");
 	}

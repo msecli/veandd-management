@@ -328,6 +328,23 @@ public interface AdministrationService extends RemoteService {
 	List<RiepilogoOreTotaliCommesse> getElencoCommesseSuFoglioFatturazione(
 			String numCommessa, String numEstensione, String data) throws IllegalArgumentException;
 	
+	List<RiepilogoOreNonFatturabiliModel> getRiepilogoOreIndiretti(String data,
+			String string)throws IllegalArgumentException;
+
+	List<RiepilogoOreDipFatturazione> getRiepilogoTotCommessePerDipendenti(
+			String mese, String sede, String pm);
+
+	List<RiepilogoOreDipFatturazione> getRiepilogoOreCommesseDettDipendenti(
+			String data, String sede)throws IllegalArgumentException;
+	
+	List<DatiFatturazioneMeseModel> getDatiFogliFatturazioneMese(String anno,
+			String mese)throws IllegalArgumentException;
+	
+	boolean deleteFoglioFatturazione(DatiFatturazioneMeseModel dm)throws IllegalArgumentException;
+	
+//----------------------------------------------------------------------------------------------------------------------
+	
+	
 boolean invioCommenti(String testo, String username, Date giorno);
 
 	List<CommessaModel> getAllCommesseModelByPm(String cognomePm)throws IllegalArgumentException;
@@ -369,15 +386,7 @@ boolean invioCommenti(String testo, String username, Date giorno);
 	List<RiepilogoOreNonFatturabiliModel> getRiepilogoOreNonFatturate(
 			String data, String groupBy)throws IllegalArgumentException;
 	
-	List<RiepilogoOreNonFatturabiliModel> getRiepilogoOreIndiretti(String data,
-			String string)throws IllegalArgumentException;
 
-	List<RiepilogoOreDipFatturazione> getRiepilogoTotCommessePerDipendenti(
-			String mese, String sede, String pm);
-
-	List<RiepilogoOreDipFatturazione> getRiepilogoOreCommesseDettDipendenti(
-			String data, String sede)throws IllegalArgumentException;
-	
 	List<RiepilogoMeseGiornalieroModel> getRiepilogoMensileDettagliatoCommesseHorizontalLayout(
 			int idDip, String dipendente, String data);
 
@@ -505,5 +514,7 @@ boolean invioCommenti(String testo, String username, Date giorno);
 
 	List<RiepilogoSALPCLModel> getRiepilogoSalPcl1(String data,
 			String tabSelected, String pm);
+
+
 	
 }
