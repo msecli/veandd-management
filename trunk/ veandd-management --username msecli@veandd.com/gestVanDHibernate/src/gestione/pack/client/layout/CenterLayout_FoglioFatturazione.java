@@ -218,12 +218,7 @@ public CenterLayout_FoglioFatturazione(){}
 		add(layoutContainer);
 	}	
 	
-	private void reloadFoglioFatt() {
-		hpLayout.removeAll();
-		hpLayout.add(new CntpnlRiepilogoOreDipFatturazione());
-		hpLayout.add(new CntpnlDatiFatturazioneOrdine());
-		hpLayout.layout();		
-	}
+	
 	private void reloadFoglioFatt1() {
 		CntpnlDatiFatturazioneOrdine cp=new CntpnlDatiFatturazioneOrdine();
 		cp=(CntpnlDatiFatturazioneOrdine) hpLayout.getItemByItemId("panelDatiFatturazione");		
@@ -1243,9 +1238,9 @@ public CenterLayout_FoglioFatturazione(){}
 			    	  	}
 			      }
 			      
-			      public void componentKeyDown(ComponentEvent event) { 	  
+			      public void componentKeyDown(ComponentEvent event) {
 				    	int keyCode=event.getKeyCode();
-						if(keyCode==9){			
+						if(keyCode==9){
 							
 							if(txtfldOreDaFatturare.getValue()==null)
 								txtfldOreDaFatturare.setValue("0.00");
@@ -1458,7 +1453,7 @@ public CenterLayout_FoglioFatturazione(){}
 			    	  		
 			    	  		txtPclTotale.setValue(ClientUtility.aggiornaTotGenerale(txtfldPCLIniziale.getValue().toString(), txtfldVariazionePCL.getValue().toString()));
 			    	  	}
-			      }	
+			      }
 				 
 				 public void componentKeyDown(ComponentEvent event) { 	  
 				    	int keyCode=event.getKeyCode();
@@ -2217,7 +2212,7 @@ public CenterLayout_FoglioFatturazione(){}
 				
 				oreLavoro=oreLavoro+oreStraoC+oreViaggioC;
 				
-				if(!nuovo){				
+				if(!nuovo){	
 					//String ruolo=txtRuolo.getText();
 					String statoElaborazione=result.getStato();
 					if (statoElaborazione.compareTo("2")==0 && ruolo.compareTo("AMM")!=0)

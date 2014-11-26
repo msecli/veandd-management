@@ -4,7 +4,6 @@ package gestione.pack.client.layout;
 
 import java.util.List;
 
-import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.UtilityService;
 import gestione.pack.client.layout.panel.DialogRichiestaHardwareDipendente;
@@ -12,6 +11,7 @@ import gestione.pack.client.layout.panel.PanelAbilitazioneStraordinarioDip;
 import gestione.pack.client.layout.panel.PanelAnagraficaHardware;
 import gestione.pack.client.layout.panel.PanelEditPasswordUtenti;
 import gestione.pack.client.layout.panel.PanelGestioneCosting;
+import gestione.pack.client.layout.panel.PanelInsertRTV;
 import gestione.pack.client.layout.panel.PanelMensileOrdini;
 import gestione.pack.client.layout.panel.PanelPrintAll;
 import gestione.pack.client.layout.panel.PanelRiepilogoAnnualeOreDipendenti;
@@ -994,6 +994,23 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    });
 	    btnTools.setWidth("100%");
 	    cp.add(btnProcedure);
+	    
+	    
+	    Button btnIns = new Button();
+	    btnIns.setToolTip("Edit Tebelle");
+	    btnIns.setHeight(65);
+	    btnIns.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.generate1()));
+	    btnIns.setIconAlign(IconAlign.BOTTOM);
+	    btnIns.setWidth("100%");
+	    btnIns.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelInsertRTV());
+	        	center.layout(true);	        	
+	       }      
+	    });
+	    btnTools.setWidth("100%");
+	    cp.add(btnIns);
 	    
 	   /* Button btnProcedure = new Button();
 	    btnProcedure.setToolTip("Procedure X");

@@ -5082,6 +5082,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}	
 	}
 	
+	//TODO riep
 	
 	@Override
 	public List<RiepilogoMeseGiornalieroModel> getRiepilogoMensileDettagliatoCommesseHorizontalLayout(
@@ -5091,14 +5092,16 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		List<FoglioOreMese> listaF= new ArrayList<FoglioOreMese>();
 		List<DettaglioOreGiornaliere> listaG= new ArrayList<DettaglioOreGiornaliere>();
 		List<AssociazionePtoA> listaAssociazioniPtoC= new ArrayList<AssociazionePtoA>();
-		List<Commessa> listaCommesse= new ArrayList<Commessa>();
+		Set<Commessa> listaCommesse= new HashSet<Commessa>();
 		RiepilogoMeseGiornalieroModel riep;
 		List<IntervalliCommesseModel> listaDatiCommessePerGiorno= new ArrayList<IntervalliCommesseModel>();
 		List<String> listaGiustificativiPerGiorno= new ArrayList<String>();
 		List<String> listaLettereGiorno= new ArrayList<String>();
 		Commessa comm= new Commessa();
+		Commessa comm1=new Commessa();
 		String numeroCommessa= new String();
 		String estensioneCommessa= new String();
+		Integer codCommessa=0;
 		
 		Personale p= new Personale();
 		
@@ -5140,7 +5143,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 			//Mi prendo le commesse associate al dipendente
 			
-			listaAssociazioniPtoC.addAll(p.getAssociazionePtoas());
+			/*listaAssociazioniPtoC.addAll(p.getAssociazionePtoas());
 			for(AssociazionePtoA ass: p.getAssociazionePtoas()){
 				numeroCommessa=ass.getAttivita().getCommessa().getNumeroCommessa();
 				estensioneCommessa=ass.getAttivita().getCommessa().getEstensione();
@@ -5148,17 +5151,25 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						.setParameter("nestensione", estensioneCommessa).uniqueResult();
 				
 				listaCommesse.add(comm);
-			}
+			}*/
 			
-			/*
-			for(DettaglioIntervalliCommesse dc: listaG.get(0).getDettaglioIntervalliCommesses()){
-				//listaCommessePerDip.add(dc.getNumeroCommessa()+"."+dc.getEstensioneCommessa());
-				comm=(Commessa)session.createQuery("from Commessa where numeroCommessa=:ncommessa and estensione=:nestensione").setParameter("ncommessa", dc.getNumeroCommessa())
-						.setParameter("nestensione", dc.getEstensioneCommessa()).uniqueResult();
-				
-				listaCommesse.add(comm);
+			for(DettaglioOreGiornaliere d:listaG){
+				for(DettaglioIntervalliCommesse dc: d.getDettaglioIntervalliCommesses()){
+					numeroCommessa=dc.getNumeroCommessa();
+					estensioneCommessa=dc.getEstensioneCommessa();
+					comm1=(Commessa)session.createQuery("from Commessa where numeroCommessa=:numeroCommessa and estensione=:estensione")
+							.setParameter("numeroCommessa", numeroCommessa).setParameter("estensione", estensioneCommessa).uniqueResult();
+					
+					if(comm1!=null)
+						codCommessa=comm1.getCodCommessa();
+					else
+						System.out.print("");
+					if(!ServerUtility.commessaIsIncluded(codCommessa, listaCommesse)){
+						listaCommesse.add(comm1);
+					}
+				}
 			}
-			*/
+						
 			//Per ogni commessa considerata elaboro un record di 31 giorni con le ore
 			//for(String commessa:listaCommessePerDip){
 			for(Commessa c:listaCommesse){
@@ -11767,7 +11778,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			if(b)
 				abilitazione="S";
 			p.setAbilitazioneStraordinario(abilitazione);
-			p.setNotaCommesseAbilitate(note);		
+			p.setNotaCommesseAbilitate(note);
 			
 			tx.commit();
 			
@@ -11862,7 +11873,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	    formatSymbols.setDecimalSeparator('.');
 	    String pattern="0.00";
 	    DecimalFormat d= new DecimalFormat(pattern,formatSymbols);
-		
+	
 		try {
 				tx=session.beginTransaction();
 				

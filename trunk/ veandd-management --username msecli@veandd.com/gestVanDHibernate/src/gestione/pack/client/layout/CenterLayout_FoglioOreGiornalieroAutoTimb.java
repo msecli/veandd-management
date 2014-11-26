@@ -98,7 +98,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		layoutContainer.setBorders(false);
 		layoutContainer.setLayout(fl);
 		layoutContainer.setWidth(w-225);
-		layoutContainer.setHeight(h-54);		
+		layoutContainer.setHeight(h-54);
 		
 		txtfldUsername.setVisible(false);	
 		
