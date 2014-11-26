@@ -641,8 +641,7 @@ public class PanelGestioneCosting extends LayoutContainer{
 	
 	private List<ColumnConfig> createColumnsCostingRisorse() {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
-		final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
-			
+					
 		SummaryColumnConfig<Double> column = new SummaryColumnConfig<Double>();    
 		CellEditor editorTxt;
 		

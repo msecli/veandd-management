@@ -7,7 +7,7 @@ import java.util.List;
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.layout.panel.DialogAssociaCommessaToOrdine;
 import gestione.pack.client.layout.panel.DialogSelectCommessaAttivitaOrdine;
-import gestione.pack.client.model.CommessaModel;
+import gestione.pack.client.model.CostingRisorsaModel;
 import gestione.pack.client.model.RdoCompletaModel;
 import gestione.pack.client.model.TariffaOrdineModel;
 import gestione.pack.client.utility.MyImages;
@@ -35,7 +35,6 @@ import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
@@ -45,9 +44,11 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GridGroupRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GroupColumnData;
 import com.extjs.gxt.ui.client.widget.grid.GroupingView;
@@ -61,6 +62,7 @@ import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -94,7 +96,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 	
 	private VerticalPanel hpLayout;
 	
-	private GroupingStore<RdoCompletaModel>store = new GroupingStore<RdoCompletaModel>();
+	private GroupingStore<RdoCompletaModel> store = new GroupingStore<RdoCompletaModel>();
 	private GroupingStore<RdoCompletaModel> storeCompleto= new GroupingStore<RdoCompletaModel>();
 	private GroupingStore<RdoCompletaModel> storeResult= new GroupingStore<RdoCompletaModel>();
 	private List<RdoCompletaModel> listaStore= new ArrayList<RdoCompletaModel>();
@@ -436,12 +438,16 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 	
 	private boolean areValid(List<TariffaOrdineModel> listaTar) {
 		String tariffa;
-		for(TariffaOrdineModel t:listaTar){
-			
-			tariffa=(String)t.get("tariffaAttivita");			
-			if(tariffa==null)
-				return false;
-		}	
+		
+		if(listaTar.size()>0)
+			for(TariffaOrdineModel t:listaTar){
+				tariffa=(String)t.get("tariffaAttivita");			
+				if(tariffa==null)
+					return false;
+			}
+		else
+			return false;
+		
 		return true;
 	}
 	
@@ -1152,6 +1158,17 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		private List<ColumnConfig> createColumns() {
 			List <ColumnConfig> configs = new ArrayList<ColumnConfig>();
 			CellEditor editorTxt;
+			GridCellRenderer<TariffaOrdineModel> renderer = new GridCellRenderer<TariffaOrdineModel>() {
+	            public String render(TariffaOrdineModel model, String property, ColumnData config, int rowIndex,
+	                    int colIndex, ListStore<TariffaOrdineModel> store, Grid<TariffaOrdineModel> grid) {
+	            	final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
+	            	Float n=model.get(property);
+					if(n!=null)            	
+						return num.format(n);
+					else
+						return num.format(0);
+	            	
+	        }};
 			
 			TextField<String> txtfldDescrizione= new TextField<String>();
 						
@@ -1213,6 +1230,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    column.setHeader("h/Ordine");  
 		    column.setWidth(80);  
 		    column.setRowHeader(true);
+		    column.setRenderer(renderer);
 		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    editorTxt= new CellEditor(txtfldOreOrdine){
 		    	@Override  
@@ -1235,10 +1253,11 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    configs.add(column);
 		    
 		    column = new ColumnConfig();  
-		    column.setId("oreResidueOrdine");  
+		    column.setId("oreResidueOrdine"); 
 		    column.setHeader("h/Res.Ordine");  
 		    column.setWidth(80);  
 		    column.setRowHeader(true);
+		    column.setRenderer(renderer);
 		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    editorTxt= new CellEditor(txtfldOreResidueOrdine){
 		    	@Override  
@@ -1261,10 +1280,11 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    configs.add(column);
 		    
 		    column = new ColumnConfig();  
-		    column.setId("importoOrdine");  
+		    column.setId("importoOrdine"); 
 		    column.setHeader("Importo Ordine");  
 		    column.setWidth(120);  
 		    column.setRowHeader(true);
+		    column.setRenderer(renderer);
 		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    editorTxt= new CellEditor(txtfldImporto){
 		    	@Override  
@@ -1292,6 +1312,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    column.setHeader("Importo Res.Ordine");  
 		    column.setWidth(120);  
 		    column.setRowHeader(true);
+		    column.setRenderer(renderer);
 		    column.setAlignment(HorizontalAlignment.RIGHT);
 		    editorTxt= new CellEditor(txtfldImportoResiduo){
 		    	@Override  
@@ -1342,6 +1363,13 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			
 		    return configs;
 		}	
+		
+		public List<TariffaOrdineModel>getListaTariffe(){
+			List<TariffaOrdineModel> listaTariffe= new ArrayList<TariffaOrdineModel>();
+			listaTariffe.addAll(storeTariffe.getModels());
+			return listaTariffe;
+		}
+		
 	}
 	
 	
@@ -1554,8 +1582,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 						store.removeAll();
 						store.add(listaApp);
 						gridRiepilogo.reconfigure(store, cm);
-					}
-					
+					}					
 				}		
 			});
 			
