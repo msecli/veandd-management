@@ -817,9 +817,9 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			//txtfld1I.setRegex("^([0-9]{1}|[0-1][0-9]|[2][0-3]):([0-5][0-9])$");
 			txtfld1I.setRegex("^([0-9]{1}|[0-1][0-9]|[2][0-3]):(00|15|30|45)$");
 		    txtfld1I.getMessages().setRegexText("Deve essere nel formato 23:59.");
-		    if(statoRevisione==2)txtfld1I.setEnabled(false); 
+		    if(statoRevisione==2)txtfld1I.setEnabled(false);
 			txtfld1I.addKeyListener(new KeyListener() {
-				
+			
 				  public void componentKeyUp(ComponentEvent event) {
 			    	  //carico il fldSet riferito ai giustificativi
 			    	  LayoutContainer lc= new LayoutContainer(); 
@@ -929,7 +929,8 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 								}
 									txtfld1I.setValue(valore);		
 							}	
-							LayoutContainer lc= new LayoutContainer(); 
+							
+						LayoutContainer lc= new LayoutContainer(); 
 					    	  LayoutContainer right= new LayoutContainer();
 				   			  FldsetGiustificativi fldsetGiustificativo;
 				   			  lc=(LayoutContainer) getParent().getParent();
@@ -1063,7 +1064,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					    			   fldsetGiustificativo.txtfldRecupero.setValue(delta);
 					    		   setFieldGiustificativo(fldsetGiustificativo, delta);
 					    	   }
-		    			   } 
+		    			   }
 		    		   } else {
 		    			   List<String> listaParziali= new ArrayList<String>();
 		    			   String totale= new String();

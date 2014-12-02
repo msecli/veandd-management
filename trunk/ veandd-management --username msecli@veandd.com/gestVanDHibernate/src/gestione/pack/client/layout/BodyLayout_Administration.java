@@ -17,6 +17,7 @@ import gestione.pack.client.layout.panel.PanelPrintAll;
 import gestione.pack.client.layout.panel.PanelRiepilogoAnnualeOreDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoCostiDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
+import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiDettCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoRichiesteHardware;
 import gestione.pack.client.layout.panel.PanelRiepilogoSituazioneMensileOreDipendenti;
@@ -683,6 +684,20 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        	center.layout(true);}      
 	      });
 	    cp.add(btnRiepilogoMesePerCommessa);
+	    
+	    Button btnRiepilogoOreDipPerCommessa = new Button();
+	    btnRiepilogoOreDipPerCommessa.setToolTip("Riepilogo Ore Dipendenti");
+	    btnRiepilogoOreDipPerCommessa.setHeight(65);
+	    btnRiepilogoOreDipPerCommessa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.presenzeDip()));
+	    btnRiepilogoOreDipPerCommessa.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoOreDipPerCommessa.setWidth("100%");
+	    btnRiepilogoOreDipPerCommessa.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelRiepilogoOreDipendentiDettCommesse());
+	        	center.layout(true);}      
+	      });
+	    cp.add(btnRiepilogoOreDipPerCommessa);
 	    
 	    panel.add(cp);
 	    

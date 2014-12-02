@@ -54,7 +54,7 @@ public class PanelRiepilogoOreDipendentiDettCommesse extends LayoutContainer{
 	private int h=Window.getClientHeight();
 	private int w=Window.getClientWidth();	
 	
-	private ListStore<CommessaModel> storeCommesse;
+	private ListStore<PersonaleModel> storeCommesse;
 	private GroupingStore<RiepilogoOreDipFatturazione>storeRiepCommesse = new GroupingStore<RiepilogoOreDipFatturazione>();
 	private GroupingStore<RiepilogoOreDipFatturazione>storeRiepCommesseAll = new GroupingStore<RiepilogoOreDipFatturazione>();
 	private Grid<RiepilogoOreDipFatturazione> gridRiepCommesse;
@@ -65,7 +65,6 @@ public class PanelRiepilogoOreDipendentiDettCommesse extends LayoutContainer{
 	private Grid<RiepilogoOreDipFatturazione> gridRiepMesi;
 	private ColumnModel cmRiepMesi;	
 	
-	private ComboBox<CommessaModel> cmbxCommessa= new ComboBox<CommessaModel>();
 	private ComboBox<PersonaleModel> cmbxPersonale= new ComboBox<PersonaleModel>();
 	private SimpleComboBox<String> smplcmbxPeriodo; //scegliere se anno o tutto
 	private SimpleComboBox<String> smplcmbxAnnoInizio;
@@ -168,17 +167,17 @@ public class PanelRiepilogoOreDipendentiDettCommesse extends LayoutContainer{
 		gridRiepMesi.setView(summaryM);
 		
 				
-		storeCommesse=new ListStore<CommessaModel>();
-		storeCommesse.setStoreSorter(new StoreSorter<CommessaModel>());
+		storeCommesse=new ListStore<PersonaleModel>();
+		storeCommesse.setStoreSorter(new StoreSorter<PersonaleModel>());
 		storeCommesse.setDefaultSort("numeroCommessa", SortDir.ASC);
-		cmbxCommessa.setStore(storeCommesse);
-		cmbxCommessa.setFieldLabel("Commessa");
-		cmbxCommessa.setEmptyText("Selezionare la commessa..");
-		cmbxCommessa.setEditable(true);
-		cmbxCommessa.setTriggerAction(TriggerAction.ALL);
-		cmbxCommessa.setAllowBlank(false);
-		cmbxCommessa.setDisplayField("commessa");
-		cmbxCommessa.setWidth(230);
+		cmbxPersonale.setStore(storeCommesse);
+		cmbxPersonale.setFieldLabel("Commessa");
+		cmbxPersonale.setEmptyText("Selezionare i dipendenti..");
+		cmbxPersonale.setEditable(true);
+		cmbxPersonale.setTriggerAction(TriggerAction.ALL);
+		cmbxPersonale.setAllowBlank(false);
+		cmbxPersonale.setDisplayField("commessa");
+		cmbxPersonale.setWidth(230);
 		
 		
 		smplcmbxPeriodo=new SimpleComboBox<String>();
@@ -225,7 +224,7 @@ public class PanelRiepilogoOreDipendentiDettCommesse extends LayoutContainer{
 												
 						if(smplcmbxPeriodo.getRawValue().toString().compareTo("Anno")==0)
 							if(smplcmbxAnnoInizio.isValid()){															
-									String anno= smplcmbxAnnoInizio.getRawValue().toString();												
+									String anno= smplcmbxAnnoInizio.getRawValue().toString();							
 									
 							}else
 									Window.alert("Controllare i campi inseriti!");
@@ -237,13 +236,14 @@ public class PanelRiepilogoOreDipendentiDettCommesse extends LayoutContainer{
 									String annoF=smplcmbxAnnoFine.getRawValue().toString();
 									String meseF=smplcmbxMeseFine.getRawValue().toString();
 									
+									
 								
 							}else
 								Window.alert("Controllare i campi inseriti!");						
 					}else
 						Window.alert("Controllare i campi inseriti!");
-				}				
-		});	  
+				}
+		});
 			
 		Date d= new Date();
 		String data= d.toString();
@@ -307,8 +307,8 @@ public class PanelRiepilogoOreDipendentiDettCommesse extends LayoutContainer{
 					storeRiepMesi.groupBy("indicativoMese");
 					storeRiepMesi.setSortField("dipendente");
 					storeRiepMesi.setSortDir(SortDir.ASC);					
-				}			
-			}		
+				}
+			}
 		});
 		
 		txtCommessaSelezionata=new Text();	
@@ -354,20 +354,22 @@ public class PanelRiepilogoOreDipendentiDettCommesse extends LayoutContainer{
 		vp.add(cntpnlGroupPerMese);
 		
 		layoutContainer.add(vp, new FitData(1,1,1,1));
-		 
+		
 		add(layoutContainer);
 	}
 
 	
 	private List<ColumnConfig> createColumnsDettaglioMese() {
-		// TODO Auto-generated method stub
-		return null;
+		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
+		
+		return configs;
 	}
 
 
 	private List<ColumnConfig> createColumnsDettaglioCommesse() {
-		// TODO Auto-generated method stub
-		return null;
+		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
+		
+		return configs;
 	}
 	
 	
