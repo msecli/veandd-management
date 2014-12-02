@@ -100,7 +100,7 @@ public class ConverterUtil {
 			
 		return cliente;
 	
-	}	
+	}
 	
 	
 	@SuppressWarnings("unchecked")
@@ -204,7 +204,7 @@ public class ConverterUtil {
 			
 		RdaModel rda= new RdaModel(r.getNumeroRda(), r.getCliente().getCodCliente(), r.getCodiceRDA(),ragioneSociale);
 		return rda;
-	}	
+	}
 	
 	
 	

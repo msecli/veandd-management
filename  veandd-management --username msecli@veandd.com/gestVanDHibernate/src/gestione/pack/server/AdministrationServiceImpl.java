@@ -4889,7 +4889,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					}
 					
 					//calcolo il totale ore ricavato dagli intervalli IU della bollatrice
-					if(!d.getDettaglioIntervalliIUs().isEmpty()){
+					if(!d.getDettaglioIntervalliIUs().isEmpty()||d.getOreViaggio().compareTo("0.00")!=0){
 						totaleOreDaIU=ServerUtility.aggiornaTotGenerale(totaleOreDaIU, d.getTotaleOreGiorno());
 						totaleOreDaIU=ServerUtility.aggiornaTotGenerale(totaleOreDaIU, d.getOreViaggio());					
 					}
@@ -4933,12 +4933,12 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				
 				if (totaleOreDaIU.compareTo(totaleOreDaCommesse)==0)
 					check=true;			}
-			else{
-				/*RiepilogoOreDipCommesseGiornaliero riep= new RiepilogoOreDipCommesseGiornaliero("","",
+				else{
+					/*RiepilogoOreDipCommesseGiornaliero riep= new RiepilogoOreDipCommesseGiornaliero("","",
 						"", "",  Float.valueOf("0.00"), Float.valueOf("0.00"),Float.valueOf("0.00"), "S");
-				listaG.add(riep);*/
-				check=true;
-			}
+					listaG.add(riep);*/
+					check=true;
+				}	
 						
 			tx.commit();
 			return check;
