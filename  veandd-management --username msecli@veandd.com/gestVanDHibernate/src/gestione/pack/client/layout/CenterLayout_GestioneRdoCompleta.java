@@ -860,7 +860,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			setCollapsible(false);
 			setBorders(false);
 			setBodyBorder(false);
-			setScrollMode(Scroll.AUTO);	
+			setScrollMode(Scroll.AUTO);
 			setWidth(940);
 			setHeight(150);
 			setFrame(true);
@@ -872,14 +872,14 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    cs.setSelectionMode(SelectionMode.SIMPLE);
 	   
 		    txtfldTariffa= new TextField<String>();
-		    txtfldTariffa.setRegex("^([0-9]{1}|[0-9][0-9])[.]{1}(0|00|[0-9]{2})$");
+		    txtfldTariffa.setRegex("^([0-9]{1}|[0-9][0-9]|[0-9][0-9][0-9])[.]{1}(0|00|[0-9]{2})$");
 		    txtfldTariffa.getMessages().setRegexText("Deve essere un numero!");
 		    txtfldTariffa.setValue("0.00");
 		    txtfldTariffa.setAllowBlank(false);
 		    txtfldTariffa.addKeyListener(new KeyListener(){
 				 public void componentKeyDown(ComponentEvent event) {
 				    	int keyCode=event.getKeyCode();
-						if(keyCode==9){			
+						if(keyCode==9){
 							
 							if(txtfldTariffa.getValue()==null)
 								txtfldTariffa.setValue("0.00");
@@ -912,7 +912,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    txtfldOreOrdine.setAllowBlank(false);
 		    txtfldOreOrdine.addKeyListener(new KeyListener(){
 				
-				 public void componentKeyDown(ComponentEvent event) { 	  
+				 public void componentKeyDown(ComponentEvent event) {
 				    	int keyCode=event.getKeyCode();
 						if(keyCode==9){	
 							
@@ -1138,7 +1138,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 
 				@Override
 				public void onSuccess(List<TariffaOrdineModel> result) {
-					loadTable(result);					
+					loadTable(result);
 				}
 			});
 		}

@@ -338,7 +338,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		List<PersonaleModel> listaDTO = new ArrayList<PersonaleModel>(listaP!=null ? listaP.size() : 0);  
 		    
 		     try{
-					if(listaP!=null){			
+					if(listaP!=null){
 						for(Personale p : listaP)	
 							listaDTO.add(ConverterUtil.personaleToModelConverter(p));
 							
@@ -349,7 +349,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				}catch (Exception e) {
 						e.printStackTrace();
 						ServerLogFunction.logErrorMessage("getAllPersonaleModel", new Date(), "", "Error", "Exception:"+e.getMessage());
-				} 
+				}
 		     
 			return listaDTO;
 	} 
@@ -1380,9 +1380,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String matricolaPm="";
 		
 		Float oreAttivitaOrdine=(float)0.0;
-		Float oreResidueAttOrdine=(float)0.0;;
-		Float importoAttivitaOrdine=(float)0.0;;
-		Float importoResiduoAttOrdine=(float)0.0;;
+		Float oreResidueAttOrdine=(float)0.0;
+		Float importoAttivitaOrdine=(float)0.0;
+		Float importoResiduoAttOrdine=(float)0.0;
 	    
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
@@ -4773,6 +4773,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Personale p= new Personale();
 		List<DettaglioTimbrature> listaD= new ArrayList<DettaglioTimbrature>();
 		List<String> listaIntervalliTimbr=new ArrayList<String>();
+		List<String> listaIntervalliTimbrChecked=new ArrayList<String>();
 		String numeroBadge= new String();
 		
 		DateFormat formatter = new SimpleDateFormat("dd/MM/yy",Locale.ITALIAN) ; 
@@ -4797,9 +4798,13 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					 listaIntervalliTimbr.add((String) row[0]);
 					 listaIntervalliTimbr.add((String) row[1]);
 		         }
-			
+				
 			}
 			tx.commit();
+			
+			//Controllo eventuali doppie bollature consecutive ed elimino la prima effettuata
+			//listaIntervalliTimbrChecked.addAll(ServerUtility.checkCoerenzaIntervalli(listaIntervalliTimbr));
+			
 			return listaIntervalliTimbr;
 		
 		} catch (Exception e) {

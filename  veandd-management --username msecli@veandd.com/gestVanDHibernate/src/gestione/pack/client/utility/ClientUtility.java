@@ -797,4 +797,47 @@ public class ClientUtility {
 		
 	}
 	
+	
+	public static List<String> checkCoerenzaIntervalli(
+			List<String> listaIntervalliTimbr) {
+	
+		List<String> listaIntervalliChecked= new ArrayList<String>();
+		String s="";
+		String t="";
+		String app1="";
+		String app2="";
+		
+		for(int i=1; i<listaIntervalliTimbr.size(); i+=2){
+					 	
+			s=listaIntervalliTimbr.get(i);
+			if(listaIntervalliTimbr.size()>i+1)
+				t=listaIntervalliTimbr.get(i+2);
+			else
+				if((listaIntervalliTimbr.size()==i+1)&&(listaIntervalliTimbr.size()%2==1)){
+					app1=listaIntervalliTimbr.get(i-1);
+					app2=listaIntervalliTimbr.get(i);
+					listaIntervalliChecked.add(app1);
+					listaIntervalliChecked.add(app2);
+					break;
+				}					
+				else
+					break;
+			
+			if(s.compareTo(t)==0){
+				app1=listaIntervalliTimbr.get(i+1);
+				listaIntervalliChecked.add(app1);
+				listaIntervalliChecked.add(t);	
+			}else{
+				app1=listaIntervalliTimbr.get(i-1);
+				//app2=listaIntervalliTimbr.get(i+1);
+				listaIntervalliChecked.add(app1);
+				listaIntervalliChecked.add(s);
+				//listaIntervalliChecked.add(app2);
+				//listaIntervalliChecked.add(t);
+			}
+		}
+		
+				
+		return listaIntervalliChecked;
+	}		
 }

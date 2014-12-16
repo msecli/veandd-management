@@ -16,6 +16,7 @@ import gestione.pack.client.model.TimbraturaModel;
 
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.DatiComboBox;
+import gestione.pack.server.ServerUtility;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -2814,20 +2815,26 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		}
 		
 		private void loadToolTip(List<String> result) {
-			List<TimbraturaModel> orari= new ArrayList<TimbraturaModel>();		
+			List<TimbraturaModel> orari= new ArrayList<TimbraturaModel>();	
+			List<String> listaIntervalliTimbrChecked= new ArrayList<String>();
 			TimbraturaModel tmb;
 			
 			String toolTip="";
 			
+			//Lascio inalterati quelli effettivi
 			for(int i=0; i<result.size(); i+=2){
 				toolTip=(toolTip+result.get(i)+": ");//movimento
 				toolTip=(toolTip+result.get(i+1)+" | ");//orario
-				
-				tmb=new TimbraturaModel("", String.valueOf(i) , result.get(i), result.get(i+1)); 
+			}				
+			btnMostraIntervalli.setToolTip(toolTip);
+			
+			
+			//compilo gli intervalli con i dati dopo un check per eliminari doppie bollature
+			listaIntervalliTimbrChecked.addAll(ClientUtility.checkCoerenzaIntervalli(result));
+			for(int i=0; i<listaIntervalliTimbrChecked.size(); i+=2){
+				tmb=new TimbraturaModel("", String.valueOf(i) , listaIntervalliTimbrChecked.get(i), listaIntervalliTimbrChecked.get(i+1)); 
 				orari.add(tmb);
 			}
-			
-			btnMostraIntervalli.setToolTip(toolTip);
 			
 			//PreCompilo le caselle intervalloIU con i dati della bollatrice
 			if(isNew.compareTo("new")==0){
