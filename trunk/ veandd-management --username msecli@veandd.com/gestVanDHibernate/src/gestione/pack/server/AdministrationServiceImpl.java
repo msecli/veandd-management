@@ -4773,7 +4773,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Personale p= new Personale();
 		List<DettaglioTimbrature> listaD= new ArrayList<DettaglioTimbrature>();
 		List<String> listaIntervalliTimbr=new ArrayList<String>();
-		List<String> listaIntervalliTimbrChecked=new ArrayList<String>();
 		String numeroBadge= new String();
 		
 		DateFormat formatter = new SimpleDateFormat("dd/MM/yy",Locale.ITALIAN) ; 
@@ -4789,7 +4788,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			if(numeroBadge.compareTo("")!=0 && numeroBadge.compareTo("null")!=0){
 				
 				listaD=session.createSQLQuery("select distinct movimento, orario  " +
-						"from dettaglio_timbrature d where d.numeroBadge=:badge and d.giorno=:giorno order by orario")
+						"from dettaglio_timbrature d where d.numeroBadge=:badge and d.giorno=:giorno order by idDETTAGLIO_TIMBRATURE")
 						.setParameter("badge", numeroBadge).setParameter("giorno", data).list();
 				
 				for(ListIterator iter = listaD.listIterator(); iter.hasNext(); ) {
@@ -4800,10 +4799,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		         }
 				
 			}
-			tx.commit();
-			
-			//Controllo eventuali doppie bollature consecutive ed elimino la prima effettuata
-			//listaIntervalliTimbrChecked.addAll(ServerUtility.checkCoerenzaIntervalli(listaIntervalliTimbr));
+			tx.commit();			
 			
 			return listaIntervalliTimbr;
 		
@@ -4838,7 +4834,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String totaleOreDaCommesse= "0.00";
 		String totaleOreDaIU="0.00";
 		
-		Date giorno= new Date();  
+		Date giorno= new Date();
 		String dipendente= new String();
 		String letteraGiorno;
 		
@@ -4872,7 +4868,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						fM=f;
 						break;
 					}
-					
 				}
 			
 				if(fM!=null)
@@ -4890,7 +4885,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						for(DettaglioIntervalliCommesse dd: listaIntervalliC){
 							if(ServerUtility.isNotIncludedCommessa(listaCommesse, dd))							
 								listaCommesse.add(dd);
-						}					
+						}
 					}
 					
 					//calcolo il totale ore ricavato dagli intervalli IU della bollatrice
@@ -4928,7 +4923,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					}
 							
 					totaleOreDaCommesse=ServerUtility.aggiornaTotGenerale(totaleOreDaCommesse, totaleOreC);
-				
 					totaleOreC= "0.00";
 				}
 			/*
@@ -4937,14 +4931,16 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				listaG.add(riep);*/
 				
 				if (totaleOreDaIU.compareTo(totaleOreDaCommesse)==0)
-					check=true;			}
-				else{
+					check=true;			
+			}
+				
+			else{
 					/*RiepilogoOreDipCommesseGiornaliero riep= new RiepilogoOreDipCommesseGiornaliero("","",
 						"", "",  Float.valueOf("0.00"), Float.valueOf("0.00"),Float.valueOf("0.00"), "S");
 					listaG.add(riep);*/
 					check=true;
-				}	
-						
+			}
+
 			tx.commit();
 			return check;
 			
