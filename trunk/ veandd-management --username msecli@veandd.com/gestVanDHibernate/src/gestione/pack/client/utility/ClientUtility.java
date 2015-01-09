@@ -84,7 +84,6 @@ public class ClientUtility {
 			}else{
 				giornoA= oreEseguite;
 				giornoB= "0";
-				
 			}
 			
 			if(totA.substring(0,1).compareTo("-")==0)
@@ -797,6 +796,7 @@ public class ClientUtility {
 	}
 	
 	
+	//ESCLUDO EVENTUALI INTERVALLI DERIVANTI DA DOPPIA BOLLATURA CONSECUTIVA SELEZIONANDO LA SECONDA COME CORRETTA
 	public static List<String> checkCoerenzaIntervalli(
 			List<String> listaIntervalliTimbr) {
 	
@@ -814,7 +814,7 @@ public class ClientUtility {
 				
 				listaIntervalliTimbr.remove(i);
 				listaIntervalliTimbr.remove(i-1);			
-			}		
+			}
 		}
 		
 		return listaIntervalliTimbr;
