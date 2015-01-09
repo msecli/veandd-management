@@ -1201,7 +1201,7 @@ public CenterLayout_FoglioFatturazione(){}
 			txtfldOreDaFatturare.setValue("0.00");
 			txtfldOreDaFatturare.setRegex("^([0-9]+).(00|15|30|45)$");		
 			//.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
-			txtfldOreDaFatturare.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+			txtfldOreDaFatturare.getMessages().setRegexText("Minuti accettati: 15,30,45");
 			txtfldOreDaFatturare.addKeyListener(new KeyListener(){
 			      public void componentKeyUp(ComponentEvent event) {
 			    	  	if(hasValue(txtfldOreDaFatturare)&&txtfldOreDaFatturare.getValue()!=null){
@@ -1303,8 +1303,9 @@ public CenterLayout_FoglioFatturazione(){}
 			txtfldVariazioneSAL.setEnabled(true);
 			txtfldVariazioneSAL.setAllowBlank(false);
 			txtfldVariazioneSAL.setValue("0.00");
-			txtfldVariazioneSAL.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[-]{1}[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|[-]{1}[0-9]+[.]{1}[0]{1}|0.00|0.0");
-			txtfldVariazioneSAL.getMessages().setRegexText("Deve essere un numero nel formato 99.59 o -99.59");
+			txtfldVariazioneSAL.setRegex("^([0-9]+).(00|15|30|45)$");		
+			//.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
+			txtfldVariazioneSAL.getMessages().setRegexText("Minuti accettati: 0,15,30,45");
 			txtfldVariazioneSAL.addKeyListener(new KeyListener(){
 				 public void componentKeyUp(ComponentEvent event) {
 			    	  	if(hasValue(txtfldVariazioneSAL)&&txtfldVariazioneSAL.getValue()!=null){
@@ -1341,7 +1342,7 @@ public CenterLayout_FoglioFatturazione(){}
 			    	  		
 			    	  		txtSalTotale.setValue(ClientUtility.aggiornaTotGenerale(txtfldSALIniziale.getValue().toString(), txtfldVariazioneSAL.getValue().toString()));
 			    	  	}
-			      }	
+			      }
 				 
 				 public void componentKeyDown(ComponentEvent event) { 	  
 				    	int keyCode=event.getKeyCode();
@@ -1411,8 +1412,9 @@ public CenterLayout_FoglioFatturazione(){}
 			txtfldVariazionePCL.setEnabled(true);
 			txtfldVariazionePCL.setAllowBlank(false);
 			txtfldVariazionePCL.setValue("0.00");
-			txtfldVariazionePCL.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[-]{1}[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|[-]{1}[0-9]+[.]{1}[0]{1}|0.00|0.0");
-			txtfldVariazionePCL.getMessages().setRegexText("Deve essere un numero nel formato 99.59 o -99.59");
+			txtfldVariazionePCL.setRegex("^([0-9]+).(00|15|30|45)$");		
+			//.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
+			txtfldVariazionePCL.getMessages().setRegexText("Minuti accettati: 0,15,30,45");
 			txtfldVariazionePCL.addKeyListener(new KeyListener(){
 				 public void componentKeyUp(ComponentEvent event) {
 			    	  	if(hasValue(txtfldVariazioneSAL)&&txtfldVariazionePCL.getValue()!=null){

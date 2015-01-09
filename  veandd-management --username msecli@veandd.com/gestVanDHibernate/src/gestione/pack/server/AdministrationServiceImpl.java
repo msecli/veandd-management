@@ -332,7 +332,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	
 	
 	@Override
-	public List<PersonaleModel> getAllPersonaleModel() throws IllegalArgumentException{	
+	public List<PersonaleModel> getAllPersonaleModel() throws IllegalArgumentException{
 		
 		List<Personale> listaP = (ArrayList<Personale>) ConverterUtil.getPersonale();  
 		List<PersonaleModel> listaDTO = new ArrayList<PersonaleModel>(listaP!=null ? listaP.size() : 0);  
@@ -429,7 +429,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		for(Personale p : listaP)	
 			listaPm.add(ConverterUtil.personaleToModelConverter(p));
 		
-		return listaPm;
+		return 
+			listaPm;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -508,7 +509,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						listaNomi.add(personaM);		
 				if(ruolo.compareTo("PM")!=0)//se non è un PM a richiederlo allora ci saranno tutti i nomi
 				*/
-				listaNomi.add(personaM);					
+				listaNomi.add(personaM);			
 			  }
 		    } catch (Exception e) {
 		    	esito=false;
@@ -551,7 +552,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Ordine o=new Ordine();
 		
 		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
-		Transaction tx= null;	
+		Transaction tx= null;
 		
 		try {
 			
@@ -564,7 +565,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			for(Commessa c:o.getCommessas())
 				c.setOrdine(null);
 			
-			
 			session.save(o);
 		    tx.commit();
 		    
@@ -573,8 +573,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			e.printStackTrace();
 			errore=e.getMessage();
 			if (tx!=null)
-	    		tx.rollback();		    	
-		}finally{			
+	    		tx.rollback();	
+		}finally{
 			if(!esito){
 				ServerLogFunction.logErrorMessage("eliminaAssociazioneOrdine", new Date(), numeroOrdine, "Error", errore);
 				return false;
@@ -606,7 +606,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			}catch (Exception e) {
 				esito=false;
 				errore=e.getMessage();
-				e.printStackTrace();			
+				e.printStackTrace();
 				
 			}finally{
 				if(!esito){
@@ -700,7 +700,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			  tx=session.beginTransaction();
 			  lista=(List<Rda>)session.createQuery("from Rda").list();
 			  
-			  for(Rda r:lista){				  
+			  for(Rda r:lista){
 				  numRdo=r.getCodiceRDA();//se in fase di inserimento non c'era allora sarà #
 				  
 				  if(r.getOffertas().iterator().hasNext()){
@@ -754,7 +754,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 								  importo, numOrdine, "#", dataInizio, dataFine, 
 								  tariffa, numRisorse, oreDisp, oreRes, importoOrdine,importoResiduo, statoOrdine);
 						  listaM.add(rdoM);						  
-					  }						  
+					  }
 					  //
 				  }
 			  
@@ -1016,6 +1016,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Boolean esito=true;
 		String errore= new String();
 		Rda r=new Rda();
+		Cliente c= new Cliente();
 		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;	
@@ -1026,6 +1027,11 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				
 			r=(Rda)session.createQuery("from Rda where numero_rda=:idrdo").setParameter("idrdo", idRdo).uniqueResult();		
 			r.setCodiceRDA(numRdo);
+			
+			c=(Cliente)session.createQuery("from Cliente where ragioneSociale=:cliente").setParameter("cliente", cliente).uniqueResult();
+			
+			r.setCliente(c);
+			c.getRdas().add(r);
 			
 			tx.commit();
 			
@@ -4799,7 +4805,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		         }
 				
 			}
-			tx.commit();			
+			tx.commit();
 			
 			return listaIntervalliTimbr;
 		
