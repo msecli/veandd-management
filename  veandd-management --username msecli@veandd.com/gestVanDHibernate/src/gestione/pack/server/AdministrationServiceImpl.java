@@ -1877,18 +1877,31 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 
 		Boolean esito=true;
 		String errore= new String();
+		Integer maxCommessa=0;
 		
+		List<Integer> listaNumeriCommesse= new ArrayList<Integer>();
 		Set<Commessa> listaC = ConverterUtil.getCommesse(statoSelected);
 		List<CommessaModel> listaDTO = new ArrayList<CommessaModel>(listaC != null ? listaC.size() : 0);
+		
 		Ordine o= new Ordine();
-
+		
 		try {
 			if (listaC != null) {
 				//TODO cambio ordine
-				for (Commessa c : listaC) {							
-						o=getOrdineByCommessa(c.getCodCommessa());
-					    listaDTO.add(ConverterUtil.commesseToModelConverter(c,o));					    
+				for (Commessa c : listaC) {
+					listaNumeriCommesse.add(Integer.valueOf(c.getNumeroCommessa()));
+					o=getOrdineByCommessa(c.getCodCommessa());
+				    listaDTO.add(ConverterUtil.commesseToModelConverter(c,o));					    
 				}
+				
+				for(Integer i: listaNumeriCommesse){
+					if(i>maxCommessa)
+					  maxCommessa=i;
+				 }
+				
+				maxCommessa=maxCommessa+1;
+				listaDTO.add(new CommessaModel(0, String.valueOf(maxCommessa), "0", "newCommessa"));
+				
 			}else{
 				ServerLogFunction.logFailedMessage("getAllCommesseModel", new Date(), "", "Failed", errore);
 				return null;
@@ -1918,6 +1931,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		Set<Commessa> listaC = ConverterUtil.getCommesse("Tutte");
 		List<CommessaModel> listaDTO = new ArrayList<CommessaModel>(listaC != null ? listaC.size() : 0);
+				
 		Ordine o= new Ordine();
 		String cognome= new String();
 		cognomePm=cognomePm.substring(0,1).toUpperCase()+cognomePm.substring(1,cognomePm.length());
@@ -2461,8 +2475,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			  }
 			  
 			  for(Integer i: listaNumeriCommesse){
-				if(i>maxCommessa)
-				  maxCommessa=i;
+				  if(i>maxCommessa)
+					  maxCommessa=i;
 			  }
 			  
 			  maxCommessa++;	  
@@ -2476,14 +2490,14 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				e.printStackTrace();
 				if (tx != null)
 					tx.rollback();
-		    }finally{				
+		    }finally{
 				if(!esito){
 					ServerLogFunction.logErrorMessage("getCommesseAperte", new Date(), "", "Error", errore);
 					return null;
 				}
 				else
 					ServerLogFunction.logOkMessage("getCommesseAperte", new Date(), "", "Success");
-			}	
+			}
 		 return listaCommesse;
 	}
 	
@@ -2624,7 +2638,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					//if(!c.getOrdines().iterator().hasNext()&&c.getStatoCommessa().compareTo("Aperta")==0){
 				  	if(c.getOrdine()==null&&c.getStatoCommessa().compareTo("Aperta")==0){
 						cm=new CommessaModel(c.getCodCommessa(), c.getNumeroCommessa(), "", "", "", c.getEstensione(), 
-								"", "", "", "", "", "", "", "", "", "", "", "", "", "");
+								"", "","", "", "", "", "", "", "", "", "", "", "", "", "");
 						listaCommesse.add(cm);
 					}
 			  }		  
@@ -5513,6 +5527,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String dataGiornoRif, dataComp;//usate per ilo confronto tra giorno scelto eed eventuale giorno già compilato
 		Float oreViaggio=(float)0.0;
 		Float oreLavoro=(float)0.0;
+		Float oreViaggioTot=(float)0.0;
+		Float oreLavoroTot=(float)0.0;	
+		List<Personale> listaPersonaleAnalizzato= new ArrayList<Personale>();
 		
 		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
 		anno=formatter.format(giornoRiferimento);
@@ -5545,8 +5562,13 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						if(ass.getPersonale().getTipologiaLavoratore().compareTo("C")==0 || ass.getPersonale().getSede().compareTo("F")==0){
 						
 							p=ass.getPersonale();
-							for(FoglioOreMese fm:p.getFoglioOreMeses())
-								if(fm.getMeseRiferimento().compareTo(data)==0)
+							//uso la seguente lista per aggiungere i dipendenti presi in esame e poter calcolare il totale ore per i singoli
+							//TODO se non presente
+							if(ServerUtility.isNotIncludedPersonale(listaPersonaleAnalizzato, p))
+								listaPersonaleAnalizzato.add(p);
+							
+							for(FoglioOreMese fm:p.getFoglioOreMeses()){
+								if(fm.getMeseRiferimento().compareTo(data)==0){
 									for(DettaglioOreGiornaliere d:fm.getDettaglioOreGiornalieres()){
 										dataComp=formatter.format(d.getGiornoRiferimento());
 										if(dataComp.compareTo(dataGiornoRif)==0){
@@ -5557,13 +5579,12 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 													oreLavoro=Float.valueOf(dc.getOreLavorate());
 													oreViaggio=Float.valueOf(dc.getOreViaggio());
 													break;
-												}												
-												
+												}
 											}
-											
 										}
-													
 									}
+								}
+							}
 														
 							riep=new RiepilogoOreDipCommesseGiornaliero(p.getUsername(), c.getNumeroCommessa()+"."+c.getEstensione(), 
 									p.getCognome()+" "+p.getNome(), "", "", oreLavoro, oreViaggio, (float)0.0, "");
@@ -5572,11 +5593,31 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							
 							oreLavoro=(float)0.0;
 							oreViaggio=(float)0.0;									
-						}
+						}				
 					}
-					
 				}
-				
+			}
+			
+		
+			for(Personale p1:listaPersonaleAnalizzato){
+				for(FoglioOreMese fm:p1.getFoglioOreMeses()){
+					if(fm.getMeseRiferimento().compareTo(data)==0){
+						for(DettaglioOreGiornaliere d:fm.getDettaglioOreGiornalieres()){
+							for(DettaglioIntervalliCommesse dc:d.getDettaglioIntervalliCommesses()){
+								oreLavoroTot=Float.valueOf(dc.getOreLavorate())+oreLavoroTot;
+								oreViaggioTot=Float.valueOf(dc.getOreViaggio())+oreViaggioTot;
+							}
+						}
+						
+						riep=new RiepilogoOreDipCommesseGiornaliero(p1.getUsername(), "TOTALE", 
+								p1.getCognome()+" "+p1.getNome(), "", "", oreLavoroTot, oreViaggioTot, (float)0.0, "");
+						
+						listaRiep.add(riep);
+						
+						oreLavoroTot=(float)0.0;
+						oreViaggioTot=(float)0.0;
+					}
+				}
 			}
 			
 			tx.commit();
@@ -6373,11 +6414,188 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	
 
 //------------------------------------------------------FATTURAZIONE---------------------------------------------
-	
-	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<RiepilogoOreDipFatturazione> getRiepilogoOreDipFatturazione(String mese, String pm) {
+		List<RiepilogoOreDipFatturazione> listaR= new ArrayList<RiepilogoOreDipFatturazione>();
+		
+		List<Commessa> listaCommesse= new ArrayList<Commessa>();
+		//List<Commessa> listaCommesseTutti= new ArrayList<Commessa>();
+		List<Attivita> listaAttivita= new ArrayList<Attivita>();
+		
+		List<Personale> listaP=new ArrayList<Personale>();
+		List<DettaglioOreGiornaliere> listaGiorni= new ArrayList<DettaglioOreGiornaliere>();
+		List<DettaglioIntervalliCommesse> listaIntervalli= new ArrayList<DettaglioIntervalliCommesse>();
+		RiepilogoOreDipFatturazione riep= new RiepilogoOreDipFatturazione();
+		List<DettaglioIntervalliCommesse> listaDettComm= new ArrayList<DettaglioIntervalliCommesse>();
+		//List<AssociazionePtoA> listaAssociazioni= new ArrayList<AssociazionePtoA>();
+				
+		String numeroCommessa= new String();
+		String commessa= new String();
+		String estensione= new String();
+		String descrizione= new String();
+		String dipendente= new String();
+		String oreLavoro= new String();
+		String oreViaggio= new String();
+		String oreTotMeseLavoro= "0.0";
+		String oreTotMeseViaggio= "0.0";
+		String oreSommaLavoroViaggio="0.0";
+		String oreTotLavoroCommessa="0.0";
+		String oreTotViaggioCommessa="0.0";
+		String oreTotCommessa="0.0";		
+		String oreStrao="0.0";
+		String oreTotStrao="0.0";		
+		int idDip;
+		
+		String statoCommessa="Aperta";
+		String meseRif=mese.substring(0, 3);
+		String annoRif=mese.substring(3,7);
+		
+		Date data= new Date();
+	    meseRif=(meseRif.substring(0,1).toLowerCase()+meseRif.substring(1,3));	    
+	    DateFormat  formatter = new SimpleDateFormat("MMMyyyy", Locale.ITALIAN);
+	    
+	    DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+	    formatSymbols.setDecimalSeparator('.');
+	    String pattern="0.00";
+	    DecimalFormat decimalFormat= new DecimalFormat(pattern,formatSymbols);
+	    	    	    
+		try {			
+			data= formatter.parse(meseRif+annoRif);
+						
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {
+			tx = session.beginTransaction();
+			
+			listaCommesse = (List<Commessa>) session.createQuery("from Commessa where matricolaPM=:pm and statoCommessa=:stato")
+					.setParameter("pm", pm).setParameter("stato", "Aperta").list() ; 
+			
+			for (Commessa c : listaCommesse) {
+				
+				commessa = c.getNumeroCommessa();
+				estensione =c.getEstensione();
+
+				descrizione=c.getDenominazioneAttivita();
+
+				numeroCommessa =(commessa + "." + estensione+" ("+descrizione+")"); //una stringa più dettagliata che descriva la commessa
+
+				listaDettComm=session.createQuery("select d from DettaglioIntervalliCommesse d join d.dettaglioOreGiornaliere g join g.foglioOreMese f" +
+						" where d.numeroCommessa=:numCommessa and d.estensioneCommessa=:estensione and f.meseRiferimento=:mese" +
+						" ").setParameter("numCommessa", commessa)
+						.setParameter("estensione", estensione).setParameter("mese", mese).list();
+						
+				for(DettaglioIntervalliCommesse d:listaDettComm)
+					//	prendo tutti i dip che hanno lavorato su quella commessa nei mesi considerati
+					if(ServerUtility.isNotIncludedPersonale(listaP, d.getDettaglioOreGiornaliere().getFoglioOreMese().getPersonale()))
+						listaP.add(d.getDettaglioOreGiornaliere().getFoglioOreMese().getPersonale());
+			
+				
+				for (Personale p : listaP)
+					 // if(p.getStatoRapporto().compareTo("Cessato")!=0)
+						if(p.getGruppoLavoro().compareTo("Indiretti")!=0){ // per ogni dipendente in questa commessa selezioni i fogli ore del mese desiderato
+							dipendente = p.getCognome() + " " + p.getNome();
+													
+							idDip=p.getId_PERSONALE();
+							
+							for (FoglioOreMese f : p.getFoglioOreMeses()) {
+								if (f.getMeseRiferimento().compareTo(mese) == 0) { //se è il mese cercato
+									listaGiorni.addAll(f.getDettaglioOreGiornalieres()); //prendo tutti i giorni
+																									
+									for (DettaglioOreGiornaliere giorno : listaGiorni) { 
+															
+										//calcolo ore su intervalli commesse
+										listaIntervalli.addAll(giorno.getDettaglioIntervalliCommesses());
+										for (DettaglioIntervalliCommesse d : listaIntervalli) { //se c'è un intervallo per la commessa selezionata ricavo le ore
+											if (commessa.compareTo(d.getNumeroCommessa()) == 0 && estensione.compareTo(d.getEstensioneCommessa()) == 0) {
+												
+												oreLavoro = d.getOreLavorate();
+												oreViaggio = d.getOreViaggio();
+												oreTotMeseLavoro = ServerUtility.aggiornaTotGenerale(oreTotMeseLavoro,oreLavoro);
+												oreTotMeseViaggio = ServerUtility.aggiornaTotGenerale(oreTotMeseViaggio,oreViaggio);
+												
+												oreStrao=ServerUtility.aggiornaTotGenerale(oreStrao, d.getOreStraordinario());
+																					
+											}
+											oreLavoro="0.0";
+											oreViaggio="0.0";										
+										}
+										listaIntervalli.clear();								
+										
+									}
+									listaGiorni.clear();
+									
+									/*//maggiorazione ore strao di 1.20 e diminuzione ore viaggio 0.85
+									if(oreStrao.compareTo("0.00")!=0)
+										oreStrao=decimalFormat.format(Float.valueOf(oreStrao)*1.20);
+									oreTotMeseViaggio=decimalFormat.format(Float.valueOf(oreTotMeseViaggio)*0.85);*/
+									
+									oreSommaLavoroViaggio = ServerUtility.aggiornaTotGenerale(oreTotMeseLavoro, oreTotMeseViaggio);
+									//tolgo dal totale le eventuali ore di strao
+									oreTotMeseLavoro= ServerUtility.getDifference(oreTotMeseLavoro, oreStrao);				
+									oreTotStrao=ServerUtility.aggiornaTotGenerale(oreTotStrao, oreStrao);							
+									
+									//creo un record per ogni giorno di ogni dipendente
+									if( Float.valueOf(oreSommaLavoroViaggio)!=0){
+										riep = new RiepilogoOreDipFatturazione(numeroCommessa, "", "", idDip, dipendente, Float.valueOf(oreTotMeseLavoro), 
+											Float.valueOf(oreTotMeseViaggio), Float.valueOf(oreStrao), Float.valueOf(oreSommaLavoroViaggio), (float)0, 
+											checkOreIntervalliIUOreCommesse(p.getUsername(), data));
+										listaR.add(riep);
+									}
+									
+									//Per ogni dipendente incremento il totale sulla commessa in esame
+									oreTotLavoroCommessa=ServerUtility.aggiornaTotGenerale(oreTotLavoroCommessa, oreTotMeseLavoro);
+									oreTotViaggioCommessa=ServerUtility.aggiornaTotGenerale(oreTotViaggioCommessa, oreTotMeseViaggio);
+									oreTotCommessa=ServerUtility.aggiornaTotGenerale(oreTotLavoroCommessa, oreTotViaggioCommessa);
+									oreTotCommessa=ServerUtility.aggiornaTotGenerale(oreTotCommessa, oreTotStrao);
+									
+									oreTotMeseLavoro="0.0";
+									oreTotMeseViaggio="0.0";
+									oreSommaLavoroViaggio="0.0";
+									oreStrao="0.00";
+									//oreTotIU="0.00";
+								}
+															
+							}//end ciclo su mesi(fatto solo una volta per il mese necessario)
+		
+						}//end ciclo su lista persone nella stessa commessa
+						
+						if(Float.valueOf(oreTotCommessa)!=0){
+							riep = new RiepilogoOreDipFatturazione(numeroCommessa, "", "", 0, "_TOTALE", Float.valueOf(oreTotLavoroCommessa), 
+								Float.valueOf(oreTotViaggioCommessa),Float.valueOf(oreTotStrao), Float.valueOf(oreTotCommessa),Float.valueOf("0.00"), true);
+						listaR.add(riep);}
+						oreTotLavoroCommessa="0.0";
+						oreTotViaggioCommessa="0.0";
+						oreTotCommessa="0.0";
+						oreTotStrao="0.00";
+						
+						listaP.clear();
+						
+			
+			}
+			tx.commit();
+			
+		} catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return null;
+		} finally {
+			session.close();
+		}
+		
+		return listaR;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	//TODO tenere presente per strao
+	public List<RiepilogoOreDipFatturazione> getRiepilogoOreDipFatturazione1(String mese, String pm) {
 		
 		List<RiepilogoOreDipFatturazione> listaR= new ArrayList<RiepilogoOreDipFatturazione>();
 		List<Commessa> listaCommesse= new ArrayList<Commessa>();
@@ -6464,7 +6682,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				}
 				
 				for (Personale p : listaP)
-				  if(p.getStatoRapporto().compareTo("Cessato")!=0)
+				  //if(p.getStatoRapporto().compareTo("Cessato")!=0)
 					if(p.getGruppoLavoro().compareTo("Indiretti")!=0){ // per ogni dipendente in questa commessa selezioni i fogli ore del mese desiderato
 						dipendente = p.getCognome() + " " + p.getNome();
 												
@@ -8358,9 +8576,13 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 			tx=session.beginTransaction();
 			
-			listaCommesse=(List<Commessa>)session.createQuery("from Commessa where matricolaPM=:pm").
-					setParameter("pm", pm).list();
-			
+			if(tabSelected.compareTo("PROD")!=0)
+				listaCommesse=(List<Commessa>)session.createQuery("from Commessa where matricolaPM=:pm and tipoCommessa<>:tipo").
+					setParameter("pm", pm).setParameter("tipo", "p").list();
+			else
+				listaCommesse=(List<Commessa>)session.createQuery("from Commessa where matricolaPM=:pm and tipoCommessa=:tipo").
+				setParameter("pm", pm).setParameter("tipo", "p").list();			
+				
 			for(Commessa c: listaCommesse){
 				
 				commessa=c.getNumeroCommessa();
@@ -9557,11 +9779,11 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	public List<RiepilogoOreDipFatturazione> getRiepilogoOreCommesseDettDipendentiPeriodo(
 			String annoI, String meseI, String annoF, String meseF, String pm, List<CommessaModel> listaCommesseSel) {//pm in formato Cognome Nome
 		List<RiepilogoOreDipFatturazione> listaR= new ArrayList<RiepilogoOreDipFatturazione>();
-		List<Commessa> listaCommesse= new ArrayList<Commessa>();
+		
 		List<Attivita> listaAttivita= new ArrayList<Attivita>();
-				
+			
 		List<DettaglioIntervalliCommesse> listaDettComm= new ArrayList<DettaglioIntervalliCommesse>();
-		List<AssociazionePtoA> listaAssociazioni= new ArrayList<AssociazionePtoA>();
+		//List<AssociazionePtoA> listaAssociazioni= new ArrayList<AssociazionePtoA>();
 		List<Personale> listaP=new ArrayList<Personale>();
 		List<DettaglioOreGiornaliere> listaGiorni= new ArrayList<DettaglioOreGiornaliere>();
 		List<DettaglioIntervalliCommesse> listaIntervalli= new ArrayList<DettaglioIntervalliCommesse>();
@@ -9596,15 +9818,14 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						.setParameter("estensione", cm.get("estensione")).uniqueResult();
 							
 				if(commessaSel!=null){					
-					listaAttivita.addAll(commessaSel.getAttivitas());						
-					listaCommesse.add(commessaSel);
+					listaAttivita.addAll(commessaSel.getAttivitas());											
 				}		
 			}	
 			
 			
 			for (Attivita a : listaAttivita) {  // in questo caso la lista  Attivita rappresenta la lista di commesse associate al PM
 												// selezionato: ottengo tutte le associazioni e quindi tutti i dipendenti associati a quella commessa
-				listaAssociazioni.addAll(a.getAssociazionePtoas());
+				//listaAssociazioni.addAll(a.getAssociazionePtoas());
 				commessa = a.getCommessa().getNumeroCommessa();
 				estensione = a.getCommessa().getEstensione();
 				
@@ -9617,7 +9838,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						" ").setParameter("numCommessa", commessa)
 						.setParameter("estensione", estensione).list();			
 														
-				for(DettaglioIntervalliCommesse d:listaDettComm)					
+				for(DettaglioIntervalliCommesse d:listaDettComm)				
 					//prendo tutti i dip che hanno lavorato su quella commessa nei mesi considerati
 					if(ServerUtility.isNotIncludedPersonale(listaP, d.getDettaglioOreGiornaliere().getFoglioOreMese().getPersonale()))
 						listaP.add(d.getDettaglioOreGiornaliere().getFoglioOreMese().getPersonale());
@@ -9682,7 +9903,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					}//end ciclo su lista persone nella stessa commessa
 									
 					listaP.clear();
-					listaAssociazioni.clear();
+					//listaAssociazioni.clear();
 			}
 			
 			tx.commit();

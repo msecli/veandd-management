@@ -424,6 +424,7 @@ public class ConverterUtil {
 		String numeroOrdine= new String();
 		String numeroRdo= new String();
 		String numeroOfferta= new String();
+		String annoProtocollo= new String();
 		
 		Rda r= new Rda();
 		Offerta of= new Offerta();
@@ -508,8 +509,20 @@ public class ConverterUtil {
 			numeroOfferta="#";
 		}
 								
+		annoProtocollo=c.getNumeroCommessa().substring(0, 2);
+		
+		if(c.getNumeroCommessa().length()==3)
+			annoProtocollo="000";
+		if(annoProtocollo.compareTo("80")==0)
+			annoProtocollo="2008";
+		else
+		if(annoProtocollo.compareTo("90")==0)
+			annoProtocollo="2009";
+		else			
+			annoProtocollo="20"+annoProtocollo;
+			
 		CommessaModel cm= new CommessaModel( c.getCodCommessa(),  c.getNumeroCommessa(), numeroRdo, numeroOfferta, numeroOrdine,  c.getEstensione(),  c.getTipoCommessa(), cliente ,  c.getMatricolaPM(),  c.getStatoCommessa(),
-					String.valueOf(c.getOreLavoro()), String.valueOf(c.getResiduoOreLavoro()),String.valueOf(c.getTariffaSal()), c.getSalAttuale(), c.getPclAttuale(), dataElaborazione, dataChiusura, c.getDenominazioneAttivita(), c.getNote(), numRisorse);
+					String.valueOf(c.getOreLavoro()), String.valueOf(c.getResiduoOreLavoro()),String.valueOf(c.getTariffaSal()), c.getSalAttuale(), c.getPclAttuale(),annoProtocollo, dataElaborazione, dataChiusura, c.getDenominazioneAttivita(), c.getNote(), numRisorse);
 		return cm;			
 		
 		} catch (Exception e) {
@@ -540,7 +553,7 @@ public class ConverterUtil {
 				lista=(List<Commessa>)session.createQuery("from Commessa where statoCommessa=:stato").
 				setParameter("stato", statoSelected).list();
 			if(statoSelected.compareTo("Tutte")==0)
-				lista=(List<Commessa>)session.createQuery("from Commessa").list();
+				lista=(List<Commessa>)session.createQuery("from Commessa order by numeroCommessa ASC").list();
 			
 			setCommesse.addAll(lista);
 			tx.commit();				

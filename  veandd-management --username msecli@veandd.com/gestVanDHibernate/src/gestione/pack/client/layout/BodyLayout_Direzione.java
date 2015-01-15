@@ -412,7 +412,7 @@ public class BodyLayout_Direzione extends LayoutContainer {
 		        	Dialog d= new Dialog();
 		        	d.setSize(w-100, h-75);
 		        	CenterLayout_RiepiloghiSalPcl cl= new CenterLayout_RiepiloghiSalPcl();
-		        	cl.setRuolo("AMM");
+		        	cl.setRuolo("DIR");
 		        	d.add(cl);
 		        	d.setHeading("Riepilogo Sal/Pcl/Non Fatturabili");
 		        	d.setCollapsible(true);

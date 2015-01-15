@@ -248,7 +248,6 @@ public class DialogNewCosting extends Dialog{
 				}else Window.alert("error: Errore durante l'accesso ai dati PM.");			
 			}
 		});	
-		
 	}	
 	
 	private void getAllClienti() {
@@ -275,6 +274,7 @@ public class DialogNewCosting extends Dialog{
 			}
 		});
 	}
+	
 	
 	private void getCommesseAperte() {
 		AdministrationService.Util.getInstance().getCommesseAperte( new AsyncCallback<List<CommessaModel>>() {
