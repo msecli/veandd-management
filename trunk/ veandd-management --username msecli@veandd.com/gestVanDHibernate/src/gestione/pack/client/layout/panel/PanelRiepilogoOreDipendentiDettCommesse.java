@@ -1,6 +1,5 @@
 package gestione.pack.client.layout.panel;
 
-import gestione.pack.client.model.CommessaModel;
 import gestione.pack.client.model.PersonaleModel;
 import gestione.pack.client.model.RiepilogoOreDipFatturazione;
 import gestione.pack.client.utility.ClientUtility;

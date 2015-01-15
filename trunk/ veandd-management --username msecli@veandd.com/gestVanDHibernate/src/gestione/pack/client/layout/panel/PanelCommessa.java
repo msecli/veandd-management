@@ -1059,7 +1059,7 @@ public class PanelCommessa extends LayoutContainer {
 						smplcmbxCliente.recalculate();}
 					else Window.alert("error: Errorre durante l'accesso ai dati Clienti.");					
 				}
-		});					
+		});
 	
 	}
 
@@ -1075,15 +1075,13 @@ public class PanelCommessa extends LayoutContainer {
 					if(result==null)
 						Window.alert("error: Impossibile efettuare il caricamento dati in tabella.");
 					else	
-						loadTable(result);
-				
+						loadTable(result);	
 				}			
 
 				@Override
 				public void onFailure(Throwable caught) {
 					Window.alert("Errore connessione on getAllCommesseModel();");
 					caught.printStackTrace();
-			
 				}
 			}); //AsyncCallback	  
 		else
@@ -1105,11 +1103,16 @@ public class PanelCommessa extends LayoutContainer {
 			}); //AsyncCallback
 	}
 	
+	
 	private void loadTable(List<CommessaModel> lista) {
+		
+		CommessaModel cm=lista.remove(lista.size()-1);
+		txtfldNumeroCommessa.setValue(cm.getNumeroCommessa());
+		txtfldEstensione.setValue(cm.getEstensione());
 		
 		try {		
 			store.removeAll();
-			store.setStoreSorter(new StoreSorter<CommessaModel>());  
+			store.setStoreSorter(new StoreSorter<CommessaModel>());
 		    store.setDefaultSort("numeroCommessa", SortDir.ASC);
 			store.add(lista);	
 			storeResult.removeAll();
@@ -1120,7 +1123,7 @@ public class PanelCommessa extends LayoutContainer {
 			
 			store.groupBy("ragioneSociale");
 			gridCommessa.reconfigure(store, cmCommessa);
-			frmpnlCommessa.reset();
+			//frmpnlCommessa.reset();
 			btnSend.setEnabled(true);
 	    	btnEdit.setEnabled(false);
 	    	btnDelete.setEnabled(false);
@@ -1130,7 +1133,8 @@ public class PanelCommessa extends LayoutContainer {
 	    	txtfldNumeroCommessa.setEnabled(true);
 	    	txtfldEstensione.setEnabled(true);    		    	
 		} catch (NullPointerException e) {
-				e.printStackTrace();
+				
+			e.printStackTrace();
 		}	
 	}
 	
@@ -1170,7 +1174,7 @@ public class PanelCommessa extends LayoutContainer {
     	btnEdit.setEnabled(false);
     	btnOrdine.setEnabled(false);
     	btnClose.setEnabled(false);	
-	}     
+	}
 	
 	private void enableForm(){	
 		txtfldIdCommessa.setEnabled(true);
@@ -1185,7 +1189,7 @@ public class PanelCommessa extends LayoutContainer {
 	}
 	
 	
-	private void recuperoSessionRuolo() {		
+	private void recuperoSessionRuolo() {
 		SessionManagementService.Util.getInstance().getRuolo(new AsyncCallback<String>() {
 			
 			@Override
@@ -1205,7 +1209,8 @@ public class PanelCommessa extends LayoutContainer {
 		txtRuolo.setText(result);
 		if(txtRuolo.getText().compareTo("AMM")==0 || txtRuolo.getText().compareTo("UA")==0 )
 			caricaTabellaDati("");
-		else caricaTabellaDati(txtCognome.getText());	
+		else 
+			caricaTabellaDati(txtCognome.getText());	
 	}
 	
 	

@@ -8,6 +8,7 @@ import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.layout.panel.DialogAssociaPtoA;
 import gestione.pack.client.model.*;
 import gestione.pack.client.utility.MyImages;
+import gestione.pack.shared.Commessa;
 
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 
@@ -172,11 +173,14 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 					List<String> listaDipendenti= new ArrayList<String>();
 					String pm= new String();
 					String commessa= new String();
-															
+												
+					ComboBox<CommessaModel> cmbx= new ComboBox<CommessaModel>();
+					cmbx=cmbxCommessa;
+					
 					if(!cmbxCommessa.isValid())
 						commessa="";
 					else
-						commessa=cmbxCommessa.getValue().getNumeroCommessa()+"."+cmbxCommessa.getValue().getEstensione();
+						commessa=cmbx.getValue().get("numeroCommessa")+"."+cmbx.getValue().get("estensione");
 					
 					for (PersonaleModel p: list2.getStore().getModels()){
 						listaDipendenti.add(p.getUsername());
@@ -205,8 +209,7 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 						@Override
 						public void onFailure(Throwable caught) {
 							Window.alert("Errore connessione on createAssociazioneCommessaDipendenti();");
-							caught.printStackTrace();
-						
+							caught.printStackTrace();					
 						}
 					});					
 				}else Window.alert("E' necessario selezionare una commessa per effettuare l'associazione!");	
@@ -247,7 +250,7 @@ public class CenterLayout_AssociaPersonale extends LayoutContainer{
 								e.printStackTrace();
 								Window.alert("error: Impossibile caricare i dati in tabella.");
 							}				
-						}						
+						}
 					}			
 
 					@Override

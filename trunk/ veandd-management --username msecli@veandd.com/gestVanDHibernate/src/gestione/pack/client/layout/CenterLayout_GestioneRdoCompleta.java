@@ -7,7 +7,6 @@ import java.util.List;
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.layout.panel.DialogAssociaCommessaToOrdine;
 import gestione.pack.client.layout.panel.DialogSelectCommessaAttivitaOrdine;
-import gestione.pack.client.model.CostingRisorsaModel;
 import gestione.pack.client.model.RdoCompletaModel;
 import gestione.pack.client.model.TariffaOrdineModel;
 import gestione.pack.client.utility.MyImages;
@@ -187,7 +186,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 				CntpnlGridTariffeOrdine cpTariffa=(CntpnlGridTariffeOrdine) hpLayout.getItemByItemId("cpTariffa");
 				List<TariffaOrdineModel> listaTar= (List<TariffaOrdineModel>) cpTariffa.storeTariffe.getModels();
 				
-				if(formIsValid()&&!arePresent()&&areValid(listaTar)){
+				if(formIsValid()&&!arePresent()&&areValid(listaTar)&&listaTar.size()>0){
 				
 					cliente=smplcmbxCliente.getRawValue().toString();
 					if(!txtfldNumeroRda.getRawValue().isEmpty())numRdo=txtfldNumeroRda.getValue().toString();
@@ -223,7 +222,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 								resetForm();
 							}else{
 								Window.alert("error: Impossibile inserire i dati dell'Rdo!");
-							}		
+							}
 						}			
 
 						@Override
@@ -278,7 +277,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 				
 				List<TariffaOrdineModel> listaTar=(List<TariffaOrdineModel>) cpTariffa.storeTariffe.getModels();
 			
-				if(formIsValid()&&areValid(listaTar)){
+				if(formIsValid()&&listaTar.size()>0){
 					idRdo=Integer.valueOf(txtfldIdRda.getValue());
 					cliente=smplcmbxCliente.getRawValue().toString();
 					if(!txtfldNumeroRda.getRawValue().isEmpty())numRdo=txtfldNumeroRda.getValue().toString();

@@ -261,7 +261,20 @@ public class PanelAttribuzioneOreColocationCollaboratori extends LayoutContainer
 	    column.setHeader("Commessa");  
 	    column.setWidth(130);  
 	    column.setAlignment(HorizontalAlignment.RIGHT);
-	    column.setRowHeader(true);  
+	    column.setRowHeader(true); 
+	    column.setRenderer(new GridCellRenderer<RiepilogoOreDipCommesseGiornaliero>() {
+			@Override
+			public Object render(RiepilogoOreDipCommesseGiornaliero model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<RiepilogoOreDipCommesseGiornaliero> store,
+					Grid<RiepilogoOreDipCommesseGiornaliero> grid) {
+				String commessa=new String();
+				commessa=model.get(property);
+				if(commessa.compareTo("TOTALE")==0)
+					config.style = config.style + ";font-weight:" + "bold" + ";";
+				else
+					config.style = config.style + ";font-weight:" + "normal" + ";";
+				return commessa;
+			}  	
+		});
 	    configs.add(column); 
 	    
 	    column=new SummaryColumnConfig<Double>();		

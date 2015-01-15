@@ -23,7 +23,7 @@ public class CommessaModel extends BaseModel  implements IsSerializable{
 	
 	public CommessaModel( int idCommessa, String numeroCommessa, String rdo, String numeroOfferta, String numeroOrdine, String estensione, String tipoCommessa,
 			String ragioneSociale, String pm, String statoCommessa, String oreLavoro, String oreLavoroResidue, String tariffaSal, String salAttuale, String pclAttuale, 
-			String dataInizio, String dataChiusura, String descrizione, String note, String numRisorse ){
+			String annoProtocollo, String dataInizio, String dataChiusura, String descrizione, String note, String numRisorse ){
 			
 		set("idCommessa",idCommessa);
 		set("numeroCommessa",numeroCommessa);
@@ -35,6 +35,7 @@ public class CommessaModel extends BaseModel  implements IsSerializable{
 		set("ragioneSociale",ragioneSociale); //derivato nella converterToModel
 		set("pm",pm);
 		set("statoCommessa",statoCommessa);
+		set("annoProtocollo",annoProtocollo);
 		set("dataInizio",dataInizio); //data Attivazione eventualmente ricavata automaticamente come data "odierna"
 		set("dataChiusura", dataChiusura); //data eventualmente ricavata automaticamente al momento della chiusura (click btnChiusura) 
 		set("descrizione",descrizione);		

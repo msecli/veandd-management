@@ -50,6 +50,7 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 	private TabItem tbSalOld= new TabItem("SAL old");
 	private TabItem tbPclOld= new TabItem("PCL old");
 	private TabItem tbSal = new TabItem("SAL");
+	private TabItem tbSalProd = new TabItem("PROD");
 	private TabItem tbPcl = new TabItem("PCL");
 	private TabItem tbRiassunto= new TabItem("Riassunto");
 	private TabItem tbNonFatturabili= new TabItem("Non Fatturabili");
@@ -174,7 +175,13 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 			    	anno= smplcmbxAnno.getRawValue().toString();
 					meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
 					data=meseRif+anno;
-										
+					
+					if(tabSelected.compareTo("PROD")==0){
+						tbSalProd.removeAll();
+						tbSalProd.add(new PanelRiepilogoSalPclMese(tabSelected, data, pm));
+						tbSalProd.layout(true);
+						cpnlContainTab.layout();
+					}else					
 					if(tabSelected.compareTo("sal")==0){
 						tbSal.removeAll();
 						tbSal.add(new PanelRiepilogoSalPclMese(tabSelected, data, pm));
@@ -217,6 +224,7 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 	    tabpnlRiepSalPcl.setPlain(false);
 	    tabpnlRiepSalPcl.setSize(w-200, h-155);
 	   	    	  
+	    	    
 	    tbSal.setTitle("SAL");
 	    tbSal.setScrollMode(Scroll.AUTO);
 	    tbSal.addListener(Events.Select, new Listener<ComponentEvent>() {  
@@ -240,6 +248,30 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 	          }  
 	    }); 
 	    tabpnlRiepSalPcl.add(tbSal);  
+	    
+	    tbSalProd.setTitle("PROD");
+	    tbSalProd.setScrollMode(Scroll.AUTO);
+	    tbSalProd.addListener(Events.Select, new Listener<ComponentEvent>() {  
+	        public void handleEvent(ComponentEvent be) {  
+	        	String meseRif= new String(); 
+		    	String anno= new String();
+		    	String pm= new String();
+		    	if(smplcmbxPM.getRawValue().isEmpty())
+		    		pm="";
+		    	else
+		    		pm=smplcmbxPM.getRawValue().toString();
+		    	
+		    	anno= smplcmbxAnno.getRawValue().toString();
+				meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
+				data=meseRif+anno;
+				
+	        	tabSelected="PROD";
+	        	tbSal.removeAll();
+	        	tbSal.add(new PanelRiepilogoSalPclMese(tabSelected, data, pm));
+	        	tbSal.layout(true);
+	          }  
+	    }); 
+	    tabpnlRiepSalPcl.add(tbSalProd);  
 	    	   
 	    tbSalOld.setTitle("SAL old");
 	    tbSalOld.setScrollMode(Scroll.AUTO);
@@ -365,7 +397,7 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 			public void handleEvent(ComponentEvent be) {
 				//String meseRif= new String(); 
 		    	String anno= new String();
-		    	String meseRif= new String();			    				    	
+		    	String meseRif= new String();			    	
 		    	
 		    	anno= smplcmbxAnno.getRawValue().toString();
 		    	meseRif= smplcmbxMese.getRawValue().toString();		    	

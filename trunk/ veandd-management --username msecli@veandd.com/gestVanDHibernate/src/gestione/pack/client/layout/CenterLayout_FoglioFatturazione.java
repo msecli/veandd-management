@@ -826,10 +826,14 @@ public CenterLayout_FoglioFatturazione(){}
 				public void componentSelected(ButtonEvent ce) {
 					float i=Float.valueOf(txtfldImportoDaFatturare.getValue().toString());
 					float a=Float.valueOf(txtfldImportoResiduo.getValue().toString());
+					float oreFatturate=Float.valueOf(txtfldOreDaFatturare.getValue().toString());
 				
 					/*if(!checkOreImportoOrdine())
 						Window.alert("I valori di ore residue e importo residuo sull'ordine sono discordanti! Effettuare eventuali modifiche se necessario.");
-					else*/					
+					else*/	
+					if(oreFatturate==0 && i>0)
+						Window.alert("E' stato inserito un importo da fatturare ma non sono state inserite le ore!");
+					else
 					if(i>a)
 						Window.alert("L'importo da fatturare non puo' essere maggiore dell' importo residuo!");
 					else
@@ -1246,7 +1250,7 @@ public CenterLayout_FoglioFatturazione(){}
 								txtfldOreDaFatturare.setValue("0.00");
 							else{
 								String valore= txtfldOreDaFatturare.getValue().toString();
-														
+								
 								if(valore.compareTo("")==0)
 									valore ="0.00";
 								else
@@ -1257,7 +1261,7 @@ public CenterLayout_FoglioFatturazione(){}
 										int length=valore.length();
 										
 										if(valore.substring(index+1, length).length()==1)
-											valore=valore+"0";		
+											valore=valore+"0";
 										else if(valore.substring(index+1, length).length()==0)
 											valore=valore+"00";
 									}
@@ -1303,9 +1307,9 @@ public CenterLayout_FoglioFatturazione(){}
 			txtfldVariazioneSAL.setEnabled(true);
 			txtfldVariazioneSAL.setAllowBlank(false);
 			txtfldVariazioneSAL.setValue("0.00");
-			txtfldVariazioneSAL.setRegex("^([0-9]+).(00|15|30|45)$");		
+			//txtfldVariazioneSAL.setRegex("^([0-9]+).(00|15|30|45)$");		
 			//.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
-			txtfldVariazioneSAL.getMessages().setRegexText("Minuti accettati: 0,15,30,45");
+			txtfldVariazioneSAL.setRegex("[0-9]+[.]{1}(0|00|15|30|45)|[-]{1}[0-9]+[.]{1}(0|00|15|30|45)|[0-9]+[.]{1}[0]{1}|[-]{1}[0-9]+[.]{1}[0]{1}|0.00|0.0");
 			txtfldVariazioneSAL.addKeyListener(new KeyListener(){
 				 public void componentKeyUp(ComponentEvent event) {
 			    	  	if(hasValue(txtfldVariazioneSAL)&&txtfldVariazioneSAL.getValue()!=null){
@@ -1412,7 +1416,7 @@ public CenterLayout_FoglioFatturazione(){}
 			txtfldVariazionePCL.setEnabled(true);
 			txtfldVariazionePCL.setAllowBlank(false);
 			txtfldVariazionePCL.setValue("0.00");
-			txtfldVariazionePCL.setRegex("^([0-9]+).(00|15|30|45)$");		
+			txtfldVariazionePCL.setRegex("[0-9]+[.]{1}(0|00|15|30|45)|[-]{1}[0-9]+[.]{1}(0|00|15|30|45)|[0-9]+[.]{1}[0]{1}|[-]{1}[0-9]+[.]{1}[0]{1}|0.00|0.0");	
 			//.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
 			txtfldVariazionePCL.getMessages().setRegexText("Minuti accettati: 0,15,30,45");
 			txtfldVariazionePCL.addKeyListener(new KeyListener(){

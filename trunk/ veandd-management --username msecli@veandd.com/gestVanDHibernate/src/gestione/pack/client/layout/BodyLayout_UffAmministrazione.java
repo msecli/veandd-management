@@ -12,6 +12,7 @@ import gestione.pack.client.layout.panel.PanelEditPasswordUtenti;
 import gestione.pack.client.layout.panel.PanelGestioneCosting;
 import gestione.pack.client.layout.panel.PanelMensileOrdini;
 import gestione.pack.client.layout.panel.PanelPrintAll;
+import gestione.pack.client.layout.panel.PanelProtocolloCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoAnnualeOreDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoCostiDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
@@ -390,6 +391,27 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 		    btnGestioneCommessa.setWidth("100%");
 		    cp.add(btnGestioneCommessa);
 		    
+		    Button btnProtocolloCommesse = new Button();
+		    btnProtocolloCommesse.setToolTip("Protocollo commesse");
+		    btnProtocolloCommesse.setHeight(65);
+		    btnProtocolloCommesse.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.generate1()));
+		    btnProtocolloCommesse.setIconAlign(IconAlign.BOTTOM);
+		    btnProtocolloCommesse.setWidth("100%");
+		    btnProtocolloCommesse.addSelectionListener(new SelectionListener<ButtonEvent>() {
+		        public void componentSelected(ButtonEvent ce) {
+		        	Dialog d= new Dialog();
+		        	d.setSize(1430, 980);
+		        	d.add(new PanelProtocolloCommesse());
+		        	d.setHeading("Protocollo Commesse");
+		        	d.setCollapsible(true);
+		        	d.setScrollMode(Scroll.NONE);
+		        	d.setButtons("");
+		        	d.setConstrain(false);
+		        	d.show();	        	
+		        }        
+		    });
+		    cp.add(btnProtocolloCommesse);
+		    
 		    Button btnAssociaPersonale = new Button();
 		    btnAssociaPersonale.setToolTip("Associazione Dipendenti Commessa");
 		    btnAssociaPersonale.setHeight(65);
@@ -468,8 +490,8 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 		        	d.show();	        	
 		        }        
 		      });
-		    cp.add(btnRiepilogoSaturazione);
-	    
+		    cp.add(btnRiepilogoSaturazione);	    
+		    
 		    panel.add(cp);
 		         
 		    	    
