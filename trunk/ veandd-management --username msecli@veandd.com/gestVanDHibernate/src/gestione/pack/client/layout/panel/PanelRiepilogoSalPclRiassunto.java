@@ -26,6 +26,8 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.grid.AggregationRenderer;
+import com.extjs.gxt.ui.client.widget.grid.AggregationRowConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -166,6 +168,8 @@ public class PanelRiepilogoSalPclRiassunto  extends LayoutContainer{
 		cp.add(fp);
 		tlBar.add(cp);	
 		
+		AggregationRowConfig<RiepilogoSALPCLModel> agrTotale= new AggregationRowPersonale();		
+		cmRiepilogo.addAggregationRow(agrTotale);
 		cpGrid.setTopComponent(tlBar);
 				
 	    store.groupBy("pm");
@@ -354,4 +358,36 @@ public class PanelRiepilogoSalPclRiassunto  extends LayoutContainer{
 		}
 	}
 		
+	
+	private class AggregationRowPersonale extends AggregationRowConfig<RiepilogoSALPCLModel>{
+		
+		public AggregationRowPersonale(){
+			final NumberFormat number= NumberFormat.getFormat("#,##0.0#;-#");
+			AggregationRenderer<RiepilogoSALPCLModel> aggrRender= new AggregationRenderer<RiepilogoSALPCLModel>() {			
+				@Override
+				public Object render(Number value, int colIndex, Grid<RiepilogoSALPCLModel> grid, ListStore<RiepilogoSALPCLModel> store) {
+					 if(value!=null)		    		  
+			    		  return number.format(value.doubleValue());
+			    	  else
+			    		  return number.format((float) 0) ;
+				}
+			};			
+						
+			setHtml("estensione", "<p style=\"font-size:15px; color:#000000; font-weight:bold;\">TOTALE</p>");	
+			setSummaryType("variazione", SummaryType.SUM);
+			setRenderer("variazione", aggrRender);
+			
+			setSummaryType("importoComplessivo", SummaryType.SUM);  
+			setRenderer("importoComplessivo", aggrRender);
+			
+			setSummaryType("attuale", SummaryType.SUM);
+			//setSummaryFormat("importoMese", NumberFormat.getCurrencyFormat("EUR"));
+			setRenderer("attuale", aggrRender);
+			
+			setSummaryType("oreEseguite", SummaryType.SUM);
+			setRenderer("oreEseguite", aggrRender);
+			setCellStyle("oreEseguite", "font-size:15px; color:#000000; font-weight:bold;");
+		}
+	}
+	
 }

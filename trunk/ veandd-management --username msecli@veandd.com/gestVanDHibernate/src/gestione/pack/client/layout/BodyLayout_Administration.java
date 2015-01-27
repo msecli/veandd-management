@@ -812,7 +812,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        public void componentSelected(ButtonEvent ce) {
 	        	center.removeAll();
 	        	center.add(new PanelEditPasswordUtenti());
-	        	center.layout(true);}      
+	        	center.layout(true);}
 	      });
 	    btnGestionePassword.setWidth("100%");
 	    cp.add(btnGestionePassword);

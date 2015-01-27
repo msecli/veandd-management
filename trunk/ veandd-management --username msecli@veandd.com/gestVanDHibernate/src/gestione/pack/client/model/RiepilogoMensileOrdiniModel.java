@@ -1,15 +1,18 @@
 package gestione.pack.client.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class RiepilogoMensileOrdiniModel extends BaseModel implements IsSerializable{
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 
+	private Set<CommessaModel> listaCommesse= new HashSet<CommessaModel>();
+	
 	public RiepilogoMensileOrdiniModel(){
 		
 	}
@@ -32,6 +35,15 @@ public class RiepilogoMensileOrdiniModel extends BaseModel implements IsSerializ
 		set("importoResiduo",importoResiduo);
 		set("oreResidue",oreResidue);
 		set("statoOrdine",stato);
+		
+	}
+	
+	public Set<CommessaModel> getListaCommessa() {
+		return this.listaCommesse;
+	}
+
+	public void setRdas(Set<CommessaModel> listaCommesse) {
+		this.listaCommesse = listaCommesse;
 	}
 	
 	public RiepilogoMensileOrdiniModel(int idAttivitaOrdine,String cliente, String pm, String numeroOrdine, String dataOrdine, String commessa, String numeroRda, String attivita,

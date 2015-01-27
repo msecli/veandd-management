@@ -320,7 +320,6 @@ public CenterLayout_FoglioFatturazione(){}
 		    summary.setShowGroupedColumn(false);
 		    summary.setStartCollapsed(true);
 		    summary.addListener(Events.BeforeExpand, new Listener<ComponentEvent>() {
-
 				@Override
 				public void handleEvent(ComponentEvent be) {
 					
@@ -337,9 +336,9 @@ public CenterLayout_FoglioFatturazione(){}
 		    gridRiepilogo.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 		    gridRiepilogo.setView(summary);
 		    gridRiepilogo.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<RiepilogoOreDipFatturazione>>() {  
-		          public void handleEvent(SelectionChangedEvent<RiepilogoOreDipFatturazione> be) {  
+		          public void handleEvent(SelectionChangedEvent<RiepilogoOreDipFatturazione> be) {
 		        	
-		            if (be.getSelection().size() > 0) {      
+		            if (be.getSelection().size() > 0) {
 		            	String commessa= new String();
 		            	commessa=be.getSelectedItem().getNumeroCommessa();
 		            		
@@ -356,12 +355,11 @@ public CenterLayout_FoglioFatturazione(){}
 		        		hpLayout.add(new CntpnlDatiFatturazioneOrdine());
 		        		hpLayout.layout();	
 		               		            	
-		            } else {  
-		                
-		           }
+		            } else {
+		            	
+		            }
 		         }
-		    });
-		    
+		    });		    
 		   		    
 		    ToolBar tlbrRiepilogoOre= new ToolBar();
 		    
@@ -371,7 +369,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    btnShowDettaglioOre.setToolTip("Riepilogo Giornaliero Dettagliato");
 		    btnShowDettaglioOre.setIconAlign(IconAlign.TOP);
 		    btnShowDettaglioOre.setSize(26, 26);
-		    btnShowDettaglioOre.addSelectionListener(new SelectionListener<ButtonEvent>() {			
+		    btnShowDettaglioOre.addSelectionListener(new SelectionListener<ButtonEvent>() {	
 				@Override
 				public void componentSelected(ButtonEvent ce) {
 					
@@ -1309,7 +1307,7 @@ public CenterLayout_FoglioFatturazione(){}
 			txtfldVariazioneSAL.setValue("0.00");
 			//txtfldVariazioneSAL.setRegex("^([0-9]+).(00|15|30|45)$");		
 			//.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
-			txtfldVariazioneSAL.setRegex("[0-9]+[.]{1}(0|00|15|30|45)|[-]{1}[0-9]+[.]{1}(0|00|15|30|45)|[0-9]+[.]{1}[0]{1}|[-]{1}[0-9]+[.]{1}[0]{1}|0.00|0.0");
+			txtfldVariazioneSAL.setRegex("[0-9]+[.]{1}(0|15|30|45)|[-]{1}[0-9]+[.]{1}(0|15|30|45)|[0-9]+[.]{1}[0]{2}|[-]{1}[0-9]+[.]{1}[0]{2}");
 			txtfldVariazioneSAL.addKeyListener(new KeyListener(){
 				 public void componentKeyUp(ComponentEvent event) {
 			    	  	if(hasValue(txtfldVariazioneSAL)&&txtfldVariazioneSAL.getValue()!=null){
@@ -1415,8 +1413,8 @@ public CenterLayout_FoglioFatturazione(){}
 			txtfldVariazionePCL.setFieldLabel("Variazione PCL");
 			txtfldVariazionePCL.setEnabled(true);
 			txtfldVariazionePCL.setAllowBlank(false);
-			txtfldVariazionePCL.setValue("0.00");
-			txtfldVariazionePCL.setRegex("[0-9]+[.]{1}(0|00|15|30|45)|[-]{1}[0-9]+[.]{1}(0|00|15|30|45)|[0-9]+[.]{1}[0]{1}|[-]{1}[0-9]+[.]{1}[0]{1}|0.00|0.0");	
+			txtfldVariazionePCL.setValue("0.0");
+			txtfldVariazionePCL.setRegex("[0-9]+[.]{1}(0|15|30|45)|[-]{1}[0-9]+[.]{1}(0|15|30|45)|[0-9]+[.]{1}[0]{2}|[-]{1}[0-9]+[.]{1}[0]{2}");	
 			//.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
 			txtfldVariazionePCL.getMessages().setRegexText("Minuti accettati: 0,15,30,45");
 			txtfldVariazionePCL.addKeyListener(new KeyListener(){
@@ -1436,7 +1434,7 @@ public CenterLayout_FoglioFatturazione(){}
 			    	  		
 			    	  		//variazionePCL=String.valueOf(Float.valueOf(txtfldVariazionePCL.getValue().toString())*(-1));
 			    	  		variazionePCL=number.format(Float.valueOf(txtfldVariazionePCL.getValue().toString())*(-1));
-			    	  					    	  		
+			    	  		
 			    	  		scaricate=ClientUtility.aggiornaTotGenerale(txtfldOreDaFatturare.getValue().toString(), txtfldVariazioneSAL.getValue().toString());
 			    	  		scaricate=ClientUtility.aggiornaTotGenerale(scaricate, variazionePCL);
 			    	  		txtfldOreScaricate.setValue(scaricate);

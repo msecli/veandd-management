@@ -2395,15 +2395,13 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 				
 				o=(Ordine)session.createQuery("from Ordine where codiceOrdine=:nOrdine").setParameter("nOrdine", r.get("numeroOrdine")).uniqueResult();
 				
-				//TODO prendo i FF di tutte le commesse dell'ordine
+				//prendo i FF di tutte le commesse dell'ordine
 				for(Commessa c1:o.getCommessas())
 					listaFF.addAll(c1.getFoglioFatturaziones());
-				//listaFF.addAll(o.getCommessa().getFoglioFatturaziones());
-						
-				//for(AttivitaOrdine atto:o.getAttivitaOrdines()){
+				
 					for(FoglioFatturazione ff:listaFF){
-						for(String mese:listaMesiConsiderati){	
-							if((ff.getMeseCorrente().compareTo(mese)==0)&&(ff.getAttivitaOrdine()==(int)r.get("idAttivitaOrdine"))){							
+						for(String mese:listaMesiConsiderati){
+							if((ff.getMeseCorrente().compareTo(mese)==0)&&(ff.getAttivitaOrdine()==(int)r.get("idAttivitaOrdine"))){
 								oreMese[listaMesiConsiderati.indexOf(mese)]=getOreCentesimi(ff.getOreFatturare());
 								break;
 							}
@@ -2420,8 +2418,8 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 					
 					for(int i=0;i<12;i++)
 						oreMese[i]="0.00";
-				//}												
-				listaFF.clear();							
+				//}
+				listaFF.clear();
 			}
 			
 			tx.commit();
@@ -2432,10 +2430,10 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 			return null;
 		}finally{
 			session.close();
-		}	
-		
+		}			
 		return listaM;
 	}
+	
 
 	public static RtvJavaBean createRtvJavaBeanEntry(RtvModel rtv, RiferimentiRtvModel rifM) {
 		

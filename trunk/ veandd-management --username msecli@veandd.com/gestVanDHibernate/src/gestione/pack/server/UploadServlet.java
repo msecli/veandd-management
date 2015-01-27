@@ -57,7 +57,7 @@ public class UploadServlet extends HttpServlet  {
 							File uploadedFile = new File(rootDirectory+  fileName);
 							try {
 								item.write(uploadedFile);
-								response.getWriter().write(fileName);										
+								response.getWriter().write(fileName);								
 							} catch (Exception e) {
 								e.printStackTrace();
 							}

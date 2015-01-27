@@ -16,7 +16,8 @@ public class RiepilogoFoglioOreModel extends BaseModel implements IsSerializable
 	
 	public RiepilogoFoglioOreModel(int idDettaglioGiorno, String nome, String mese, String giorno, String letteraGiorno, String orePreviste, Float oreTimbrature, 
 			Float oreViaggio, Float deltaViaggio, Float oreTotali, Float oreFerie, 
-			Float orePermesso, Float oreRecupero, Float oreStraordinario, Float oreAbbuono, String giustificativo, String note, String statoCompilazione){
+			Float orePermesso, Float oreRecupero, Float oreStraordinario, Float oreAbbuono, String giustificativo, String note, 
+			String statoCompilazione){
 		
 		set("idDettaglio", idDettaglioGiorno);
 		set("nome",nome);
