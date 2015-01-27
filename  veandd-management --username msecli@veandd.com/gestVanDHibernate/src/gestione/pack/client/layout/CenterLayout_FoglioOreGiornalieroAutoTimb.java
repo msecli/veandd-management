@@ -196,7 +196,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 		private PanelRiepilogoMeseFoglioOre pnlRiepilogo;//= new PanelRiepilogoMeseFoglioOre(txtfldUsername.getValue().toString(), giornoRiferimento.getValue());
 		
 		CreateFormIntervalliOre() {
-						
+			
 			setLabelWidth(30);
 			setFrame(true);
 			setButtonAlign(HorizontalAlignment.CENTER);

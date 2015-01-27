@@ -146,7 +146,7 @@ private static final long serialVersionUID = 1L;
 		      e.printStackTrace();
 		    } finally {
 		    	session.close();
-		    }			
+		    }
 	}
 	
 	
@@ -182,7 +182,7 @@ private static final long serialVersionUID = 1L;
 						if(!f.getDettaglioOreGiornalieres().isEmpty())
 							listaD.addAll(f.getDettaglioOreGiornalieres());
 				
-					for(DettaglioOreGiornaliere d: listaD){					
+					for(DettaglioOreGiornaliere d: listaD){
 						for(AssociazionePtoA ass:listaAss){
 							c= ass.getAttivita().getCommessa();
 						
@@ -195,8 +195,8 @@ private static final long serialVersionUID = 1L;
 								listaCheck.add(c.getNumeroCommessa()+" "+c.getEstensione()+" "+String.valueOf(d.getIdDettaglioOreGiornaliere())+" "+p.getCognome());
 						
 							listaDC.clear();
-						}		
-				}	
+						}
+				}
 				listaD.clear();
 				listaF.clear();
 				listaAss.clear();
