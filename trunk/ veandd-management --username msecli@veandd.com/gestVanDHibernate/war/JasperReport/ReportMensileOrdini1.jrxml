@@ -1,21 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReportMensileOrdini" pageWidth="2600" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="52752e31-c865-4a0e-854c-ee385ec61abd">
 	<property name="ireport.zoom" value="1.0"/>
-	<property name="ireport.x" value="1544"/>
+	<property name="ireport.x" value="853"/>
 	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
-	<parameter name="oreTotOrdine" class="java.lang.Float" isForPrompting="false">
-		<parameterDescription><![CDATA[oreTotOrdine]]></parameterDescription>
-	</parameter>
-	<parameter name="importoTotOrdine" class="java.lang.Float" isForPrompting="false">
-		<parameterDescription><![CDATA[importoTotOrdine]]></parameterDescription>
-	</parameter>
-	<parameter name="oreResOrdine" class="java.lang.Float" isForPrompting="false">
-		<parameterDescription><![CDATA[oreResOrdine]]></parameterDescription>
-	</parameter>
-	<parameter name="importoResOrdine" class="java.lang.Float" isForPrompting="false">
-		<parameterDescription><![CDATA[importoResOrdine]]></parameterDescription>
-	</parameter>
 	<field name="cliente" class="java.lang.String"/>
 	<field name="pm" class="java.lang.String"/>
 	<field name="numeroOrdine" class="java.lang.String"/>
@@ -41,6 +29,12 @@
 	<field name="m10" class="java.lang.Float"/>
 	<field name="m11" class="java.lang.Float"/>
 	<field name="m12" class="java.lang.Float"/>
+	<variable name="totaleImporto" class="java.lang.Float" calculation="Sum">
+		<variableExpression><![CDATA[$F{importoOrdine}]]></variableExpression>
+	</variable>
+	<variable name="totaleOre" class="java.lang.Float" calculation="Sum">
+		<variableExpression><![CDATA[$F{oreOrdine}]]></variableExpression>
+	</variable>
 	<variable name="totaleM1" class="java.lang.Float" calculation="Sum">
 		<variableExpression><![CDATA[$F{m1}]]></variableExpression>
 	</variable>
@@ -76,6 +70,12 @@
 	</variable>
 	<variable name="totaleM12" class="java.lang.Float" calculation="Sum">
 		<variableExpression><![CDATA[$F{m12}]]></variableExpression>
+	</variable>
+	<variable name="totaleImportoRes" class="java.lang.Float" calculation="Sum">
+		<variableExpression><![CDATA[$F{importoResiduo}]]></variableExpression>
+	</variable>
+	<variable name="totaleOreRes" class="java.lang.Float" calculation="Sum">
+		<variableExpression><![CDATA[$F{oreResidue}]]></variableExpression>
 	</variable>
 	<background>
 		<band splitType="Stretch"/>
@@ -389,7 +389,28 @@
 		</band>
 	</detail>
 	<lastPageFooter>
-		<band height="32">
+		<band height="28">
+			<textField pattern="#,##0.00">
+				<reportElement uuid="7f39a9af-2ed7-4be7-9b6b-385a01a01e6f" mode="Opaque" x="2115" y="2" width="105" height="25" backcolor="#FF6666"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totaleImportoRes}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="fe159b35-ea66-454c-a1cf-bb1be7f1cae9" mode="Opaque" x="1091" y="2" width="86" height="25" backcolor="#FF6666"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totaleImporto}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="27dd018a-dbab-4f33-a754-0b3d82799655" mode="Opaque" x="1177" y="2" width="67" height="25" backcolor="#FF6666"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totaleOre}]]></textFieldExpression>
+			</textField>
 			<textField pattern="#,##0.00">
 				<reportElement uuid="798ea921-e0d7-4f61-9d01-76310be504ef" mode="Opaque" x="1244" y="2" width="67" height="25" backcolor="#FF6666"/>
 				<textElement verticalAlignment="Middle">
@@ -475,32 +496,11 @@
 				<textFieldExpression><![CDATA[$V{totaleM12}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
-				<reportElement uuid="e87cc4f1-88be-4e36-bb48-7365d0b3e72e" mode="Opaque" x="1177" y="2" width="67" height="25" forecolor="#000000" backcolor="#FF6666"/>
-				<textElement verticalAlignment="Middle">
+				<reportElement uuid="71bd603e-b32a-43f2-a709-2b64d49071f7" mode="Opaque" x="2048" y="2" width="67" height="25" backcolor="#FF6666"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{importoTotOrdine}]]></textFieldExpression>
-			</textField>
-			<textField pattern="#,##0.00">
-				<reportElement uuid="c40682ac-c575-4c78-a07f-4e97d91bf32a" mode="Opaque" x="1091" y="2" width="86" height="25" forecolor="#000000" backcolor="#FF6666"/>
-				<textElement verticalAlignment="Middle">
-					<font isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{oreTotOrdine}]]></textFieldExpression>
-			</textField>
-			<textField pattern="#,##0.00">
-				<reportElement uuid="58ed976b-0cb8-4c08-a105-ba6affd6bb3c" mode="Opaque" x="2048" y="2" width="67" height="25" forecolor="#000000" backcolor="#FF6666"/>
-				<textElement verticalAlignment="Middle">
-					<font isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{oreResOrdine}]]></textFieldExpression>
-			</textField>
-			<textField pattern="#,##0.00">
-				<reportElement uuid="33d84b3e-7c77-4cf0-adab-6f20f537dd27" mode="Opaque" x="2115" y="2" width="105" height="25" forecolor="#000000" backcolor="#FF6666"/>
-				<textElement verticalAlignment="Middle">
-					<font isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{importoResOrdine}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{totaleOreRes}]]></textFieldExpression>
 			</textField>
 		</band>
 	</lastPageFooter>
