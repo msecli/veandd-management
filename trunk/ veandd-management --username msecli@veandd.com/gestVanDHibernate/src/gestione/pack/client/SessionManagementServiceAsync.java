@@ -73,7 +73,7 @@ public interface SessionManagementServiceAsync {
 			FatturaModel fM, List<AttivitaFatturateModel> listaAM, String operazione, AsyncCallback<Boolean> asyncCallback);
 
 	void setDatiMensileInSession(String string,
-			String anno, List<RiepilogoMensileOrdiniModel> models,
+			String anno, String pm, String stato, List<RiepilogoMensileOrdiniModel> models,
 			AsyncCallback<Boolean> asyncCallback);
 
 	void setDataRtv(RtvModel rtv, RiferimentiRtvModel rifModel, String tipoModulo, String operazione, AsyncCallback<Boolean> asyncCallback);

@@ -6270,10 +6270,12 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 
 			listaCommesse = (List<Commessa>) session.createQuery("from Commessa where matricolaPM=:pm and statoCommessa=:statoCommessa")
 					.setParameter("pm", pm).setParameter("statoCommessa", statoCommessa).list(); //seleziono tutte le commesse aperte per pm indicato
+			
 			for (Commessa c : listaCommesse) {//se non ci sono dipendenti associati non verranno prese in considerazione
 				if (c.getAttivitas().size() > 0)
 					listaAttivita.add(c.getAttivitas().iterator().next());
 			}
+			
 			for (Attivita a : listaAttivita) { // in questo caso la lista  Attivita rappresenta la lista di commesse associate al PM
 												// selezionato ottengo tutte le associazioni e quindi tutti i dipendenti associati a quella commessa
 				listaAssociazioni.addAll(a.getAssociazionePtoas());
@@ -6300,7 +6302,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				listaP=session.createQuery("select distinct p from DettaglioIntervalliCommesse d join d.dettaglioOreGiornaliere g" +
 						" join g.foglioOreMese f join f.personale p" +
 						" where f.meseRiferimento=:mese and d.numeroCommessa=:numeroCommessa and d.estensioneCommessa=:estensioneCommessa")
-						.setParameter("numeroCommessa", commessa).setParameter("estensioneCommessa", estensione).setParameter("mese", data).list();
+						.setParameter("numeroCommessa", commessa)
+						.setParameter("estensioneCommessa", estensione).setParameter("mese", data).list();
 				
 				for (Personale p : listaP) { // per ogni dipendente in questa commessa selezioni i fogli ore del mese desiderato						
 						for (FoglioOreMese f : p.getFoglioOreMeses()) {
@@ -7656,7 +7659,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			return null;
 		}finally{
 			session.close();
-		}		
+		}
 		return null;
 	}
 

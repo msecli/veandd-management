@@ -60,7 +60,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.FormPanel;
 
-public class PanelMensileOrdini extends LayoutContainer{
+public class PanelMensileOrdiniNew extends LayoutContainer{
 
 	private int h=Window.getClientHeight();
 	private int w=Window.getClientWidth();
@@ -93,15 +93,15 @@ public class PanelMensileOrdini extends LayoutContainer{
 	private String ruolo= new String();
 	private String numeroOrdine= new String();
 	
-	public PanelMensileOrdini(String ruolo){
+	public PanelMensileOrdiniNew(String ruolo){
 		this.ruolo=ruolo;
 	}
 	
-	protected void onRender(Element target, int index) {
+	protected void onRender(Element target, int index) {  
 		super.onRender(target, index);
 		
 		final FitLayout fl= new FitLayout();
-		
+			
 		LayoutContainer layoutContainer= new LayoutContainer();
 		layoutContainer.setBorders(false);
 		layoutContainer.setLayout(fl);
@@ -111,7 +111,7 @@ public class PanelMensileOrdini extends LayoutContainer{
 		
 		HorizontalPanel hp= new HorizontalPanel();
 		hp.setSpacing(2);
-		
+				
 		ContentPanel cpGridRiepOrdini= new ContentPanel();
 		cpGridRiepOrdini.setHeaderVisible(true);
 		cpGridRiepOrdini.setHeading("Riepilogo Ordini");
@@ -827,4 +827,3 @@ public class PanelMensileOrdini extends LayoutContainer{
 		});		
 	}
 }
-

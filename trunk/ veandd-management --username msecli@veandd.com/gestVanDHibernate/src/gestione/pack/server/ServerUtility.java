@@ -2895,6 +2895,70 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 		return numCommmessa;
 	}
 
+	@SuppressWarnings("unchecked")
+	public static Float[] calcoloParametriOrdini(String stato, String pm) {
+		
+		Float[] listaParametri= new Float[4];
+		List<Ordine> listaOrdini= new ArrayList<Ordine>();
+		List<Commessa> listaCommesse= new ArrayList<Commessa>();
+		List<FoglioFatturazione> listaFF=new ArrayList<FoglioFatturazione>();
+		Float oreTotOrdine=(float)0.0;
+		Float importoTotOrdine=(float)0.0;
+		Float oreResOrdine=(float)0.0;
+		Float importoResOrdine=(float)0.0;
+		Float oreFatturate=(float)0.0;
+		Float importoFatturato=(float)0.0;
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try{
+			
+			tx=session.beginTransaction();
+			
+			listaOrdini=session.createQuery("select distinct o from Commessa c join c.ordine o where " +
+					"o.statoOrdine=:stato and c.matricolaPM=:pm").setParameter("stato", "A").setParameter("pm", pm).list();
+			
+			for(Ordine o: listaOrdini){
+				
+				oreTotOrdine=oreTotOrdine+Float.valueOf(o.getOreBudget());
+				importoTotOrdine=importoTotOrdine+Float.valueOf(o.getImporto());
+				
+				listaCommesse.addAll(o.getCommessas());
+				for(Commessa c:listaCommesse)
+					listaFF.addAll(c.getFoglioFatturaziones());					
+				
+				for(FoglioFatturazione f:listaFF){
+					oreFatturate=oreFatturate+Float.valueOf(f.getOreFatturare());
+					importoFatturato=importoFatturato+Float.valueOf(f.getImportoRealeFatturato());
+				}
+				
+				listaFF.clear();
+				listaCommesse.clear();
+			}
+			
+			oreResOrdine=oreTotOrdine-oreFatturate;
+			importoResOrdine=importoTotOrdine-importoFatturato;
+			
+			tx.commit();
+			
+			listaParametri[0]=oreTotOrdine;
+			listaParametri[1]=importoTotOrdine;
+			listaParametri[2]=oreResOrdine;
+			listaParametri[3]=importoResOrdine;					
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+			if (tx != null)
+				tx.rollback();
+		
+		}finally{
+			session.close();
+		}
+		
+		return listaParametri;
+	}
+
 	
 	
 }

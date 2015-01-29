@@ -396,7 +396,7 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 
 
 	@Override
-	public boolean setDatiMensileInSession(String operazione, String anno,
+	public boolean setDatiMensileInSession(String operazione, String anno, String pm, String stato,
 			List<RiepilogoMensileOrdiniModel> models) {
 		try {
 			 HttpServletRequest request = this.getThreadLocalRequest();
@@ -405,6 +405,8 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 		     httpSession.setAttribute("operazione", operazione);
 		     httpSession.setAttribute("anno", anno);
 		     httpSession.setAttribute("listaM", models);
+		     httpSession.setAttribute("pm", pm);
+		     httpSession.setAttribute("stato", stato);
 		   	 
 			return true;
 		} catch (Exception e) {
