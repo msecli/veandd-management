@@ -654,15 +654,30 @@ public class PrintDataServlet extends HttpServlet  {
 				List<RiepilogoMensileOrdiniModel> listaMesi= new ArrayList<RiepilogoMensileOrdiniModel>();
 				List<RiepilogoMensileOrdiniJavaBean> listaR= new ArrayList<RiepilogoMensileOrdiniJavaBean>();
 				String anno= new String();
+				String pm= new String();
+				String stato= new String();
+				Float[] listaParametri= new Float[4];
 				
+				//passo il pm e lo stato ordini scelto nella view
+				//calcolo il totale ordini scelti e il residuo
+				//passo al report i quattro valori e li inserisco come variabili e non automaticamente generati
+				
+				pm=(String) httpSession.getAttribute("pm");
+				stato=(String) httpSession.getAttribute("stato");
 				anno=(String) httpSession.getAttribute("anno");
 				lista= (List<RiepilogoMensileOrdiniModel>) httpSession.getAttribute("listaM");
 				listaMesi=ServerUtility.getRiepilogoMensileOrdini(anno, lista);
 				
 				listaR.addAll(ServerUtility.traduciMensileModelToBean(listaMesi));
-							
+				listaParametri=ServerUtility.calcoloParametriOrdini(stato,pm);			
+				
 				Map parameters = new HashMap();
-										
+				parameters.put("oreTotOrdini", listaParametri[0]);
+				parameters.put("importoTotOrdini", listaParametri[1]);
+				parameters.put("oreResOrdini", listaParametri[2]);
+				parameters.put("importoResOrdini", listaParametri[3]);				
+				
+				
 				JasperPrint jasperPrint;
 				FileInputStream fis;
 				BufferedInputStream bufferedInputStream;

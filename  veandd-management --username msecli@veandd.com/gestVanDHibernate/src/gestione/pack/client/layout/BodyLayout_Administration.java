@@ -13,6 +13,7 @@ import gestione.pack.client.layout.panel.PanelEditPasswordUtenti;
 import gestione.pack.client.layout.panel.PanelGestioneCosting;
 import gestione.pack.client.layout.panel.PanelInsertRTV;
 import gestione.pack.client.layout.panel.PanelMensileOrdini;
+import gestione.pack.client.layout.panel.PanelMensileOrdiniNew;
 import gestione.pack.client.layout.panel.PanelPrintAll;
 import gestione.pack.client.layout.panel.PanelProtocolloCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoAnnualeOreDipendenti;

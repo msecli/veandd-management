@@ -80,6 +80,7 @@ public class DatiComboBox {
 		
 		List <String> listaR=new ArrayList<String>();
 		
+		listaR.add("Progetti di Ricerca");
 		listaR.add("Indiretti");
 		listaR.add("Autotelaio");
 		listaR.add("Trasmissioni");
