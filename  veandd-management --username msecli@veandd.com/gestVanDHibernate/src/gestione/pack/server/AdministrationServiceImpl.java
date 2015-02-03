@@ -721,10 +721,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					  prCenter=or.getPrCenter();
 					  bem=or.getBem();
 					  
-					  //TODO
-					  /*if(or.getCommessa()!=null)
-						  numCommessa=or.getCommessa().getNumeroCommessa()+"."+or.getCommessa().getEstensione();*/
-					  //Genero un model per ogni commessa associata all'ordine
+					   //Genero un model per ogni commessa associata all'ordine
 				  
 					  if(or.getDataInizio()!=null)
 						  dataInizio=formatter.format(or.getDataInizio());
@@ -1838,7 +1835,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		try {
 			if (listaC != null) {
-				//TODO cambio ordine
+				
 				for (Commessa c : listaC) {
 					listaNumeriCommesse.add(Integer.valueOf(c.getNumeroCommessa()));
 					o=getOrdineByCommessa(c.getCodCommessa());
@@ -1869,7 +1866,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			}
 			else
 				ServerLogFunction.logOkMessage("getAllCommesseModel", new Date(), "", "Success");								
-		}	
+		}
 		return listaDTO;
 	}
 	
@@ -1882,7 +1879,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		Set<Commessa> listaC = ConverterUtil.getCommesse("Tutte");
 		List<CommessaModel> listaDTO = new ArrayList<CommessaModel>(listaC != null ? listaC.size() : 0);
-				
+		
 		Ordine o= new Ordine();
 		String cognome= new String();
 		cognomePm=cognomePm.substring(0,1).toUpperCase()+cognomePm.substring(1,cognomePm.length());
@@ -1893,7 +1890,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						
 					if(c.getMatricolaPM().compareTo("Tutti")==0){
 						o=getOrdineByCommessa(c.getCodCommessa());
-						//TODO cambio ordine
 						listaDTO.add(ConverterUtil.commesseToModelConverter(c,o));
 					}
 					else{
@@ -1910,14 +1906,14 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			esito=false;
 			errore=e.getMessage();
 			e.printStackTrace();
-		}finally{
+		} finally {
 			if(!esito){
 				ServerLogFunction.logErrorMessage("getAllCommesseModelByPm", new Date(), "", "Error", errore);
 				return null;
 			}
 			else
 				ServerLogFunction.logOkMessage("getAllCommesseModelByPm", new Date(), "", "Success");			
-		}		
+		}
 		return listaDTO;
 	}
 
@@ -1935,19 +1931,11 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			  tx=	session.beginTransaction();
 			  c=(Commessa)session.createQuery("from Commessa where cod_commessa =:idcommessa").setParameter("idcommessa", idCommessa).uniqueResult();
 			  
-			  //TODO prendere l'unico ordine che ha la commessa
 			  if(c.getOrdine()!=null)
-				  //if(c.getOrdine().getCodiceOrdine()!=null)
-					  //if(c.getOrdine().getCodiceOrdine().compareTo("#")!=0)
-						  o=c.getOrdine();
-			  //if(c.getOrdines().iterator().hasNext())
-				 // o=c.getOrdines().iterator().next();
-					  else
-						  o=null;
-				  //else
-					//  o=null;
-			//  else
-			//	  o=null;
+				  o=c.getOrdine();
+			  else
+				  o=null;
+				
 			  tx.commit();
 		     
 		    } catch (Exception e) {
@@ -1955,7 +1943,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				errore=e.getMessage();
 				e.printStackTrace();
 		    	if (tx!=null)
-		    		tx.rollback();		    		    		
+		    		tx.rollback();
 		    }finally{
 		    	if(!esito){
 					ServerLogFunction.logErrorMessage("getOrdineByCommessa", new Date(), String.valueOf("ID commessa ricercata: "+idCommessa), "Error", errore);
@@ -1964,7 +1952,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				/*else
 					ServerLogFunction.logOkMessage("getOrdineByCommessa", new Date(), "", "Success");*/			    	
 		    }
-		
 		 return o;
 	}
 
@@ -1987,8 +1974,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			e.printStackTrace();
 			if (tx!=null)
 	    		tx.rollback();
-			return null;
-		}	
+			return 
+				null;
+		}
 	}
 
 	
@@ -1999,7 +1987,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Boolean esito=true;
 		String errore= new String();
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
-		Transaction tx= null;	
+		Transaction tx= null;
 		Commessa c= new Commessa();
 		Commessa registrata= new Commessa();
 		
@@ -2128,12 +2116,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			  tx=	session.beginTransaction();
 			  c=(Commessa)session.createQuery("from Commessa where cod_commessa =:idcommessa").setParameter("idcommessa", idCommessa).uniqueResult();
 			  
-			  //TODO cambiare delete 
-			  
-			  /*for(Ordine or: c.getOrdines()){
-				  or.setCommessa(null);
-			  }*/
-			  
 			  //elimino la commessa solo se non ha un ordine associato
 			  
 			  if(c.getOrdine()==null)
@@ -2181,8 +2163,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			r = (Rda)session.createQuery("from Rda where codiceRDA= :numRda").setParameter("numRda", numRda).uniqueResult(); //prelevo l'id dell'Rda conoscendo il numero dell'Rda che è comunque univoco	
 			c=(Commessa)session.createQuery("from Commessa where cod_commessa=:idCommessa").setParameter("idCommessa", idCommessa).uniqueResult();	
 			
-			//TODO cambiare salvataggio
-			
+		
 			o.setRda(r);
 			//o.setCommessa(c);
 			
@@ -2240,9 +2221,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			c=(Commessa)session.createQuery("from Commessa where cod_commessa=:idCommessa").setParameter("idCommessa", idCommessa).uniqueResult();
 			o=(Ordine)session.createQuery("from Ordine where codiceOrdine= :numOrdine").setParameter("numOrdine", numOrdine).uniqueResult();
 				
-			//TODO cambiare modo di salvataggio			
-			//o.setCommessa(c);
-			//c.getOrdines().add(o);
 			c.setOrdine(o);
 			o.getCommessas().add(c);
 			
@@ -2320,7 +2298,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			  
 			  for(Commessa c: lista){	
 				  
-				  //TODO cambio tipo di controllo e se una commessa non ha ordine la considero
 				  if(c.getOrdine()==null)	//Se una commessa ha un ordine associato, questa non comparirà nella lista
 					  listaCommesse.add(c.getNumeroCommessa()+"."+c.getEstensione()); //il codice che rappresenta il numero effettivo della Commessa
 				   
@@ -2585,8 +2562,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				  if(c.getNumeroCommessa().compareTo("14071")==0)
 					  System.out.print("");
 				  
-				  //TODO cambio controllo se comessa ha ordine
-					//if(!c.getOrdines().iterator().hasNext()&&c.getStatoCommessa().compareTo("Aperta")==0){
 				  	if(c.getOrdine()==null&&c.getStatoCommessa().compareTo("Aperta")==0){
 						cm=new CommessaModel(c.getCodCommessa(), c.getNumeroCommessa(), "", "", "", c.getEstensione(), 
 								"", "","", "", "", "", "", "", "", "", "", "", "", "", "");
@@ -2672,12 +2647,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				  tipologiaCommessa=c.getTipoCommessa();
 				  oreLavoroCommessa= String.valueOf(c.getOreLavoro());
 				  
-				  //TODO prendo direttamente l' unico ordine che c'è se c'è
+
 				  if(c.getOrdine()!=null){
-				  //if(c.getOrdines().iterator().hasNext()){
-					  //r=c.getOrdines().iterator().next().getRda();
 					  r=c.getOrdine().getRda();
-					  //or=c.getOrdines().iterator().next();
+					  
 					  or=c.getOrdine();
 					  
 					  dataOrdine=or.getDataInizio();
@@ -3227,7 +3200,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			return false;
 		}finally{
 			session.close();
-		}		
+		}
 	}
 
 	
@@ -3245,7 +3218,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String data1= new String();
 		String data2=new String();
 		
-		DateFormat formatter = new SimpleDateFormat("yyyy") ; 
+		DateFormat formatter = new SimpleDateFormat("yyyy"); 
 		anno=formatter.format(giornoRiferimento);
 		formatter = new SimpleDateFormat("MMM",Locale.ITALIAN);
 		mese=formatter.format(giornoRiferimento);
@@ -3264,18 +3237,18 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				
 				foglioOre=(FoglioOreMese) session.createQuery("from FoglioOreMese where id_personale=:id and meseRiferimento=:mese").setParameter("id", p.getId_PERSONALE())
 						.setParameter("mese", data).uniqueResult();
-				formatter = new SimpleDateFormat("yyyy-MM-dd");	
+				formatter = new SimpleDateFormat("yyyy-MM-dd");
 				data1=formatter.format(giornoRiferimento);
-				for(DettaglioOreGiornaliere d:foglioOre.getDettaglioOreGiornalieres()){							
+				for(DettaglioOreGiornaliere d:foglioOre.getDettaglioOreGiornalieres()){
 					data2=formatter.format(d.getGiornoRiferimento());
 					
 					if(data1.compareTo(data2)==0){
 						foglioOre.getDettaglioOreGiornalieres().remove(d);
 						session.delete(d);
 						break;
-					}					
+					}
 				}
-							
+				
 				tx.commit();
 				
 		}catch (Exception e) {
@@ -3352,7 +3325,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						.setParameter("mese", data).uniqueResult();
 						
 				//se è un nuovo mese, e quindi un nuovo giorno
-				if(foglioOre==null){	
+				if(foglioOre==null){
 					foglioOre=new FoglioOreMese();
 					foglioOre.setPersonale(p);
 					foglioOre.setMeseRiferimento(data);
@@ -3362,7 +3335,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						if(foglioOre.equals(fm))
 							duplicato=true;
 					
-					if(!duplicato){		
+					if(!duplicato){
 						p.getFoglioOreMeses().add(foglioOre);				
 						session.save(p);
 						tx.commit();
@@ -3391,8 +3364,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				}
 				
 				else //il mese è già stato creato quindi prelevo il foglio ore del mese
-				{				
-					listaDettOreGiorno.addAll(foglioOre.getDettaglioOreGiornalieres()); 		
+				{
+					listaDettOreGiorno.addAll(foglioOre.getDettaglioOreGiornalieres());
 					//controllo che il giorno sia già presente
 					if(giornoPresente(listaDettOreGiorno, giornoRiferimento)){
 						
@@ -3471,8 +3444,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 
 						createDettaglioIntervalliIU(intervalliIU ,username,giornoRiferimento);
 						createDettaglioIntervalliCommesse(intervalliC, username, giornoRiferimento);
-					}			
-				}			
+					}
+				}
 				return true;
 			
 		} catch (Exception e) {
@@ -6169,12 +6142,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				commessa = a.getCommessa().getNumeroCommessa();
 				estensione = a.getCommessa().getEstensione();
 				
-				//TODO cambio tipo controllo
-				//if(a.getCommessa().getOrdines().size()>0)
 				if(a.getCommessa().getOrdine()!=null)
-					//cliente=a.getCommessa().getOrdines().iterator().next().getRda().getCliente().getRagioneSociale();
 					cliente=a.getCommessa().getOrdine().getRda().getCliente().getRagioneSociale();
-				else cliente="#";
+				else
+					cliente="#";
 				
 				numeroCommessa =(commessa + "." + estensione+" ("+cliente+")"); //una stringa più dettagliata che descriva la commessa
 								
@@ -6248,17 +6219,17 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		List<DettaglioIntervalliCommesse> listaIntervalli= new ArrayList<DettaglioIntervalliCommesse>();
 		RiepilogoOreTotaliCommesse riep= new RiepilogoOreTotaliCommesse();
 		
-		String numeroCommessa= new String();
-		String commessa= new String();
-		String estensione= new String();
+		String numeroCommessa = new String();
+		String commessa = new String();
+		String estensione = new String();
 		//String cliente= new String();
-		String numeroOrdine= new String();
-		String oreLavoro= new String();
-		String oreViaggio= new String();
-		String oreTotMeseLavoro= "0.0";
-		String oreTotMeseViaggio= "0.0";
-		String oreBudget= new String();
-		String flagCompilato="No";
+		String numeroOrdine = new String();
+		String oreLavoro = new String();
+		String oreViaggio = new String();
+		String oreTotMeseLavoro = "0.0";
+		String oreTotMeseViaggio = "0.0";
+		String oreBudget = new String();
+		String flagCompilato ="No";
 		
 		String statoCommessa="Aperta";
 		
@@ -6282,12 +6253,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				commessa = a.getCommessa().getNumeroCommessa();
 				estensione = a.getCommessa().getEstensione();
 				
-				//TODO cambio tipo controllo
-				//if(a.getCommessa().getOrdines().size()>0){
 				if(a.getCommessa().getOrdine()!=null){
-					//cliente=a.getCommessa().getOrdines().iterator().next().getRda().getCliente().getRagioneSociale();
-					//numeroOrdine=a.getCommessa().getOrdines().iterator().next().getCodiceOrdine();
-					//oreBudget=a.getCommessa().getOrdines().iterator().next().getOreBudget();
+					
 					numeroOrdine=a.getCommessa().getOrdine().getCodiceOrdine();
 					oreBudget=a.getCommessa().getOrdine().getOreBudget();
 				}
@@ -6297,7 +6264,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					oreBudget="0.0";
 				}
 				
-				numeroCommessa =commessa; //una stringa più dettagliata che descriva la commessa
+				
+				numeroCommessa = commessa; //una stringa più dettagliata che descriva la commessa
 				
 				listaP=session.createQuery("select distinct p from DettaglioIntervalliCommesse d join d.dettaglioOreGiornaliere g" +
 						" join g.foglioOreMese f join f.personale p" +
@@ -6349,7 +6317,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					oreTotMeseViaggio="0.0";
 					listaR.add(riep);
 					listaAssociazioni.clear();	
-				}				
+				}
 			tx.commit();		
 		} catch (Exception e) {
 			if (tx != null)
@@ -6360,9 +6328,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			session.close();
 		}
 		return listaR;
-	}	
-	
-	
+	}
 	
 
 //------------------------------------------------------FATTURAZIONE---------------------------------------------
@@ -6412,7 +6378,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	    String pattern="0.00";
 	    DecimalFormat decimalFormat= new DecimalFormat(pattern,formatSymbols);
 	    
-		try {			
+		try {
 			data= formatter.parse(meseRif+annoRif);
 						
 		} catch (ParseException e) {
@@ -6481,12 +6447,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 										
 									}
 									listaGiorni.clear();
-									
-									/*//maggiorazione ore strao di 1.20 e diminuzione ore viaggio 0.85
-									if(oreStrao.compareTo("0.00")!=0)
-										oreStrao=decimalFormat.format(Float.valueOf(oreStrao)*1.20);
-									oreTotMeseViaggio=decimalFormat.format(Float.valueOf(oreTotMeseViaggio)*0.85);*/
-									
+																											
 									oreSommaLavoroViaggio = ServerUtility.aggiornaTotGenerale(oreTotMeseLavoro, oreTotMeseViaggio);
 									//tolgo dal totale le eventuali ore di strao
 									oreTotMeseLavoro= ServerUtility.getDifference(oreTotMeseLavoro, oreStrao);				
@@ -6527,8 +6488,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						oreTotStrao="0.00";
 						
 						listaP.clear();
-						
-			
+		
 			}
 			tx.commit();
 			
@@ -6773,8 +6733,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					.setParameter("estensione", estensione).uniqueResult();
 			codCommessa=c.getCodCommessa(); //id commessa
 			
-			//TODO cambiato modo catch ordine
-			//o=(Ordine)session.createQuery("from Ordine where cod_commessa=:id").setParameter("id", codCommessa).uniqueResult();
 			o=c.getOrdine();	
 			
 			//controllo la presenza di una commessa .pa 
@@ -6785,15 +6743,14 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			else
 				esistePa=true;
 						
-			if((esistePa)&&(c.getEscludiDaPa().compareTo("N")==0)){//TODO inserito controllo
+			if((esistePa)&&(c.getEscludiDaPa().compareTo("N")==0)){
 				
 				listaC=(List<Commessa>)session.createQuery("from Commessa where numeroCommessa=:commessa and estensione<>:estensione and statoCommessa<>:stato").setParameter("commessa", commessa)
 						.setParameter("estensione", "pa").setParameter("stato", "Chiusa").list();
 				
 				for(Commessa c1:listaC){
 					if(c1.getEscludiDaPa().compareTo("N")==0) //controllo esclusione da PA per escludere conteccio SAL
-							listaFF.addAll(c1.getFoglioFatturaziones());
-				
+							listaFF.addAll(c1.getFoglioFatturaziones());		
 				}				
 				
 				for(FoglioFatturazione f1:listaFF){
@@ -6880,7 +6837,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					for(FoglioFatturazione ff:listaFF){
 						if(ff.getMeseCorrente().compareTo("Mag2013")!=0)//elimino il mese di maggio in quanto compilato ancora con una modalità non corretta per l'aggiornamento delle ore residue
 							if(ServerUtility.isPrecedente(ff.getMeseCorrente(), mese)){
-								//TODO cambio controllo con check su tutte le possibili commesse dell'ordine
 								
 								if(o!=null)
 									if(ServerUtility.commessaIsIncluded(ff.getCommessa().getCodCommessa(), o.getCommessas())/*&&(ff.getAttivitaOrdine()==idAttivita)*/){
@@ -7277,10 +7233,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					.setParameter("estensione", estensione).uniqueResult();
 			idCommessa=c.getCodCommessa();
 		
-			//TODO cambio tipo controllo
-			//if(c.getOrdines().iterator().hasNext()){//se è presente un ordine
-				//o=c.getOrdines().iterator().next();
-			//}
 			if(c.getOrdine()!=null)
 				o=c.getOrdine();
 			else 
@@ -7476,13 +7428,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				if(tipoCommessa.compareTo("p")==0)
 					pm=pm+" (PROD.)";
 				
-				//TODO cambio tipo controllo se c'è ordine
-							
-				//if(!f.getCommessa().getOrdines().isEmpty()){
 				if(f.getCommessa().getOrdine()!=null&& f.getCommessa().getOrdine().getCodiceOrdine().compareTo("#")!=0){
-					//o=f.getCommessa().getOrdines().iterator().next();
-										
-					
+									
 					o=f.getCommessa().getOrdine();
 					numeroOrdine=o.getCodiceOrdine();
 					oreMargine=ServerUtility.aggiornaTotGenerale(String.valueOf(f.getOreFatturare()), String.valueOf(f.getVariazioneSAL()));
@@ -7725,10 +7672,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				if(c.getFoglioFatturaziones().size()>=0){
 					listaFF.addAll(c.getFoglioFatturaziones());
 					
-					//TODO cambio controllo 
 					if(c.getOrdine()!=null){
-					//if(!c.getOrdines().isEmpty()){
-						//o=c.getOrdines().iterator().next();
+					
 						o=c.getOrdine();
 						if(o.getImporto()!=null)
 							importoO=o.getImporto();
@@ -7749,10 +7694,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						String numMese=f.getMeseCorrente();						
 						numMese=ServerUtility.getNumeroOrdinamentoMese(numMese);
 						
-						//TODO cambio controllo
-						//if(!c.getOrdines().isEmpty()){
 						if(c.getOrdine()!=null){
-							//o=c.getOrdines().iterator().next();
 							o=c.getOrdine();
 							
 							for(AttivitaOrdine a:o.getAttivitaOrdines())
@@ -7797,10 +7739,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						oreMargine="0.00";
 					}	
 					
-					//TODO cambio controllo				
-					//if(!c.getOrdines().isEmpty()){
 					if(c.getOrdine()!=null){
-						//o=c.getOrdines().iterator().next();
 						o=c.getOrdine();
 						//per ogni estensione commessa metto l'eventuale importo/num ore ordine, se c'è!
 						datiModel=new DatiFatturazioneCommessaModel(commessa, estensione, attivita, o.getCodiceOrdine(), "0", "INIZIALI", tariffa, 
@@ -7894,14 +7833,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					
 					if(comm.getEstensione().toLowerCase().compareTo("pa")!=0){	//se non è la .pa la inserisco in lista
 						
-						//TODO cambio controllo
-						//if(comm.getOrdines().size()>0){
 						if(comm.getOrdine()!=null){
-						  //if( c.getOrdine().getCodiceOrdine().compareTo("#")!=0){
-							//numeroOrdine=comm.getOrdines().iterator().next().getCodiceOrdine();
+						  
 							numeroOrdine=comm.getOrdine().getCodiceOrdine();
 							
-							//ordine=comm.getOrdines().iterator().next();
 							ordine=comm.getOrdine();
 							oggettoOrdine=ordine.getDescrizioneAttivita();
 							listaAttOrdine.addAll(ordine.getAttivitaOrdines());
@@ -8014,13 +7949,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						setParameter("numCommessa", numCommessa).setParameter("numEstensione", numEstensione).uniqueResult();
 				attivitaCommessa=c.getDenominazioneAttivita();
 				
-			    //TODO cambio controllo
-			    //if(!c.getOrdines().isEmpty()){
 			    if(c.getOrdine()!=null){
-					//numeroOrdine=c.getOrdines().iterator().next().getCodiceOrdine();
+					
 					numeroOrdine=c.getOrdine().getCodiceOrdine();
-							
-					//ordine=c.getOrdines().iterator().next();
+									
 					ordine=c.getOrdine();
 					oggettoOrdine=ordine.getDescrizioneAttivita();
 					listaAttOrdine.addAll(ordine.getAttivitaOrdines());
@@ -9115,7 +9047,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							listaRO.add(riep);
 							totOre="0.00";
 						}
-				}//commessa			
+				}//commessa
 			}
 			
 			//Aggiungo record anche per commesse con fogli fatturazione con ore di sal scartate
@@ -12079,11 +12011,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 									//check=true;
 							
 								if(d.format(r.getOreTotali()).compareTo(ff.getOreEseguite())==0)
-									check=true;
-								
+									check=true;						
 								riep=new RiepilogoOreDipFatturazione(numeroCommessa, meseRif, "", 0, "", Float.valueOf(r.getOreTotali()), Float.valueOf(ff.getOreEseguite()),
-									(float)0.0, (float)0.00, (float)0.0, check);			
-							
+									(float)0.0, (float)0.00, (float)0.0, check);						
 								listaCheck.add(riep);
 							
 								break;
@@ -12094,7 +12024,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							riep=new RiepilogoOreDipFatturazione(numeroCommessa, meseRif, "", 0, "", (float)0.0, (float)0.0,
 									(float)0.0, (float)0.00, (float)0.0, true);
 							listaCheck.add(riep);
-						}							
+						}
 					
 						check=false;
 						trovato=false;
@@ -12102,7 +12032,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					}
 					
 					else{
-					
 						listaCommesse=(List<Commessa>)session.createQuery("from Commessa where numeroCommessa=:numeroCommessa and " +
 							" estensione<>:estensioneCommessa and statoCommessa=:stato").setParameter("numeroCommessa", numeroCommessa)
 							.setParameter("estensioneCommessa", "pa").setParameter("stato", "Aperta").list();
@@ -12128,7 +12057,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 								riep=new RiepilogoOreDipFatturazione(numeroCommessa, meseRif, "", 0, "", Float.valueOf(r.getOreTotali()), Float.valueOf(oreTotali),
 									(float)0.0, (float)0.00, (float)0.0, check);
 								listaCheck.add(riep);
-							}			
+							}
 
 							check=false;
 							oreTotali="0.00";
@@ -12138,8 +12067,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						}else{
 							riep=new RiepilogoOreDipFatturazione(numeroCommessa, meseRif, "", 0, "", (float)0.0, (float)0.0,
 								(float)0.0, (float)0.00, (float)0.0, true);
-							listaCheck.add(riep);						
-						}					
+							listaCheck.add(riep);
+						}
 					}
 				}
 				tx.commit();
@@ -12182,13 +12111,13 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}catch (Exception e) {
 			e.printStackTrace();
 			if (tx!=null)
-				tx.rollback();				
+				tx.rollback();
 		}finally{
 			session.close();
 		}
-		
 		return false;
 	}
+	
 	
 	private void associaOrdine(Ordine o) {
 		

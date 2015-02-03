@@ -636,8 +636,8 @@ public class PrintDataServlet extends HttpServlet  {
 				byte[] buffer = new byte[1024];
 				int n = 0;
 				while ((n = fin.read(buffer)) != -1) {
-				outStream.write(buffer, 0, n);
-				System.out.println(buffer);
+					outStream.write(buffer, 0, n);
+					System.out.println(buffer);
 				}
 				
 				outStream.flush();
@@ -645,8 +645,8 @@ public class PrintDataServlet extends HttpServlet  {
 				outStream.close();
 				
 			} catch (JRException e) {
-					e.printStackTrace();
-			}								
+				e.printStackTrace();
+			}
 		}
 		else
 			if(operazione.compareTo("STAMPAMENSILE")==0){
@@ -714,8 +714,8 @@ public class PrintDataServlet extends HttpServlet  {
 					byte[] buffer = new byte[1024];
 					int n = 0;
 					while ((n = fin.read(buffer)) != -1) {
-					outStream.write(buffer, 0, n);
-					System.out.println(buffer);
+						outStream.write(buffer, 0, n);
+						System.out.println(buffer);
 					}
 					
 					outStream.flush();
@@ -723,8 +723,8 @@ public class PrintDataServlet extends HttpServlet  {
 					outStream.close();
 					
 				} catch (JRException e) {
-						e.printStackTrace();
-				}	
+					e.printStackTrace();
+				}
 			}
 		
 		else
@@ -815,7 +815,7 @@ public class PrintDataServlet extends HttpServlet  {
 					
 				} catch (JRException e) {
 					e.printStackTrace();
-				}				
+				}
 			}
 		if (operazione.compareTo("STAMPARTV") == 0) {
 
@@ -877,8 +877,7 @@ public class PrintDataServlet extends HttpServlet  {
 		else
 			if(operazione.compareTo("ONE")==0)
 			{
-			//operazione ONE
-				
+			
 			List<RiepilogoDatiOreMeseJavaBean> listaJB= new ArrayList<RiepilogoDatiOreMeseJavaBean>();
 			listaJB= ServerUtility.PrintRiepilogoOreMese(dataRif, sedeOperativa, username);
 			

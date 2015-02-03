@@ -334,10 +334,10 @@ public class PanelMensileOrdini extends LayoutContainer{
 		btnChiudi.setToolTip("Chiudi Ordini");
 		btnChiudi.setIconAlign(IconAlign.TOP);
 		btnChiudi.setSize(26, 26);
-		btnChiudi.addSelectionListener(new SelectionListener<ButtonEvent>() {		
+		btnChiudi.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
-			public void componentSelected(ButtonEvent ce) {		
-						
+			public void componentSelected(ButtonEvent ce) {
+			
 				List<RiepilogoMensileOrdiniModel> listaC= new ArrayList<RiepilogoMensileOrdiniModel>();
 				listaC.addAll(gridRiepOrdini.getSelectionModel().getSelectedItems());
 				 				
@@ -360,10 +360,10 @@ public class PanelMensileOrdini extends LayoutContainer{
  				}
  				caricaTabellaDatiOrdini();
 			}
-		});	
+		});
 		
 		btnPrint=new Button();
-		btnPrint.setSize("55px","25px");	   
+		btnPrint.setSize("55px","25px");
 		btnPrint.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.print24()));
 		btnPrint.setToolTip("Stampa");
 		btnPrint.setIconAlign(IconAlign.TOP);
@@ -425,11 +425,11 @@ public class PanelMensileOrdini extends LayoutContainer{
 		    			 numOrdine=(String)r.get("numeroOrdine");
 		    			 if(numOrdine.contains(campo))
 		    				 storeRes.add(r);	    			 
-		    		 }	    		 
+		    		 }   		 
 		    		 gridRiepOrdini.reconfigure(storeRes, cmRiepOrdini);			 
-		    	 } 
-		     }	    	  	 
-		});		   
+		    	 }
+		     } 
+		});
 		
 		tlbrScelte.add(txtCerca);
 		tlbrScelte.add(smplcmbxStatoOrdini);
