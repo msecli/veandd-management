@@ -13,7 +13,6 @@ import gestione.pack.client.layout.panel.PanelEditPasswordUtenti;
 import gestione.pack.client.layout.panel.PanelGestioneCosting;
 import gestione.pack.client.layout.panel.PanelInsertRTV;
 import gestione.pack.client.layout.panel.PanelMensileOrdini;
-import gestione.pack.client.layout.panel.PanelMensileOrdiniNew;
 import gestione.pack.client.layout.panel.PanelPrintAll;
 import gestione.pack.client.layout.panel.PanelProtocolloCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoAnnualeOreDipendenti;
@@ -514,7 +513,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        	d.setConstrain(false);
 	        	d.show();
 	        	
-	        	}	        
+	        	}
 	      });
 	    cp.add(btnRiepilogoMensile);
 	    
@@ -588,7 +587,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        	d.setButtons("");
 	        	d.setConstrain(false);
 	        	d.show();
-	        }        
+	        }
 	      });
 	    cp.add(btnRiepiloghiSalPcl);
 	    
@@ -625,7 +624,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        	d.setConstrain(false);
 	        	d.show();	        	
 	        }        
-	      });
+	    });
 	    cp.add(btnRiepilogoSaturazione);
 	    
 	    Button btnProtocolloCommesse = new Button();
