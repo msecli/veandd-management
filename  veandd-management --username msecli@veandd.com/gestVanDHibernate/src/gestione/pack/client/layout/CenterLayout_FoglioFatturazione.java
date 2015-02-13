@@ -1067,7 +1067,8 @@ public CenterLayout_FoglioFatturazione(){}
 			txtfldOreEseguiteRegistrate.setFieldLabel("Ore Eseguite");
 			txtfldOreEseguiteRegistrate.setEnabled(true);
 			txtfldOreEseguiteRegistrate.setValue("0.00");
-			txtfldOreEseguiteRegistrate.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
+			txtfldOreEseguiteRegistrate.setRegex("^[-]{0,1}([0-9]+)[.]{1}(0{1,2}|15|30|45)$");
+			//txtfldOreEseguiteRegistrate.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
 			txtfldOreEseguiteRegistrate.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
 			txtfldOreEseguiteRegistrate.addKeyListener(new KeyListener(){
 				
@@ -1201,7 +1202,7 @@ public CenterLayout_FoglioFatturazione(){}
 			txtfldOreDaFatturare.setEnabled(true);
 			txtfldOreDaFatturare.setAllowBlank(false);
 			txtfldOreDaFatturare.setValue("0.00");
-			txtfldOreDaFatturare.setRegex("^([0-9]+).(00|15|30|45)$");		
+			txtfldOreDaFatturare.setRegex("^[-]{0,1}([0-9]+)[.]{1}(0{1,2}|15|30|45)$");		
 			//.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
 			txtfldOreDaFatturare.getMessages().setRegexText("Minuti accettati: 15,30,45");
 			txtfldOreDaFatturare.addKeyListener(new KeyListener(){
@@ -1305,9 +1306,9 @@ public CenterLayout_FoglioFatturazione(){}
 			txtfldVariazioneSAL.setEnabled(true);
 			txtfldVariazioneSAL.setAllowBlank(false);
 			txtfldVariazioneSAL.setValue("0.00");
-			//txtfldVariazioneSAL.setRegex("^([0-9]+).(00|15|30|45)$");		
+			txtfldVariazioneSAL.setRegex("^[-]{0,1}([0-9]+)[.]{1}(0{1,2}|15|30|45)$");		
 			//.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
-			txtfldVariazioneSAL.setRegex("[0-9]+[.]{1}(0|15|30|45)|[-]{1}[0-9]+[.]{1}(0|15|30|45)|[0-9]+[.]{1}[0]{2}|[-]{1}[0-9]+[.]{1}[0]{2}");
+			//txtfldVariazioneSAL.setRegex("[0-9]+[.]{1}(0|15|30|45)|[-]{1}[0-9]+[.]{1}(0|15|30|45)|[0-9]+[.]{1}[0]{2}|[-]{1}[0-9]+[.]{1}[0]{2}");
 			txtfldVariazioneSAL.addKeyListener(new KeyListener(){
 				 public void componentKeyUp(ComponentEvent event) {
 			    	  	if(hasValue(txtfldVariazioneSAL)&&txtfldVariazioneSAL.getValue()!=null){
@@ -1413,8 +1414,9 @@ public CenterLayout_FoglioFatturazione(){}
 			txtfldVariazionePCL.setFieldLabel("Variazione PCL");
 			txtfldVariazionePCL.setEnabled(true);
 			txtfldVariazionePCL.setAllowBlank(false);
-			txtfldVariazionePCL.setValue("0.0");
-			txtfldVariazionePCL.setRegex("[0-9]+[.]{1}(0|15|30|45)|[-]{1}[0-9]+[.]{1}(0|15|30|45)|[0-9]+[.]{1}[0]{2}|[-]{1}[0-9]+[.]{1}[0]{2}");	
+			txtfldVariazionePCL.setValue("0.00");
+			txtfldVariazionePCL.setRegex("^[-]{0,1}([0-9]+)[.]{1}(0{1,2}|15|30|45)$");
+			//txtfldVariazionePCL.setRegex("[0-9]+[.]{1}(0|15|30|45)|[-]{1}[0-9]+[.]{1}(0|15|30|45)|[0-9]+[.]{1}[0]{2}|[-]{1}[0-9]+[.]{1}[0]{2}");	
 			//.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
 			txtfldVariazionePCL.getMessages().setRegexText("Minuti accettati: 0,15,30,45");
 			txtfldVariazionePCL.addKeyListener(new KeyListener(){
@@ -1533,7 +1535,8 @@ public CenterLayout_FoglioFatturazione(){}
 			txtfldOreRimborsoSpese.setEnabled(true);
 			txtfldOreRimborsoSpese.setAllowBlank(false);
 			txtfldOreRimborsoSpese.setValue("0.00");
-			txtfldOreRimborsoSpese.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[-]{1}[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|[-]{1}[0-9]+[.]{1}[0]{1}|0.00|0.0");
+			txtfldOreRimborsoSpese.setRegex("^[-]{0,1}([0-9]+)[.]{1}(0{1,2}|15|30|45)$");
+			//txtfldOreRimborsoSpese.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[-]{1}[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|[-]{1}[0-9]+[.]{1}[0]{1}|0.00|0.0");
 			txtfldOreRimborsoSpese.getMessages().setRegexText("Deve essere un numero nel formato 99.59 o -99.59");
 			txtfldOreRimborsoSpese.addKeyListener(new KeyListener(){
 				 public void componentKeyUp(ComponentEvent event) {
