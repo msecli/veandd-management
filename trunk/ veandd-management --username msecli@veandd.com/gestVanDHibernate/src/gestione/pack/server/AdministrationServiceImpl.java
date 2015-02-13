@@ -3431,7 +3431,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							if(dettOreGiornaliero.equals(dtt))
 								duplicato=true;
 								
-						if(!duplicato){		
+						if(!duplicato){
 							foglioOre.getDettaglioOreGiornalieres().add(dettOreGiornaliero);				
 							session.save(foglioOre);
 							tx.commit();
@@ -6865,12 +6865,12 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					if(importo==null)
 						importo="0.00";
 					
-					if(f==null){				
+					if(f==null){	
 						foglioModel= new FoglioFatturazioneModel(numOrdine,rda, oreOrdine, oreResidueBudget,importo, importoResiduo,
 								Float.valueOf(tariffaUtilizzata), "0.0", sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.00",importoRtv,
 								"0.0", "0.0", "0.0", "", "0", "0.00");
 					}
-					else{		
+					else{
 						sommaVariazioniSal=ServerUtility.getDifference(sommaVariazioniSal, f.getVariazioneSAL());
 						sommaVariazioniPcl=ServerUtility.getDifference(sommaVariazioniPcl, f.getVariazionePCL());
 						foglioModel= new FoglioFatturazioneModel(numOrdine,rda, oreOrdine, oreResidueBudget , importo, importoResiduo, Float.valueOf(f.getTariffaUtilizzata()), f.getOreEseguite(),
@@ -6878,6 +6878,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 								f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione(), f.getOreRimborsoSpese());
 					}
 				}
+				
+				//TODO controllo calcolo totale PCL\SAL (ex. 13032) ordine con più commesse
 				
 			}else{ //Non esiste la Pa
 				String importo="";
@@ -6889,16 +6891,16 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					//provo a beccarlo eventualmente con attivita ordine a 0 se compilato prima dell'ordine
 					f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:id and meseCorrente=:mese and attivitaOrdine=:attivitaOrdine").setParameter("id", codCommessa)
 					.setParameter("mese", mese).setParameter("attivitaOrdine", 0).uniqueResult();
-			
+				
 				listaFF.addAll(c.getFoglioFatturaziones());
 				
 				if(o!=null){
 					
-					/* dall'ID Attivita risalgo alle ore ordine e importo... se l'importo					  
+					/* dall'ID Attivita risalgo alle ore ordine e importo... se l'importo
 					* sulle attività è diverso da 0 considero questo, altrimenti considero quello totale
 					* inoltre devo fare attenzione che se seleziono un'attività che non corrisponde alla commessa selezionata devo comunque verificare 
 					* che non ci siano fogli fatturazione compilati per aggiornare l'ordine
-					* */					
+					* */
 					
 					listaFF.clear();
 					for(Commessa cc:o.getCommessas()){
@@ -6971,11 +6973,11 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				
 				if(o==null){//se non c'è un ordine associato, permetto l'inserimento di eventuali sal pcl
 					tariffaUtilizzata=c.getTariffaSal();//prendo la tariffa della commessa
-					if(f==null){						
+					if(f==null){
 						foglioModel= new FoglioFatturazioneModel("#","#", "0.0", "0.0", "0.0", "0.0",Float.valueOf(tariffaUtilizzata), "0.0", 
 								sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.00", "#", "0.0", "0.0", "0.0", "", "0", "0.00");
 					}
-					else{	
+					else{
 						//sommaVariazioniSal=ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f.getVariazioneSAL());
 						//sommaVariazioniPcl=ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, f.getVariazionePCL());
 						foglioModel= new FoglioFatturazioneModel("#","#", "0.0", "0.0", "0.0", "0.0",Float.valueOf(f.getTariffaUtilizzata()), f.getOreEseguite(),
@@ -7018,7 +7020,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				}
 			}
 			
-			return foglioModel;
+			return 
+					foglioModel;
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -8851,6 +8854,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						listaG.addAll(f.getDettaglioOreGiornalieres());
 				}
 				
+				if(p.getCognome().compareTo("Secli")==0)
+					System.out.print("");
+				
 				for(DettaglioOreGiornaliere d:listaG){
 					if(d.getGiustificativo().compareTo("")!=0)
 						if(d.getGiustificativo().compareTo("06.Malattia")==0 || d.getGiustificativo().compareTo("07.Infortunio")==0)
@@ -8887,6 +8893,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				oreTotaliGiustificativi=ServerUtility.aggiornaTotGenerale(oreTotaliGiustificativi, orePermessoROL);
 				oreTotaliGiustificativi=ServerUtility.aggiornaTotGenerale(oreTotaliGiustificativi, oreLegge104);
 				oreTotaliGiustificativi=ServerUtility.aggiornaTotGenerale(oreTotaliGiustificativi, oreCassa);
+				
+				oreRecupero=ServerUtility.aggiornaTotGenerale(oreRecupero, p.getOreRecupero());
 				
 				riep=new RiepilogoOreAnnualiDipendente(annoI, p.getCognome(), p.getNome(), Float.valueOf(oreOrdinarie), Float.valueOf(oreStraOrdinarie), Float.valueOf(oreRecupero),
 						Float.valueOf(oreViaggio), Float.valueOf(oreTotali), Float.valueOf(oreFerie), Float.valueOf(orePermessoROL), Float.valueOf(oreMutua), Float.valueOf(oreCassa)

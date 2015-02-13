@@ -128,7 +128,7 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 		smplcmbxAnnoInizio.setAllowBlank(false);
 		smplcmbxAnnoInizio.setEnabled(true);
 		smplcmbxAnnoInizio.setTriggerAction(TriggerAction.ALL);
-		smplcmbxAnnoInizio.setSimpleValue(anno);
+		smplcmbxAnnoInizio.setSimpleValue("2013");
 		smplcmbxAnnoInizio.setWidth(100);
 		tlbrOperazioni.add(smplcmbxAnnoInizio);
 		
@@ -139,7 +139,7 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 		smplcmbxMeseInizio.setAllowBlank(false);
 		smplcmbxMeseInizio.setEnabled(true);
 		smplcmbxMeseInizio.setTriggerAction(TriggerAction.ALL);
-		smplcmbxMeseInizio.setSimpleValue(mese);
+		smplcmbxMeseInizio.setSimpleValue("Marzo");
 		smplcmbxMeseInizio.setWidth(100);
 		tlbrOperazioni.add(smplcmbxMeseInizio);
 		
@@ -254,15 +254,15 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 		}	
 	  	
 		GroupSummaryView summary = new GroupSummaryView();  
-	    summary.setForceFit(true);  
+	    summary.setForceFit(true);
 	    summary.setShowGroupedColumn(false);
 	    summary.setStartCollapsed(false);
 												
 		store.setDefaultSort("cognome", SortDir.ASC);
 		store.groupBy("anno");
-		 
-		gridRiepilogo= new EditorGrid<RiepilogoOreAnnualiDipendente>(store, cmRiepilogo);  
-		gridRiepilogo.setBorders(false);  
+		
+		gridRiepilogo= new EditorGrid<RiepilogoOreAnnualiDipendente>(store, cmRiepilogo);
+		gridRiepilogo.setBorders(false);
 		gridRiepilogo.setStripeRows(true);  
 		gridRiepilogo.setColumnLines(true);  
 		gridRiepilogo.setColumnReordering(true);
