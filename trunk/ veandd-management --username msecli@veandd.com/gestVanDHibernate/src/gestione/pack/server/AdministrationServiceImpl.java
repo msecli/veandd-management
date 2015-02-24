@@ -59,6 +59,7 @@ import gestione.pack.client.model.GiorniFestiviModel;
 import gestione.pack.client.model.GiustificativiModel;
 import gestione.pack.client.model.IntervalliCommesseModel;
 import gestione.pack.client.model.IntervalliIUModel;
+import gestione.pack.client.model.OffertaModel;
 import gestione.pack.client.model.PeriodoSbloccoModel;
 import gestione.pack.client.model.PersonaleAssociatoModel;
 import gestione.pack.client.model.PersonaleModel;
@@ -509,7 +510,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						listaNomi.add(personaM);		
 				if(ruolo.compareTo("PM")!=0)//se non è un PM a richiederlo allora ci saranno tutti i nomi
 				*/
-				listaNomi.add(personaM);			
+				listaNomi.add(personaM);
 			  }
 		    } catch (Exception e) {
 		    	esito=false;
@@ -522,13 +523,17 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		        session.close();
 		        if(!esito){
 		        	ServerLogFunction.logErrorMessage("getListaDipendentiModel", new Date(), "", "Error", errore);
-		        	return null;
+		        	return 
+		        		null;
 		        }
 		        else
 		        	ServerLogFunction.logOkMessage("getListaDipendentiModel", new Date(), "", "Success");
-		    }			
+		    }
 		return listaNomi;
 	}
+	
+	
+	
 	
 //--------------------------------------------------------------------------------------------------------------
 
@@ -585,7 +590,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 	
 	
-	public List<RdaModel> getAllRdaModel() throws IllegalArgumentException {		
+	public List<RdaModel> getAllRdaModel() throws IllegalArgumentException {
 		
 		Boolean esito=true;
 		String errore= new String();
@@ -808,6 +813,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		Rda r=new Rda();
 		Cliente c= new Cliente();
+		Offerta o= new Offerta();
 		
 		int id;
 		
@@ -818,38 +824,64 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			//non potendo fare riferimento al numero Rdo come identificatore univoco, prelevo l'ultimo id e 
 			tx=session.beginTransaction();
 			
-			c = (Cliente)session.createQuery("from Cliente where ragioneSociale= :ragSociale").setParameter("ragSociale", cliente).uniqueResult();	
+			//faccio un check sul numero di offerta per vedere se è già presente ed eventualmente procedo all'inserimento dei dati del solo ordine
 			
-			//Per le query native usare i nomi reali delle tabelle
-			if(session.createSQLQuery("SELECT MAX(NUMERO_RDA) from rda ").uniqueResult()!=null)
-				id=(int)session.createSQLQuery("SELECT MAX(NUMERO_RDA) from rda ").uniqueResult();	
-			else id=1;
+			o = (Offerta)session.createQuery("from Offerta where codiceOfferta=:codiceOfferta").setParameter("codiceOfferta", numOfferta).uniqueResult();
 			
-			r.setCliente(c);
-			r.setCodiceRDA(numRdo);
-			r.setNumeroRda(id+1);
-			
-			c.getRdas().add(r);
-			
-			session.save(c);
-			
-			tx.commit();
-			
-			//TODO aggiungere dei check o boolean
-			insertDataOfferta(numOfferta, id+1, dataOfferta, descrizione, importo);
-			insertDataOrdine(numOrdine, id+1, dataInizio, dataFine, descrizione, "0.00", numRisorse, oreDisp, oreRes, importoOrdine, importoResiduoOrdine);
-			
-			for(TariffaOrdineModel trf:listaTar){
-				AttivitaOrdine att=new AttivitaOrdine();
-				att.setDescrizioneAttivita((String)trf.get("descrizione"));
-				att.setTariffaAttivita((String)trf.get("tariffaAttivita"));
-				att.setOreOrdine(Float.valueOf((Float)trf.get("oreOrdine")));
-				att.setOreResidueOrdine(Float.valueOf((Float)trf.get("oreResidueOrdine")));
-				att.setImportoOrdine(Float.valueOf((Float)trf.get("importoOrdine")));
-				att.setImportoResiduoOrdine(Float.valueOf((Float)trf.get("importoResiduoOrdine")));
+			if(o==null){
+				c = (Cliente)session.createQuery("from Cliente where ragioneSociale= :ragSociale").setParameter("ragSociale", cliente).uniqueResult();	
 				
-				insertTariffeOrdine(numOrdine, att);
+				//Per le query native usare i nomi reali delle tabelle
+				if(session.createSQLQuery("SELECT MAX(NUMERO_RDA) from rda ").uniqueResult()!=null)
+					id=(int)session.createSQLQuery("SELECT MAX(NUMERO_RDA) from rda ").uniqueResult();	
+				else id=1;
+				
+				r.setCliente(c);
+				r.setCodiceRDA(numRdo);
+				r.setNumeroRda(id+1);
+				
+				c.getRdas().add(r);
+				
+				session.save(c);
+				
+				tx.commit();
+				
+				insertDataOfferta(numOfferta, id+1, dataOfferta, descrizione, importo);
+				insertDataOrdine(numOrdine, id+1, dataInizio, dataFine, descrizione, "0.00", numRisorse, 
+						oreDisp, oreRes, importoOrdine, importoResiduoOrdine);
+				
+				for(TariffaOrdineModel trf:listaTar){
+					AttivitaOrdine att=new AttivitaOrdine();
+					att.setDescrizioneAttivita((String)trf.get("descrizione"));
+					att.setTariffaAttivita((String)trf.get("tariffaAttivita"));
+					att.setOreOrdine(Float.valueOf((Float)trf.get("oreOrdine")));
+					att.setOreResidueOrdine(Float.valueOf((Float)trf.get("oreResidueOrdine")));
+					att.setImportoOrdine(Float.valueOf((Float)trf.get("importoOrdine")));
+					att.setImportoResiduoOrdine(Float.valueOf((Float)trf.get("importoResiduoOrdine")));
+					
+					insertTariffeOrdine(numOrdine, att);
+				}
+			}else{
+				
+				r=o.getRda();
+				r.setCodiceRDA(numRdo);
+				
+				insertDataOrdine(numOrdine, o.getRda().getNumeroRda(), dataInizio, dataFine, descrizione, "0.00", 
+						numRisorse, oreDisp, oreRes, importoOrdine, importoResiduoOrdine);
+				for(TariffaOrdineModel trf:listaTar){
+					AttivitaOrdine att=new AttivitaOrdine();
+					att.setDescrizioneAttivita((String)trf.get("descrizione"));
+					att.setTariffaAttivita((String)trf.get("tariffaAttivita"));
+					att.setOreOrdine(Float.valueOf((Float)trf.get("oreOrdine")));
+					att.setOreResidueOrdine(Float.valueOf((Float)trf.get("oreResidueOrdine")));
+					att.setImportoOrdine(Float.valueOf((Float)trf.get("importoOrdine")));
+					att.setImportoResiduoOrdine(Float.valueOf((Float)trf.get("importoResiduoOrdine")));
+					
+					insertTariffeOrdine(numOrdine, att);
+				}	
 			}
+			
+			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -897,7 +929,64 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}
 	}
 		
-
+	
+	@Override
+	public boolean insertNewOffertaWithRda(int i, Integer idCliente,
+			String numeroOfferta, String ragioneSociale, Date dataOfferta,
+			String descrizione, String importo) throws IllegalArgumentException {
+		
+		Rda r=new Rda();
+		Offerta o= new Offerta();
+		Cliente c= new Cliente();
+		Integer id= 0;
+		
+		//TODO
+		
+		Boolean esito=true;
+		String errore= new String();
+		
+		Session session= MyHibernateUtil.getSessionFactory().getCurrentSession();
+		Transaction tx= null;	
+		
+		try {
+			
+			tx=session.beginTransaction();		
+		
+			c = (Cliente)session.createQuery("from Cliente where ragioneSociale= :idCliente").setParameter("idCliente", ragioneSociale).uniqueResult();
+		
+			if(session.createSQLQuery("SELECT MAX(NUMERO_RDA) from rda ").uniqueResult()!=null)
+				id=(int)session.createSQLQuery("SELECT MAX(NUMERO_RDA) from rda ").uniqueResult();	
+			else id=1;
+			
+			r.setCliente(c);
+			r.setCodiceRDA("");
+			r.setNumeroRda(id+1);
+			
+			c.getRdas().add(r);
+			
+			session.save(c);
+			
+			tx.commit();
+			
+			insertDataOfferta(numeroOfferta, id+1, dataOfferta, descrizione, importo);
+	    		
+		} catch (Exception e) {
+			esito=false;
+			errore=e.getMessage();
+			e.printStackTrace();	
+			if (tx!=null)
+	    		tx.rollback();				
+		}finally{
+			//session.close();
+			if(!esito)
+				ServerLogFunction.logErrorMessage("insertNewOffertaWithRda", new Date(), "", "Error", errore);
+	    	else
+	    		ServerLogFunction.logOkMessage("insertNewOffertaWithRda", new Date(), "", "Success");				
+		}			
+		return esito;
+	}
+	
+	
 	private void insertDataOrdine(String numOrdine, int id,
 			Date dataInizio, Date dataFine, String descrizione, String tariffa,
 			String numRisorse, String oreDisp, String oreRes, String importoOrdine, String importoResiduoOrdine) {
@@ -906,6 +995,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		Rda r=new Rda();
 		Ordine o= new Ordine();
+		Offerta of= new Offerta();
+		
 		float oreResidue;
 		float oreOrdine;
 		oreOrdine=Float.valueOf(oreDisp);
@@ -937,6 +1028,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			o.setStatoOrdine("A");
 			o.setImporto(importoOrdine);
 			o.setImportoResiduo(importoResiduoOrdine);
+			
+			of=r.getOffertas().iterator().next();
+			of.setStatoOfferta("A");
 			
 			r.getOrdines().add(o);
 		    
@@ -980,6 +1074,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			o.setDescrizioneTecnica(descrizione);
 			o.setImporto(importo);
 			o.setDataRedazione(dataOfferta);
+			o.setStatoOfferta("P");
 			
 			r.getOffertas().add(o);
 		    
@@ -1555,6 +1650,70 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}
 		return listaRM;
 	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<OffertaModel> getAllOfferteModel(String stato)
+			throws IllegalArgumentException {
+		
+		Boolean esito=true;
+		String errore= new String();
+		List<Offerta> lista=new ArrayList<Offerta>();
+		List<OffertaModel> listaM= new ArrayList<OffertaModel>();
+		OffertaModel om= new OffertaModel();			
+		Cliente c= new Cliente();
+		ClienteModel cM=new ClienteModel();		
+		
+		SimpleDateFormat formatter =new SimpleDateFormat("yyyy-MM-dd",Locale.ITALIAN);	
+		String dataOfferta=new String();
+				
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+			
+		try {
+			  tx=session.beginTransaction();
+			  
+			  if(stato.compareTo("P")==0)
+				  lista=(List<Offerta>)session.createQuery("from Offerta where statoOfferta=:stato").setParameter("stato", "P").list();
+			  else
+				  lista=(List<Offerta>)session.createQuery("from Offerta where statoOfferta<>:stato").setParameter("stato", "C").list();
+			  
+			  for(Offerta o:lista){
+				  
+				  dataOfferta=formatter.format(o.getDataRedazione());
+				  
+				  c=o.getRda().getCliente();
+				  
+				  cM=new ClienteModel(c.getCodCliente(), c.getRagioneSociale());
+				  
+				  om=new OffertaModel(o.getNumeroOfferta(), o.getRda().getCliente().getCodCliente(),
+						  o.getCodiceOfferta(), o.getRda().getCliente().getRagioneSociale(), dataOfferta,
+						  o.getDescrizioneTecnica(), o.getImporto(), o.getStatoOfferta(), cM);
+				  
+				  
+				  listaM.add(om);
+			  }
+			  
+			  tx.commit();		  
+			  
+		    } catch (Exception e) {
+		    	esito=false;
+		    	e.printStackTrace();
+		    	errore=e.getMessage();
+		    	if (tx!=null)
+		    		tx.rollback();		    		    	
+		    }finally{
+		    	session.close();
+		    	if(!esito){
+		    		ServerLogFunction.logErrorMessage("getAllOfferteModel", new Date(), "", "Error", errore);
+			    	return null;
+		    	}else
+		    		ServerLogFunction.logOkMessage("getAllOfferteModel", new Date(), "", "Success");
+		    }		
+		return listaM;
+	}
+	
 //---------------------------------------------------------------------------------------
 	
 	
@@ -4535,6 +4694,80 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	}
 
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<RiepilogoOreDipFatturazione> riepilogoOreCartellino(
+			String data, String sede) throws IllegalArgumentException {
+		
+		List<RiepilogoOreDipFatturazione> listaR= new ArrayList<RiepilogoOreDipFatturazione>();
+		RiepilogoOreDipFatturazione riep= new RiepilogoOreDipFatturazione();
+		List<Personale> listaP= new ArrayList<Personale>();
+		List<FoglioOreMese> listaF=new ArrayList<FoglioOreMese>();
+		List<DettaglioOreGiornaliere> listaD=new ArrayList<DettaglioOreGiornaliere>();
+		List<DettaglioIntervalliCommesse> listaC= new ArrayList<DettaglioIntervalliCommesse>();
+		
+		Float oreLavoro=(float)0.0;
+		Float oreViaggio=(float)0.0;
+		Float oreTotali=(float)0.0;
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {
+			
+			tx = session.beginTransaction();	
+			
+			listaP=(List<Personale>)session.createQuery("from Personale where sedeOperativa=:sede")
+					.setParameter("sede", sede).list();
+					
+			for(Personale p: listaP){
+				
+				listaF.addAll(p.getFoglioOreMeses());
+				for(FoglioOreMese f:listaF){
+					if(f.getMeseRiferimento().compareTo(data)==0){
+						listaD.addAll(f.getDettaglioOreGiornalieres());
+						
+						for(DettaglioOreGiornaliere d:listaD)
+							listaC.addAll(d.getDettaglioIntervalliCommesses());
+							
+						for(DettaglioIntervalliCommesse c:listaC){
+								oreLavoro=oreLavoro+Float.valueOf(ServerUtility.getOreCentesimi(c.getOreLavorate()));
+								oreViaggio=oreViaggio+Float.valueOf(ServerUtility.getOreCentesimi(c.getOreViaggio()));
+						}
+							
+						oreTotali=oreLavoro+oreViaggio;
+						riep= new RiepilogoOreDipFatturazione("", data, "", p.getId_PERSONALE(), 
+									p.getCognome()+" "+p.getNome(), oreLavoro, oreViaggio, (float)0.0, oreTotali , (float)0.00, false);
+						listaR.add(riep);
+						break;
+					}
+					oreLavoro=(float)0.0;
+					oreViaggio=(float)0.0;
+					oreTotali=(float)0.0;
+				}
+				listaD.clear();
+				listaF.clear();
+				listaC.clear();
+				oreLavoro=(float)0.0;
+				oreViaggio=(float)0.0;
+				oreTotali=(float)0.0;
+			}
+			
+			tx.commit();
+					
+		} catch (Exception e) {
+		if (tx != null)
+			tx.rollback();
+		e.printStackTrace();
+		return null;
+		} finally {
+			session.close();
+		}			
+		
+		return listaR;
+	}
+	
+
 	@Override
 	public List<RiepilogoFoglioOreModel> getRiepilogoMeseFoglioOre(String username, Date dataRif) {
 		
@@ -6417,6 +6650,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				for (Personale p : listaP)
 					 // if(p.getStatoRapporto().compareTo("Cessato")!=0)
 						if(p.getGruppoLavoro().compareTo("Indiretti")!=0){ // per ogni dipendente in questa commessa selezioni i fogli ore del mese desiderato
+							
+							if(p.getCognome().compareTo("Giarrizzo")==0)
+								System.out.print("");
+							
 							dipendente = p.getCognome() + " " + p.getNome();
 							
 							idDip=p.getId_PERSONALE();
@@ -6480,7 +6717,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						
 						if(Float.valueOf(oreTotCommessa)!=0){
 							riep = new RiepilogoOreDipFatturazione(numeroCommessa, "", "", 0, "_TOTALE", Float.valueOf(oreTotLavoroCommessa), 
-								Float.valueOf(oreTotViaggioCommessa),Float.valueOf(oreTotStrao), Float.valueOf(oreTotCommessa),Float.valueOf("0.00"), true);
+								Float.valueOf(oreTotViaggioCommessa), Float.valueOf(oreTotStrao), Float.valueOf(oreTotCommessa),Float.valueOf("0.00"), true);
 						listaR.add(riep);}
 						oreTotLavoroCommessa="0.0";
 						oreTotViaggioCommessa="0.0";
@@ -8723,6 +8960,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 									oreSal= oreSal + Float.valueOf(ServerUtility.getOreCentesimi(f1.getVariazioneSAL()));
 									orePcl= orePcl + Float.valueOf(ServerUtility.getOreCentesimi(f1.getVariazionePCL()));
 									
+									
+									//TODO prendere la tariffa delle singole commesse
 									importoSal= importoSal + ServerUtility.calcolaImporto(c_pa.getTariffaSal(), f1.getVariazioneSAL());
 									importoPcl= importoPcl + ServerUtility.calcolaImporto(c_pa.getTariffaSal(), f1.getVariazionePCL());
 								}
@@ -8738,9 +8977,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							if(importoSal!=(float)0.00 || importoPcl!=(float)0.00){
 								riepM= new RiepilogoSALPCLModel(matricolaPM, commessa, "", cliente, "", "", (float)0.00, (oreSal), 
 									orePcl, "", importoSal, importoPcl, (float)0.00, (float)0.00);
-								listaM.add(riepM);	
+								listaM.add(riepM);
 								importoSal=(float)0.00;
-								importoPcl=(float)0.00;								
+								importoPcl=(float)0.00;			
 								oreSal=(float)0.00;
 								orePcl=(float)0.00;
 							}	
@@ -9098,12 +9337,14 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		RiepilogoOreNonFatturabiliModel riep;
 		List<RiepilogoOreNonFatturabiliModel> listaRO= new ArrayList<RiepilogoOreNonFatturabiliModel>();
 		List<Personale> listaP= new ArrayList<Personale>();	
-		List<Commessa> listaCommAss= new ArrayList<Commessa>();
+		List<CommessaModel> listaCommAss= new ArrayList<CommessaModel>();
 		List<String> listaMesiConsiderati= new ArrayList<String>();
 		List<DettaglioIntervalliCommesse> listaDettComm= new ArrayList<DettaglioIntervalliCommesse>();
 		List<DettaglioIntervalliCommesse> listaDettCommAll= new ArrayList<DettaglioIntervalliCommesse>();
+		List<FoglioOreMese> listaF= new ArrayList<FoglioOreMese>();
+		List<DettaglioOreGiornaliere> listaD= new ArrayList<DettaglioOreGiornaliere>();
 		
-		CostoAzienda costoP= new CostoAzienda();		
+		CostoAzienda costoP= new CostoAzienda();
 		
 		String totOreCommMese="0.00";
 		String totMesi[]= new String[12];
@@ -9129,148 +9370,81 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			else{
 				listaMesiConsiderati.add(meseRif+data);
 				indiceMese=ServerUtility.getIndiceMese(meseRif);
-			}		
+			}
 			
-			/*for(Personale p:listaP){
-				
-				if(!p.getAssociazionePtoas().isEmpty())
-					listaAss.addAll(p.getAssociazionePtoas());
-				else 
-					continue;
-				
-				//considero tutte le commesse associate al dipendente considerato
-				for(AssociazionePtoA ass:listaAss)
-					listaCommAss.add(ass.getAttivita().getCommessa());
-								
-					for(Commessa c:listaCommAss){
-						if(c.getTipoCommessa().compareTo("i")==0){
-							for(String mese:listaMesiConsiderati){
-						
-								listaDettComm=session.createQuery("select d from DettaglioIntervalliCommesse d join d.dettaglioOreGiornaliere g " +
-									" join g.foglioOreMese f " +
-									" join f.personale p where p.ID_PERSONALE =:idP " + 
-									" and d.numeroCommessa=:numCommessa and d.estensioneCommessa=:estensione" +
-									" and f.meseRiferimento=:mese").setParameter("numCommessa", c.getNumeroCommessa()).setParameter("estensione", c.getEstensione())
-									.setParameter("idP", p.getId_PERSONALE()).setParameter("mese", mese).list();										
-						
-								for(DettaglioIntervalliCommesse d:listaDettComm){
-									totOreCommMese=ServerUtility.aggiornaTotGenerale(totOreCommMese, d.getOreLavorate());
-									totOreCommMese=ServerUtility.aggiornaTotGenerale(totOreCommMese, d.getOreViaggio());
-								}
-									
-								totOreCommMese=ServerUtility.getOreCentesimi(totOreCommMese);
-								
-								totMesi[listaMesiConsiderati.indexOf(mese)]=totOreCommMese;
-								totOreCommMese="0.00";
-								listaDettComm.clear();						
-							}//mesi	
-							
-							for(int i=0; i<12;i++)
-								totOre=df.format(Float.valueOf(totOre)+Float.valueOf(totMesi[i]));
-							
-							if(p.getCostoAziendas().iterator().hasNext()){
-								costoP=p.getCostoAziendas().iterator().next();
-								
-								//se non carico i costi mi darà errore!!!
-								costoOrario=df.format(Float.valueOf(costoP.getCostoAnnuo())/Float.valueOf(costoP.getOrePianificate()));		
-								
-								costoEffettivo=Float.valueOf(totOre)* Float.valueOf(costoOrario);
-							}else
-							{
-								costoOrario="0.00";
-								costoEffettivo=(float)0;
-							}
-							
-							if(Float.valueOf(totOre)!=0){							
-								riep=new RiepilogoOreNonFatturabiliModel(p.getSedeOperativa(), p.getGruppoLavoro(), c.getAttivitas().iterator().next().getDescrizioneAttivita()
-									, p.getCognome()+" "+ p.getNome(), Float.valueOf(totMesi[0]), Float.valueOf(totMesi[1]), Float.valueOf(totMesi[2]), Float.valueOf(totMesi[3]), Float.valueOf(totMesi[4])
-									, Float.valueOf(totMesi[5]), Float.valueOf(totMesi[6]), Float.valueOf(totMesi[7]), Float.valueOf(totMesi[8]), Float.valueOf(totMesi[9]), Float.valueOf(totMesi[10]), 
-									Float.valueOf(totMesi[11]), costoOrario, Float.valueOf(totOre), costoEffettivo);
-								listaRO.add(riep);
-								totOre="0.00";
-							}
-						}
-					}//commessa
-				
-				listaCommAss.clear();
-				listaAss.clear();			
-			}	//personale	*/
 			
 			for(int k=0;k<=11;k++)
 				totMesi[k]="0.00";
 			
-			listaCommAss=(List<Commessa>)session.createQuery("from Commessa where tipoCommessa=:tipo").setParameter("tipo", "i").list();
+			//listaCommAss=(List<Commessa>)session.createQuery("from Commessa where tipoCommessa=:tipo").setParameter("tipo", "i").list();
 			
-			for(Commessa c:listaCommAss){
-				for(String mese:listaMesiConsiderati){
-					
-					listaDettComm=session.createQuery("select d from DettaglioIntervalliCommesse d join d.dettaglioOreGiornaliere g " +
-							" join g.foglioOreMese f where" +
-							" d.numeroCommessa=:numCommessa and d.estensioneCommessa=:estensione" +
-							" and f.meseRiferimento=:mese").setParameter("numCommessa", c.getNumeroCommessa())
-							.setParameter("estensione", c.getEstensione())
-							.setParameter("mese", mese).list();			
-															
-					for(DettaglioIntervalliCommesse d:listaDettComm)					
-						//prendo tutti i dip che hanno lavorato su quella commessa nei mesi considerati
-						if(ServerUtility.isNotIncludedPersonale(listaP, d.getDettaglioOreGiornaliere().getFoglioOreMese().getPersonale()))
-							listaP.add(d.getDettaglioOreGiornaliere().getFoglioOreMese().getPersonale());
-					
-					listaDettCommAll.addAll(listaDettComm);
-				}
-			}						
-						
-			for(Personale p:listaP){
-				if(p.getGruppoLavoro().compareTo("Indiretti")==0)
-					for(Commessa c:listaCommAss){
-						for(String mese:listaMesiConsiderati){
-							for(DettaglioIntervalliCommesse d:listaDettCommAll){
+			listaP=(List<Personale>)session.createQuery("from Personale where gruppoLavoro=:gruppo").setParameter("gruppo", "Indiretti").list();
 								
-								if(d.getNumeroCommessa().compareTo(c.getNumeroCommessa())==0 && d.getEstensioneCommessa().compareTo(c.getEstensione())==0
-										&& mese.compareTo(d.getDettaglioOreGiornaliere().getFoglioOreMese().getMeseRiferimento())==0
-										&& p.getId_PERSONALE()==d.getDettaglioOreGiornaliere().getFoglioOreMese().getPersonale().getId_PERSONALE() ){
-									totOreCommMese=ServerUtility.aggiornaTotGenerale(totOreCommMese, d.getOreLavorate());
-									totOreCommMese=ServerUtility.aggiornaTotGenerale(totOreCommMese, d.getOreViaggio());
-											
+			for(Personale p:listaP){
+				listaF.addAll(p.getFoglioOreMeses());
+				for(FoglioOreMese f:listaF){
+						if(ServerUtility.isIncluded(f, listaMesiConsiderati)){
+							listaD.addAll(f.getDettaglioOreGiornalieres());
+							
+							for(DettaglioOreGiornaliere dd:listaD)
+								listaDettCommAll.addAll(dd.getDettaglioIntervalliCommesses());
+							
+							listaCommAss=ServerUtility.getDistinctCommesse(listaDettCommAll);
+							
+							for(CommessaModel c: listaCommAss){
+								//for(String mese:listaMesiConsiderati)
+									for(DettaglioIntervalliCommesse d:listaDettCommAll){													
+										if(d.getNumeroCommessa().compareTo(c.getNumeroCommessa())==0 && d.getEstensioneCommessa().compareTo(c.getEstensione())==0
+											//&& mese.compareTo(d.getDettaglioOreGiornaliere().getFoglioOreMese().getMeseRiferimento())==0
+											&& p.getId_PERSONALE()==d.getDettaglioOreGiornaliere().getFoglioOreMese().getPersonale().getId_PERSONALE() ){
+												totOreCommMese=ServerUtility.aggiornaTotGenerale(totOreCommMese, d.getOreLavorate());
+												totOreCommMese=ServerUtility.aggiornaTotGenerale(totOreCommMese, d.getOreViaggio());											
+										}
+									}
+								totOreCommMese=ServerUtility.getOreCentesimi(totOreCommMese);
+							
+								if(meseRif.compareTo("Tutti")==0)
+									totMesi[listaMesiConsiderati.indexOf(f.getMeseRiferimento())]=totOreCommMese;
+								else
+									totMesi[indiceMese]=totOreCommMese;
+								
+								totOreCommMese="0.00";
+						
+								for(int i=0; i<12;i++)
+								if(totMesi[i]!=null)
+									totOre=df.format(Float.valueOf(totOre)+Float.valueOf(totMesi[i]));
+								else
+									totOre=df.format(Float.valueOf(totOre)+Float.valueOf("0.00"));
+										
+								if(p.getCostoAziendas().iterator().hasNext()){
+									costoP=p.getCostoAziendas().iterator().next();
+									costoEffettivo=Float.valueOf(totOre)* Float.valueOf(costoOrario);
+								}else
+									{
+									costoOrario="0.00";
+									costoEffettivo=(float)0;
+									}
+						
+								if(Float.valueOf(totOre)!=0){
+
+									riep=new RiepilogoOreNonFatturabiliModel(p.getSedeOperativa(), p.getGruppoLavoro(), c.getNumeroCommessa()+"."+c.getEstensione(),
+										 p.getCognome()+" "+ p.getNome(), Float.valueOf(totMesi[0]), Float.valueOf(totMesi[1]), Float.valueOf(totMesi[2]), Float.valueOf(totMesi[3]), Float.valueOf(totMesi[4])
+										, Float.valueOf(totMesi[5]), Float.valueOf(totMesi[6]), Float.valueOf(totMesi[7]), Float.valueOf(totMesi[8]), Float.valueOf(totMesi[9]), Float.valueOf(totMesi[10]), 
+										Float.valueOf(totMesi[11]), costoOrario, Float.valueOf(totOre), costoEffettivo);
+									listaRO.add(riep);
+									totOre="0.00";
 								}
 							}
-							totOreCommMese=ServerUtility.getOreCentesimi(totOreCommMese);
-							
-							if(meseRif.compareTo("Tutti")==0)
-								totMesi[listaMesiConsiderati.indexOf(mese)]=totOreCommMese;
-							else
-								totMesi[indiceMese]=totOreCommMese;
-														
-							totOreCommMese="0.00";						
-						}//mesi	
+						}
+				}
+				listaD.clear();
+				listaDettCommAll.clear();
+				listaCommAss.clear();
+				
+				listaF.clear();
 						
-						for(int i=0; i<12;i++)
-							if(totMesi[i]!=null)
-								totOre=df.format(Float.valueOf(totOre)+Float.valueOf(totMesi[i]));
-							else
-								totOre=df.format(Float.valueOf(totOre)+Float.valueOf("0.00"));
-										
-						if(p.getCostoAziendas().iterator().hasNext()){
-							costoP=p.getCostoAziendas().iterator().next();
-							costoEffettivo=Float.valueOf(totOre)* Float.valueOf(costoOrario);
-						}else
-							{
-							costoOrario="0.00";
-							costoEffettivo=(float)0;
-							}
-						
-						if(Float.valueOf(totOre)!=0){
-					
-							riep=new RiepilogoOreNonFatturabiliModel(p.getSedeOperativa(), p.getGruppoLavoro(), c.getDenominazioneAttivita()
-								, p.getCognome()+" "+ p.getNome(), Float.valueOf(totMesi[0]), Float.valueOf(totMesi[1]), Float.valueOf(totMesi[2]), Float.valueOf(totMesi[3]), Float.valueOf(totMesi[4])
-								, Float.valueOf(totMesi[5]), Float.valueOf(totMesi[6]), Float.valueOf(totMesi[7]), Float.valueOf(totMesi[8]), Float.valueOf(totMesi[9]), Float.valueOf(totMesi[10]), 
-								Float.valueOf(totMesi[11]), costoOrario, Float.valueOf(totOre), costoEffettivo);
-							listaRO.add(riep);
-							totOre="0.00";
-						}			
-				}//commessa			
-			}
-						
+			}	
+									
 			tx.commit();
 			return listaRO;
 			
@@ -9331,7 +9505,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			listaCommesse = (List<Commessa>) session.createQuery("from Commessa where statoCommessa=:stato")
 				.setParameter("stato", statoCommessa).list() ;
 			
-
 			for (Commessa c : listaCommesse) {
 				if (c.getAttivitas().size() > 0)
 					//listaAttivita.add(c.getAttivitas().iterator().next());
@@ -9350,13 +9523,12 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				
 				listaP=session.createQuery("select distinct p from DettaglioIntervalliCommesse d join d.dettaglioOreGiornaliere g" +
 						" join g.foglioOreMese f join f.personale p" +
-						" where f.meseRiferimento=:mese and d.numeroCommessa=:numeroCommessa and d.estensioneCommessa=:estensioneCommessa")
-						.setParameter("numeroCommessa", commessa).setParameter("estensioneCommessa", estensione).setParameter("mese", mese).list();
+						" where f.meseRiferimento=:mese and d.numeroCommessa=:numeroCommessa and d.estensioneCommessa=:estensioneCommessa " +
+						" and p.sedeOperativa=:sede")/*.setParameter("gruppo", "Indiretti")*/
+						.setParameter("numeroCommessa", commessa).setParameter("estensioneCommessa", estensione)
+						.setParameter("mese", mese).setParameter("sede", sede).list();
 				
 				for (Personale p : listaP) {// per ogni dipendente in questa commessa selezioni i fogli ore del mese desiderato e della sede voluta
-						
-						if(p.getCognome().compareTo("Moda")==0)
-							System.out.print("");
 						
 						//if(p.getSedeOperativa().compareTo(sede)==0){
 						dipendente = p.getCognome() + " " + p.getNome();
@@ -9366,8 +9538,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							if (f.getMeseRiferimento().compareTo(mese) == 0) { //se è il mese cercato
 								listaGiorni.addAll(f.getDettaglioOreGiornalieres()); //prendo tutti i giorni
 
-								for (DettaglioOreGiornaliere giorno : listaGiorni) { 
+								for (DettaglioOreGiornaliere giorno : listaGiorni) {
 										
+									
 									//calcolo le ore mensili rilevate dagli intervalli di IU
 									totaleOreDaIU=ServerUtility.aggiornaTotGenerale(totaleOreDaIU, giorno.getTotaleOreGiorno());
 									totaleOreDaIU=ServerUtility.aggiornaTotGenerale(totaleOreDaIU, giorno.getOreViaggio());
@@ -9385,26 +9558,27 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 										oreViaggio="0.0";										
 									}
 									listaIntervalli.clear();
-																	
+									
 								}
 								listaGiorni.clear();
 								oreSommaLavoroViaggio = ServerUtility.aggiornaTotGenerale(oreTotMeseLavoro, oreTotMeseViaggio);
 								
 								//salvo un record con commessa, singolo dipendente e totali ore nel mese considerato sulla commessa in esame
-								riep = new RiepilogoOreDipFatturazione(numeroCommessa, "", "", idDip, dipendente, Float.valueOf(oreTotMeseLavoro), 
-										Float.valueOf(oreTotMeseViaggio), (float)0.00, Float.valueOf(oreSommaLavoroViaggio),Float.valueOf("0.00"), true);
+								riep = new RiepilogoOreDipFatturazione(numeroCommessa, "", "", idDip, dipendente, Float.valueOf(ServerUtility.getOreCentesimi(oreTotMeseLavoro)), 
+										Float.valueOf(ServerUtility.getOreCentesimi(oreTotMeseViaggio)), (float)0.00, 
+										Float.valueOf(ServerUtility.getOreCentesimi(oreSommaLavoroViaggio)),Float.valueOf("0.00"), true);
 								
 								listaR.add(riep);
-																				
+								
 								oreTotMeseLavoro="0.0";
 								oreTotMeseViaggio="0.0";
-								oreSommaLavoroViaggio="0.0";							
+								oreSommaLavoroViaggio="0.0";
 							}
 																					
 						}//end ciclo su mesi(fatto solo una volta per il mese necessario)
 						
 						//if(ServerUtility.notExistDip(listaAppCalcoloOreIU, idDip))
-						riep= new RiepilogoOreDipFatturazione("", "", "", idDip, dipendente, Float.valueOf(totaleOreDaIU), 
+						riep= new RiepilogoOreDipFatturazione("", "", "", idDip, dipendente, Float.valueOf(ServerUtility.getOreCentesimi(totaleOreDaIU)), 
 								Float.valueOf("0.00"), (float)0.00, Float.valueOf("0.00"),Float.valueOf("0.00"), true);
 						listaAppCalcoloOreIU.add(riep);
 						
@@ -9430,6 +9604,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			listaPers=(List<Personale>)session.createQuery("from Personale where sedeOperativa=:sede and statoRapporto<>:statoRapporto")
 					.setParameter("statoRapporto", "Cessato").setParameter("sede", sede).list();	
 			
+			
+			//Calcolo manuale Totali
+			
 		    for(Personale p:listaPers){
 				//if(p.getCognome().compareTo("Guerra")==0){
 				for(RiepilogoOreDipFatturazione r1:listaAppCalcoloOreIU){
@@ -9453,8 +9630,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					check=false;
 				
 				if(!(totOreIU.compareTo("0.00")==0 && oreTotCommessa.compareTo("0.00")==0)){
-					riep = new RiepilogoOreDipFatturazione(".TOTALE","", "", p.getId_PERSONALE(), dipendente, Float.valueOf(oreTotLavoroCommessa), 
-						Float.valueOf(oreTotViaggioCommessa),(float)0.00, Float.valueOf(oreTotCommessa), Float.valueOf(totOreIU), check);
+					riep = new RiepilogoOreDipFatturazione(".CHECK","", "", p.getId_PERSONALE(), dipendente, (float)0.00, 
+							(float)0.00,(float)0.00, (float)0.00, Float.valueOf(ServerUtility.getOreCentesimi(totOreIU)), check);
 					listaR.add(riep);
 				}
 				oreTotLavoroCommessa="0.0";
@@ -12232,5 +12409,5 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		return true;
 	}
 
-		
+			
 }

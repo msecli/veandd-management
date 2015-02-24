@@ -21,6 +21,7 @@ import gestione.pack.client.model.GiorniFestiviModel;
 import gestione.pack.client.model.GiustificativiModel;
 import gestione.pack.client.model.IntervalliCommesseModel;
 import gestione.pack.client.model.IntervalliIUModel;
+import gestione.pack.client.model.OffertaModel;
 import gestione.pack.client.model.PeriodoSbloccoModel;
 import gestione.pack.client.model.PersonaleAssociatoModel;
 import gestione.pack.client.model.PersonaleModel;
@@ -136,6 +137,14 @@ public interface AdministrationServiceAsync {
 			AsyncCallback<List<TariffaOrdineModel>> asyncCallback);
 	
 	void chiudiOrdine(String numeroOrdine, AsyncCallback<Boolean> asyncCallback);
+	
+	void insertNewOffertaWithRda(int i, Integer idCliente, String numeroOfferta,
+			String string, Date dataOfferta, String descrizione,
+			String importo, AsyncCallback<Boolean> asyncCallback);
+	
+	void getAllOfferteModel(String stato, AsyncCallback<List<OffertaModel>> callback);
+	
+	
 /*	
 //--------------------------Offerta
 	void insertDataOfferta(String numOfferta, String numRda,
@@ -408,6 +417,11 @@ public interface AdministrationServiceAsync {
 
 	void getGiorniFestivi(AsyncCallback<List<GiorniFestiviModel>> asyncCallback);
 	
+
+	void riepilogoOreCartellino(String data, String sede,
+			AsyncCallback<List<RiepilogoOreDipFatturazione>> asyncCallback);
+	
+	
 //-------------------------------------------------COSTI---------------------------------
 	
 	void getDatiCostiPersonale(int idPersonale,
@@ -525,4 +539,5 @@ public interface AdministrationServiceAsync {
 			Integer idAttivita, AsyncCallback<Boolean> asyncCallback);
 
 
+	
 }

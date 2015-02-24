@@ -11,6 +11,7 @@ import gestione.pack.client.layout.panel.PanelAbilitazioneStraordinarioDip;
 import gestione.pack.client.layout.panel.PanelAnagraficaHardware;
 import gestione.pack.client.layout.panel.PanelEditPasswordUtenti;
 import gestione.pack.client.layout.panel.PanelGestioneCosting;
+import gestione.pack.client.layout.panel.PanelGestioneOfferte;
 import gestione.pack.client.layout.panel.PanelInsertRTV;
 import gestione.pack.client.layout.panel.PanelMensileOrdini;
 import gestione.pack.client.layout.panel.PanelPrintAll;
@@ -18,6 +19,7 @@ import gestione.pack.client.layout.panel.PanelProtocolloCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoAnnualeOreDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoCostiDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
+import gestione.pack.client.layout.panel.PanelRiepilogoOreCartellinoDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiDettCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoRichiesteHardware;
@@ -517,7 +519,23 @@ public class BodyLayout_Administration extends LayoutContainer {
 	      });
 	    cp.add(btnRiepilogoMensile);
 	    
+	    Button btnGestioneOfferte = new Button();
+	    btnGestioneOfferte.setToolTip("Gestione Offerte");
+	    btnGestioneOfferte.setHeight(65);
+	    btnGestioneOfferte.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+	    btnGestioneOfferte.setIconAlign(IconAlign.BOTTOM);
+	    btnGestioneOfferte.setWidth("100%");
+	    btnGestioneOfferte.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        		center.removeAll();
+	        		center.add(new PanelGestioneOfferte());
+	        		center.layout(true);
+	        	}
+	      });
+	    cp.add(btnGestioneOfferte);
+	    	    
 	    panel.add(cp);
+	    
 	    
 	    cp = new ContentPanel();
 	    cp.setAnimCollapse(false);
@@ -674,9 +692,33 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        	center.removeAll();
 	        	center.add(new PanelRiepilogoOreDipendentiPerCommesse());
 	        	center.layout(true);}      
-	      });
+	    });
 	    btnRiepilogoMese.setWidth("100%");
 	    cp.add(btnRiepilogoMese);
+
+	    Button btnRiepilogoOreCartellino = new Button();
+	    btnRiepilogoOreCartellino.setToolTip("Riepilogo ore a cartellino");
+	    btnRiepilogoOreCartellino.setHeight(65);
+	    btnRiepilogoOreCartellino.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensPers()));
+	    btnRiepilogoOreCartellino.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoOreCartellino.setWidth("100%");
+	    btnRiepilogoOreCartellino.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	int h=Window.getClientHeight();
+	        	int w=Window.getClientWidth();
+	        	Dialog d= new Dialog();
+	        	d.setSize(w-130, h-75);
+	        	d.add(new PanelRiepilogoOreCartellinoDipendenti());
+	        	d.setHeading("Riepilogo Ore Dipendenti");
+	        	d.setCollapsible(true);
+	        	d.setScrollMode(Scroll.AUTO);
+	        	d.setButtons("");
+	        	d.setConstrain(false);
+	        	d.show();	        
+	        }      
+	    });
+	    btnRiepilogoMese.setWidth("100%");
+	    cp.add(btnRiepilogoOreCartellino);
 	    
 	    Button btnRiepilogoAnnuale = new Button();
 	    btnRiepilogoAnnuale.setToolTip("Report Annuale");
@@ -689,7 +731,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        	center.removeAll();
 	        	center.add(new PanelRiepilogoAnnualeOreDipendenti());
 	        	center.layout(true);}      
-	      });
+	    });
 	    btnRiepilogoAnnuale.setWidth("100%");
 	    cp.add(btnRiepilogoAnnuale);
 	    
@@ -704,7 +746,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        	center.removeAll();
 	        	center.add(new PanelRiepilogoStatoAvanzamentoOreCommesse());
 	        	center.layout(true);}      
-	      });
+	    });
 	    cp.add(btnRiepilogoMesePerCommessa);
 	    
 	    Button btnRiepilogoOreDipPerCommessa = new Button();
@@ -717,8 +759,8 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        public void componentSelected(ButtonEvent ce) {
 	        	center.removeAll();
 	        	center.add(new PanelRiepilogoOreDipendentiDettCommesse());
-	        	center.layout(true);}      
-	      });
+	        	center.layout(true);}
+	    });
 	    cp.add(btnRiepilogoOreDipPerCommessa);
 	    
 	    panel.add(cp);
@@ -757,9 +799,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    btnReportDatiFatt.setWidth("100%");
 	    btnReportDatiFatt.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
-	        	/*center.removeAll();
-	        	center.add(new CenterLayout_RiepilogoDatiFatturazione());
-	        	center.layout(true);*/
+	        	
 	        	int h=Window.getClientHeight();
 	        	int w=Window.getClientWidth();
 	        	Dialog d= new Dialog();

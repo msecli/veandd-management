@@ -11,6 +11,31 @@ public class OffertaModel  extends BaseModel implements IsSerializable{
 
 	public OffertaModel(){}
 	
+	ClienteModel c= new ClienteModel();
+	
+	public OffertaModel(Integer idOfferta, Integer idCliente, String numOfferta, String ragioneSociale, String dataOfferta, 
+			String descrizione, String importo, String statoOfferta, ClienteModel cM){
+		
+		set("idOfferta", idOfferta );
+		set("idCliente", idCliente);
+    	set("numeroOfferta", numOfferta);
+    	set("ragioneSociale",ragioneSociale);
+    	set("descrizione", descrizione);
+    	set("importo", importo);
+    	set("dataOfferta", dataOfferta);
+    	set("statoOfferta", statoOfferta);
+    	set("cliente", cM);
+		
+	}
+	
+	public ClienteModel getCliente(){
+		return c;
+	}
+	
+	public void setCliente(ClienteModel c){
+		this.c=c;
+	}
+	
 	public OffertaModel(int idofferta, String numOfferta, String numRda, String dataOfferta, String descrizione, String tariffa){
 		
 		set("idOfferta", idofferta );
