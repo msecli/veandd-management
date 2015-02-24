@@ -190,7 +190,7 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 		
 		txtfldOreStrao.setFieldLabel("h/Straord.");
 		txtfldOreStrao.setMaxLength(7);
-		txtfldOreStrao.setItemId("oreViaggio");
+		txtfldOreStrao.setItemId("oreStraordinario");
 		txtfldOreStrao.setAllowBlank(false);
 		txtfldOreStrao.setRegex("^([0-9]+)[.](0|00|15|30|45)$");
 		txtfldOreStrao.getMessages().setRegexText("Deve essere un numero nel formato 99.59 ed espresso in sessantesimi");

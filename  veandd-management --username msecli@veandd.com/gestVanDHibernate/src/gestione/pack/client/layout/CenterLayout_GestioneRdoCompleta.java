@@ -7,6 +7,8 @@ import java.util.List;
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.layout.panel.DialogAssociaCommessaToOrdine;
 import gestione.pack.client.layout.panel.DialogSelectCommessaAttivitaOrdine;
+import gestione.pack.client.model.ClienteModel;
+import gestione.pack.client.model.OffertaModel;
 import gestione.pack.client.model.RdoCompletaModel;
 import gestione.pack.client.model.TariffaOrdineModel;
 import gestione.pack.client.utility.MyImages;
@@ -24,6 +26,7 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -34,6 +37,7 @@ import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
@@ -74,6 +78,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 	private TextField<String> txtfldNumeroRda;
 	private TextField<String> txtfldIdRda=new TextField<String>();
 	private TextField<String> txtfldNumeroOfferta;
+	private ComboBox<OffertaModel> cmbxSelectOfferta;
 	private TextArea txtrDescrizione;
 	private TextField<String> txtfldElementoWbs;
 	private TextField<String> txtfldConto;
@@ -330,33 +335,6 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 				}
 			}
 			
-			/*
-			private List<TariffaOrdineModel> elaboroStoreTariffe(List<TariffaOrdineModel> models) {
-				
-				List<TariffaOrdineModel> listaT= new ArrayList<TariffaOrdineModel>();
-				TariffaOrdineModel tar=new TariffaOrdineModel();
-				
-				Integer id;
-				String tariffa;
-				String descrizione;
-				
-				for(TariffaOrdineModel t:models){
-					
-					id=t.get("idAttivitaOrdine");
-					tariffa=t.get("tariffaAttivita");
-					descrizione=t.get("descrizione");
-					
-					if(id==null)
-						id=0;
-					
-					tar=new TariffaOrdineModel(String.valueOf(id), tariffa, descrizione);
-					
-				}
-				
-				return listaT;
-			}
-			
-			*/
 		});
 		
 		btnDelete.setToolTip("Elimina i dati.");
@@ -395,7 +373,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		btnReset.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			
 			@Override
-			public void componentSelected(ButtonEvent ce) {				
+			public void componentSelected(ButtonEvent ce) {
 				btnSave.setEnabled(true);
             	smplcmbxCliente.setEnabled(true);
             	btnEdit.setEnabled(false);
@@ -429,8 +407,8 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		
 		cntpnlLayout.add(hpLayout);	
 		
-	    bodyContainer.add(cntpnlLayout);    
-	   				
+	    bodyContainer.add(cntpnlLayout);
+	   	
 		layoutContainer.add(bodyContainer, new FitData(3, 3, 3, 3));
 		add(layoutContainer);		
 	}
@@ -548,12 +526,53 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			layoutCol1.add(txtfldPrCenter, new FormData("80%"));
 			layoutCol1.add(txtfldBem, new FormData("80%"));
 			
+			cmbxSelectOfferta= new ComboBox<OffertaModel>();
+			ListStore<OffertaModel> store=new ListStore<OffertaModel>();
+			cmbxSelectOfferta=new ComboBox<OffertaModel>();
+			cmbxSelectOfferta.setStore(store);		
+			cmbxSelectOfferta.setTriggerAction(TriggerAction.ALL);
+			cmbxSelectOfferta.setFieldLabel("Offerte");
+			cmbxSelectOfferta.setName("offerta");
+			cmbxSelectOfferta.setDisplayField("numeroOfferta");
+			cmbxSelectOfferta.setTriggerAction(TriggerAction.ALL);
+			cmbxSelectOfferta.addListener(Events.OnClick, new Listener<BaseEvent>(){
+				@Override
+				public void handleEvent(BaseEvent be) {
+						getOffertePending();
+				}
+			});
+			cmbxSelectOfferta.addSelectionChangedListener(new SelectionChangedListener<OffertaModel>() {
+				
+				@Override
+				public void selectionChanged(SelectionChangedEvent<OffertaModel> se) {
+										
+					OffertaModel o = cmbxSelectOfferta.getValue();
+					
+					Date retVal = null;
+			        try
+			        {
+			            retVal = DateTimeFormat.getFormat( "yyyy-MM-dd" ).parse((String)o.get("dataOfferta"));
+			        }
+			        catch ( Exception e )
+			        {
+			            retVal = null;
+			        }
+					
+					txtfldNumeroOfferta.setValue(o.getNumeroOfferta());
+					dtfldDataOfferta.setValue(retVal);
+					txtfldImporto.setValue((String)o.get("importo"));
+					txtrDescrizione.setValue((String)o.getDescrizione());
+					smplcmbxCliente.setRawValue((String)o.get("ragioneSociale"));
+					
+					}
+			});
+			
 			txtfldNumeroOfferta= new TextField<String>();
-			txtfldNumeroOfferta.setFieldLabel("Numero Offerta");
+			txtfldNumeroOfferta.setFieldLabel("Nuova Offerta");
 			txtfldNumeroOfferta.setName("numeroOfferta");
 			txtfldNumeroOfferta.setMaxLength(20);
 			txtfldNumeroOfferta.setAllowBlank(true);
-			
+						
 			dtfldDataOfferta=new DateField();
 			dtfldDataOfferta.setFieldLabel("Data Offerta");
 			dtfldDataOfferta.setAllowBlank(true);
@@ -563,12 +582,12 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			txtfldImporto.setName("importo");
 			txtfldImporto.setRegex("[0-9]+[.][0-9]+|[0-9]+");
 			txtfldImporto.getMessages().setRegexText("Deve essere un numero, eventualmente nel formato 99.99");		
-			
+					
+			layoutCol2.add(cmbxSelectOfferta, new FormData("85%"));
 			layoutCol2.add(txtfldNumeroOfferta, new FormData("85%"));
 			layoutCol2.add(dtfldDataOfferta, new FormData("85%"));
 			layoutCol2.add(txtfldImporto, new FormData("65%"));
-			
-			
+						
 			txtfldNumeroOrdine=new TextField<String>();
 			txtfldNumeroOrdine.setFieldLabel("Numero Ordine");
 			txtfldNumeroOrdine.setName("numeroOrdine");
@@ -590,7 +609,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			txtfldTariffaOraria.setRegex("[0-9]+[.]{1}[0-9]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
 			txtfldTariffaOraria.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
 			txtfldTariffaOraria.addKeyListener(new KeyListener(){
-				 public void componentKeyDown(ComponentEvent event) { 	  
+				 public void componentKeyDown(ComponentEvent event) {
 				    	int keyCode=event.getKeyCode();
 						if(keyCode==9){			
 							
@@ -832,6 +851,33 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 				}
 			});
 		}
+		
+		
+		private void getOffertePending() {
+			String stato="P";
+			AdministrationService.Util.getInstance().getAllOfferteModel(stato, new AsyncCallback<List<OffertaModel>>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					Window.alert("Errore connessione on getAllOfferteModel();");
+					caught.printStackTrace();		
+				}
+
+				@Override
+				public void onSuccess(List<OffertaModel> result) {
+					if(result!=null){		
+						ListStore<OffertaModel> lista= new ListStore<OffertaModel>();
+						lista.setStoreSorter(new StoreSorter<OffertaModel>());  
+						lista.setDefaultSort("numeroOfferta", SortDir.ASC);
+						
+						lista.add(result);				
+						cmbxSelectOfferta.clear();
+						cmbxSelectOfferta.setStore(lista);
+						
+					}else Window.alert("error: Errore durante l'accesso ai dati Personale.");				
+				}
+			});				
+		}		
 	}
 	
 	

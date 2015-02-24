@@ -45,13 +45,12 @@ public class PanelEditPasswordUtenti  extends LayoutContainer{
 	protected Button btnReset;
 	
 	private int h=Window.getClientHeight();
-	//private int w=Window.getClientWidth();	
-		
+			
 	public PanelEditPasswordUtenti(){
 		
 	}
 	
-	protected void onRender(Element target, int index) {  
+	protected void onRender(Element target, int index) {
 		super.onRender(target, index);
 		
 		final FitLayout fl= new FitLayout();
@@ -75,8 +74,8 @@ public class PanelEditPasswordUtenti  extends LayoutContainer{
 		cm = new ColumnModel(createColumns());	
 		store.setDefaultSort("cognome", SortDir.ASC);
 		gridRiepilogo= new EditorGrid<PersonaleModel>(store, cm);  
-		gridRiepilogo.setBorders(false);  
-	    cpGrid.add(gridRiepilogo);  
+		gridRiepilogo.setBorders(false);
+	    cpGrid.add(gridRiepilogo);
 			
 		btnGuida= new Button();
 		btnGuida.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.question()));
@@ -203,8 +202,6 @@ public class PanelEditPasswordUtenti  extends LayoutContainer{
 		store.add(result);
 		
 	}
-	
-	
 	
 	
 }

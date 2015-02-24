@@ -1,6 +1,7 @@
 package gestione.pack.server;
 
 import gestione.pack.client.model.AttivitaFatturateModel;
+import gestione.pack.client.model.CommessaModel;
 import gestione.pack.client.model.CostingRisorsaModel;
 import gestione.pack.client.model.DatiFatturazioneMeseJavaBean;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
@@ -55,6 +56,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -62,6 +66,7 @@ import java.util.Set;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.property.MapAccessor.MapSetter;
 
 public class ServerUtility {
 	
@@ -2959,7 +2964,44 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 		return listaParametri;
 	}
 
-	
-	
+	public static boolean isIncluded(FoglioOreMese f,
+			List<String> listaMesiConsiderati) {
+		
+		for(String m:listaMesiConsiderati)
+			if(m.compareTo(f.getMeseRiferimento())==0)
+				return true;
+		
+		return false;
+		
+	}
+
+	public static List<CommessaModel> getDistinctCommesse(
+			List<DettaglioIntervalliCommesse> listaDettCommAll) {
+		
+		List<CommessaModel> listaCommesse= new ArrayList<CommessaModel>();
+		
+		DettaglioIntervalliCommesse dett= new DettaglioIntervalliCommesse();
+		List<DettaglioIntervalliCommesse> listaD= new ArrayList<DettaglioIntervalliCommesse>();
+		
+		CommessaModel c= new CommessaModel();
+		Set<DettaglioIntervalliCommesse> setD= new HashSet<DettaglioIntervalliCommesse>();			
+		
+		
+		for(DettaglioIntervalliCommesse d:listaDettCommAll){
+			
+			setD.add(d);			
+			
+		}
+		
+		listaD.addAll(setD);
+		
+		for(DettaglioIntervalliCommesse dd:listaD){
+			c=new CommessaModel(0, dd.getNumeroCommessa(), dd.getEstensioneCommessa(), "");
+			listaCommesse.add(c);
+		}
+		
+		return listaCommesse;
+	}
+
 }
 

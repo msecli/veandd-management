@@ -495,7 +495,7 @@ public class CenterLayout_FoglioOreGiornaliero_Collaboratori extends LayoutConta
 			descrizione=descrizione.substring(descrizione.indexOf("(")+1, descrizione.indexOf(")"));
 			
 			intervallo= new IntervalliCommesseModel(numeroCommessa, txtfldOreLavoro.getValue().toString(), txtfldOreViaggio.getValue().toString(),
-					txtfldOreViaggio.getValue().toString(),"","", descrizione, "");
+					txtfldOreStrao.getValue().toString(),"","", descrizione, "");
 			intervalliC.add(intervallo);
 		}
 		

@@ -35,6 +35,7 @@ import gestione.pack.client.model.GiorniFestiviModel;
 import gestione.pack.client.model.GiustificativiModel;
 import gestione.pack.client.model.IntervalliCommesseModel;
 import gestione.pack.client.model.IntervalliIUModel;
+import gestione.pack.client.model.OffertaModel;
 import gestione.pack.client.model.PeriodoSbloccoModel;
 import gestione.pack.client.model.PersonaleAssociatoModel;
 import gestione.pack.client.model.PersonaleModel;
@@ -165,36 +166,11 @@ public interface AdministrationService extends RemoteService {
 	
 	boolean chiudiOrdine(String numeroOrdine)throws IllegalArgumentException;
 	
-	//----------------------OFFERTA
-/*
-	void insertDataOfferta(String numOfferta, String numRda, Date dataOfferta,
-			String descrizione, String tariffa);
-
-	void editDataOfferta(int idofferta, String numOfferta, String numRda, Date dataOfferta,
-			String descrizione, String tariffa) throws IllegalArgumentException;
-
-	void deleteDataOfferta(int idOfferta);
-
-	List<OffertaModel> getAllOfferteModel() throws IllegalArgumentException;
-
-	Set<Offerta> getAllOfferte() throws IllegalArgumentException;
-
-	*/
-	//---------------------ORDINE
-/*
-	boolean insertDataOrdine(String numOrdine, String numRda,
-			String numeroCommessa,String estensione, Date dataInizio, Date dataFine,
-			String descrizione, String tariffaOraria, String numeroRisorse,
-			String numeroOre);
-
-	boolean editDataOrdine(int idrdine, String numOrdine, String numRda,
-			String numeroCommessa, String estensione, Date dataInizio,
-			Date dataFine, String descrizione, String tariffaOraria,
-			String numeroRisorse, String numeroOre);
-
-	List<OrdineModel> getAllOrdineModel() throws IllegalArgumentException;
-
-	boolean deleteDataOrdine(int idOrdine) throws IllegalArgumentException;*/
+	boolean insertNewOffertaWithRda(int i, Integer idCliente,
+			String numeroOfferta, String string, Date dataOfferta,
+			String descrizione, String importo)throws IllegalArgumentException;
+	
+	List<OffertaModel> getAllOfferteModel(String stato);
 
 	List<String> getAllListaOrdini() throws IllegalArgumentException;
 	
@@ -403,6 +379,9 @@ boolean invioCommenti(String testo, String username, Date giorno);
 
 	List<GiorniFestiviModel> getGiorniFestivi()throws IllegalArgumentException;
 	
+	List<RiepilogoOreDipFatturazione> riepilogoOreCartellino(String data,
+			String sede)throws IllegalArgumentException;
+	
 //---------------------------------------------COSTI
 	List<GestioneCostiDipendentiModel> getDatiCostiPersonale(int idPersonale) throws IllegalArgumentException;
 
@@ -515,6 +494,5 @@ boolean invioCommenti(String testo, String username, Date giorno);
 	List<RiepilogoSALPCLModel> getRiepilogoSalPcl1(String data,
 			String tabSelected, String pm);
 
-
-	
+		
 }

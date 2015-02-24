@@ -222,7 +222,7 @@ public class PanelRiepilogoOreIndiretti extends LayoutContainer{
 			public void onSuccess(List<RiepilogoOreNonFatturabiliModel> result) {
 				status.hide();
 				btnPrint.setEnabled(true);
-				if(result.size()>0)
+				if(result.size()>0 && result!=null)
 					loadTableRiass(result);
 				else
 					Window.alert("Nessun dato trovato!");

@@ -34,6 +34,8 @@ import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.grid.AggregationRenderer;
+import com.extjs.gxt.ui.client.widget.grid.AggregationRowConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -345,6 +347,9 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		    GroupSummaryView summary = new GroupSummaryView();  
 		    summary.setForceFit(false);  
 		    summary.setShowGroupedColumn(false);     
+		    
+		    AggregationRowConfig<DatiFatturazioneMeseModel> agrTotale= new AggregationRowPersonale();		
+			cm.addAggregationRow(agrTotale);
 		    		    
 		    gridRiepilogo= new EditorGrid<DatiFatturazioneMeseModel>(store, cm);  
 		    gridRiepilogo.setBorders(false); 
@@ -886,6 +891,33 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			}
 		}	
 	}	
+	
+	
+	private class AggregationRowPersonale extends AggregationRowConfig<DatiFatturazioneMeseModel>{
+		
+		public AggregationRowPersonale(){
+			final NumberFormat number= NumberFormat.getFormat("#,##0.0#;-#");
+			AggregationRenderer<DatiFatturazioneMeseModel> aggrRender= new AggregationRenderer<DatiFatturazioneMeseModel>() {			
+				@Override
+				public Object render(Number value, int colIndex, Grid<DatiFatturazioneMeseModel> grid, ListStore<DatiFatturazioneMeseModel> store) {
+					 if(value!=null)		    		  
+			    		  return number.format(value.doubleValue());
+			    	  else
+			    		  return number.format((float) 0) ;
+				}
+			};			
+						
+			setHtml("cliente", "<p style=\"font-size:15px; color:#000000; font-weight:bold;\">TOTALE</p>");	
+						
+			setSummaryType("oreEseguite", SummaryType.SUM);
+			//setSummaryFormat("importoComplessivo", NumberFormat.getCurrencyFormat("EUR"));
+			setRenderer("oreEseguite", aggrRender);
+			
+			setSummaryType("oreFatturate", SummaryType.SUM);
+			setRenderer("oreFatturate", aggrRender);
+			setCellStyle("oreFatturate", "font-size:15px; color:#000000; font-weight:bold;");
+		}
+	}
 }
 
 

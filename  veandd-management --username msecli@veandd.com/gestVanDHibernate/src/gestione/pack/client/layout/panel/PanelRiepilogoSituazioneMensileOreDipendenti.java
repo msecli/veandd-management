@@ -87,7 +87,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 		
 	}
 			
-	protected void onRender(Element target, int index) {  
+	protected void onRender(Element target, int index) {
 	    super.onRender(target, index);
 	
 	    setItemId("pnlRiepilogo");
