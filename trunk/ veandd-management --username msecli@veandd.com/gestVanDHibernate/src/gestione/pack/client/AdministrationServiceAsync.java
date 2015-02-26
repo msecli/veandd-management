@@ -144,7 +144,7 @@ public interface AdministrationServiceAsync {
 	
 	void getAllOfferteModel(String stato, AsyncCallback<List<OffertaModel>> callback);
 	
-	
+	void deleteOffertaById(Integer id, AsyncCallback<Boolean> asyncCallback);
 /*	
 //--------------------------Offerta
 	void insertDataOfferta(String numOfferta, String numRda,
@@ -538,6 +538,4 @@ public interface AdministrationServiceAsync {
 	void associaEstensioneCommessaAttivitaOrdine(String valueOf,
 			Integer idAttivita, AsyncCallback<Boolean> asyncCallback);
 
-
-	
 }

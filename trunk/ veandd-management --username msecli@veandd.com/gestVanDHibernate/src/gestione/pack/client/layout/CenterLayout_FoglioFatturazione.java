@@ -629,11 +629,12 @@ public CenterLayout_FoglioFatturazione(){}
 			});    
 		    configs.add(columnOreTotaliIU);
 		    */
-		    column=new SummaryColumnConfig<Double>();		
-		    column.setId("checkOre");  
-			column.setHeader("Check");  
-			column.setWidth(30);  
-			column.setRowHeader(true); 
+		    
+		    column=new SummaryColumnConfig<Double>();
+		    column.setId("checkOre");
+			column.setHeader("Check");
+			column.setWidth(30);
+			column.setRowHeader(true);
 			column.setRenderer(new GridCellRenderer<RiepilogoOreDipFatturazione>() {
 
 					@Override
@@ -643,11 +644,11 @@ public CenterLayout_FoglioFatturazione(){}
 						
 						String t= model.getDipendente();
 						
-						if(t.compareTo("_TOTALE")==0){						
+						if(t.compareTo("_TOTALE")==0){
 							config.style = config.style + ";background-color:" + "#FFFFFF" + ";";
 						}
 						else
-						if(t.compareTo("_TOTALE")!=0){						
+						if(t.compareTo("_TOTALE")!=0){
 							Boolean check=model.get("checkOre");
 							if(check!=null)
 							if(check)
@@ -664,7 +665,7 @@ public CenterLayout_FoglioFatturazione(){}
 			return configs;
 		}
 	
-		private void caricaTabellaRiepOreDipFatturazione(String meseRif, String pm) {	
+		private void caricaTabellaRiepOreDipFatturazione(String meseRif, String pm) {
 			
 			AdministrationService.Util.getInstance().getRiepilogoOreDipFatturazione(meseRif, pm, new AsyncCallback<List<RiepilogoOreDipFatturazione>>() {	
 				@Override
@@ -950,10 +951,10 @@ public CenterLayout_FoglioFatturazione(){}
 		            		btnSalva.setEnabled(true);
 		            		btnRiep.setEnabled(true);
 		            		
-		            	}		            	
-		             } 	
-		          }          
-		    }); 
+		            	}
+		             }
+		          }
+		    });
 					   
 		    btnRiep.addSelectionListener(new SelectionListener<ButtonEvent>() {			
 				@Override
@@ -1035,9 +1036,9 @@ public CenterLayout_FoglioFatturazione(){}
 			//txtfldCostoOrario.setRegex("[1-9]{1}[0-9]+[.]{1}[0-9]+|[1-9]{1}[.]{1}[0-9]+");
 			txtfldCostoOrario.setValue("0.00");
 			txtfldCostoOrario.addKeyListener(new KeyListener(){
-				public void componentKeyDown(ComponentEvent event) { 	  
+				public void componentKeyDown(ComponentEvent event) {
 			    	int keyCode=event.getKeyCode();
-					if(keyCode==9){			
+					if(keyCode==9){
 						
 						if(txtfldCostoOrario.getValue()==null)
 							txtfldCostoOrario.setValue("0.00");
@@ -1104,11 +1105,11 @@ public CenterLayout_FoglioFatturazione(){}
 						txtfldTotFatturato.setValue(totaleEuro);
 						txtOreDaFatturare.setText("("+totaleEuro+")");
 		    	  	}
-		      }
+				}
 				
-				 public void componentKeyDown(ComponentEvent event) { 	  
+				public void componentKeyDown(ComponentEvent event) {
 				    	int keyCode=event.getKeyCode();
-						if(keyCode==9){			
+						if(keyCode==9){
 							
 							if(txtfldOreEseguiteRegistrate.getValue()==null)
 								txtfldOreEseguiteRegistrate.setValue("0.00");

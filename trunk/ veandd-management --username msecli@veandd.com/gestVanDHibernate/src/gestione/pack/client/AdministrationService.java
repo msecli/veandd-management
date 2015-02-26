@@ -160,6 +160,8 @@ public interface AdministrationService extends RemoteService {
 	
 	boolean deleteRdoCompleta(int idRdo) throws IllegalArgumentException;
 
+	boolean deleteOffertaById(Integer id)throws IllegalArgumentException;
+	
 	boolean eliminaAssociazioneOrdine(String numeroOrdine) throws IllegalArgumentException;
 
 	List<TariffaOrdineModel> loadTariffePerOrdine(int idRdo)throws IllegalArgumentException;
@@ -205,6 +207,8 @@ public interface AdministrationService extends RemoteService {
 
 	List<CommessaModel> getCommesseByPM(String nome, String cognome);
 
+	
+	
 	
 	//---------------------------------------Associazioni Commesse Attivita Dip
 	boolean createAssociazioneCommessaDipendenti(
@@ -494,5 +498,5 @@ boolean invioCommenti(String testo, String username, Date giorno);
 	List<RiepilogoSALPCLModel> getRiepilogoSalPcl1(String data,
 			String tabSelected, String pm);
 
-		
+			
 }
