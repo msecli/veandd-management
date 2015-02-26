@@ -149,7 +149,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		String errore= new String();
 		
 			Personale p1=new Personale();
-			Personale p = new Personale();	
+			Personale p = new Personale();
 			p.setNome(nome);
 			p.setCognome(cognome);
 			p.setNumeroBadge(nBadge);
@@ -861,6 +861,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					
 					insertTariffeOrdine(numOrdine, att);
 				}
+				
 			}else{
 				
 				r=o.getRda();
@@ -878,7 +879,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					att.setImportoResiduoOrdine(Float.valueOf((Float)trf.get("importoResiduoOrdine")));
 					
 					insertTariffeOrdine(numOrdine, att);
-				}	
+				}
 			}
 			
 			
@@ -928,7 +929,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	    		ServerLogFunction.logOkMessage("insertTariffeOrdine", new Date(), "", "Success");				
 		}
 	}
-		
+	
 	
 	@Override
 	public boolean insertNewOffertaWithRda(int i, Integer idCliente,
@@ -939,8 +940,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Offerta o= new Offerta();
 		Cliente c= new Cliente();
 		Integer id= 0;
-		
-		//TODO
 		
 		Boolean esito=true;
 		String errore= new String();
@@ -1096,6 +1095,15 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}
 	}
 	
+	
+	@Override
+	public boolean deleteOffertaById(Integer id)
+			throws IllegalArgumentException {
+		
+		
+		
+		return true;
+	}
 	
 	@Override
 	public boolean editRdoCompleta(int idRdo, String numRdo, String cliente,
@@ -1291,6 +1299,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		try {
 
 			tx = session.beginTransaction();
+			
 			o=(Offerta)session.createQuery("from Offerta where numero_rda=:idRdo").setParameter("idRdo", idRdo).uniqueResult();
 			o.setCodiceOfferta(numOfferta);
 			o.setDescrizioneTecnica(descrizione);
@@ -1321,7 +1330,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Rda r= new Rda();
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
-				
+		
 		try {
 			  tx=	session.beginTransaction();
 			  	  
@@ -1340,7 +1349,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			   errore=e.getMessage();
 			   e.printStackTrace();			
 			   if (tx!=null)
-				   tx.rollback();	
+				   tx.rollback();
 		    }finally{
 		    	session.close();
 		    	if(!esito){
@@ -1673,15 +1682,24 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 		try {
 			  tx=session.beginTransaction();
-			  
-			  if(stato.compareTo("P")==0)
+		
+			  if(stato.compareTo("Pending")==0)
 				  lista=(List<Offerta>)session.createQuery("from Offerta where statoOfferta=:stato").setParameter("stato", "P").list();
 			  else
-				  lista=(List<Offerta>)session.createQuery("from Offerta where statoOfferta<>:stato").setParameter("stato", "C").list();
+			  if(stato.compareTo("Accettata")==0)
+				  lista=(List<Offerta>)session.createQuery("from Offerta where statoOfferta=:stato").setParameter("stato", "A").list();
+			  else
+			  if(stato.compareTo("Chiusa")==0)
+				  lista=(List<Offerta>)session.createQuery("from Offerta where statoOfferta=:stato").setParameter("stato", "C").list();
+			  else
+				  lista=(List<Offerta>)session.createQuery("from Offerta");
 			  
 			  for(Offerta o:lista){
 				  
-				  dataOfferta=formatter.format(o.getDataRedazione());
+				  if(o.getDataRedazione()!=null)
+					  dataOfferta=formatter.format(o.getDataRedazione());
+				  else
+					  dataOfferta="0000-00-00";
 				  
 				  c=o.getRda().getCliente();
 				  
@@ -1691,11 +1709,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						  o.getCodiceOfferta(), o.getRda().getCliente().getRagioneSociale(), dataOfferta,
 						  o.getDescrizioneTecnica(), o.getImporto(), o.getStatoOfferta(), cM);
 				  
-				  
 				  listaM.add(om);
 			  }
 			  
-			  tx.commit();		  
+			  tx.commit();
 			  
 		    } catch (Exception e) {
 		    	esito=false;
@@ -4690,7 +4707,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}finally{
 			session.close();
 		}	
-		
 	}
 
 	
@@ -4721,7 +4737,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					.setParameter("sede", sede).list();
 					
 			for(Personale p: listaP){
-				
+							
 				listaF.addAll(p.getFoglioOreMeses());
 				for(FoglioOreMese f:listaF){
 					if(f.getMeseRiferimento().compareTo(data)==0){
@@ -12408,6 +12424,5 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		return true;
 	}
-
 			
 }

@@ -7,6 +7,8 @@ import java.util.List;
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.model.ClienteModel;
 import gestione.pack.client.model.OffertaModel;
+import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
+import gestione.pack.client.utility.DatiComboBox;
 import gestione.pack.client.utility.MyImages;
 
 import com.extjs.gxt.ui.client.Style.IconAlign;
@@ -19,6 +21,8 @@ import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
@@ -28,9 +32,12 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
+import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
@@ -51,6 +58,7 @@ public class PanelGestioneOfferte extends LayoutContainer{
 	private ListStore<OffertaModel> store=new ListStore<OffertaModel>();
 	private ColumnModel cm;
 	private EditorGrid<OffertaModel> gridRiepilogo;
+	private CellSelectionModel<OffertaModel> csm=new CellSelectionModel<OffertaModel>();
 	
 	protected Button btnAdd;
 	protected Button btnRemove;
@@ -61,6 +69,7 @@ public class PanelGestioneOfferte extends LayoutContainer{
 	protected TextField<String> txtfldDescrizione;
 	protected DateField dtfldScadenzaControllo;
 	protected TextField<String> txtfldImporto;
+	protected SimpleComboBox<String> smplcmbxStatoOfferta;
 	
 	public PanelGestioneOfferte(){
 		
@@ -90,8 +99,29 @@ public class PanelGestioneOfferte extends LayoutContainer{
 		store.setDefaultSort("cognome", SortDir.ASC);
 		gridRiepilogo= new EditorGrid<OffertaModel>(store, cm);  
 		gridRiepilogo.setBorders(false);
+		gridRiepilogo.setSelectionModel(csm);
 	    cntpnlGrid.add(gridRiepilogo);
 		
+	    smplcmbxStatoOfferta=new SimpleComboBox<String>();
+	    smplcmbxStatoOfferta.setFieldLabel("Stato Offerta..");
+		smplcmbxStatoOfferta.add("Pending");
+		smplcmbxStatoOfferta.add("Accettata");
+		smplcmbxStatoOfferta.add("Chiusa");
+		smplcmbxStatoOfferta.add("Tutte");
+		smplcmbxStatoOfferta.setTriggerAction(TriggerAction.ALL);
+		smplcmbxStatoOfferta.setSimpleValue("Pending");
+		smplcmbxStatoOfferta.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<String>>() {
+			
+			@Override
+			public void selectionChanged(
+					SelectionChangedEvent<SimpleComboValue<String>> se) {
+				
+				String stato=smplcmbxStatoOfferta.getRawValue().toString();
+				
+				caricaTabellaDati(stato);
+			}
+		});
+	    
 	    btnAdd= new Button();
 	    btnAdd.setStyleAttribute("padding-left", "2px");
 	    btnAdd.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.add()));
@@ -119,7 +149,31 @@ public class PanelGestioneOfferte extends LayoutContainer{
 	    	
 			@Override
 			public void componentSelected(ButtonEvent ce){
-				//TODO l'eliminazione deve essere effettuata se non c'è un ordine agganciato, altrimenti errore
+				
+				/* l'eliminazione deve essere effettuata se non c'è un ordine agganciato, altrimenti errore
+				 * Se provo ad eliminare un'offerta e c'è l'ordine allora non lo posso fare
+				 */
+				Integer id=csm.getSelectedItem().get("idOfferta");
+				
+				AdministrationService.Util.getInstance().deleteOffertaById(id, new AsyncCallback<Boolean>() {
+
+							@Override
+							public void onFailure(Throwable caught) {
+								Window.alert("Errore di connessione on insertNewOffertaWithRda();");
+							}
+
+							@Override
+							public void onSuccess(Boolean result) {
+								if(result){
+									caricaTabellaDati("Pending");			
+								}else{
+									Window.alert("error: Impossibile effettuare l'eliminazione!");
+									//
+								}
+							}
+					});
+				
+				
 			}
 		});
 	    
@@ -155,13 +209,12 @@ public class PanelGestioneOfferte extends LayoutContainer{
 							@Override
 							public void onFailure(Throwable caught) {
 								Window.alert("Errore di connessione on insertNewOffertaWithRda();");
-								
 							}
 
 							@Override
 							public void onSuccess(Boolean result) {
 								if(result){
-									caricaTabellaDati();								
+									caricaTabellaDati("Pending");			
 								}else{
 									Window.alert("error: Impossibile effettuare l'inserimento dei dati!");
 								}
@@ -171,13 +224,15 @@ public class PanelGestioneOfferte extends LayoutContainer{
 			}
 		});
 	    
+	    toolBar.add(smplcmbxStatoOfferta);
+	    toolBar.add(new SeparatorToolItem());
 		toolBar.add(btnAdd);
 	    toolBar.add(new SeparatorToolItem());
 	    toolBar.add(btnRemove);
 	    toolBar.add(new SeparatorToolItem());
 	    toolBar.add(btnConfirm);
 		
-	    caricaTabellaDati();
+	    caricaTabellaDati("Pending");
 		cntpnlGrid.setTopComponent(toolBar);		
 		
 		layoutContainer.add(cntpnlGrid, new FitData(3, 3, 3, 3));
@@ -186,39 +241,39 @@ public class PanelGestioneOfferte extends LayoutContainer{
 	}	
 	
 	
-	private void caricaTabellaDati() {
+	private void caricaTabellaDati(String stato) {
 		
-		AdministrationService.Util.getInstance().getAllOfferteModel("",new AsyncCallback<List<OffertaModel>>() {
+		AdministrationService.Util.getInstance().getAllOfferteModel(stato,new AsyncCallback<List<OffertaModel>>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				Window.alert("Errore di connessione on getAllOfferteModel();");				
+				Window.alert("Errore di connessione on getAllOfferteModel();");
 			}
 
 			@Override
 			public void onSuccess(List<OffertaModel> result) {
-				if(result.size()>0){
+				if(result!=null)
+				if(result.size()>=0){
 					loadData(result);								
 				}else{
 					Window.alert("error: Impossibile effettuare il caricamento dei dati!");
 				}
 			}
-
 		});
-		
 	}
 
-	
+
 	private void loadData(List<OffertaModel> result) {
 		store.removeAll();
 		store.add(result);
 	}
 
+
 	private List<ColumnConfig> createColumns() {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 		
-		ColumnConfig column = new ColumnConfig();  
-			    
+		ColumnConfig column = new ColumnConfig();
+		
 	    column=new ColumnConfig();
 	    column.setId("ragioneSociale");
 	    column.setHeader("Cliente");
@@ -238,7 +293,7 @@ public class PanelGestioneOfferte extends LayoutContainer{
 	    cmbxCliente.addListener(Events.OnClick, new Listener<BaseEvent>(){
 			@Override
 			public void handleEvent(BaseEvent be) {
-					getAllDipendenti();	
+					getAllDipendenti();
 			}
 
 			private void getAllDipendenti() {
@@ -252,31 +307,32 @@ public class PanelGestioneOfferte extends LayoutContainer{
 
 					@Override
 					public void onSuccess(List<ClienteModel> result) {
-						if(result!=null){		
+						if(result!=null){
 							ListStore<ClienteModel> lista= new ListStore<ClienteModel>();
 							lista.setStoreSorter(new StoreSorter<ClienteModel>());  
 							lista.setDefaultSort("ragioneSociale", SortDir.ASC);
 							
-							lista.add(result);				
+							lista.add(result);
 							cmbxCliente.clear();
 							cmbxCliente.setStore(lista);
 							
-						}else Window.alert("error: Errore durante l'accesso ai dati Personale.");				
+						}else 
+							Window.alert("error: Errore durante l'accesso ai dati Personale.");				
 					}
 				});				
-			}		
+			}
 		});
-	    CellEditor editor = new CellEditor(cmbxCliente) {  
+	    CellEditor editor = new CellEditor(cmbxCliente) {
 	    	@Override  
-	        public Object preProcessValue(Object value) {  
+	        public Object preProcessValue(Object value) {
 	          if (value == null) {  
 	            return value;  
 	          }  
 	          return cmbxCliente.getValue();  
 	        } 
 	        @Override  
-	        public Object postProcessValue(Object value) {  
-	          if (value == null) {  
+	        public Object postProcessValue(Object value) {
+	          if (value == null) {
 	            return value;  
 	          }  
 	          return ((ModelData) value).get("ragioneSociale");  

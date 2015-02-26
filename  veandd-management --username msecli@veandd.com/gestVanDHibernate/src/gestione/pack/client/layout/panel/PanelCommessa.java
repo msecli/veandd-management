@@ -45,7 +45,6 @@ import com.gwtext.client.widgets.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
@@ -108,7 +107,7 @@ public class PanelCommessa extends LayoutContainer {
 	private Button btnOrdine;
 	private Button btnClose;
 	
-	protected void onRender(Element target, int index) {  
+	protected void onRender(Element target, int index) {
 	    super.onRender(target, index);
 		
 	    recuperoSessionUsername();
@@ -117,7 +116,7 @@ public class PanelCommessa extends LayoutContainer {
 		LayoutContainer layoutContainer= new LayoutContainer();
 		layoutContainer.setBorders(false);
 		layoutContainer.setLayout(fl);
-				
+		
 		LayoutContainer bodyContainer = new LayoutContainer();
 		bodyContainer.setLayout(new FlowLayout());
 		bodyContainer.setBorders(false);
@@ -811,9 +810,9 @@ public class PanelCommessa extends LayoutContainer {
 		//txtfldOreLavoro.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
 		frmPanel.add(txtfldOreLavoro, new FormData("60%"));
 		txtfldOreLavoro.addKeyListener(new KeyListener(){
-			 public void componentKeyDown(ComponentEvent event) { 	  
+			 public void componentKeyDown(ComponentEvent event) {
 			    	int keyCode=event.getKeyCode();
-					if(keyCode==9){			
+					if(keyCode==9){
 						
 						if(txtfldOreLavoro.getValue()==null)
 							txtfldOreLavoro.setValue("0.00");
@@ -830,12 +829,12 @@ public class PanelCommessa extends LayoutContainer {
 									int length=valore.length();
 									
 									if(valore.substring(index+1, length).length()==1)
-										valore=valore+"0";		
+										valore=valore+"0";
 									else if(valore.substring(index+1, length).length()==0)
 										valore=valore+"00";
 								}
 							txtfldOreLavoro.setValue(valore);
-						}						
+						}			
 					}
 			 }
 		});
