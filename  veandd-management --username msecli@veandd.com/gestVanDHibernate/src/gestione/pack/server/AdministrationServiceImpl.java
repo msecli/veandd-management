@@ -932,7 +932,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	
 	
 	@Override
-	public boolean insertNewOffertaWithRda(int i, Integer idCliente,
+	public boolean insertNewOffertaWithRda(int idOfferta, Integer idCliente,
 			String numeroOfferta, String ragioneSociale, Date dataOfferta,
 			String descrizione, String importo) throws IllegalArgumentException {
 		
@@ -949,26 +949,38 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		try {
 			
-			tx=session.beginTransaction();		
+			if(idOfferta!=0){
+				tx=session.beginTransaction();
+				
+				o=(Offerta)session.createQuery("from Offerta where numeroOfferta=:idOfferta").setParameter("idOfferta", idOfferta).uniqueResult();
+				r=o.getRda();
+							
+				tx.commit();
+				
+				editDataOfferta(o.getCodiceOfferta(), r.getNumeroRda(), dataOfferta, descrizione, importo);
+				
+			}else{
+				tx=session.beginTransaction();	
+				c = (Cliente)session.createQuery("from Cliente where ragioneSociale= :idCliente").setParameter("idCliente", ragioneSociale).uniqueResult();
 		
-			c = (Cliente)session.createQuery("from Cliente where ragioneSociale= :idCliente").setParameter("idCliente", ragioneSociale).uniqueResult();
+				if(session.createSQLQuery("SELECT MAX(NUMERO_RDA) from rda ").uniqueResult()!=null)
+					id=(int)session.createSQLQuery("SELECT MAX(NUMERO_RDA) from rda ").uniqueResult();	
+				else id=1;
+			
+				r.setCliente(c);
+				r.setCodiceRDA("");
+				r.setNumeroRda(id+1);
+			
+				c.getRdas().add(r);
+			
+				session.save(c);
+				
+				tx.commit();
+				
+				insertDataOfferta(numeroOfferta, id+1, dataOfferta, descrizione, importo);
+			}
 		
-			if(session.createSQLQuery("SELECT MAX(NUMERO_RDA) from rda ").uniqueResult()!=null)
-				id=(int)session.createSQLQuery("SELECT MAX(NUMERO_RDA) from rda ").uniqueResult();	
-			else id=1;
-			
-			r.setCliente(c);
-			r.setCodiceRDA("");
-			r.setNumeroRda(id+1);
-			
-			c.getRdas().add(r);
-			
-			session.save(c);
-			
-			tx.commit();
-			
-			insertDataOfferta(numeroOfferta, id+1, dataOfferta, descrizione, importo);
-	    		
+
 		} catch (Exception e) {
 			esito=false;
 			errore=e.getMessage();
@@ -1100,10 +1112,51 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	public boolean deleteOffertaById(Integer id)
 			throws IllegalArgumentException {
 		
+		Boolean esito=true;
+		String errore=new String();
+		Offerta o= new Offerta();
+		Rda r= new Rda();
 		
 		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;	
+		
+		try {
+			
+			tx=session.beginTransaction();
+		
+			o=(Offerta)session.createQuery("from Offerta where numeroOfferta=:id").setParameter("id", id).uniqueResult();
+			
+			r=o.getRda();
+			
+			if(!r.getOrdines().iterator().hasNext()){
+				session.delete(o);
+				session.delete(r);
+				
+			}else
+				return false;
+				
+			
+			tx.commit();
+			
+		}catch (Exception e){
+			esito=false;
+			errore=e.getMessage();
+			e.printStackTrace();
+			if (tx!=null)
+	    		tx.rollback();
+		}finally{
+			session.close();
+			if(!esito){
+				ServerLogFunction.logErrorMessage("editRdoCompleta", new Date(), "", "Error", errore);
+				return false;
+			}
+	    	else
+	    		ServerLogFunction.logOkMessage("editRdoCompleta", new Date(), "", "Success");	
+		}
 		return true;
 	}
+	
 	
 	@Override
 	public boolean editRdoCompleta(int idRdo, String numRdo, String cliente,
@@ -1672,11 +1725,11 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		List<OffertaModel> listaM= new ArrayList<OffertaModel>();
 		OffertaModel om= new OffertaModel();			
 		Cliente c= new Cliente();
-		ClienteModel cM=new ClienteModel();		
+		ClienteModel cM=new ClienteModel();
 		
-		SimpleDateFormat formatter =new SimpleDateFormat("yyyy-MM-dd",Locale.ITALIAN);	
+		SimpleDateFormat formatter =new SimpleDateFormat("dd-MM-yyyy",Locale.ITALIAN);	
 		String dataOfferta=new String();
-				
+		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
 			
@@ -1699,7 +1752,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				  if(o.getDataRedazione()!=null)
 					  dataOfferta=formatter.format(o.getDataRedazione());
 				  else
-					  dataOfferta="0000-00-00";
+					  dataOfferta="00-00-0000";
 				  
 				  c=o.getRda().getCliente();
 				  
@@ -1719,7 +1772,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		    	e.printStackTrace();
 		    	errore=e.getMessage();
 		    	if (tx!=null)
-		    		tx.rollback();		    		    	
+		    		tx.rollback();
 		    }finally{
 		    	session.close();
 		    	if(!esito){
@@ -9624,7 +9677,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			//Calcolo manuale Totali
 			
 		    for(Personale p:listaPers){
-				//if(p.getCognome().compareTo("Guerra")==0){
+			
 				for(RiepilogoOreDipFatturazione r1:listaAppCalcoloOreIU){
 					if(p.getId_PERSONALE()==r1.getIdPersonale()){
 						totOreIU=d.format(r1.getOreLavoro());
@@ -9635,9 +9688,12 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				for(RiepilogoOreDipFatturazione r:listaAppRiep){
 					if(p.getId_PERSONALE()==r.getIdPersonale()){
 						dipendente = p.getCognome() + " " + p.getNome();
-						oreTotLavoroCommessa=ServerUtility.aggiornaTotGenerale(oreTotLavoroCommessa, d.format(r.getOreLavoro()));
-						oreTotViaggioCommessa=ServerUtility.aggiornaTotGenerale(oreTotViaggioCommessa, d.format(r.getOreViaggio()));
-						oreTotCommessa=ServerUtility.aggiornaTotGenerale(oreTotLavoroCommessa, oreTotViaggioCommessa);
+						/*oreTotLavoroCommessa=ServerUtility.aggiornaTotGenerale(oreTotLavoroCommessa, ServerUtility.getOreCentesimi(d.format(r.getOreLavoro())));
+						oreTotViaggioCommessa=ServerUtility.aggiornaTotGenerale(oreTotViaggioCommessa, ServerUtility.getOreCentesimi(d.format(r.getOreViaggio())));
+						oreTotCommessa=ServerUtility.aggiornaTotGenerale(oreTotLavoroCommessa, oreTotViaggioCommessa);*/
+						oreTotLavoroCommessa=d.format(Float.valueOf(oreTotLavoroCommessa)+Float.valueOf(ServerUtility.getOreCentesimi(d.format(r.getOreLavoro()))));
+						oreTotViaggioCommessa=d.format(Float.valueOf(oreTotViaggioCommessa)+Float.valueOf(ServerUtility.getOreCentesimi(d.format(r.getOreViaggio()))));
+						oreTotCommessa=d.format(Float.valueOf(oreTotLavoroCommessa)+Float.valueOf(oreTotViaggioCommessa));
 					}
 				}
 				if(totOreIU.compareTo(oreTotCommessa)==0)
@@ -9654,8 +9710,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				oreTotViaggioCommessa="0.0";
 				oreTotCommessa="0.00";
 				totOreIU="0.00";
-			}	
-			//}	
+			}
+			
 			tx.commit();
 					
 		} catch (Exception e) {
@@ -9898,22 +9954,11 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			tx = session.beginTransaction();			
 			for(CommessaModel cm:listaCommesseSel){
 				
-				commessaSel=(Commessa)session.createQuery("from Commessa where numeroCommessa=:numeroCommessa and estensione=:estensione").setParameter("numeroCommessa", cm.get("numeroCommessa"))
-						.setParameter("estensione", cm.get("estensione")).uniqueResult();
-							
-				if(commessaSel!=null){					
-					listaAttivita.addAll(commessaSel.getAttivitas());											
-				}		
-			}	
-			
-			
-			for (Attivita a : listaAttivita) {  // in questo caso la lista  Attivita rappresenta la lista di commesse associate al PM
-												// selezionato: ottengo tutte le associazioni e quindi tutti i dipendenti associati a quella commessa
-				//listaAssociazioni.addAll(a.getAssociazionePtoas());
-				commessa = a.getCommessa().getNumeroCommessa();
-				estensione = a.getCommessa().getEstensione();
 				
-				descrizione=a.getCommessa().getDenominazioneAttivita();
+				commessa = cm.getNumeroCommessa();
+				estensione = cm.getEstensione();
+				
+				descrizione=cm.getDescrizione();
 								
 				numeroCommessa =(commessa + "." + estensione+" ("+descrizione+")"); //una stringa più dettagliata che descriva la commessa
 			

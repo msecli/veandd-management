@@ -10,6 +10,7 @@ import gestione.pack.client.layout.panel.PanelAbilitazioneStraordinarioDip;
 import gestione.pack.client.layout.panel.PanelAnagraficaHardware;
 import gestione.pack.client.layout.panel.PanelEditPasswordUtenti;
 import gestione.pack.client.layout.panel.PanelGestioneCosting;
+import gestione.pack.client.layout.panel.PanelGestioneOfferte;
 import gestione.pack.client.layout.panel.PanelMensileOrdini;
 import gestione.pack.client.layout.panel.PanelPrintAll;
 import gestione.pack.client.layout.panel.PanelProtocolloCommesse;
@@ -335,6 +336,21 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 		      });
 		    btnGestioneRdo.setWidth("100%");
 		    cp.add(btnGestioneRdo);
+		    
+		    Button btnGestioneOfferte = new Button();
+		    btnGestioneOfferte.setToolTip("Gestione Offerte");
+		    btnGestioneOfferte.setHeight(65);
+		    btnGestioneOfferte.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.anagrafica()));
+		    btnGestioneOfferte.setIconAlign(IconAlign.BOTTOM);
+		    btnGestioneOfferte.setWidth("100%");
+		    btnGestioneOfferte.addSelectionListener(new SelectionListener<ButtonEvent>() {
+		        public void componentSelected(ButtonEvent ce) {
+		        		center.removeAll();
+		        		center.add(new PanelGestioneOfferte());
+		        		center.layout(true);
+		        	}
+		      });
+		    cp.add(btnGestioneOfferte);
 		   	    
 		    Button btnRiepilogoMensile = new Button();
 		    btnRiepilogoMensile.setToolTip("Riepilogo Mensile");
