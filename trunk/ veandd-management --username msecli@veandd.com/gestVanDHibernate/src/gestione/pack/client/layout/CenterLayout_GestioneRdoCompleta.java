@@ -551,7 +551,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 					Date retVal = null;
 			        try
 			        {
-			            retVal = DateTimeFormat.getFormat( "yyyy-MM-dd" ).parse((String)o.get("dataOfferta"));
+			            retVal = DateTimeFormat.getFormat( "dd-MM-yyyy" ).parse((String)o.get("dataOfferta"));
 			        }
 			        catch ( Exception e )
 			        {
@@ -575,6 +575,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 						
 			dtfldDataOfferta=new DateField();
 			dtfldDataOfferta.setFieldLabel("Data Offerta");
+			dtfldDataOfferta.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd-MM-yyyy"));
 			dtfldDataOfferta.setAllowBlank(true);
 			
 			txtfldImporto=new TextField<String>();
@@ -597,10 +598,12 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			
 			dtfldDataInizioOrdine=new DateField();
 			dtfldDataInizioOrdine.setFieldLabel("Data Inizio");
+			dtfldDataInizioOrdine.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd-MM-yyyy"));
 			dtfldDataInizioOrdine.setAllowBlank(true);
 			
 			dtfldDataFineOrdine=new DateField();
 			dtfldDataFineOrdine.setFieldLabel("Data Fine");
+			dtfldDataFineOrdine.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd-MM-yyyy"));
 			dtfldDataFineOrdine.setAllowBlank(true);
 			
 			txtfldTariffaOraria=new TextField<String>();
@@ -854,7 +857,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		
 		
 		private void getOffertePending() {
-			String stato="P";
+			String stato="Pending";
 			AdministrationService.Util.getInstance().getAllOfferteModel(stato, new AsyncCallback<List<OffertaModel>>() {
 
 				@Override
@@ -1478,19 +1481,19 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		            	String dataF=be.getSelectedItem().getDataFine();
 		            	try {	
 		            		if(data.compareTo("#")!=0){
-		            			dataOff=DateTimeFormat.getFormat("yyyy-MM-dd").parse(data);
+		            			dataOff=DateTimeFormat.getFormat("dd-MM-yyyy").parse(data);
 		            			dtfldDataOfferta.setValue(dataOff);
 		            		}else dtfldDataOfferta.clear();
 		            		if(dataI.compareTo("#")!=0){
-		            			dataInizio=DateTimeFormat.getFormat("yyyy-MM-dd").parse(dataI);
+		            			dataInizio=DateTimeFormat.getFormat("dd-MM-yyyy").parse(dataI);
 		            			dtfldDataInizioOrdine.setValue(dataInizio);
 		            		}else dtfldDataInizioOrdine.clear();
 		            		if(dataF.compareTo("#")!=0){
-		            			dataFine=DateTimeFormat.getFormat("yyyy-MM-dd").parse(dataF); 
+		            			dataFine=DateTimeFormat.getFormat("dd-MM-yyyy").parse(dataF); 
 		            			dtfldDataFineOrdine.setValue(dataFine);
 		            		}else dtfldDataFineOrdine.clear();
 		            	} catch (Exception e)
-		            	  { e.printStackTrace();}  	  
+		            	  { e.printStackTrace();}
 		            	
 		            	btnSave.setEnabled(false);
 		            	btnDelete.setEnabled(true);

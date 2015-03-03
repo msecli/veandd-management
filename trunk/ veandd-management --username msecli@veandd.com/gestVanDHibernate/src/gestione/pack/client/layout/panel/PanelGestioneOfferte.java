@@ -3,6 +3,7 @@ package gestione.pack.client.layout.panel;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.model.ClienteModel;
@@ -46,6 +47,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.shared.TimeZone;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -118,6 +120,7 @@ public class PanelGestioneOfferte extends LayoutContainer{
 				
 				String stato=smplcmbxStatoOfferta.getRawValue().toString();
 				
+				
 				caricaTabellaDati(stato);
 			}
 		});
@@ -129,7 +132,6 @@ public class PanelGestioneOfferte extends LayoutContainer{
 	  	btnAdd.setSize(26, 26);
 	  	btnAdd.setToolTip("Nuova Offerta");
 	  	btnAdd.addSelectionListener(new SelectionListener<ButtonEvent>() {
-
 			@Override
 			public void componentSelected(ButtonEvent ce) {
 				OffertaModel am= new OffertaModel();  	        
@@ -171,9 +173,7 @@ public class PanelGestioneOfferte extends LayoutContainer{
 									//
 								}
 							}
-					});
-				
-				
+					});			
 			}
 		});
 	    
@@ -184,7 +184,6 @@ public class PanelGestioneOfferte extends LayoutContainer{
 	    btnConfirm.setSize(26, 26);
 	    btnConfirm.setToolTip("Conferma Offerta");
 	    btnConfirm.addSelectionListener(new SelectionListener<ButtonEvent>() {
-
 			@Override
 			public void componentSelected(ButtonEvent ce) {
 				
@@ -192,19 +191,27 @@ public class PanelGestioneOfferte extends LayoutContainer{
 				String descrizione=new String();
 				String importo=new String();
 				Integer idCliente = 0;
-				Date dataOfferta= new Date(); 
+				Date dataOfferta= new Date();
+				String dataOffertaS= new String();
 				String ragioneSociale= new String();
+				DateTimeFormat dt = DateTimeFormat.getFormat("dd/MM/yyyy");
+				Integer idOfferta=0;
 				
 				for(Record record: store.getModifiedRecords()){
 				
-					numeroOfferta=(String)record.get("numeroOfferta");
-					descrizione=(String)record.get("descrizione");
-					importo=(String)record.get("importo");
-					ragioneSociale=(String)record.get("ragioneSociale");
-					dataOfferta= (Date)record.get("dataOfferta");
-					
-					AdministrationService.Util.getInstance().insertNewOffertaWithRda(0, idCliente, numeroOfferta, ragioneSociale, dataOfferta, descrizione, 
-						importo, new AsyncCallback<Boolean>() {
+						idOfferta=(Integer)record.get("idOfferta");
+						if(idOfferta==null)
+							idOfferta=0;
+						
+						numeroOfferta=(String)record.get("numeroOfferta");
+						descrizione=(String)record.get("descrizione");
+						importo=(String)record.get("importo");
+						ragioneSociale=(String)record.get("ragioneSociale");
+						dataOffertaS= (String)record.get("dataOfferta");
+						dataOfferta=dt.parse(dataOffertaS);
+										
+						AdministrationService.Util.getInstance().insertNewOffertaWithRda(idOfferta, idCliente, numeroOfferta, 
+							ragioneSociale, dataOfferta, descrizione, importo, new AsyncCallback<Boolean>() {
 
 							@Override
 							public void onFailure(Throwable caught) {
@@ -219,7 +226,7 @@ public class PanelGestioneOfferte extends LayoutContainer{
 									Window.alert("error: Impossibile effettuare l'inserimento dei dati!");
 								}
 							}
-					});
+						});					
 				}
 			}
 		});
@@ -252,9 +259,11 @@ public class PanelGestioneOfferte extends LayoutContainer{
 
 			@Override
 			public void onSuccess(List<OffertaModel> result) {
-				if(result!=null)
-				if(result.size()>=0){
-					loadData(result);								
+				if(result!=null){
+				if(result.size()>=0)
+					loadData(result);
+				else
+					Window.alert("Nessun dato trovato!");
 				}else{
 					Window.alert("error: Impossibile effettuare il caricamento dei dati!");
 				}
@@ -288,8 +297,7 @@ public class PanelGestioneOfferte extends LayoutContainer{
 	    cmbxCliente.setVisible(true);
 	    cmbxCliente.setTriggerAction(TriggerAction.ALL);
 	    cmbxCliente.setForceSelection(true);
-	    cmbxCliente.setAllowBlank(false);
-	    
+	    cmbxCliente.setAllowBlank(false);    
 	    cmbxCliente.addListener(Events.OnClick, new Listener<BaseEvent>(){
 			@Override
 			public void handleEvent(BaseEvent be) {
@@ -362,9 +370,32 @@ public class PanelGestioneOfferte extends LayoutContainer{
 	    column.setHeader("Data Offerta");  
 	    column.setWidth(160);
 	    dtfldScadenzaControllo= new DateField();
-	    dtfldScadenzaControllo.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/y"));  
-	    column.setEditor(new CellEditor(dtfldScadenzaControllo));  
+	    dtfldScadenzaControllo.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
+	    CellEditor editorD = new CellEditor(dtfldScadenzaControllo) {
+	    	@Override  
+	        public Object preProcessValue(Object value) {
+	          if (value == null) {  
+	            return value;  
+	          }  
+	          return dtfldScadenzaControllo.getValue();  
+	        }
+	        @Override
+	        public Object postProcessValue(Object value) {
+	          if (value == null) {
+	            return value;  
+	          }else{  
+	        	  DateTimeFormat dt = DateTimeFormat.getFormat("dd/MM/yyyy");
+	        	  String dataS= new String();
+	        	  dataS=dt.format(dtfldScadenzaControllo.getValue());
+	        	  
+	        	  return dataS;
+	        	  
+	          }
+	        }  
+	    };
+	    //column.setEditor(new CellEditor(dtfldScadenzaControllo));  
 	    column.setDateTimeFormat(DateTimeFormat.getFormat("dd MMM yyy"));
+	    column.setEditor(editorD);
 	    configs.add(column);
 	    
 	    column = new ColumnConfig();  

@@ -68,7 +68,6 @@ public class OffertaModel  extends BaseModel implements IsSerializable{
 	}
 	
 	public String getData(){
-		
 		return get("dataOfferta");
 	}
 }
