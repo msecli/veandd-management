@@ -17,6 +17,7 @@ import gestione.pack.client.layout.panel.PanelProtocolloCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoAnnualeOreDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoCostiDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
+import gestione.pack.client.layout.panel.PanelRiepilogoOreCartellinoDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoRichiesteHardware;
 import gestione.pack.client.layout.panel.PanelRiepilogoSituazioneMensileOreDipendenti;
@@ -537,6 +538,29 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 		      });
 		    btnRiepilogoMese.setWidth("100%");
 		    cp.add(btnRiepilogoMese);
+		    
+		    Button btnRiepilogoOreCartellino = new Button();
+		    btnRiepilogoOreCartellino.setToolTip("Riepilogo ore a cartellino");
+		    btnRiepilogoOreCartellino.setHeight(65);
+		    btnRiepilogoOreCartellino.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensPers()));
+		    btnRiepilogoOreCartellino.setIconAlign(IconAlign.BOTTOM);
+		    btnRiepilogoOreCartellino.setWidth("100%");
+		    btnRiepilogoOreCartellino.addSelectionListener(new SelectionListener<ButtonEvent>() {
+		        public void componentSelected(ButtonEvent ce) {
+		        	int h=Window.getClientHeight();
+		        	int w=Window.getClientWidth();
+		        	Dialog d= new Dialog();
+		        	d.setSize(w-130, h-75);
+		        	d.add(new PanelRiepilogoOreCartellinoDipendenti());
+		        	d.setHeading("Riepilogo Ore Dipendenti");
+		        	d.setCollapsible(true);
+		        	d.setScrollMode(Scroll.AUTO);
+		        	d.setButtons("");
+		        	d.setConstrain(false);
+		        	d.show();	        
+		        }
+		    });
+		    cp.add(btnRiepilogoOreCartellino);
 		    
 		    Button btnRiepilogoAnnuale = new Button();
 		    btnRiepilogoAnnuale.setToolTip("Report Annuale");
