@@ -717,7 +717,6 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        	d.show();	        
 	        }      
 	    });
-	    btnRiepilogoMese.setWidth("100%");
 	    cp.add(btnRiepilogoOreCartellino);
 	    
 	    Button btnRiepilogoAnnuale = new Button();

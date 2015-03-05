@@ -156,7 +156,7 @@ public class PanelMensileOrdini extends LayoutContainer{
 				numeroOrdine=sm.getSelectedItem().get("numeroOrdine");
 				pnlRtv.setNumeroOrdine(numeroOrdine);
 				pnlRtv.caricaDatiTabellaRtv(numeroOrdine);	
-										
+				
 				AdministrationService.Util.getInstance().getDettaglioMensileOrdine(numeroOrdine, new AsyncCallback<List<RiepilogoMensileOrdiniModel>>() {
 
 					@Override
@@ -582,10 +582,8 @@ public class PanelMensileOrdini extends LayoutContainer{
 
 	
 	private List<ColumnConfig> createColumnsOrdini() {
-		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
+		List <ColumnConfig> configs = new ArrayList<ColumnConfig>();
 		final NumberFormat number= NumberFormat.getFormat("0.00");
-		
-		//TODO se metto la selezione con check box non fa il summary!
 		
 		GridCellRenderer<RiepilogoMensileOrdiniModel> renderer = new GridCellRenderer<RiepilogoMensileOrdiniModel>() {
             public String render(RiepilogoMensileOrdiniModel model, String property, ColumnData config, int rowIndex,
@@ -655,9 +653,9 @@ public class PanelMensileOrdini extends LayoutContainer{
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    configs.add(column);
 		
-	    column = new ColumnConfig();  
-	    column.setId("commessa");  
-	    column.setHeader("Commessa");  
+	    column = new ColumnConfig();
+	    column.setId("commessa");
+	    column.setHeader("Commessa");
 	    column.setWidth(100);  
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);

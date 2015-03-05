@@ -294,7 +294,7 @@ public CenterLayout_FoglioFatturazione(){}
 		private Button btnEditOreDip;
 		private Button btnCheckOreFatturate;
 		
-		CntpnlRiepilogoOreDipFatturazione(){		
+		CntpnlRiepilogoOreDipFatturazione(){
 			setHeading("Riepilogo Ore (Mensile).");
 			setHeaderVisible(false);
 			setCollapsible(false);
@@ -328,8 +328,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    		   	
 		    gridRiepilogo= new Grid<RiepilogoOreDipFatturazione>(store, cm);  
 		    gridRiepilogo.setItemId("grid");
-		    gridRiepilogo.setBorders(false);
-		    
+		    gridRiepilogo.setBorders(false);	    
 		    gridRiepilogo.setStripeRows(true);  
 		    gridRiepilogo.setColumnLines(true);  
 		    gridRiepilogo.setColumnReordering(true);  
@@ -1646,8 +1645,8 @@ public CenterLayout_FoglioFatturazione(){}
 		    	  		efficienza=Float.valueOf(ClientUtility.getOreCentesimi(scaricate))/Float.valueOf(ClientUtility.getOreCentesimi(txtfldOreEseguiteRegistrate.getValue().toString()));
 		    	  		txtEfficienza.setText("("+number.format(efficienza)+")");
 		    	  		
-		    	  	}					
-				}				
+		    	  	}
+				}
 			});			
 			
 			txtfldOreScaricate.setFieldLabel("Ore Scaricate");
@@ -2092,7 +2091,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    
 		    column=new ColumnConfig();		
 		    column.setId("importoFatturato");
-		    column.setHeader("Importo");  
+		    column.setHeader("Importo");
 		    column.setWidth(65);  
 		    column.setRowHeader(true);  
 		    column.setAlignment(HorizontalAlignment.RIGHT);
@@ -2165,8 +2164,7 @@ public CenterLayout_FoglioFatturazione(){}
 					}
 				}); //AsyncCallback	  		
 			}else
-				Window.alert("error: Dati selezionati non corretti.");
-			
+				Window.alert("error: Dati selezionati non corretti.");	
 		}
 		
 		protected boolean hasValue(TextField<String> field) {
@@ -2218,6 +2216,8 @@ public CenterLayout_FoglioFatturazione(){}
 					}
 				}				
 				
+				
+				//TODO oreStrao
 				oreLavoro=oreLavoro+oreStraoC+oreViaggioC;
 				
 				if(!nuovo){	

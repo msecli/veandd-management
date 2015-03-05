@@ -25,6 +25,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.fx.Resizable;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.StoreSorter;
@@ -56,6 +57,7 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 public class PanelGestioneOfferte extends LayoutContainer{
 
 	private int h=Window.getClientHeight();
+	private int w=Window.getClientWidth();
 	
 	private ListStore<OffertaModel> store=new ListStore<OffertaModel>();
 	private ColumnModel cm;
@@ -90,14 +92,18 @@ public class PanelGestioneOfferte extends LayoutContainer{
 	 	ToolBar toolBar= new ToolBar();
 	  	
 	  	ContentPanel cntpnlGrid= new ContentPanel();
-		cntpnlGrid.setBodyBorder(false);         
-		cntpnlGrid.setLayout(new FitLayout());  
+		cntpnlGrid.setBodyBorder(false);
+		cntpnlGrid.setLayout(new FitLayout());
 		cntpnlGrid.setHeaderVisible(false);
 		cntpnlGrid.setHeight(h-55);
 		cntpnlGrid.setBorders(true);
 		cntpnlGrid.setScrollMode(Scroll.AUTO);
 						
-		cm = new ColumnModel(createColumns());	
+		Resizable r=new Resizable(cntpnlGrid);
+	    r.setMinWidth(w-220);
+	    r.setMinHeight(h-80);
+		
+		cm = new ColumnModel(createColumns());
 		store.setDefaultSort("cognome", SortDir.ASC);
 		gridRiepilogo= new EditorGrid<OffertaModel>(store, cm);  
 		gridRiepilogo.setBorders(false);
@@ -119,8 +125,7 @@ public class PanelGestioneOfferte extends LayoutContainer{
 					SelectionChangedEvent<SimpleComboValue<String>> se) {
 				
 				String stato=smplcmbxStatoOfferta.getRawValue().toString();
-				
-				
+						
 				caricaTabellaDati(stato);
 			}
 		});
@@ -147,8 +152,7 @@ public class PanelGestioneOfferte extends LayoutContainer{
 	    btnRemove.setIconAlign(IconAlign.TOP);
 	    btnRemove.setSize(26, 26);
 	    btnRemove.setToolTip("Elimina Offerta");
-	    btnRemove.addSelectionListener(new SelectionListener<ButtonEvent>() {
-	    	
+	    btnRemove.addSelectionListener(new SelectionListener<ButtonEvent>() {    	
 			@Override
 			public void componentSelected(ButtonEvent ce){
 				
@@ -173,7 +177,7 @@ public class PanelGestioneOfferte extends LayoutContainer{
 									//
 								}
 							}
-					});			
+				});			
 			}
 		});
 	    
@@ -182,7 +186,7 @@ public class PanelGestioneOfferte extends LayoutContainer{
 	    btnConfirm.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.confirm()));
 	    btnConfirm.setIconAlign(IconAlign.TOP);
 	    btnConfirm.setSize(26, 26);
-	    btnConfirm.setToolTip("Conferma Offerta");
+	    btnConfirm.setToolTip("Conferma Dati Inseriti");
 	    btnConfirm.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
@@ -281,7 +285,7 @@ public class PanelGestioneOfferte extends LayoutContainer{
 	private List<ColumnConfig> createColumns() {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 		
-		ColumnConfig column = new ColumnConfig();
+		ColumnConfig column;
 		
 	    column=new ColumnConfig();
 	    column.setId("ragioneSociale");
@@ -297,7 +301,7 @@ public class PanelGestioneOfferte extends LayoutContainer{
 	    cmbxCliente.setVisible(true);
 	    cmbxCliente.setTriggerAction(TriggerAction.ALL);
 	    cmbxCliente.setForceSelection(true);
-	    cmbxCliente.setAllowBlank(false);    
+	    cmbxCliente.setAllowBlank(false);
 	    cmbxCliente.addListener(Events.OnClick, new Listener<BaseEvent>(){
 			@Override
 			public void handleEvent(BaseEvent be) {
@@ -327,7 +331,7 @@ public class PanelGestioneOfferte extends LayoutContainer{
 						}else 
 							Window.alert("error: Errore durante l'accesso ai dati Personale.");				
 					}
-				});				
+				});
 			}
 		});
 	    CellEditor editor = new CellEditor(cmbxCliente) {
@@ -347,7 +351,7 @@ public class PanelGestioneOfferte extends LayoutContainer{
 	        }  
 	    };
 	    column.setEditor(editor);
-	    configs.add(column);  
+	    configs.add(column);
 	  
 	    column = new ColumnConfig();
 	    column.setId("numeroOfferta");  

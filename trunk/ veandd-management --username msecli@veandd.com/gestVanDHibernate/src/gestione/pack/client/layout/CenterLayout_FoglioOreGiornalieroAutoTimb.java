@@ -616,8 +616,8 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			totOreStraoSuIntervalliComm=ClientUtility.aggiornaTotGenerale(totOreStraoSuIntervalliComm, (String) intM.get("oreStraordinario"));
 		if((oreStraordinario.compareTo("0.00")!=0)||(totOreStraoSuIntervalliComm.compareTo("0.00")!=0))
 				if(oreStraordinario.compareTo(totOreStraoSuIntervalliComm)!=0)
-					return controllo="LE ORE DI STRAORDINARIO INSERITE NEL GIUSTIFICATIVO E SUGLI INTERVALLI COMMESSE NON COINCIDONO!";*/
-			
+					return controllo="LE ORE DI STRAORDINARIO INSERITE NEL GIUSTIFICATIVO E SUGLI INTERVALLI COMMESSE NON COINCIDONO!";
+			*/
 		return controllo;
 	}
 
@@ -4303,23 +4303,27 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 						if(!autorizzato){
 							frmInsCommesse.txtfldOreStrao.setVisible(false);
 							frmInsCommesse.btnHelp.setVisible(false);
-							//frmInsCommesse.txtAbilitazioneStrao.setVisible(true);
+							
+							frmInsCommesse.txtAbilitazioneStrao.setVisible(true);
 						}else
 							if(autorizzato && ClientUtility.dataIsIncluded((Date)pM.get("dataInizioAbilitazioneStrao"), dtfldGiorno.getValue())){
 								frmInsCommesse.txtfldOreStrao.setVisible(true);
 								frmInsCommesse.btnHelp.setVisible(true);
-								//frmInsCommesse.txtAbilitazioneStrao.setVisible(false);
+								
+								frmInsCommesse.txtAbilitazioneStrao.setVisible(false);						
 						}else{
 							frmInsCommesse.txtfldOreStrao.setVisible(false);
 							frmInsCommesse.btnHelp.setVisible(false);
-							//frmInsCommesse.txtAbilitazioneStrao.setVisible(true);
+							
+							frmInsCommesse.txtAbilitazioneStrao.setVisible(true);
 						}
 							
 						if(statoRevisione==2){
 							frmInsCommesse.txtfldOreIntervallo.setEnabled(false);
 							frmInsCommesse.txtfldOreViaggio.setEnabled(false);
 							frmInsCommesse.txtfldOreStrao.setEnabled(false);
-							//frmInsCommesse.txtAbilitazioneStrao.setVisible(false);
+							
+							frmInsCommesse.txtAbilitazioneStrao.setVisible(false);
 						}
 					
 						//frmInsCommesse.txtfldTotOreLavoro.setValue(result.get(i).getTotOreLavoro());

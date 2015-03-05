@@ -751,9 +751,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							  listaM.add(rdoM);
 						  }
 					  else{						  
-						  rdoM=new RdoCompletaModel(r.getNumeroRda()/*id*/, numRdo, r.getCliente().getRagioneSociale(), 
+						  rdoM=new RdoCompletaModel(r.getNumeroRda()/*id*/, numRdo, r.getCliente().getRagioneSociale(),
 								  numOfferta, dataOfferte, descrizione, "#", elementoWbs, conto, prCenter, bem,
-								  importo, numOrdine, "#", dataInizio, dataFine, 
+								  importo, numOrdine, "#", dataInizio, dataFine,
 								  tariffa, numRisorse, oreDisp, oreRes, importoOrdine,importoResiduo, statoOrdine);
 						  listaM.add(rdoM);						  
 					  }
@@ -781,7 +781,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				  importoOrdine="0.00";
 				  importoResiduo="0.00";
 				  statoOrdine="N";					  
-			  }  
+			  }
 			  
 			  tx.commit();		  
 			  
@@ -798,7 +798,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			    	return null;
 		    	}else
 		    		ServerLogFunction.logOkMessage("getAllRdoCompletaModel", new Date(), "", "Success");
-		    }		
+		    }
 		return listaM;
 	}
 	
@@ -826,7 +826,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 			//faccio un check sul numero di offerta per vedere se è già presente ed eventualmente procedo all'inserimento dei dati del solo ordine
 			
-			o = (Offerta)session.createQuery("from Offerta where codiceOfferta=:codiceOfferta").setParameter("codiceOfferta", numOfferta).uniqueResult();
+			if(numOfferta.compareTo("#")==0)
+				o=null;
+			else
+				o = (Offerta)session.createQuery("from Offerta where codiceOfferta=:codiceOfferta").setParameter("codiceOfferta", numOfferta).uniqueResult();
 			
 			if(o==null){
 				c = (Cliente)session.createQuery("from Cliente where ragioneSociale= :ragSociale").setParameter("ragSociale", cliente).uniqueResult();	
@@ -881,8 +884,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					insertTariffeOrdine(numOrdine, att);
 				}
 			}
-			
-			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1148,11 +1149,11 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}finally{
 			session.close();
 			if(!esito){
-				ServerLogFunction.logErrorMessage("editRdoCompleta", new Date(), "", "Error", errore);
+				ServerLogFunction.logErrorMessage("deleteOffertaById", new Date(), "", "Error", errore);
 				return false;
 			}
 	    	else
-	    		ServerLogFunction.logOkMessage("editRdoCompleta", new Date(), "", "Success");	
+	    		ServerLogFunction.logOkMessage("deleteOffertaById", new Date(), "", "Success");	
 		}
 		return true;
 	}
@@ -3343,7 +3344,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					.setParameter("mese", data).uniqueResult();
 			
 			if(!ServerUtility.mesePresente(data, p.getFoglioOreMeses()))
-			/*if(foglioOre==null)*/{	
+			/*if(foglioOre==null)*/{
 				foglioOre=new FoglioOreMese();
 				foglioOre.setPersonale(p);
 				foglioOre.setMeseRiferimento(data);
@@ -3353,7 +3354,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					if(foglioOre.equals(fm))
 						duplicato=true;
 				
-				if(!duplicato){		
+				if(!duplicato){
 					p.getFoglioOreMeses().add(foglioOre);
 					
 					session.save(p);
@@ -3367,7 +3368,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				}else{
 					tx.commit();
 					//TODO log di duplicato
-				}					
+				}
 			}
 			
 			else //il mese è già stato creato quindi prelevo il foglio ore del mese
@@ -3418,7 +3419,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					tx.commit();
 					
 					createDettaglioIntervalliCommesse(intervalliC, username, giorno);
-				}			
+				}
 			}			
 			return true;
 			
@@ -9462,7 +9463,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							
 							for(CommessaModel c: listaCommAss){
 								//for(String mese:listaMesiConsiderati)
-									for(DettaglioIntervalliCommesse d:listaDettCommAll){													
+									for(DettaglioIntervalliCommesse d:listaDettCommAll){
 										if(d.getNumeroCommessa().compareTo(c.getNumeroCommessa())==0 && d.getEstensioneCommessa().compareTo(c.getEstensione())==0
 											//&& mese.compareTo(d.getDettaglioOreGiornaliere().getFoglioOreMese().getMeseRiferimento())==0
 											&& p.getId_PERSONALE()==d.getDettaglioOreGiornaliere().getFoglioOreMese().getPersonale().getId_PERSONALE() ){
@@ -9495,7 +9496,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 									}
 						
 								if(Float.valueOf(totOre)!=0){
-
 									riep=new RiepilogoOreNonFatturabiliModel(p.getSedeOperativa(), p.getGruppoLavoro(), c.getNumeroCommessa()+"."+c.getEstensione(),
 										 p.getCognome()+" "+ p.getNome(), Float.valueOf(totMesi[0]), Float.valueOf(totMesi[1]), Float.valueOf(totMesi[2]), Float.valueOf(totMesi[3]), Float.valueOf(totMesi[4])
 										, Float.valueOf(totMesi[5]), Float.valueOf(totMesi[6]), Float.valueOf(totMesi[7]), Float.valueOf(totMesi[8]), Float.valueOf(totMesi[9]), Float.valueOf(totMesi[10]), 
@@ -9512,7 +9512,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				
 				listaF.clear();
 						
-			}	
+			}
 									
 			tx.commit();
 			return listaRO;
@@ -9608,7 +9608,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 								listaGiorni.addAll(f.getDettaglioOreGiornalieres()); //prendo tutti i giorni
 
 								for (DettaglioOreGiornaliere giorno : listaGiorni) {
-										
 									
 									//calcolo le ore mensili rilevate dagli intervalli di IU
 									totaleOreDaIU=ServerUtility.aggiornaTotGenerale(totaleOreDaIU, giorno.getTotaleOreGiorno());
@@ -9624,7 +9623,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 											oreTotMeseViaggio = ServerUtility.aggiornaTotGenerale(oreTotMeseViaggio,oreViaggio);
 										}
 										oreLavoro="0.0";
-										oreViaggio="0.0";										
+										oreViaggio="0.0";
 									}
 									listaIntervalli.clear();
 									

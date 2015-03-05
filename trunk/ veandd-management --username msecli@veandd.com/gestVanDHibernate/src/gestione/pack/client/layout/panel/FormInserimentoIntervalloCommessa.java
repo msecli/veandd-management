@@ -225,11 +225,11 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 		      }
 		});
 		
-		txtAbilitazioneStrao.setVisible(true);
-		txtAbilitazioneStrao.setStyleAttribute("color", "#d7dbdb");
+		txtAbilitazioneStrao.setVisible(false);
+		txtAbilitazioneStrao.setStyleAttribute("color", "#000000");
 		txtAbilitazioneStrao.setStyleAttribute(" font-style", "italic");
-		txtAbilitazioneStrao.setStyleAttribute("padding-top", "4px");
-		txtAbilitazioneStrao.setText("Straordinario non autorizzato.");
+		txtAbilitazioneStrao.setStyleAttribute("padding-top", "6px");
+		txtAbilitazioneStrao.setText("Strao. non autorizzato.");
 		
 		/*
 		txtfldTotOreLavoro.setFieldLabel("Tot.Mese");
@@ -326,6 +326,7 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 					
 			layoutCol3.add(txtOreTotLavoro, new FormData("100%"));
 			layoutCol3.add(txtOreTotViaggio,new FormData("100%"));
+			//layoutCol3.add(txtAbilitazioneStrao, new FormData("100%"));
 		}			
 		
 		cp.setTopComponent(hp1);
