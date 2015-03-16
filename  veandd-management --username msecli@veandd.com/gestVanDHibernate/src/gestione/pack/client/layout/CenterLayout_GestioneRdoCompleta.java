@@ -236,7 +236,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 							caught.printStackTrace();
 					
 						}
-					}); //AsyncCallback	   
+					}); //AsyncCallback
 				}else{
 					Window.alert("Controllare i campi inseriti ed eliminare eventuali record vuoti nella tabella Tariffe.");
 				}
@@ -962,7 +962,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 				
 				 public void componentKeyDown(ComponentEvent event) {
 				    	int keyCode=event.getKeyCode();
-						if(keyCode==9){	
+						if(keyCode==9){
 							
 							if(txtfldOreOrdine.getValue()==null)
 								txtfldOreOrdine.setValue("0.00");
@@ -1036,7 +1036,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    txtfldImporto.setAllowBlank(false);	
 		    txtfldImporto.addKeyListener(new KeyListener(){
 				
-				 public void componentKeyDown(ComponentEvent event) { 	  
+				 public void componentKeyDown(ComponentEvent event) {
 				    	int keyCode=event.getKeyCode();
 						if(keyCode==9){			
 							

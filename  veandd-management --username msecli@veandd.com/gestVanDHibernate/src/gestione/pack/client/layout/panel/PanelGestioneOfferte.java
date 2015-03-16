@@ -139,7 +139,7 @@ public class PanelGestioneOfferte extends LayoutContainer{
 	  	btnAdd.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
-				OffertaModel am= new OffertaModel();  	        
+				OffertaModel am= new OffertaModel();
 		        gridRiepilogo.stopEditing();  
 		        store.insert(am, 0);  
 		        gridRiepilogo.startEditing(store.indexOf(am), 0);  
@@ -152,7 +152,7 @@ public class PanelGestioneOfferte extends LayoutContainer{
 	    btnRemove.setIconAlign(IconAlign.TOP);
 	    btnRemove.setSize(26, 26);
 	    btnRemove.setToolTip("Elimina Offerta");
-	    btnRemove.addSelectionListener(new SelectionListener<ButtonEvent>() {    	
+	    btnRemove.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce){
 				

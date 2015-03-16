@@ -2264,7 +2264,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				}
 				else
 					ServerLogFunction.logOkMessage("insertDataCommessa", new Date(), "", "Success");
-			}		
+			}
 			return true;
 		} else
 			return false;
@@ -2329,7 +2329,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			}
 			else
 				ServerLogFunction.logOkMessage("editDataCommessa", new Date(), "", "Success");
-		}	
+		}
 		return true;
 	}
 
@@ -6721,9 +6721,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					 // if(p.getStatoRapporto().compareTo("Cessato")!=0)
 						if(p.getGruppoLavoro().compareTo("Indiretti")!=0){ // per ogni dipendente in questa commessa selezioni i fogli ore del mese desiderato
 							
-							if(p.getCognome().compareTo("Giarrizzo")==0)
+							if(p.getNome().compareTo("Piergiorgio")==0)
 								System.out.print("");
-							
+						
 							dipendente = p.getCognome() + " " + p.getNome();
 							
 							idDip=p.getId_PERSONALE();
@@ -8779,10 +8779,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				
 				commessa=c.getNumeroCommessa();
 				codCommessa=c.getCodCommessa();
-				
-				if(commessa.compareTo("13097")==0)
-					System.out.print("");
-				
+								
 				cPa=(Commessa)session.createQuery("from Commessa where numeroCommessa=:numeroCommessa and estensione=:estensione")
 						.setParameter("numeroCommessa", c.getNumeroCommessa()).setParameter("estensione", "pa").uniqueResult();
 				
@@ -8800,14 +8797,16 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				if(listaFF!=null)
 					for(FoglioFatturazione f1:listaFF){
 						if(ServerUtility.isPrecedente(f1.getMeseCorrente(), data)){
-							sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(f1.getVariazionePCL())));
-							sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)+ Float.valueOf( ServerUtility.getOreCentesimi(f1.getVariazioneSAL())));
+							sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ 
+									Float.valueOf(ServerUtility.getOreCentesimi(f1.getVariazionePCL())));
+							sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)+ 
+									Float.valueOf( ServerUtility.getOreCentesimi(f1.getVariazioneSAL())));
 						}
 					}
 					
 				sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)+ Float.valueOf(ServerUtility.getOreCentesimi(c.getSalAttuale())));
 				sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(c.getPclAttuale())));
-					
+				
 				tariffaUtilizzata=c.getTariffaSal();
 				o=c.getOrdine();
 				
@@ -8816,7 +8815,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					numeroOrdine=o.getCodiceOrdine();
 				}else{
 					cliente=c.getRagioneSocialeCliente();
-					numeroOrdine="#";					
+					numeroOrdine="#";
 				}
 				
 								
@@ -12206,8 +12205,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 
 	
 	@SuppressWarnings("unchecked")
-	@Override
-	public List<RiepilogoOreDipFatturazione> checkOreEseguiteFogliopFatturazione(
+	
+	public List<RiepilogoOreDipFatturazione> checkOreEseguiteFogliopFatturazione1(
 			String meseRif, List<RiepilogoOreDipFatturazione> listaC) {
 		
 		List<RiepilogoOreDipFatturazione> listaCheck= new ArrayList<RiepilogoOreDipFatturazione>();
@@ -12233,7 +12232,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		try {
 				tx=session.beginTransaction();
 				
-				//TODO check se pa (se pa non avrà fogli fatturazione quindi prendo le varie sottoestensioni)
+				//check se pa (se pa non avrà fogli fatturazione quindi prendo le varie sottoestensioni)
 				
 				for(RiepilogoOreDipFatturazione r:listaC){
 					
@@ -12316,6 +12315,129 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						}
 					}
 				}
+				tx.commit();
+				
+			}catch (Exception e) {
+				e.printStackTrace();
+				if (tx!=null)
+					tx.rollback();				
+			}finally{
+				session.close();
+			}
+		
+		return listaCheck;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<RiepilogoOreDipFatturazione> checkOreEseguiteFogliopFatturazione(
+			String meseRif, List<RiepilogoOreDipFatturazione> listaC) {
+		
+		List<RiepilogoOreDipFatturazione> listaCheck= new ArrayList<RiepilogoOreDipFatturazione>();
+		RiepilogoOreDipFatturazione riep;
+		List<FoglioFatturazione> listaFF= new ArrayList<FoglioFatturazione>();
+		List<FoglioFatturazione> listaFFSelected= new ArrayList<FoglioFatturazione>();
+		Set<Commessa> listaCommesse= new HashSet<Commessa>();
+		List<Commessa> listaCommesse1= new ArrayList<Commessa>();
+		Commessa c= new Commessa();
+		Ordine o = new Ordine();
+		
+		String numeroCommessa;
+		String estensioneCommessa;
+		
+		boolean trovato= false;
+		boolean check=false;
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		String oreTotali="0.00";
+		//oreTotali
+				
+		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+	    formatSymbols.setDecimalSeparator('.');
+	    String pattern="0.00";
+	    DecimalFormat d= new DecimalFormat(pattern,formatSymbols);
+	
+		try {
+				tx=session.beginTransaction();
+				
+				for(RiepilogoOreDipFatturazione r:listaC){
+					
+					numeroCommessa=r.getNumeroCommessa();
+					estensioneCommessa=numeroCommessa.substring(numeroCommessa.indexOf(".")+1, numeroCommessa.indexOf("(")-1);
+					numeroCommessa=numeroCommessa.substring(0,numeroCommessa.indexOf("."));
+				
+					if(estensioneCommessa.compareTo("pa")!=0){
+					
+						c=(Commessa) session.createQuery("from Commessa where numeroCommessa=:numeroCommessa and estensione=:estensioneCommessa")
+							.setParameter("numeroCommessa", numeroCommessa).setParameter("estensioneCommessa", estensioneCommessa).uniqueResult();
+				 	
+						if(!ServerUtility.commessaIsIncluded(c.getCodCommessa(), (Set<Commessa>) listaCommesse)){
+							listaFF=(List<FoglioFatturazione>)session.createQuery("from FoglioFatturazione f join f.commessa c " +
+							" where c.codCommessa=:idCommessa and f.meseCorrente=:mese ").setParameter("idCommessa", c.getCodCommessa()).
+							setParameter("mese", meseRif).list();
+						
+							for(ListIterator iter = listaFF.listIterator(); iter.hasNext(); ) {
+								 Object[] row = (Object[]) iter.next();
+								 
+								 listaFFSelected.add((FoglioFatturazione) row[0]);
+								 
+					         }
+							
+							for(FoglioFatturazione ff1:listaFFSelected)
+								oreTotali=ServerUtility.aggiornaTotGenerale(oreTotali, ff1.getOreEseguite());
+						
+						}
+					
+					
+						if(d.format(r.getOreTotali()).compareTo(oreTotali)==0)
+							check=true;						
+						else
+							check=false;						
+
+						riep=new RiepilogoOreDipFatturazione(numeroCommessa, meseRif, "", 0, "", Float.valueOf(r.getOreTotali()), Float.valueOf(oreTotali),
+								(float)0.0, (float)0.00, (float)0.0, check);
+								listaCheck.add(riep);
+								
+						listaFF.clear();
+						listaFFSelected.clear();
+						oreTotali="0.00";
+					}
+					else{
+						
+						listaCommesse1=(List<Commessa>)session.createQuery("from Commessa where numeroCommessa=:numeroCommessa " +
+								" and estensione<>:estensioneCommessa and escludiDaPa=:flag").setParameter("flag", "N")
+								.setParameter("numeroCommessa", numeroCommessa).setParameter("estensioneCommessa", "pa").list();
+						
+						for(Commessa cc1:listaCommesse1){
+								listaFF.addAll((List<FoglioFatturazione>)session.createQuery("from FoglioFatturazione f join f.commessa c " +
+								" where c.codCommessa=:idCommessa and f.meseCorrente=:mese ").setParameter("idCommessa", cc1.getCodCommessa()).
+								setParameter("mese", meseRif).list());
+						}
+						
+						for(ListIterator iter = listaFF.listIterator(); iter.hasNext(); ) {
+							 Object[] row = (Object[]) iter.next();
+							 listaFFSelected.add((FoglioFatturazione) row[0]);
+				        }
+						
+						for(FoglioFatturazione ff1:listaFFSelected)
+							oreTotali=ServerUtility.aggiornaTotGenerale(oreTotali, ff1.getOreEseguite());
+						
+						if(d.format(r.getOreTotali()).compareTo(oreTotali)==0)
+							check=true;						
+						else
+							check=false;			
+
+						riep=new RiepilogoOreDipFatturazione(numeroCommessa, meseRif, "", 0, "", Float.valueOf(r.getOreTotali()), Float.valueOf(oreTotali),
+								(float)0.0, (float)0.00, (float)0.0, check);
+								listaCheck.add(riep);
+						
+						listaFF.clear();
+						listaFFSelected.clear();
+						oreTotali="0.00";
+					}
+				}
+				
 				tx.commit();
 				
 			}catch (Exception e) {

@@ -498,7 +498,7 @@ public class CenterLayout_RilevazioneOreColocation extends LayoutContainer{
 								public void onSuccess(List<IntervalliCommesseModel> result) {
 									caricaFieldSet(result);
 			
-								}				
+								}	
 							});
 		}
 		
@@ -510,7 +510,7 @@ public class CenterLayout_RilevazioneOreColocation extends LayoutContainer{
 				  public int compare(IntervalliCommesseModel s1, IntervalliCommesseModel s2) {
 				    return s1.getNumeroCommessa().compareToIgnoreCase(s2.getNumeroCommessa());
 				  }
-				});
+			});
 		
 			lista.addAll(result);
 
@@ -529,34 +529,34 @@ public class CenterLayout_RilevazioneOreColocation extends LayoutContainer{
 					
 				} else
 					{
-					removeAll();
+						removeAll();
 			
-					for (int i = 0; i < size; i++) {
-					String num = String.valueOf(i);
+						for (int i = 0; i < size; i++) {
+							String num = String.valueOf(i);
 
-					frmInsCommesse = new FormInserimentoIntervalloCommessa("2");
-					frmInsCommesse.setItemId(num);
+							frmInsCommesse = new FormInserimentoIntervalloCommessa("2");
+							frmInsCommesse.setItemId(num);
 
-					//frmInsCommesse.txtfldNumeroCommessa.setValue(result.get(i).getNumeroCommessa());
-					frmInsCommesse.txtfldOreIntervallo.setValue(result.get(i).getOreLavoro());
-					frmInsCommesse.txtfldOreViaggio.setValue(result.get(i).getOreViaggio());
-					frmInsCommesse.txtOreTotLavoro.setText("Totale nel Mese: "+result.get(i).getTotOreLavoro());
-					frmInsCommesse.txtOreTotViaggio.setText("Totale nel Mese: "+result.get(i).getTotOreViaggio());
+							//frmInsCommesse.txtfldNumeroCommessa.setValue(result.get(i).getNumeroCommessa());
+							frmInsCommesse.txtfldOreIntervallo.setValue(result.get(i).getOreLavoro());
+							frmInsCommesse.txtfldOreViaggio.setValue(result.get(i).getOreViaggio());
+							frmInsCommesse.txtOreTotLavoro.setText("Totale nel Mese: "+result.get(i).getTotOreLavoro());
+							frmInsCommesse.txtOreTotViaggio.setText("Totale nel Mese: "+result.get(i).getTotOreViaggio());
 					
-					descrizioneCompleta=result.get(i).getNumeroCommessa()+" ("+result.get(i).getDescrizione().toLowerCase()+") ";
+							descrizioneCompleta=result.get(i).getNumeroCommessa()+" ("+result.get(i).getDescrizione().toLowerCase()+") ";
 					
-					//frmInsCommesse.txtDescrizione.setText(result.get(i).getDescrizione().toLowerCase());
-					frmInsCommesse.txtDescrizione.setText(descrizioneCompleta);					
+							//frmInsCommesse.txtDescrizione.setText(result.get(i).getDescrizione().toLowerCase());
+							frmInsCommesse.txtDescrizione.setText(descrizioneCompleta);					
 					
-					add(frmInsCommesse);
+							add(frmInsCommesse);
 			
+						}
 					}
-				}
 
 				add(buttonBar);
 				layout();
-			}		
-		}	
+			}
+		}
 	}
 	
 	
@@ -569,6 +569,7 @@ public class CenterLayout_RilevazioneOreColocation extends LayoutContainer{
 		FormInserimentoIntervalloCommessa frm=new FormInserimentoIntervalloCommessa("2");
 		String numeroCommessa;
 		String descrizione;
+		
 		
 		IntervalliCommesseModel intervallo;
 		List<IntervalliCommesseModel>  intervalliC= new ArrayList<IntervalliCommesseModel>();
@@ -586,15 +587,20 @@ public class CenterLayout_RilevazioneOreColocation extends LayoutContainer{
 			//txtfldNumCommessa=frm.txtfldNumeroCommessa;
 			txtfldOreLavoro=frm.txtfldOreIntervallo;
 			txtfldOreViaggio=frm.txtfldOreViaggio;
+			
 			txtfldOreStrao=frm.txtfldOreStrao;
 			txtDescrizione=frm.txtDescrizione;
+			
+			
 			
 			descrizione=txtDescrizione.getText();
 			numeroCommessa=descrizione.substring(0,descrizione.indexOf(" "));
 			descrizione=descrizione.substring(descrizione.indexOf("(")+1, descrizione.indexOf(")"));
 						
+			
+			//TODO ore strao
 			intervallo= new IntervalliCommesseModel(numeroCommessa, txtfldOreLavoro.getValue().toString(), txtfldOreViaggio.getValue().toString(),
-					txtfldOreViaggio.getValue().toString(),"","", descrizione, "");
+					"0.00","","", descrizione, "");
 			intervalliC.add(intervallo);
 		}
 		
