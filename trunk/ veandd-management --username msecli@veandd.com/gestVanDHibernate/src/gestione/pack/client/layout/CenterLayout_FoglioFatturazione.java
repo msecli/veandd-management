@@ -368,7 +368,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    btnShowDettaglioOre.setToolTip("Riepilogo Giornaliero Dettagliato");
 		    btnShowDettaglioOre.setIconAlign(IconAlign.TOP);
 		    btnShowDettaglioOre.setSize(26, 26);
-		    btnShowDettaglioOre.addSelectionListener(new SelectionListener<ButtonEvent>() {	
+		    btnShowDettaglioOre.addSelectionListener(new SelectionListener<ButtonEvent>() {
 				@Override
 				public void componentSelected(ButtonEvent ce) {
 					
@@ -392,7 +392,7 @@ public CenterLayout_FoglioFatturazione(){}
 		    btnEditOreDip.setToolTip("Assegna le ore a collaboratori e dipendenti fuori sede");
 		    btnEditOreDip.setIconAlign(IconAlign.TOP);
 		    btnEditOreDip.setSize(26, 26);
-		    btnEditOreDip.addSelectionListener(new SelectionListener<ButtonEvent>() {	
+		    btnEditOreDip.addSelectionListener(new SelectionListener<ButtonEvent>() {
 		    	private String pm;
 		    	private String periodo;
 				@Override
@@ -409,7 +409,7 @@ public CenterLayout_FoglioFatturazione(){}
 					d.setHeading("Assegna le ore a collaboratori e dipendenti fuori sede.");
 					d.add(new PanelAttribuzioneOreColocationCollaboratori(pm));
 					d.show();
-					d.addListener(Events.Hide, new Listener<ComponentEvent>() {			     
+					d.addListener(Events.Hide, new Listener<ComponentEvent>() {	     
 						@Override
 						public void handleEvent(ComponentEvent be) {
 							caricaTabellaRiepOreDipFatturazione(periodo, pm);			
@@ -446,7 +446,7 @@ public CenterLayout_FoglioFatturazione(){}
 										
 					d.show();
 					
-				}	    	
+				}
 			});
 		    
 		    tlbrRiepilogoOre.add(btnShowDettaglioOre);
@@ -502,7 +502,7 @@ public CenterLayout_FoglioFatturazione(){}
 				meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
 				data=meseRif+anno;
 		    	caricaTabellaRiepOreDipFatturazione(data, smplcmbxPM.getRawValue().toString());
-		    }	  
+		    }
 		  	add(cntpnlGrid);
 		  	layout();
 		}
@@ -541,7 +541,7 @@ public CenterLayout_FoglioFatturazione(){}
 						Grid<RiepilogoOreDipFatturazione> grid) {
 					Float n=model.get(property);
 					return number.format(n);
-				} 	
+				}
 			});
 		    configs.add(columnOreLavoro); 	
 		    
@@ -605,9 +605,9 @@ public CenterLayout_FoglioFatturazione(){}
 						config.style = config.style + "font-weight:normal;";
 					
 					return number.format(n);
-				}			
-			});    
-		    configs.add(columnOreTotali); 	
+				}
+			});
+		    configs.add(columnOreTotali);
 		    
 		    /*SummaryColumnConfig<Double> columnOreTotaliIU=new SummaryColumnConfig<Double>();		
 		    columnOreTotaliIU.setId("oreTotaliIU");  
@@ -625,7 +625,7 @@ public CenterLayout_FoglioFatturazione(){}
 					Float n=model.get(property);
 					return number.format(n);
 				}			
-			});    
+			});
 		    configs.add(columnOreTotaliIU);
 		    */
 		    
@@ -697,7 +697,7 @@ public CenterLayout_FoglioFatturazione(){}
 				store.removeAll();
 				store.add(result);
 				store.groupBy("numeroCommessa");
-				gridRiepilogo.reconfigure(store, cm);	
+				gridRiepilogo.reconfigure(store, cm);
 				
 				String totale="0.00";
 				String orel="0.00";
@@ -844,10 +844,12 @@ public CenterLayout_FoglioFatturazione(){}
 							txtfldOreResiduoOrdine.getValue().toString())&&(txtfldOreOrdine.getValue().toString().compareTo("0.0")!=0))
 						Window.alert("Non e' possibile inserire una variazione di SAL a chiusura ordine!");
 					else
-					if(txtfldOreDaFatturare.isValid()&&txtfldVariazioneSAL.isValid()&&txtfldVariazionePCL.isValid()
-							&&txtfldImportoDaFatturare.isValid()){
+					/*if(txtfldOreDaFatturare.isValid()&&txtfldVariazioneSAL.isValid()&&txtfldVariazionePCL.isValid()
+							&&txtfldImportoDaFatturare.isValid()&&txtfldOreEseguiteRegistrate.isValid()){*/
+					if(hasValue(txtfldOreEseguiteRegistrate)&&hasValue(txtfldOreDaFatturare)&&hasValue(txtfldVariazioneSAL)&&
+							hasValue(txtfldVariazionePCL)&&hasValue(txtfldImportoDaFatturare)){
 						
-						String oreEseguite= txtfldOreEseguiteRegistrate.getValue().toString();		
+						String oreEseguite= txtfldOreEseguiteRegistrate.getValue().toString();
 						String salIniziale= txtfldSALIniziale.getValue().toString();
 						String pclIniziale= txtfldPCLIniziale.getValue().toString();
 						String oreFatturare=txtfldOreDaFatturare.getValue().toString();
@@ -858,7 +860,7 @@ public CenterLayout_FoglioFatturazione(){}
 						String oreRimborsoSpese= txtfldOreRimborsoSpese.getValue().toString();
 						String salDaButtare= new String();
 						boolean salButtato= chbxSalButtare.getValue();
-																		
+						
 						String meseCorrente=new String();
 						String anno=new String();
 						String data= new String();
@@ -901,7 +903,8 @@ public CenterLayout_FoglioFatturazione(){}
 										}
 									}
 							});	
-					}			
+					}else
+						Window.alert("Controllare i dati inseriti!");
 				}
 
 				private boolean checkOreImportoOrdine() {
@@ -2366,5 +2369,10 @@ public CenterLayout_FoglioFatturazione(){}
 			}
 			
 		}
+	}
+	
+	protected boolean hasValue(TextField<String> field) {
+		
+	    return field.getValue() != null && field.isValid() && field.getValue().toString().compareTo("0.00")!=0;
 	}
 }

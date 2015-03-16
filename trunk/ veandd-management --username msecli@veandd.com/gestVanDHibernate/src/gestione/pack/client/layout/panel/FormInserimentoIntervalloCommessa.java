@@ -147,7 +147,7 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 							}
 						txtfldOreIntervallo.setValue(valore);
 					}
-				}	    		
+				}
 		      }
 		});
 		
@@ -159,9 +159,9 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 		txtfldOreViaggio.getMessages().setRegexText("Deve essere un numero nel formato 99.59 ed espresso in sessantesimi");
 		txtfldOreViaggio.addKeyListener(new KeyListener(){
 			 @Override
-		      public void componentKeyDown(ComponentEvent event) { 	  
+		      public void componentKeyDown(ComponentEvent event) {
 		    	int keyCode=event.getKeyCode();
-				if(keyCode==9){			
+				if(keyCode==9){
 					
 					if(txtfldOreViaggio.getValue()==null)
 						txtfldOreViaggio.setValue("0.00");
@@ -184,7 +184,7 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 							}
 						txtfldOreViaggio.setValue(valore);
 					}
-				}	    		
+				}
 		      }
 		});
 		
@@ -198,7 +198,7 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 			 @Override
 		      public void componentKeyDown(ComponentEvent event) {
 				 int keyCode=event.getKeyCode();
-					if(keyCode==9){			
+					if(keyCode==9){
 						
 						if(txtfldOreStrao.getValue()==null)
 							txtfldOreStrao.setValue("0.00");
@@ -308,7 +308,7 @@ public class FormInserimentoIntervalloCommessa extends LayoutContainer {
 		
 		if(tipoParent.compareTo("1")==0){
 			layoutCol1.add(cpTxtBtn, new FormData("100%"));
-			layoutCol1.add(cpTxtBtn1, new FormData("100%"));
+			//layoutCol1.add(cpTxtBtn1, new FormData("100%"));
 			layoutCol2.add(txtfldOreIntervallo, new FormData("100%"));
 			layoutCol2.add(txtfldOreViaggio, new FormData("100%"));
 			//layoutCol2.add(txtfldOreStrao, new FormData("100%"));

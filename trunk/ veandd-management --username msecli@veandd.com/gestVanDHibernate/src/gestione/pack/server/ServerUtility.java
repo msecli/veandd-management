@@ -2570,6 +2570,7 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 		Commessa c_pa= new Commessa();
 		
 		boolean esistePa=false;
+		boolean flagEscludiDaPa=false;
 		
 		Float[] totaleOre= {(float)0.0,(float)0.0};
 		String sommaVariazioniSal= "0.00";
@@ -2589,22 +2590,34 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 			c=(Commessa)session.createQuery("from Commessa where numeroCommessa=:numeroCommessa and estensione=:estensione").setParameter("numeroCommessa", numeroCommessa)
 					.setParameter("estensione", estensione).uniqueResult();
 			
+			if(c.getEscludiDaPa().compareTo("S")==0)
+				flagEscludiDaPa=true;
+			else
+				flagEscludiDaPa=false;
+			
+			//TODO controllare il SAL per esclusedapa
+			
+			if(!flagEscludiDaPa)
 			//controllo la presenza di una commessa .pa 
-			c_pa=(Commessa)session.createQuery("from Commessa where numeroCommessa=:commessa and estensione=:estensione").setParameter("commessa", numeroCommessa)
+				c_pa=(Commessa)session.createQuery("from Commessa where numeroCommessa=:commessa and estensione=:estensione")
+					.setParameter("commessa", numeroCommessa)
 					.setParameter("estensione", "pa").uniqueResult();
+			else
+				c_pa=null;
+			
 			if(c_pa!=null)
 				esistePa=true;
+									
+			if(esistePa && !flagEscludiDaPa){
 			
-			if(esistePa){
-				
-				listaC=(List<Commessa>)session.createQuery("from Commessa where numeroCommessa=:commessa and estensione<>:estensione")
+				listaC=(List<Commessa>)session.createQuery("from Commessa where numeroCommessa=:commessa and estensione<>:estensione and escludiDaPa=:flag")
 						.setParameter("commessa", numeroCommessa)
-						.setParameter("estensione", "pa").list();
+						.setParameter("estensione", "pa").setParameter("flag", "N").list();
 				
 				for(Commessa c1:listaC)
 					listaFF.addAll(c1.getFoglioFatturaziones());			
 				
-				for(FoglioFatturazione f1:listaFF){ 					
+				for(FoglioFatturazione f1:listaFF){
 					if(ServerUtility.isPrecedente(f1.getMeseCorrente(), data)){
 						sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(f1.getVariazionePCL())));
 						sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)+ Float.valueOf( ServerUtility.getOreCentesimi(f1.getVariazioneSAL())));
@@ -2618,13 +2631,12 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 				totaleOre[1]=Float.valueOf(sommaVariazioniSal);					
 							
 			}else{
-						
-				listaFF.addAll(c.getFoglioFatturaziones());			
+				
+				listaFF.addAll(c.getFoglioFatturaziones());
 								
 				//Considero tutti i FF compilati in mesi differenti da quello in esame
-				for(FoglioFatturazione f1:listaFF)										
+				for(FoglioFatturazione f1:listaFF)
 					if(ServerUtility.isPrecedente(f1.getMeseCorrente(),data)){
-						
 							sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(f1.getVariazionePCL())));
 							sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)+ Float.valueOf( ServerUtility.getOreCentesimi(f1.getVariazioneSAL())));
 					}
@@ -2632,7 +2644,7 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 				sommaVariazioniSal=d.format(Float.valueOf(sommaVariazioniSal)+ Float.valueOf(ServerUtility.getOreCentesimi(c.getSalAttuale())));
 				sommaVariazioniPcl=d.format(Float.valueOf(sommaVariazioniPcl)+ Float.valueOf(ServerUtility.getOreCentesimi(c.getPclAttuale())));					
 				totaleOre[0]=Float.valueOf(sommaVariazioniPcl);
-				totaleOre[1]=Float.valueOf(sommaVariazioniSal);				
+				totaleOre[1]=Float.valueOf(sommaVariazioniSal);
 			}
 						
 			tx.commit();

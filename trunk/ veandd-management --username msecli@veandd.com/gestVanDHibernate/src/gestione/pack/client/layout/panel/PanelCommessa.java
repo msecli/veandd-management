@@ -238,7 +238,7 @@ public class PanelCommessa extends LayoutContainer {
 		ContentPanel cntpnlVistaDati= new ContentPanel();
 		cntpnlVistaDati.setBorders(false);     
 		cntpnlVistaDati.setFrame(true);  
-	    cntpnlVistaDati.setLayout(new FitLayout());  
+	    cntpnlVistaDati.setLayout(new FitLayout());
 	    cntpnlVistaDati.setHeaderVisible(false);
 	    cntpnlVistaDati.setScrollMode(Scroll.AUTOY);
 	    cntpnlVistaDati.setStyleAttribute("padding-left", "10px");
@@ -265,13 +265,13 @@ public class PanelCommessa extends LayoutContainer {
 		GroupingView view = new GroupingView();  
 	    view.setShowGroupedColumn(false);  
 	    view.setForceFit(true);  
-	    view.setGroupRenderer(new GridGroupRenderer() {  
-	      public String render(GroupColumnData data) {  
+	    view.setGroupRenderer(new GridGroupRenderer() {
+	      public String render(GroupColumnData data) {
 	        String f = cmCommessa.getColumnById(data.field).getHeader();  
 	        //String l = data.models.size() == 1 ? "Item" : "Items";  
 	        return f + ": " + data.group ;//+ " (" + data.models.size() + " " + l + ")";  
-	      }  
-	    });  
+	      }
+	    });
 	    
 		//Definizione della griglia
 	    gridCommessa = new Grid<CommessaModel>(store, cmCommessa);   
@@ -1104,11 +1104,11 @@ public class PanelCommessa extends LayoutContainer {
 	
 	
 	private void loadTable(List<CommessaModel> lista) {
+		frmpnlCommessa.reset();
 		
 		CommessaModel cm=lista.remove(lista.size()-1);
 		txtfldNumeroCommessa.setValue(cm.getNumeroCommessa());
-		txtfldEstensione.setValue(cm.getEstensione());
-		
+		txtfldEstensione.setValue(cm.getEstensione());	
 		try {		
 			store.removeAll();
 			store.setStoreSorter(new StoreSorter<CommessaModel>());
@@ -1122,7 +1122,7 @@ public class PanelCommessa extends LayoutContainer {
 			
 			store.groupBy("ragioneSociale");
 			gridCommessa.reconfigure(store, cmCommessa);
-			//frmpnlCommessa.reset();
+			
 			btnSend.setEnabled(true);
 	    	btnEdit.setEnabled(false);
 	    	btnDelete.setEnabled(false);
