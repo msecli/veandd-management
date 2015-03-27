@@ -403,7 +403,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        	center.layout(true);}
 	        
 	      });
-	    btnAnagrP.setWidth("100%");
+	    btnRiepilogoCostiDip.setWidth("100%");
 	    cp.add(btnRiepilogoCostiDip);
 	    
 	    

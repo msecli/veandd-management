@@ -282,6 +282,36 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 		    cp.setExpanded(true);	    	    
 		    panel.add(cp);
 		    
+		    cp = new ContentPanel();
+		    cp.setExpanded(false);
+		    cp.setAnimCollapse(false);
+		    cp.setBodyStyleName("pad-text");
+		    cp.setHeading("Personale");  
+		    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
+	            public void handleEvent(ComponentEvent be) {
+	            	/*center.removeAll();
+		        	center.add(new PanelGestioneCostiDipendenti());
+		        	center.layout(true);*/               
+	            }
+	        });
+		    
+		    Button btnRiepilogoCostiDip = new Button();
+		    btnRiepilogoCostiDip.setToolTip("Riepilogo Costi");
+		    btnRiepilogoCostiDip.setHeight(65);
+		    btnRiepilogoCostiDip.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+		    btnRiepilogoCostiDip.setIconAlign(IconAlign.BOTTOM);
+		    btnRiepilogoCostiDip.setWidth("100%");
+		    btnRiepilogoCostiDip.addSelectionListener(new SelectionListener<ButtonEvent>() {
+		        public void componentSelected(ButtonEvent ce) {
+		        	center.removeAll();
+		        	center.add(new PanelRiepilogoCostiDipendenti());
+		        	center.layout(true);}
+		        
+		      });
+		    btnRiepilogoCostiDip.setWidth("100%");
+		    cp.add(btnRiepilogoCostiDip);
+		    panel.add(cp);
+		    
 		      
 		    cp = new ContentPanel();
 		    cp.setAnimCollapse(false);

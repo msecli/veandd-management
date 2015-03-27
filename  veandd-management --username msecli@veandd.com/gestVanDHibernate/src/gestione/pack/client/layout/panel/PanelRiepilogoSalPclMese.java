@@ -454,7 +454,7 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	    column=new SummaryColumnConfig<Double>();		
 	    column.setId("variazione");  
 	    column.setHeader("Variazione Mese");  
-	    column.setWidth(105);  
+	    column.setWidth(105);
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    column.setStyle("color:#e71d2b;");
@@ -475,8 +475,8 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 	    column.setWidth(95);  
 	    column.setRowHeader(true);
 	    column.setAlignment(HorizontalAlignment.RIGHT); 
-	    column.setSummaryType(SummaryType.SUM); 
-	    column.setRenderer(rendererSum);  
+	    column.setSummaryType(SummaryType.SUM);
+	    column.setRenderer(rendererSum);
 	    column.setSummaryRenderer(new SummaryRenderer() {
 			@Override
 			public String render(Number value, Map<String, Number> data) {
@@ -486,24 +486,24 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 		});
 	    configs.add(column);
 	    
-	    column=new SummaryColumnConfig<Double>();		
-	    column.setId("tariffa");  
-	    column.setHeader("Tariffa");  
-	    column.setWidth(80);  
+	    column=new SummaryColumnConfig<Double>();
+	    column.setId("tariffa");
+	    column.setHeader("Tariffa");
+	    column.setWidth(80);
 	    column.setRowHeader(true);
-	    column.setAlignment(HorizontalAlignment.RIGHT); 
+	    column.setAlignment(HorizontalAlignment.RIGHT);
 	    column.setRenderer(renderer);
-	    configs.add(column);	    
+	    configs.add(column);
 	    
 	    SummaryColumnConfig<Double> columnImporto=new SummaryColumnConfig<Double>();	
-	    columnImporto.setId("importoComplessivo");  
-	    columnImporto.setHeader("Tot.Euro");  
-	    columnImporto.setWidth(80);    
-	    columnImporto.setRowHeader(true); 
+	    columnImporto.setId("importoComplessivo");
+	    columnImporto.setHeader("Tot.Euro");
+	    columnImporto.setWidth(80);
+	    columnImporto.setRowHeader(true);
 	    columnImporto.setAlignment(HorizontalAlignment.RIGHT);
 	    columnImporto.setStyle("color:#e71d2b;");
 	    columnImporto.setSummaryType(SummaryType.SUM); 
-	    columnImporto.setRenderer(rendererSum);   
+	    columnImporto.setRenderer(rendererSum);
 	    columnImporto.setSummaryRenderer(new SummaryRenderer() {
 			@Override
 			public String render(Number value, Map<String, Number> data) {
@@ -511,9 +511,9 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 				return num.format(value);
 			}
 		});
-	    configs.add(columnImporto); 	
-	    	    
-	   /* SummaryColumnConfig<Double> columnOreLavoro=new SummaryColumnConfig<Double>();		
+	    configs.add(columnImporto);
+	    
+	    /*SummaryColumnConfig<Double> columnOreLavoro=new SummaryColumnConfig<Double>();		
 	    columnOreLavoro.setId("oreEseguite");  
 	    columnOreLavoro.setHeader("Ore Eseguite");  
 	    columnOreLavoro.setWidth(90);    
@@ -528,28 +528,28 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 				return num.format(value);
 			}
 		});
-	    configs.add(columnOreLavoro); 	*/
+	    configs.add(columnOreLavoro);*/
 	    
-	      
-	    SummaryColumnConfig<Double> columnImportoMese=new SummaryColumnConfig<Double>();		
-	    columnImportoMese.setId("importoMese");  
-	    columnImportoMese.setHeader("Euro Var.");  
-	    columnImportoMese.setWidth(80);    
-	    columnImportoMese.setRowHeader(true); 
+	    
+	    SummaryColumnConfig<Double> columnImportoMese=new SummaryColumnConfig<Double>();
+	    columnImportoMese.setId("importoMese");
+	    columnImportoMese.setHeader("Euro Var.");
+	    columnImportoMese.setWidth(80);
+	    columnImportoMese.setRowHeader(true);
 	    columnImportoMese.setAlignment(HorizontalAlignment.RIGHT);
-	    columnImportoMese.setStyle("color:#e71d2b;");  
-	    columnImportoMese.setRenderer(rendererSum);  
-	    columnImportoMese.setSummaryType(SummaryType.SUM); 
-	    columnImportoMese.setSummaryRenderer(new SummaryRenderer() {	
+	    columnImportoMese.setStyle("color:#e71d2b;");
+	    columnImportoMese.setRenderer(rendererSum);
+	    columnImportoMese.setSummaryType(SummaryType.SUM);
+	    columnImportoMese.setSummaryRenderer(new SummaryRenderer() {
 			@Override
 			public String render(Number value, Map<String, Number> data) {
 				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
 				return num.format(value);
 			}
 		});
-	    configs.add(columnImportoMese); 
-	  	    	    
-	    /*   
+	    configs.add(columnImportoMese);
+	  	
+	    /*
 	    SummaryColumnConfig<Double> margine=new SummaryColumnConfig<Double>();		
 	    margine.setId("margine");  
 	    margine.setHeader("Margine");  
@@ -562,12 +562,12 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 					Grid<DatiFatturazioneMeseModel> grid) {
 				Float n=model.get(property);
 				return number.format(n);
-			}  	
+			}
 		});
-	   configs.add(margine);	
+	   configs.add(margine);
 	   */
-	   
-	  return configs;
+	  
+	   return configs;
 	}
 	
 	private void loadTableRiass(List<RiepilogoSALPCLModel> result) {
@@ -610,7 +610,7 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 			AggregationRenderer<RiepilogoSALPCLModel> aggrRender= new AggregationRenderer<RiepilogoSALPCLModel>() {			
 				@Override
 				public Object render(Number value, int colIndex, Grid<RiepilogoSALPCLModel> grid, ListStore<RiepilogoSALPCLModel> store) {
-					 if(value!=null)		    		  
+					 if(value!=null)
 			    		  return number.format(value.doubleValue());
 			    	  else
 			    		  return number.format((float) 0) ;
@@ -621,7 +621,7 @@ public class PanelRiepilogoSalPclMese  extends LayoutContainer{
 			setSummaryType("variazione", SummaryType.SUM);
 			setRenderer("variazione", aggrRender);
 			
-			setSummaryType("attuale", SummaryType.SUM);  
+			setSummaryType("attuale", SummaryType.SUM);
 			setRenderer("attuale", aggrRender);
 			
 			setSummaryType("importoMese", SummaryType.SUM);

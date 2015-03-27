@@ -15,7 +15,6 @@ import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.DettaglioTrasfertaModel;
 import gestione.pack.client.model.FatturaModel;
 import gestione.pack.client.model.FoglioFatturazioneModel;
-import gestione.pack.client.model.GestioneCostiDipendentiModel;
 import gestione.pack.client.model.GestioneRdoCommesse;
 import gestione.pack.client.model.GiorniFestiviModel;
 import gestione.pack.client.model.GiustificativiModel;
@@ -425,7 +424,7 @@ public interface AdministrationServiceAsync {
 //-------------------------------------------------COSTI---------------------------------
 	
 	void getDatiCostiPersonale(int idPersonale,
-			AsyncCallback<List<GestioneCostiDipendentiModel>> asyncCallback);
+			AsyncCallback<List<RiepilogoCostiDipendentiModel>> asyncCallback);
 
 	void getDatiCostiHwSw(int id,
 			AsyncCallback<List<CostiHwSwModel>> asyncCallback);
@@ -433,8 +432,8 @@ public interface AdministrationServiceAsync {
 	void saveAssociaCostiHwSw(int idSelected, CostiHwSwModel costo,
 			AsyncCallback<Boolean> asyncCallback);
 
-	void editDatiCostiAzienda(GestioneCostiDipendentiModel g,
-			AsyncCallback<Void> asyncCallback);
+	void editDatiCostiAzienda(RiepilogoCostiDipendentiModel g,
+			AsyncCallback<Boolean> asyncCallback);
 
 	void getRiepilogoDatiCostiPersonale(String string,
 			AsyncCallback<List<RiepilogoCostiDipendentiModel>> asyncCallback);

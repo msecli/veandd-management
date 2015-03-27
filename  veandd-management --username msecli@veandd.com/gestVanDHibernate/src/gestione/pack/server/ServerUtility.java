@@ -1659,11 +1659,9 @@ public static String getOreSessantesimi(String totOreCommMese) {
 		
 		for(RiepilogoCostiDipendentiModel r:lista){
 			
-			rB= new RiepilogoCostiDipendentiBean((int)r.get("idPersonale"),(String)r.get("nome") , (String)r.get("costoAnnuo"), (String)r.get("costoOrario"), 
-					(String)r.get("gruppoLavoro"), (String)r.get("costoStruttura"), (String)r.get("costoOneri"), (String)r.get("tipoCad"), (String)r.get("tipoTc"), 
-					(String)r.get("costoCad"), (String)r.get("costoTc"), (String)r.get("tipoHardware"), (String)r.get("costoHardware"), (String)r.get("sommaCostoHwSw"), 
-					(String)r.get("costoAggiuntivo"), (String)r.get("costoTotaleRisorsa"), (String)r.get("tipoOrario"), (String)r.get("colocation"), 
-					(Float)r.get("oreCig"), (Float)r.get("orePreviste"), (Float)r.get("orePianificate"), (String)r.get("saturazione"), (String)r.get("oreAssegnare"));
+			rB= new RiepilogoCostiDipendentiBean((int)r.get("idPersonale"),(String) r.get("nome"), (String)r.get("tipoOrario"), (String)r.get("orePreviste"),(String) r.get("costoAnnuo"), 
+					(String)r.get("costoOrario"), (String)r.get("costoTrasferta"), (String)r.get("gruppoLavoro"),(String) r.get("costoStruttura"), (String)r.get("costoOneri"), 
+					(String)r.get("costoSw"), (String)r.get("costoHw"), (String)r.get("costoHwSw"), (String)r.get("costoOrarioTotale"));
 			listaB.add(rB);
 		}
 		

@@ -29,7 +29,6 @@ import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.DettaglioTrasfertaModel;
 import gestione.pack.client.model.FatturaModel;
 import gestione.pack.client.model.FoglioFatturazioneModel;
-import gestione.pack.client.model.GestioneCostiDipendentiModel;
 import gestione.pack.client.model.GestioneRdoCommesse;
 import gestione.pack.client.model.GiorniFestiviModel;
 import gestione.pack.client.model.GiustificativiModel;
@@ -387,13 +386,13 @@ boolean invioCommenti(String testo, String username, Date giorno);
 			String sede)throws IllegalArgumentException;
 	
 //---------------------------------------------COSTI
-	List<GestioneCostiDipendentiModel> getDatiCostiPersonale(int idPersonale) throws IllegalArgumentException;
+	List<RiepilogoCostiDipendentiModel> getDatiCostiPersonale(int idPersonale) throws IllegalArgumentException;
 
 	List<CostiHwSwModel> getDatiCostiHwSw(int id) throws IllegalArgumentException;
 
 	boolean saveAssociaCostiHwSw(int idSelected, CostiHwSwModel costo)  throws IllegalArgumentException;
 
-	void editDatiCostiAzienda(GestioneCostiDipendentiModel g) throws IllegalArgumentException;
+	boolean editDatiCostiAzienda(RiepilogoCostiDipendentiModel g) throws IllegalArgumentException;
 
 	List<RiepilogoCostiDipendentiModel> getRiepilogoDatiCostiPersonale(
 			String string) throws IllegalArgumentException;

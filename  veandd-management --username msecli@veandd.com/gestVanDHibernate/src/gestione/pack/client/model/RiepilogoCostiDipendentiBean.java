@@ -9,27 +9,18 @@ public class RiepilogoCostiDipendentiBean {
 	private String gruppoLavoro;
 	private String costoStruttura;
 	private String costoOneri;
-	private String tipoCad;
-	private String tipoTc;
-	private String costoCad;
-	private String costoTc;
-	private String tipoHardware;
-	private String costoHardware;
-	private String sommaCostoHwSw;
-	private String costoAggiuntivo;
-	private String costoTotaleRisorsa; 
+	private String costoHw;
+	private String costoSw;
+	private String costoHwSw;
+	private String costoOrarioTotale; 
 	private String tipoOrario;
-	private String colocation;
-	private Float oreCig;
-	private Float orePreviste;
-	private Float orePianificate;
-	private String saturazione;
-	private String oreAssegnare;
+	private String orePreviste;
+	private String costoTrasferta;
 	
-	public RiepilogoCostiDipendentiBean(int idDip, String nome, String costoAnnuo, String costoOrario, String gruppoLavoro, String costoStruttura, 
-			String costoOneri, String tipoCad, String tipoTc, String costoCad, String costoTc, String tipoHardware, String costoHardware, String sommaCostoHwSw,
-			String costoAggiuntivo, String costoTotaleRisorsa, String tipoOrario, String colocation, Float oreCig, Float orePreviste, Float orePianificate,
-			String saturazione, String oreAssegnare){
+	
+	public RiepilogoCostiDipendentiBean(int idDip, String nome, String tipoOrario, String orePreviste, String costoAnnuo, 
+			String costoOrario, String costoTrasferta,String gruppoLavoro, String costoStruttura, String costoOneri, 
+			String costoSw, String costoHw, String costoHwSw, String costoOrarioTotale){
 		
 		this.idDip=idDip;
 		this.nome= nome;
@@ -38,116 +29,129 @@ public class RiepilogoCostiDipendentiBean {
 		this.gruppoLavoro=gruppoLavoro;
 		this.costoStruttura= costoStruttura;
 		this.costoOneri=costoOneri;
-		this.tipoCad= tipoCad;
-		this.tipoTc=tipoTc;
-		this.costoCad= costoCad;
-		this.costoTc=costoTc;
-		this.tipoHardware= tipoHardware;
-		this.costoHardware=costoHardware;
-		this.sommaCostoHwSw= sommaCostoHwSw;
-		this.costoAggiuntivo=costoAggiuntivo;
-		this.costoTotaleRisorsa= costoTotaleRisorsa;
 		this.tipoOrario=tipoOrario;
-		this.colocation= colocation;
-		this.oreCig=oreCig;
 		this.orePreviste= orePreviste;
-		this.orePianificate=orePianificate;
-		this.saturazione= saturazione;
-		this.oreAssegnare=oreAssegnare;
+		this.costoHw=costoHw;
+		this.costoSw=costoSw;
+		this.costoHwSw=costoHwSw;
+		this.costoTrasferta=costoTrasferta;
+		this.costoOrarioTotale=costoOrarioTotale;
 		
 	}
 
+
+	/**
+	 * @return the idDip
+	 */
 	public int getIdDip() {
 		return idDip;
 	}
 
+
+	/**
+	 * @return the nome
+	 */
 	public String getNome() {
 		return nome;
 	}
 
+
+	/**
+	 * @return the costoAnnuo
+	 */
 	public String getCostoAnnuo() {
 		return costoAnnuo;
 	}
 
+
+	/**
+	 * @return the costoOrario
+	 */
 	public String getCostoOrario() {
 		return costoOrario;
 	}
 
+
+	/**
+	 * @return the gruppoLavoro
+	 */
 	public String getGruppoLavoro() {
 		return gruppoLavoro;
 	}
 
+
+	/**
+	 * @return the costoStruttura
+	 */
 	public String getCostoStruttura() {
 		return costoStruttura;
 	}
 
+
+	/**
+	 * @return the costoOneri
+	 */
 	public String getCostoOneri() {
 		return costoOneri;
 	}
 
-	public String getTipoCad() {
-		return tipoCad;
+
+	/**
+	 * @return the costoHw
+	 */
+	public String getCostoHw() {
+		return costoHw;
 	}
 
-	public String getTipoTc() {
-		return tipoTc;
+
+	/**
+	 * @return the costoSw
+	 */
+	public String getCostoSw() {
+		return costoSw;
 	}
 
-	public String getCostoCad() {
-		return costoCad;
+
+	/**
+	 * @return the costoHwSw
+	 */
+	public String getCostoHwSw() {
+		return costoHwSw;
 	}
 
-	public String getCostoTc() {
-		return costoTc;
+
+	/**
+	 * @return the costoOrarioTotale
+	 */
+	public String getCostoOrarioTotale() {
+		return costoOrarioTotale;
 	}
 
-	public String getTipoHardware() {
-		return tipoHardware;
-	}
 
-	public String getCostoHardware() {
-		return costoHardware;
-	}
-
-	public String getSommaCostoHwSw() {
-		return sommaCostoHwSw;
-	}
-
-	public String getCostoAggiuntivo() {
-		return costoAggiuntivo;
-	}
-
-	public String getCostoTotaleRisorsa() {
-		return costoTotaleRisorsa;
-	}
-
+	/**
+	 * @return the tipoOrario
+	 */
 	public String getTipoOrario() {
 		return tipoOrario;
 	}
 
-	public String getColocation() {
-		return colocation;
-	}
 
-	public Float getOreCig() {
-		return oreCig;
-	}
-
-	public Float getOrePreviste() {
+	/**
+	 * @return the orePreviste
+	 */
+	public String getOrePreviste() {
 		return orePreviste;
 	}
 
-	public Float getOrePianificate() {
-		return orePianificate;
-	}
 
-	public String getSaturazione() {
-		return saturazione;
-	}
-
-	public String getOreAssegnare() {
-		return oreAssegnare;
+	/**
+	 * @return the costoTrasferta
+	 */
+	public String getCostoTrasferta() {
+		return costoTrasferta;
 	}
 	
 	
-}
+	
+
+	}

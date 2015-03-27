@@ -3,8 +3,6 @@ package gestione.pack.client.layout;
 //import gestione.pack.client.utility.RecuperoParametriSessione;
 
 import gestione.pack.client.SessionManagementService;
-import gestione.pack.client.layout.panel.PanelAbilitazioneStraordinarioDip;
-import gestione.pack.client.layout.panel.PanelGestioneCostiDipendenti;
 import gestione.pack.client.layout.panel.PanelGestioneCosting;
 import gestione.pack.client.layout.panel.PanelGestioneOfferte;
 import gestione.pack.client.layout.panel.PanelMensileOrdini;
@@ -269,7 +267,52 @@ public class BodyLayout_Direzione extends LayoutContainer {
 		    cp.setExpanded(true);	    	    
 		    panel.add(cp);
 		    
-		      
+		    
+		    cp = new ContentPanel();
+		    cp.setExpanded(false);
+		    cp.setAnimCollapse(false);
+		    cp.setBodyStyleName("pad-text");
+		    cp.setHeading("Personale");  
+		    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
+	            public void handleEvent(ComponentEvent be) {
+	            	/*center.removeAll();
+		        	center.add(new PanelGestioneCostiDipendenti());
+		        	center.layout(true);*/               
+	            }
+	        });
+		    Button btnAnagrP = new Button();
+		    btnAnagrP.setToolTip("Anagrafica Personale");
+		    btnAnagrP.setHeight(65);
+		    btnAnagrP.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.anagrafica()));
+		    btnAnagrP.setIconAlign(IconAlign.BOTTOM);
+		    btnAnagrP.setWidth("100%");
+		    btnAnagrP.addSelectionListener(new SelectionListener<ButtonEvent>() {
+		        public void componentSelected(ButtonEvent ce) {
+		        	center.removeAll();
+		        	center.add(new CenterLayout_AnagraficaPersonale());
+		        	center.layout(true);}
+		        
+		      });
+		    btnAnagrP.setWidth("100%");
+		    cp.add(btnAnagrP);
+		    
+		    Button btnRiepilogoCostiDip = new Button();
+		    btnRiepilogoCostiDip.setToolTip("Riepilogo Costi");
+		    btnRiepilogoCostiDip.setHeight(65);
+		    btnRiepilogoCostiDip.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+		    btnRiepilogoCostiDip.setIconAlign(IconAlign.BOTTOM);
+		    btnRiepilogoCostiDip.setWidth("100%");
+		    btnRiepilogoCostiDip.addSelectionListener(new SelectionListener<ButtonEvent>() {
+		        public void componentSelected(ButtonEvent ce) {
+		        	center.removeAll();
+		        	center.add(new PanelRiepilogoCostiDipendenti());
+		        	center.layout(true);}
+		        
+		      });
+		    btnRiepilogoCostiDip.setWidth("100%");
+		    cp.add(btnRiepilogoCostiDip);
+		    panel.add(cp);
+		    
 		    cp = new ContentPanel();
 		    cp.setAnimCollapse(false);
 		    cp.setBodyStyleName("pad-text");
