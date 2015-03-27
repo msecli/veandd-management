@@ -22,13 +22,13 @@ public class CostoAzienda extends LightEntity implements IsSerializable {
 	
 	private String costoStruttura;
 	
-	private String costoSwCadVari;
+	private String costoSw;
 	
-	private String costoSwOffice;
+	private String costoTrasferta;
 	
 	private String costoHw;
 	
-	private String annoRif;
+	private String annoRiferimento;
 	
 	private String costoOrario;
 
@@ -112,29 +112,29 @@ public class CostoAzienda extends LightEntity implements IsSerializable {
 	/**
 	 * @return the costoSwCadVari
 	 */
-	public String getCostoSwCadVari() {
-		return costoSwCadVari;
+	public String getCostoSw() {
+		return costoSw;
 	}
 
 	/**
 	 * @param costoSwCadVari the costoSwCadVari to set
 	 */
-	public void setCostoSwCadVari(String costoSwCadVari) {
-		this.costoSwCadVari = costoSwCadVari;
+	public void setCostoSw(String costoSw) {
+		this.costoSw = costoSw;
 	}
 
 	/**
 	 * @return the costoSwOffice
 	 */
-	public String getCostoSwOffice() {
-		return costoSwOffice;
+	public String getCostoTrasferta() {
+		return costoTrasferta;
 	}
 
 	/**
 	 * @param costoSwOffice the costoSwOffice to set
 	 */
-	public void setCostoSwOffice(String costoSwOffice) {
-		this.costoSwOffice = costoSwOffice;
+	public void setCostoTrasferta(String costoTrasferta) {
+		this.costoTrasferta = costoTrasferta;
 	}
 
 	/**
@@ -152,14 +152,14 @@ public class CostoAzienda extends LightEntity implements IsSerializable {
 	}
 
 	public String getAnnoRif() {
-		return annoRif;
+		return annoRiferimento;
 	}
 
 	/**
 	 * @param annoRif the annoRif to set
 	 */
 	public void setAnnoRif(String annoRif) {
-		this.annoRif = annoRif;
+		this.annoRiferimento = annoRif;
 	}
 
 	public String getCostoOrario() {

@@ -3,11 +3,6 @@ package gestione.pack.client.layout;
 //import gestione.pack.client.utility.RecuperoParametriSessione;
 
 import gestione.pack.client.SessionManagementService;
-import gestione.pack.client.layout.panel.PanelGestioneCostiDipendenti;
-import gestione.pack.client.layout.panel.PanelRiepilogoAnnualeOreDipendenti;
-import gestione.pack.client.layout.panel.PanelRiepilogoCostiDipendenti;
-import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
-import gestione.pack.client.layout.panel.PanelRiepilogoStatoAvanzamentoOreCommesse;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
 import gestione.pack.client.utility.MyImages;

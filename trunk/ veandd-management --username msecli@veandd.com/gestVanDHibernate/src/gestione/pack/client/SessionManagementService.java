@@ -17,6 +17,7 @@ package gestione.pack.client;
 import gestione.pack.client.model.AttivitaFatturateModel;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.FatturaModel;
+import gestione.pack.client.model.RiepilogoCostiDipSuCommesseFatturateModel;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
 import gestione.pack.client.model.RiepilogoMensileOrdiniModel;
@@ -101,6 +102,9 @@ public interface SessionManagementService extends RemoteService {
 
 	boolean setDataRtv(RtvModel rtv, RiferimentiRtvModel rifModel,
 			String tipoModulo, String operazione);
+
+	boolean setDatiReportCostiCommesseFatturate(String string,
+			List<RiepilogoCostiDipSuCommesseFatturateModel> models);
 	
 	
 }

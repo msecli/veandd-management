@@ -925,30 +925,27 @@ public CenterLayout_FoglioFatturazione(){}
 		    btnRiep.setIconAlign(IconAlign.TOP);
 		    btnRiep.setSize(26, 26);
 		    
-			final ListStore<RiepilogoOreTotaliCommesse> store = new ListStore<RiepilogoOreTotaliCommesse>();  
-			cmOrdine = new ColumnModel(createColumns());		
-		    		         
-			gridOrdine = new Grid<RiepilogoOreTotaliCommesse>(store, cmOrdine);   
-		    gridOrdine.setBorders(false);  
-		    gridOrdine.setStripeRows(true);  
-		    gridOrdine.setColumnLines(true);  
-		    gridOrdine.setColumnReordering(true);  
+			final ListStore<RiepilogoOreTotaliCommesse> store = new ListStore<RiepilogoOreTotaliCommesse>();
+			cmOrdine = new ColumnModel(createColumns());
+		    
+			gridOrdine = new Grid<RiepilogoOreTotaliCommesse>(store, cmOrdine);
+		    gridOrdine.setBorders(false);
+		    gridOrdine.setStripeRows(true);
+		    gridOrdine.setColumnLines(true);
+		    gridOrdine.setColumnReordering(true);
 		    gridOrdine.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);		    
-		    gridOrdine.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<RiepilogoOreTotaliCommesse>>() {  
-		          public void handleEvent(SelectionChangedEvent<RiepilogoOreTotaliCommesse> be) {  		        	
-		            if (be.getSelection().size() > 0) {  
+		    gridOrdine.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<RiepilogoOreTotaliCommesse>>() {
+		          public void handleEvent(SelectionChangedEvent<RiepilogoOreTotaliCommesse> be) {
+		            if (be.getSelection().size() > 0) {
 		            	if(be.getSelectedItem().getNumeroCommessa().compareTo("TOTALE")!=0){
 		            		String numeroC= new String();
 		            		String estensione=new String();
 		            		idAttivita=be.getSelectedItem().get("idAttivita");
 		            		numeroC=be.getSelectedItem().getNumeroCommessa();
 		            		estensione=be.getSelectedItem().getEstensione();
-		            		try{		            			
-		            			caricaDatiFatturazioneOrdine(numeroC+"."+estensione, idAttivita);
-		            		}catch (Exception e) {
-		            			e.printStackTrace();
-		        				System.out.println("errore carica dati fatturazione");
-							}	            		
+		            		
+		            		caricaDatiFatturazioneOrdine(numeroC+"."+estensione, idAttivita);
+		            		
 		            		commessaSelezionata=(numeroC+"."+be.getSelectedItem().getEstensione());
 		            		btnSalva.setEnabled(true);
 		            		btnRiep.setEnabled(true);
@@ -957,16 +954,16 @@ public CenterLayout_FoglioFatturazione(){}
 		             }
 		          }
 		    });
-					   
-		    btnRiep.addSelectionListener(new SelectionListener<ButtonEvent>() {			
+			
+		    btnRiep.addSelectionListener(new SelectionListener<ButtonEvent>() {
 				@Override
 				public void componentSelected(ButtonEvent ce) {
 					
 					DialogRiepilogoDatiFoglioFatturazione d= new DialogRiepilogoDatiFoglioFatturazione(commessaSelezionata);
-					d.show();			
+					d.show();
 				}
 			});
-		    	    
+		    
 		    tlbRiepiloghi.add(btnRiep);
 		    tlbRiepiloghi.add(btnSalva);
 		    

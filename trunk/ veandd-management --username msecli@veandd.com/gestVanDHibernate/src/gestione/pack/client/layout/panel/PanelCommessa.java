@@ -106,6 +106,7 @@ public class PanelCommessa extends LayoutContainer {
 	
 	private Button btnOrdine;
 	private Button btnClose;
+	private Button btnVariazioniMensili;
 	
 	protected void onRender(Element target, int index) {
 	    super.onRender(target, index);
@@ -149,6 +150,23 @@ public class PanelCommessa extends LayoutContainer {
 		btnClose.setToolTip("Chiudi la commessa.");
 		btnClose.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.chiudiCommessa()));	
 		btnClose.setIconAlign(IconAlign.TOP);
+		
+		btnVariazioniMensili= new Button();
+		btnVariazioniMensili.setSize(26, 26);
+		btnVariazioniMensili.setEnabled(false);
+		btnVariazioniMensili.setToolTip("Variazioni mensili");
+		btnVariazioniMensili.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.datiTimb()));	
+		btnVariazioniMensili.setIconAlign(IconAlign.TOP);
+		btnVariazioniMensili.addSelectionListener(new SelectionListener<ButtonEvent>() {			
+				@Override
+				public void componentSelected(ButtonEvent ce) {
+					String numeroCommessa=txtfldNumeroCommessa.getValue();
+					String estensioneCommessa=txtfldEstensione.getValue();
+					DialogRiepilogoDatiFoglioFatturazione d= new DialogRiepilogoDatiFoglioFatturazione(numeroCommessa+"."+estensioneCommessa);
+					d.show();			
+				}
+			});
+		
 		
 		final TextField<String> txtfldsearch= new TextField<String>();
 		txtfldsearch.setEmptyText("Cerca...");
@@ -204,7 +222,8 @@ public class PanelCommessa extends LayoutContainer {
 		toolBar.add(txtfldsearch);
 		
 		toolBar.add(btnClose);
-		//toolBar.add(btnOrdine);
+		toolBar.add(new SeparatorToolItem());
+		toolBar.add(btnVariazioniMensili);
 		toolBar.setBorders(true);
 		toolBar.setHeight("30px");
 		toolBar.setAlignment(HorizontalAlignment.RIGHT);
@@ -243,7 +262,7 @@ public class PanelCommessa extends LayoutContainer {
 	    cntpnlVistaDati.setScrollMode(Scroll.AUTOY);
 	    cntpnlVistaDati.setStyleAttribute("padding-left", "10px");
 	    cntpnlVistaDati.setStyleAttribute("padding-top", "0px");
-	    	    	        		
+	    
 		try {
 			frmpnlCommessa= createForm();
 		} catch (Exception e) {
@@ -296,6 +315,7 @@ public class PanelCommessa extends LayoutContainer {
 	            	btnEdit.setEnabled(true);
 	            	btnOrdine.setEnabled(true);
 	            	btnClose.setEnabled(true);
+	            	btnVariazioniMensili.setEnabled(true);
 	            	String stato= be.getSelectedItem().getStatoCommessa();
 	            	if(stato.compareTo("Conclusa")==0){
 	            		
@@ -917,8 +937,8 @@ public class PanelCommessa extends LayoutContainer {
 		txtfldSalAttuale.setFieldLabel("SAL Iniziale");
 		txtfldSalAttuale.setName("salAttuale");
 		txtfldSalAttuale.setAllowBlank(false);
-		txtfldSalAttuale.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
-		txtfldSalAttuale.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+		txtfldSalAttuale.setRegex("^[-]{0,1}([0-9]+)[.]{1}(0{1,2}|15|30|45)$");
+		txtfldSalAttuale.getMessages().setRegexText("Inserire le ore in sessantesimi!");
 		txtfldSalAttuale.addKeyListener(new KeyListener(){
 			 public void componentKeyDown(ComponentEvent event) { 	  
 			    	int keyCode=event.getKeyCode();
@@ -954,8 +974,8 @@ public class PanelCommessa extends LayoutContainer {
 		txtfldPclAttuale.setFieldLabel("PCL Iniziale");
 		txtfldPclAttuale.setName("pclAttuale");
 		txtfldPclAttuale.setAllowBlank(false);
-		txtfldPclAttuale.setRegex("[0-9]+[.]{1}[0-5]{1}[0-9]{1}|[0-9]+[.]{1}[0]{1}|0.00|0.0");
-		txtfldPclAttuale.getMessages().setRegexText("Deve essere un numero nel formato 99.59");
+		txtfldPclAttuale.setRegex("^[-]{0,1}([0-9]+)[.]{1}(0{1,2}|15|30|45)$");
+		txtfldPclAttuale.getMessages().setRegexText("Inserire le ore in sessantesimi!");
 		txtfldPclAttuale.addKeyListener(new KeyListener(){
 			 public void componentKeyDown(ComponentEvent event) { 	  
 			    	int keyCode=event.getKeyCode();
@@ -1234,13 +1254,19 @@ public class PanelCommessa extends LayoutContainer {
 	public  void setNomeCognome(String result){
 		String nome=new String();
 		String cognome=new String();
-		int i=result.indexOf(".");
-				
-		nome=result.substring(0,i);
-		cognome=result.substring(i+1,result.length());
+		int i=0;
 		
-		txtNome.setText(nome);
-		txtCognome.setText(cognome);
-		recuperoSessionRuolo();	
+		if(result.indexOf(".")!=-1){
+		
+			i=result.indexOf(".");
+				
+			nome=result.substring(0,i);
+			cognome=result.substring(i+1,result.length());
+		
+			txtNome.setText(nome);
+			txtCognome.setText(cognome);
+			recuperoSessionRuolo();	
+		}
+		
 	}
 }

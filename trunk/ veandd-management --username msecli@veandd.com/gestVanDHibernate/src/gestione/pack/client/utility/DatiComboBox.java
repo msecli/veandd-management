@@ -175,6 +175,7 @@ public class DatiComboBox {
 		listaR.add("26.Assenza Studio");
 		listaR.add("27.Ore Viaggio");
 		listaR.add("28.Santo Patrono");
+		listaR.add("29.Congedo Obbl. Padre");
 							
 		return listaR;
 	}

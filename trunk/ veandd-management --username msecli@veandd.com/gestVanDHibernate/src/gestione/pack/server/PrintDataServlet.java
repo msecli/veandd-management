@@ -500,7 +500,7 @@ public class PrintDataServlet extends HttpServlet  {
 						exporterXLS.setParameter(JRXlsExporterParameter.IS_IGNORE_GRAPHICS, Boolean.FALSE);
 						exporterXLS.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, Constanti.PATHAmazon+"FileStorage/ReportRiepilogoCostiDipendenti.xls");
 						exporterXLS.exportReport();
-							
+						
 						File f=new File(Constanti.PATHAmazon+"FileStorage/ReportRiepilogoCostiDipendenti.xls");
 						FileInputStream fin = new FileInputStream(f);
 						ServletOutputStream outStream = response.getOutputStream();

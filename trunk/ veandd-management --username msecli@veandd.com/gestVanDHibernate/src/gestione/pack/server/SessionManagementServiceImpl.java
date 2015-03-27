@@ -31,6 +31,7 @@ import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.model.AttivitaFatturateModel;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.FatturaModel;
+import gestione.pack.client.model.RiepilogoCostiDipSuCommesseFatturateModel;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoFoglioOreModel;
 import gestione.pack.client.model.RiepilogoMensileOrdiniModel;
@@ -81,7 +82,7 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 	    else 
 	    {
 	        return "";
-	    }		
+	    }
 	}
 	
 	public String getRuolo() throws IllegalArgumentException{
@@ -122,11 +123,11 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 		   HttpServletRequest request = this.getThreadLocalRequest();
 	   	   HttpSession httpSession = request.getSession();	   
 	   	   
-	   	   //httpSession.setMaxInactiveInterval(25*60);
+	   	   httpSession.setMaxInactiveInterval(60*60);//durata dati in sessione di 1 ora
 	   	   
-	   	   if(!httpSession.isNew()){ 
+	   	   if(!httpSession.isNew()){
 	   		   
-	   		   //httpSession.invalidate();  		  
+	   		   //httpSession.invalidate(); 
 	   	   }
 	   	   
 	       try{
@@ -435,5 +436,24 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 			return false;
 		}
 				
+	}
+
+
+	@Override
+	public boolean setDatiReportCostiCommesseFatturate(String tipoModulo,
+			List<RiepilogoCostiDipSuCommesseFatturateModel> listaDati) {
+		try {
+			 HttpServletRequest request = this.getThreadLocalRequest();
+		   	 HttpSession httpSession = request.getSession();
+		   	
+		   	 httpSession.setAttribute("dati", listaDati);
+		   	
+		     httpSession.setAttribute("tipoModulo", tipoModulo);
+		    		   	 
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 }

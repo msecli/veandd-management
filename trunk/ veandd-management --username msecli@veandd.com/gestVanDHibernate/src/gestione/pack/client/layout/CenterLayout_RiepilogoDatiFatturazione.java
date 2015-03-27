@@ -836,14 +836,14 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 							else{
 								String color = "#90EE90"; 
 								config.style = config.style + ";background-color:" + color + ";";
-							}	
+							}
 						else
 							return "0.00";
 					else
 						config.style = config.style + ";background-color:" + "#FFFFFF" + ";";
 					
 					return model.get(property);
-				}  	
+				}
 			});
 		   configs.add(efficienza);	
 		   
@@ -897,15 +897,15 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		
 		public AggregationRowPersonale(){
 			final NumberFormat number= NumberFormat.getFormat("#,##0.0#;-#");
-			AggregationRenderer<DatiFatturazioneMeseModel> aggrRender= new AggregationRenderer<DatiFatturazioneMeseModel>() {			
+			AggregationRenderer<DatiFatturazioneMeseModel> aggrRender= new AggregationRenderer<DatiFatturazioneMeseModel>() {		
 				@Override
 				public Object render(Number value, int colIndex, Grid<DatiFatturazioneMeseModel> grid, ListStore<DatiFatturazioneMeseModel> store) {
-					 if(value!=null)		    		  
+					 if(value!=null)
 			    		  return number.format(value.doubleValue());
 			    	  else
 			    		  return number.format((float) 0) ;
 				}
-			};			
+			};
 						
 			setHtml("cliente", "<p style=\"font-size:15px; color:#000000; font-weight:bold;\">TOTALE</p>");	
 						
@@ -916,6 +916,34 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			setSummaryType("oreFatturate", SummaryType.SUM);
 			setRenderer("oreFatturate", aggrRender);
 			setCellStyle("oreFatturate", "font-size:15px; color:#000000; font-weight:bold;");
+			
+			setSummaryType("importoEffettivo", SummaryType.SUM);
+			setRenderer("importoEffettivo", aggrRender);
+			setCellStyle("importoEffettivo", "font-size:15px; color:#000000; font-weight:bold;");
+			setSummaryFormat("importoEffettivo", NumberFormat.getCurrencyFormat("EUR"));
+			
+			setSummaryType("variazioneSal", SummaryType.SUM);
+			setRenderer("variazioneSal", aggrRender);
+			setCellStyle("variazioneSal", "font-size:15px; color:#000000; font-weight:bold;");
+			
+			setSummaryType("importoSal", SummaryType.SUM);
+			setRenderer("importoSal", aggrRender);
+			setCellStyle("importoSal", "font-size:15px; color:#000000; font-weight:bold;");
+			setSummaryFormat("importoSal", NumberFormat.getCurrencyFormat("EUR"));
+			
+			setSummaryType("variazionePcl", SummaryType.SUM);
+			setRenderer("variazionePcl", aggrRender);
+			setCellStyle("variazionePcl", "font-size:15px; color:#000000; font-weight:bold;");
+			
+			setSummaryType("importoPcl", SummaryType.SUM);
+			setRenderer("importoPcl", aggrRender);
+			setCellStyle("importoPcl", "font-size:15px; color:#000000; font-weight:bold;");
+			setSummaryFormat("importoPcl", NumberFormat.getCurrencyFormat("EUR"));
+			
+			setSummaryType("oreScaricate", SummaryType.SUM);
+			setRenderer("oreScaricate", aggrRender);
+			setCellStyle("oreScaricate", "font-size:15px; color:#000000; font-weight:bold;");
+			
 		}
 	}
 }

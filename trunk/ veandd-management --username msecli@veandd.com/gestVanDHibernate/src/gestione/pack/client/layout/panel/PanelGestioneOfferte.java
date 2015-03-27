@@ -124,8 +124,7 @@ public class PanelGestioneOfferte extends LayoutContainer{
 			public void selectionChanged(
 					SelectionChangedEvent<SimpleComboValue<String>> se) {
 				
-				String stato=smplcmbxStatoOfferta.getRawValue().toString();
-						
+				String stato=smplcmbxStatoOfferta.getRawValue().toString();						
 				caricaTabellaDati(stato);
 			}
 		});
