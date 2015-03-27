@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReportMensileOrdini" pageWidth="2600" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="52752e31-c865-4a0e-854c-ee385ec61abd">
 	<property name="ireport.zoom" value="1.0"/>
-	<property name="ireport.x" value="1544"/>
+	<property name="ireport.x" value="887"/>
 	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
-	<parameter name="oreTotOrdine" class="java.lang.Float" isForPrompting="false">
-		<parameterDescription><![CDATA[oreTotOrdine]]></parameterDescription>
+	<parameter name="oreTotOrdini" class="java.lang.Float" isForPrompting="false">
+		<parameterDescription><![CDATA[oreTotOrdini]]></parameterDescription>
 	</parameter>
-	<parameter name="importoTotOrdine" class="java.lang.Float" isForPrompting="false">
-		<parameterDescription><![CDATA[importoTotOrdine]]></parameterDescription>
+	<parameter name="importoTotOrdini" class="java.lang.Float" isForPrompting="false">
+		<parameterDescription><![CDATA[importoTotOrdini]]></parameterDescription>
 	</parameter>
-	<parameter name="oreResOrdine" class="java.lang.Float" isForPrompting="false">
-		<parameterDescription><![CDATA[oreResOrdine]]></parameterDescription>
+	<parameter name="oreResOrdini" class="java.lang.Float" isForPrompting="false">
+		<parameterDescription><![CDATA[oreResOrdini]]></parameterDescription>
 	</parameter>
-	<parameter name="importoResOrdine" class="java.lang.Float" isForPrompting="false">
-		<parameterDescription><![CDATA[importoResOrdine]]></parameterDescription>
+	<parameter name="importoResOrdini" class="java.lang.Float" isForPrompting="false">
+		<parameterDescription><![CDATA[importoResOrdini]]></parameterDescription>
 	</parameter>
 	<field name="cliente" class="java.lang.String"/>
 	<field name="pm" class="java.lang.String"/>
@@ -475,32 +475,32 @@
 				<textFieldExpression><![CDATA[$V{totaleM12}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
-				<reportElement uuid="e87cc4f1-88be-4e36-bb48-7365d0b3e72e" mode="Opaque" x="1177" y="2" width="67" height="25" forecolor="#000000" backcolor="#FF6666"/>
+				<reportElement uuid="e87cc4f1-88be-4e36-bb48-7365d0b3e72e" mode="Opaque" x="1091" y="2" width="86" height="25" forecolor="#000000" backcolor="#FF6666"/>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{importoTotOrdine}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{importoTotOrdini}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
-				<reportElement uuid="c40682ac-c575-4c78-a07f-4e97d91bf32a" mode="Opaque" x="1091" y="2" width="86" height="25" forecolor="#000000" backcolor="#FF6666"/>
+				<reportElement uuid="c40682ac-c575-4c78-a07f-4e97d91bf32a" mode="Opaque" x="1177" y="2" width="67" height="25" forecolor="#000000" backcolor="#FF6666"/>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{oreTotOrdine}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{oreTotOrdini}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
 				<reportElement uuid="58ed976b-0cb8-4c08-a105-ba6affd6bb3c" mode="Opaque" x="2048" y="2" width="67" height="25" forecolor="#000000" backcolor="#FF6666"/>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{oreResOrdine}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{oreResOrdini}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
 				<reportElement uuid="33d84b3e-7c77-4cf0-adab-6f20f537dd27" mode="Opaque" x="2115" y="2" width="105" height="25" forecolor="#000000" backcolor="#FF6666"/>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{importoResOrdine}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{importoResOrdini}]]></textFieldExpression>
 			</textField>
 		</band>
 	</lastPageFooter>
