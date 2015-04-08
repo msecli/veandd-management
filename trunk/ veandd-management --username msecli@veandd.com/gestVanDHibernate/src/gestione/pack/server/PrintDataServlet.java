@@ -7,6 +7,8 @@ import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.FatturaJavaBean;
 import gestione.pack.client.model.FatturaModel;
 import gestione.pack.client.model.RiepilogoAnnualeJavaBean;
+import gestione.pack.client.model.RiepilogoCostiDipSuCommesseFatturateBean;
+import gestione.pack.client.model.RiepilogoCostiDipSuCommesseFatturateModel;
 import gestione.pack.client.model.RiepilogoCostiDipendentiBean;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoDatiOreMeseJavaBean;
@@ -527,6 +529,69 @@ public class PrintDataServlet extends HttpServlet  {
 				}
 			
 			else	
+				if(operazione.compareTo("RIEP.COSTICOMMESSE")==0){
+					List<RiepilogoCostiDipSuCommesseFatturateModel> lista= new ArrayList<RiepilogoCostiDipSuCommesseFatturateModel>();
+					List<RiepilogoCostiDipSuCommesseFatturateBean> listaB= new ArrayList<RiepilogoCostiDipSuCommesseFatturateBean>();
+					
+					lista= (List<RiepilogoCostiDipSuCommesseFatturateModel>) httpSession.getAttribute("lista");
+					
+					listaB.addAll(ServerUtility.traduciCostiCommesseModelToBean(lista));
+					
+					Map parameters = new HashMap();
+											
+					JasperPrint jasperPrint;
+					FileInputStream fis;
+					BufferedInputStream bufferedInputStream;
+					
+					try {
+											
+						fis = new FileInputStream(Constanti.PATHAmazon+"JasperReport/ReportRiepilogoCostiCommesseFatturate.jasper");
+												
+						bufferedInputStream = new BufferedInputStream(fis);
+
+						JasperReport jasperReport = (JasperReport) JRLoader
+									.loadObject(bufferedInputStream);
+						
+						jasperPrint = JasperFillManager.fillReport(jasperReport,
+									parameters, getDataSourceCostiCommesse(listaB));
+						
+						JRXlsExporter exporterXLS = new JRXlsExporter();
+						exporterXLS.setParameter(JRXlsExporterParameter.JASPER_PRINT, jasperPrint);
+						exporterXLS.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
+						exporterXLS.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
+						exporterXLS.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+						exporterXLS.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
+						exporterXLS.setParameter(JRXlsExporterParameter.IS_IGNORE_CELL_BACKGROUND, Boolean.FALSE);
+						exporterXLS.setParameter(JRXlsExporterParameter.IS_IGNORE_GRAPHICS, Boolean.FALSE);
+						exporterXLS.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, Constanti.PATHAmazon+"FileStorage/ReportRiepilogoCostiCommesseFatturate.xls");
+						exporterXLS.exportReport();
+						
+						File f=new File(Constanti.PATHAmazon+"FileStorage/ReportRiepilogoCostiCommesseFatturate.xls");
+						FileInputStream fin = new FileInputStream(f);
+						ServletOutputStream outStream = response.getOutputStream();
+						// SET THE MIME TYPE.
+						response.setContentType("application/vnd.ms-excel");
+						// set content dispostion to attachment in with file name.
+						// case the open/save dialog needs to appear.
+						response.setHeader("Content-Disposition", "attachment;filename=ReportRiepilogoCostiCommesseFatturate.xls");
+
+						byte[] buffer = new byte[1024];
+						int n = 0;
+						while ((n = fin.read(buffer)) != -1) {
+							outStream.write(buffer, 0, n);
+							System.out.println(buffer);
+						}
+						
+						outStream.flush();
+						fin.close();
+						outStream.close();
+						
+					} catch (JRException e) {
+							e.printStackTrace();
+					}			
+				}
+			
+			else
 				if(operazione.compareTo("RIEP.SALPCL")==0){
 					List<RiepilogoSALPCLModel> lista= new ArrayList<RiepilogoSALPCLModel>();
 					List<RiepilogoSALPCLJavaBean> listaR= new ArrayList<RiepilogoSALPCLJavaBean>();
@@ -906,6 +971,7 @@ public class PrintDataServlet extends HttpServlet  {
 		}
 	}
 
+	
 	private static JRDataSource getDataSourceRtv(List<RtvJavaBean> listaO) {
 		Collection<RtvJavaBean> riep= new ArrayList<RtvJavaBean>();
 		for(RtvJavaBean r: listaO)
@@ -999,4 +1065,12 @@ public class PrintDataServlet extends HttpServlet  {
 		return new JRBeanCollectionDataSource(riep);
 	}
 	
+	private static JRDataSource getDataSourceCostiCommesse(List<RiepilogoCostiDipSuCommesseFatturateBean> listaB) {
+		Collection<RiepilogoCostiDipSuCommesseFatturateBean> riep=new ArrayList<RiepilogoCostiDipSuCommesseFatturateBean>();
+		for(RiepilogoCostiDipSuCommesseFatturateBean r:listaB){
+			riep.add(r);
+		}
+		
+		return new JRBeanCollectionDataSource(riep);
+	}
 }

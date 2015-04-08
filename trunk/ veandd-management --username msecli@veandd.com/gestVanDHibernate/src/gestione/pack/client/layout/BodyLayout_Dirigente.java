@@ -3,6 +3,7 @@ package gestione.pack.client.layout;
 //import gestione.pack.client.utility.RecuperoParametriSessione;
 
 import gestione.pack.client.SessionManagementService;
+import gestione.pack.client.layout.panel.PanelRiepilogoCostiSuCommesse;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
 import gestione.pack.client.utility.MyImages;
@@ -250,6 +251,22 @@ public class BodyLayout_Dirigente extends LayoutContainer {
 	        }        
 	      });
 	    cp.add(btnRiepiloghiSalPcl);
+	    
+	    
+	    Button btnRiepilogoCostiSuCommesse = new Button();
+	    btnRiepilogoCostiSuCommesse.setToolTip("Costi su Commesse");
+	    btnRiepilogoCostiSuCommesse.setHeight(65);
+	    btnRiepilogoCostiSuCommesse.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.costi()));
+	    btnRiepilogoCostiSuCommesse.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoCostiSuCommesse.setWidth("100%");
+	    btnRiepilogoCostiSuCommesse.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelRiepilogoCostiSuCommesse());
+	        	center.layout(true);
+	        }
+	    });
+	    cp.add(btnRiepilogoCostiSuCommesse);
 	    
 	    panel.add(cp);
 	    

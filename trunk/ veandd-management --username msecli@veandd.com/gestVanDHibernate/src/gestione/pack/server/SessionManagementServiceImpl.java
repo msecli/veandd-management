@@ -440,15 +440,15 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 
 
 	@Override
-	public boolean setDatiReportCostiCommesseFatturate(String tipoModulo,
+	public boolean setDatiReportCostiCommesseFatturate(String operazione,
 			List<RiepilogoCostiDipSuCommesseFatturateModel> listaDati) {
 		try {
 			 HttpServletRequest request = this.getThreadLocalRequest();
 		   	 HttpSession httpSession = request.getSession();
 		   	
-		   	 httpSession.setAttribute("dati", listaDati);
+		   	 httpSession.setAttribute("lista", listaDati);
 		   	
-		     httpSession.setAttribute("tipoModulo", tipoModulo);
+		     httpSession.setAttribute("operazione", operazione);
 		    		   	 
 			return true;
 		} catch (Exception e) {

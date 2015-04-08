@@ -8,6 +8,8 @@ import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.FatturaModel;
 import gestione.pack.client.model.IntervalliCommesseModel;
 import gestione.pack.client.model.RiepilogoAnnualeJavaBean;
+import gestione.pack.client.model.RiepilogoCostiDipSuCommesseFatturateBean;
+import gestione.pack.client.model.RiepilogoCostiDipSuCommesseFatturateModel;
 import gestione.pack.client.model.RiepilogoCostiDipendentiBean;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoDatiOreMeseJavaBean;
@@ -2878,6 +2880,15 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 				
 		return false;
 	}
+	
+	public static boolean commessaIsIncluded(int codCommessa,
+			List<Integer> commesseSelected) {
+		for(Integer i:commesseSelected)
+			if(i==codCommessa)
+				return true;
+				
+		return false;
+	}
 
 	
 	public static String getNumeroCommessaById(Integer idCommessa) {
@@ -3012,6 +3023,36 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 		
 		return listaCommesse;
 	}
+	
+
+	public static List<RiepilogoCostiDipSuCommesseFatturateBean> traduciCostiCommesseModelToBean(
+			List<RiepilogoCostiDipSuCommesseFatturateModel> lista) {
+		
+		List<RiepilogoCostiDipSuCommesseFatturateBean> listaR = new ArrayList<RiepilogoCostiDipSuCommesseFatturateBean>();
+		RiepilogoCostiDipSuCommesseFatturateBean rB;
+		
+		for(RiepilogoCostiDipSuCommesseFatturateModel r:lista){
+			
+			rB=new RiepilogoCostiDipSuCommesseFatturateBean((int)r.get("idCommessa"), (String)r.get("pm"), (String)r.get("numeroCommessa"), (String)r.get("commessa"), 
+					(String)r.get("estensione"), (String)r.get("attivita"), (String)r.get("dipendente"), 
+					(Float) r.get("oreEseguite"), (Float)r.get("costoOrario"), (Float)r.get("costoTotale"), (Float)r.get("importoFatturato"), 
+					(Float) r.get("importoScaricato"), (Float) r.get("margine"),(Float) r.get("rapporto"));
+			listaR.add(rB);
+		}		
+		
+		return listaR;
+	}
+
+	public static boolean commessaIsIncluded(String app,
+			List<String> listaCommesseCheck) {
+		for(String c:listaCommesseCheck)
+			if(c.compareTo(app)==0)
+				return true;
+				
+		return false;
+	}
+
+	
 
 }
 

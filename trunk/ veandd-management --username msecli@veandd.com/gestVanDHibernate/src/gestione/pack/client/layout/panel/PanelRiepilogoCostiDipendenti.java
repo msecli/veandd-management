@@ -349,9 +349,9 @@ public class PanelRiepilogoCostiDipendenti extends LayoutContainer{
 	    txtfldcostoAnno.setValue("0.00");
 	    txtfldcostoAnno.setRegex("^([0-9]+).([0-9]{1,2})$");
 	    txtfldcostoAnno.addKeyListener(new KeyListener(){
-				 public void componentKeyDown(ComponentEvent event) { 	  
+				 public void componentKeyDown(ComponentEvent event) {
 				    	int keyCode=event.getKeyCode();
-						if(keyCode==9){			
+						if(keyCode==9){		
 							
 							if(txtfldcostoAnno.getValue()==null)
 								txtfldcostoAnno.setValue("0.00");
@@ -373,7 +373,7 @@ public class PanelRiepilogoCostiDipendenti extends LayoutContainer{
 											valore=valore+"00";
 									}
 								txtfldcostoAnno.setValue(valore);
-							}						
+							}
 						}
 				 }
 			});

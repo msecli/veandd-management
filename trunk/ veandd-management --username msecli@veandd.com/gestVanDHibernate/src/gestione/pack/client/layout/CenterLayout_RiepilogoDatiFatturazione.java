@@ -1,6 +1,7 @@
 package gestione.pack.client.layout;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.DatiComboBox;
 import gestione.pack.client.utility.MyImages;
 
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Window;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -32,10 +34,13 @@ import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.grid.AggregationRenderer;
 import com.extjs.gxt.ui.client.widget.grid.AggregationRowConfig;
+import com.extjs.gxt.ui.client.widget.grid.CellEditor;
+import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -43,6 +48,7 @@ import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GroupSummaryView;
+import com.extjs.gxt.ui.client.widget.grid.RowEditor;
 import com.extjs.gxt.ui.client.widget.grid.SummaryColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.SummaryRenderer;
 import com.extjs.gxt.ui.client.widget.grid.SummaryType;
@@ -168,7 +174,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					}
 				}
 			});
-			getNomePM();	
+			getNomePM();
 			
 			
 			smplcmbxOrderBy= new SimpleComboBox<String>();
@@ -266,9 +272,9 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			//btnRiepDatiFatt.setToolTip("Load");
 			btnRiepDatiFatt.setIconAlign(IconAlign.TOP);
 			btnRiepDatiFatt.setSize(26, 26);
-			btnRiepDatiFatt.addSelectionListener(new SelectionListener<ButtonEvent>() {		
+			btnRiepDatiFatt.addSelectionListener(new SelectionListener<ButtonEvent>() {
 				@Override
-				public void componentSelected(ButtonEvent ce) {		
+				public void componentSelected(ButtonEvent ce) {
 					Dialog d= new Dialog();
 					//d.setHeaderVisible(false);
 					d.setSize(1350, 1060);
@@ -284,7 +290,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			btnConfermaDati.setToolTip("Conferma i dati del mese");
 			btnConfermaDati.setIconAlign(IconAlign.TOP);
 			btnConfermaDati.setSize(26, 26);
-			btnConfermaDati.addSelectionListener(new SelectionListener<ButtonEvent>() {		
+			btnConfermaDati.addSelectionListener(new SelectionListener<ButtonEvent>() {
 				@Override
 				public void componentSelected(ButtonEvent ce) {
 					String mese=smplcmbxMese.getRawValue().toString();
@@ -317,7 +323,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			ContentPanel cp= new ContentPanel();
 			cp.setHeaderVisible(false);
 			cp.add(fp);
-						
+			
 			ToolBar tlbOperazioni= new ToolBar();
 			tlbOperazioni.add(smplcmbxAnno);
 			tlbOperazioni.add(smplcmbxMese);
@@ -333,16 +339,20 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			tlbOperazioni.add(btnConfermaDati);
 			setTopComponent(tlbOperazioni);
 			
-		    try {
-		    	cm = new ColumnModel(createColumns());	
-			} catch (Exception e) {
-				e.printStackTrace();
-				Window.alert("error: Problema createColumns().");			
-			}	
-
+			/*List<ColumnConfig> columnConfigList= new ArrayList<ColumnConfig>();
+			
+			columnConfigList.addAll((Collection<? extends ColumnConfig>) createColumns());
+			
+			CheckColumnConfig checkColumn = new CheckColumnConfig("confermaPm", "V", 55);  
+		    CellEditor checkBoxEditor = new CellEditor(new CheckBox());  
+		    checkColumn.setEditor(checkBoxEditor);  
+		    columnConfigList.add(checkColumn);*/
+			
+			cm = new ColumnModel(createColumns());	
+			
 			store.groupBy("pm");
 			store.setSortField("numeroCommessa");
-			store.setSortDir(SortDir.ASC);			
+			store.setSortDir(SortDir.ASC);	
 			    
 		    GroupSummaryView summary = new GroupSummaryView();  
 		    summary.setForceFit(false);  
@@ -350,15 +360,18 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		    
 		    AggregationRowConfig<DatiFatturazioneMeseModel> agrTotale= new AggregationRowPersonale();		
 			cm.addAggregationRow(agrTotale);
-		    		    
-		    gridRiepilogo= new EditorGrid<DatiFatturazioneMeseModel>(store, cm);  
-		    gridRiepilogo.setBorders(false); 
+		    
+			//final RowEditor<DatiFatturazioneMeseModel> re = new RowEditor<DatiFatturazioneMeseModel>();
+			
+		    gridRiepilogo= new EditorGrid<DatiFatturazioneMeseModel>(store, cm);
+		    gridRiepilogo.setBorders(false);
 		    gridRiepilogo.setColumnLines(true);
 		    gridRiepilogo.setStripeRows(true);
-		    gridRiepilogo.setView(summary);  
+		    gridRiepilogo.setView(summary);
 		    gridRiepilogo.getView().setShowDirtyCells(false);
-		   // gridRiepilogo.addPlugin(expander); 
-		    			   		   	    	   
+		    //gridRiepilogo.addPlugin(checkColumn);
+		   // gridRiepilogo.addPlugin(re); 
+		    
 		  	add(gridRiepilogo);			
 		}
 		
@@ -391,40 +404,59 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 												
 					}else Window.alert("error: Errore durante l'accesso ai dati PM.");			
 				}
-			});		
+			});
 		}
 
 
 		private List<ColumnConfig> createColumns() {
-			List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
+			List <ColumnConfig> configs = new ArrayList<ColumnConfig>();
 			final NumberFormat number= NumberFormat.getFormat("0.00");
 			
 			/*XTemplate tpl = XTemplate.create("<p><b>Note:</b> {note}</p><br>");  
 			expander = new RowExpander();
 			expander.setTemplate(tpl); 
-			expander.setWidth(20);	
+			expander.setWidth(20);		
+			configs.add(expander);*/			
 			
-			configs.add(expander);*/
-			
-			SummaryColumnConfig<Double> column=new SummaryColumnConfig<Double>();		
-		    column.setId("sede");  
-		    column.setHeader("Sede");  
-		    column.setWidth(30);  
-		    column.setRowHeader(true);  
-		    configs.add(column); 
+		    SummaryColumnConfig<Double> column=new SummaryColumnConfig<Double>();
+		    column.setId("sede");
+		    column.setHeader("Sede");
+		    column.setWidth(30);
+		    column.setRowHeader(true);
+		    configs.add(column);
+		    
+		    column=new SummaryColumnConfig<Double>();
+		    column.setId("confermaPm");
+		    column.setHeader("V");
+		    column.setWidth(40);
+		    column.setRowHeader(true);
+		    final CheckBox chbxPassword= new CheckBox();
+		    //chbxPassword.setValue(false);
+		    CellEditor editorD = new CellEditor(chbxPassword) {
+		    	@Override
+		        public Object preProcessValue(Object value) {
+		    		return chbxPassword.getValue();
+		        }
+		        @Override
+		        public Object postProcessValue(Object value) {
+		            return chbxPassword.getValue();
+		        }
+		    };
+		    column.setEditor(editorD);
+		    configs.add(column);
 			
 			column=new SummaryColumnConfig<Double>();		
 		    column.setId("pm");  
 		    column.setHeader("Project Manager");  
-		    column.setWidth(140);  
-		    column.setRowHeader(true);  
-		    configs.add(column); 
+		    column.setWidth(140);
+		    column.setRowHeader(true);
+		    configs.add(column);
 			
-			column=new SummaryColumnConfig<Double>();		
-		    column.setId("numeroCommessa");  
-		    column.setHeader("Commessa");  
-		    column.setWidth(70);  
-		    column.setRowHeader(true);  
+			column=new SummaryColumnConfig<Double>();
+		    column.setId("numeroCommessa");
+		    column.setHeader("Commessa");
+		    column.setWidth(70);
+		    column.setRowHeader(true);
 		    column.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
 				@Override
 				public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
@@ -433,7 +465,6 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 				}  	
 			});
 		    column.setSummaryRenderer(new SummaryRenderer() {
-				
 				@Override
 				public String render(Number value, Map<String, Number> data) {
 					return "TOTALE";
@@ -448,18 +479,18 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			column.setRowHeader(true); 
 		    configs.add(column); 
 		    
-		    column=new SummaryColumnConfig<Double>();		
-		    column.setId("numeroOrdine");  
-			column.setHeader("Ordine");  
-			column.setWidth(80);  
-			column.setRowHeader(true); 
-		    configs.add(column); 
+		    column=new SummaryColumnConfig<Double>();
+		    column.setId("numeroOrdine");
+			column.setHeader("Ordine");
+			column.setWidth(80);
+			column.setRowHeader(true);
+		    configs.add(column);
 		    
-		    column=new SummaryColumnConfig<Double>();		
-		    column.setId("oggettoAttivita");  
-		    column.setHeader("Oggetto");  
-		    column.setWidth(140);  
-		    column.setRowHeader(true); 
+		    column=new SummaryColumnConfig<Double>();
+		    column.setId("oggettoAttivita");
+		    column.setHeader("Oggetto");
+		    column.setWidth(140);
+		    column.setRowHeader(true);
 		    configs.add(column);
 		    
 		    column=new SummaryColumnConfig<Double>();		
@@ -481,7 +512,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 						Grid<DatiFatturazioneMeseModel> grid) {
 					Float n=model.get(property);
 					return number.format(n);
-				}  	
+				}
 			}); 
 		    configs.add(column);
 		    	    
@@ -844,7 +875,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					
 					return model.get(property);
 				}
-			});
+		    });
 		   configs.add(efficienza);	
 		   
 		   SummaryColumnConfig<Double> note=new SummaryColumnConfig<Double>();		
