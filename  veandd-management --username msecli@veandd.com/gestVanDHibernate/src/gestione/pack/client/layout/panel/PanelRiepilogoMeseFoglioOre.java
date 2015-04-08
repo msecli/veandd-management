@@ -179,7 +179,7 @@ public class PanelRiepilogoMeseFoglioOre extends LayoutContainer{
 		cntpnlLayout.setFrame(true);
 		cntpnlLayout.add(cntpnlGrid);
 	    
-		bodyContainer.add(cntpnlLayout);    
+		bodyContainer.add(cntpnlLayout);
 		
 		layoutContainer.add(bodyContainer, new FitData(5, 5, 5, 8));
 		add(layoutContainer);    

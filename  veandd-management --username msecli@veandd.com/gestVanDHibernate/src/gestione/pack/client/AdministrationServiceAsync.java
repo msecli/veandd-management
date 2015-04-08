@@ -26,6 +26,7 @@ import gestione.pack.client.model.PersonaleAssociatoModel;
 import gestione.pack.client.model.PersonaleModel;
 import gestione.pack.client.model.RdaModel;
 import gestione.pack.client.model.RdoCompletaModel;
+import gestione.pack.client.model.RiepilogoCostiDipSuCommesseFatturateModel;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoMensileOrdiniModel;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
@@ -536,5 +537,9 @@ public interface AdministrationServiceAsync {
 
 	void associaEstensioneCommessaAttivitaOrdine(String valueOf,
 			Integer idAttivita, AsyncCallback<Boolean> asyncCallback);
+
+	void getRiepilogoCostiSuCommesseFatturate(
+			String pm,
+			String mese, String anno, AsyncCallback<List<RiepilogoCostiDipSuCommesseFatturateModel>> asyncCallback);
 
 }

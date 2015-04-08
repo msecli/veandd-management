@@ -40,6 +40,7 @@ import gestione.pack.client.model.PersonaleAssociatoModel;
 import gestione.pack.client.model.PersonaleModel;
 import gestione.pack.client.model.RdaModel;
 import gestione.pack.client.model.RdoCompletaModel;
+import gestione.pack.client.model.RiepilogoCostiDipSuCommesseFatturateModel;
 import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.model.RiepilogoMensileOrdiniModel;
 import gestione.pack.client.model.RiepilogoMeseGiornalieroModel;
@@ -496,6 +497,9 @@ boolean invioCommenti(String testo, String username, Date giorno);
 
 	List<RiepilogoSALPCLModel> getRiepilogoSalPcl1(String data,
 			String tabSelected, String pm);
+
+	List<RiepilogoCostiDipSuCommesseFatturateModel> getRiepilogoCostiSuCommesseFatturate(
+			String pm, String mese, String anno)throws IllegalArgumentException;
 
 			
 }

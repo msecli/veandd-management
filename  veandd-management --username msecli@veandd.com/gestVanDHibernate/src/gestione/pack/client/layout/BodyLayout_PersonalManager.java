@@ -5,6 +5,7 @@ package gestione.pack.client.layout;
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.layout.panel.PanelAbilitazioneStraordinarioDip;
 import gestione.pack.client.layout.panel.PanelMensileOrdini;
+import gestione.pack.client.layout.panel.PanelRiepilogoCostiSuCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
 import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoStatoAvanzamentoOreCommesse;
@@ -413,7 +414,20 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	    
 	    panel.add(cp);	    
 
-	    
+	    Button btnRiepilogoCostiSuCommesse = new Button();
+	    btnRiepilogoCostiSuCommesse.setToolTip("Costi su Commesse");
+	    btnRiepilogoCostiSuCommesse.setHeight(65);
+	    btnRiepilogoCostiSuCommesse.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.costi()));
+	    btnRiepilogoCostiSuCommesse.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoCostiSuCommesse.setWidth("100%");
+	    btnRiepilogoCostiSuCommesse.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelRiepilogoCostiSuCommesse());
+	        	center.layout(true);
+	        }
+	    });
+	    cp.add(btnRiepilogoCostiSuCommesse);
 	    
 	   /* cp = new ContentPanel();
 	    cp.setAnimCollapse(false);
