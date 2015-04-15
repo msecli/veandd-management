@@ -8,6 +8,7 @@ import java.util.Map;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
+import gestione.pack.client.layout.panel.DialogConfermaPmFogliFatturazione;
 import gestione.pack.client.layout.panel.PanelRiepilogoDatiPerFatturazione;
 import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.utility.ClientUtility;
@@ -23,6 +24,7 @@ import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -109,6 +111,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		private Button btnPrint;
 		private Button btnRiepDatiFatt;
 		private Button btnConfermaDati;
+		private Button btnConfermaDatiPm;
 		
 		CntpnlRiepilogoMese(){
 			
@@ -174,8 +177,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					}
 				}
 			});
-			getNomePM();
-			
+			getNomePM();			
 			
 			smplcmbxOrderBy= new SimpleComboBox<String>();
 			smplcmbxOrderBy.setFieldLabel("Group By");
@@ -213,7 +215,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			btnSelect.setToolTip("Load");
 			btnSelect.setIconAlign(IconAlign.TOP);
 			btnSelect.setSize(26, 26);
-			btnSelect.addSelectionListener(new SelectionListener<ButtonEvent>() {		
+			btnSelect.addSelectionListener(new SelectionListener<ButtonEvent>() {
 				@Override
 				public void componentSelected(ButtonEvent ce) {		
 					if(smplcmbxMese.isValid()&&smplcmbxAnno.isValid()){
@@ -316,6 +318,39 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			if((ruolo.compareTo("AMM")!=0)&&(ruolo.compareTo("UA")!=0))
 				btnConfermaDati.setVisible(false);		
 			
+			btnConfermaDatiPm=new Button();
+			btnConfermaDatiPm.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.check()));
+			btnConfermaDatiPm.setToolTip("Conferma dati fatturazione");
+			btnConfermaDatiPm.setIconAlign(IconAlign.TOP);
+			btnConfermaDatiPm.setSize(26, 26);
+			btnConfermaDatiPm.addSelectionListener(new SelectionListener<ButtonEvent>() {
+				@Override
+				public void componentSelected(ButtonEvent ce) {
+					
+					String meseRif= new String(); 
+					String anno=smplcmbxAnno.getRawValue().toString();		
+					meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
+										
+					DialogConfermaPmFogliFatturazione d= new DialogConfermaPmFogliFatturazione(anno, meseRif);
+					d.setSize(480, 870);
+					d.setButtons("");
+										
+					d.show();
+					
+					d.addListener(Events.Hide, new Listener<ComponentEvent>() {
+						@Override
+						public void handleEvent(ComponentEvent be) {
+							String meseRif= new String();
+							String anno= smplcmbxAnno.getRawValue().toString();
+							meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
+							meseRif=meseRif+anno;
+							caricaTabellaDati(meseRif);
+						}
+					});
+					
+				}
+			});
+			
 			fp.setMethod(FormPanel.METHOD_POST);
 			fp.setAction(url);
 			fp.addSubmitCompleteHandler(new FormSubmitCompleteHandler());  
@@ -337,6 +372,9 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			tlbOperazioni.add(cp);
 			tlbOperazioni.add(new SeparatorToolItem());
 			tlbOperazioni.add(btnConfermaDati);
+			tlbOperazioni.add(new SeparatorToolItem());
+			tlbOperazioni.add(btnConfermaDatiPm);
+			
 			setTopComponent(tlbOperazioni);
 			
 			/*List<ColumnConfig> columnConfigList= new ArrayList<ColumnConfig>();
@@ -402,7 +440,8 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 						smplcmbxPM.add("Tutti");
 						smplcmbxPM.recalculate();
 												
-					}else Window.alert("error: Errore durante l'accesso ai dati PM.");			
+					}else 
+						Window.alert("error: Errore durante l'accesso ai dati PM.");			
 				}
 			});
 		}
@@ -427,25 +466,32 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		    
 		    column=new SummaryColumnConfig<Double>();
 		    column.setId("confermaPm");
-		    column.setHeader("V");
-		    column.setWidth(40);
+		    column.setHeader("Check");
+		    column.setWidth(45);
 		    column.setRowHeader(true);
-		    final CheckBox chbxPassword= new CheckBox();
-		    //chbxPassword.setValue(false);
-		    CellEditor editorD = new CellEditor(chbxPassword) {
-		    	@Override
-		        public Object preProcessValue(Object value) {
-		    		return chbxPassword.getValue();
-		        }
-		        @Override
-		        public Object postProcessValue(Object value) {
-		            return chbxPassword.getValue();
-		        }
-		    };
-		    column.setEditor(editorD);
+		    column.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
+				@Override
+				public Object render(DatiFatturazioneMeseModel model,
+						String property, ColumnData config, int rowIndex,
+						int colIndex, ListStore<DatiFatturazioneMeseModel> store,
+						Grid<DatiFatturazioneMeseModel> grid) {
+					
+					Boolean check=model.get(property);
+					String color;
+					
+					if(check)
+						color = "#90EE90";
+					else
+						color = "#f0f080";
+					
+					config.style = config.style + ";background-color:" + color + ";";
+					
+					return "";
+				}
+			});
 		    configs.add(column);
 			
-			column=new SummaryColumnConfig<Double>();		
+			column=new SummaryColumnConfig<Double>();
 		    column.setId("pm");  
 		    column.setHeader("Project Manager");  
 		    column.setWidth(140);
@@ -462,7 +508,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 				public Object render(DatiFatturazioneMeseModel model,	String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
 						Grid<DatiFatturazioneMeseModel> grid) {
 					return model.get(property);
-				}  	
+				}
 			});
 		    column.setSummaryRenderer(new SummaryRenderer() {
 				@Override

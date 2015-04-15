@@ -296,7 +296,7 @@ public interface AdministrationService extends RemoteService {
 			String variazioneSAL, String variazionePCL, String meseCorrente,
 			String note, String statoElaborazione, String commessaSelezionata,
 			String tariffaUtilizzata, String flagSal, int idAttivita,
-			String oreRimborsoSpese);
+			String oreRimborsoSpese, boolean confermaPm);
 
 	List<DatiFatturazioneMeseModel> getReportDatiFatturazioneMese(String mese)throws IllegalArgumentException;
 
@@ -500,6 +500,12 @@ boolean invioCommenti(String testo, String username, Date giorno);
 
 	List<RiepilogoCostiDipSuCommesseFatturateModel> getRiepilogoCostiSuCommesseFatturate(
 			String pm, String mese, String anno)throws IllegalArgumentException;
+
+	List<DatiFatturazioneMeseModel> getReportDatiFatturazioneMese(String pm,
+			String meseSel);
+
+	boolean editConfermaPmFogliFatturazione(int idFoglioFatturazione,
+			Boolean check);
 
 			
 }

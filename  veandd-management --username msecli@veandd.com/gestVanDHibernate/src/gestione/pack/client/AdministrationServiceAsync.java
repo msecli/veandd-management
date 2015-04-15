@@ -312,7 +312,7 @@ public interface AdministrationServiceAsync {
 			String pclAttuale, String oreFatturere, String importoFatturare, String variazioneSAL,
 			String variazionePCL, String meseCorrente,
 			String note, String statoElaborazione, String commessaSelezionata,  
-			String tariffaUtilizzata, String flagSal, int idAttivita, String oreRimborsoSpese, AsyncCallback<Boolean> asyncCallback);
+			String tariffaUtilizzata, String flagSal, int idAttivita, String oreRimborsoSpese, boolean confermaPm, AsyncCallback<Boolean> asyncCallback);
 
 	void getReportDatiFatturazioneMese(String mese,
 			AsyncCallback<List<DatiFatturazioneMeseModel>> asyncCallback);
@@ -541,5 +541,11 @@ public interface AdministrationServiceAsync {
 	void getRiepilogoCostiSuCommesseFatturate(
 			String pm,
 			String mese, String anno, AsyncCallback<List<RiepilogoCostiDipSuCommesseFatturateModel>> asyncCallback);
+
+	void getReportDatiFatturazioneMese(String pm, String meseSel,
+			AsyncCallback<List<DatiFatturazioneMeseModel>> asyncCallback);
+
+	void editConfermaPmFogliFatturazione(int idFoglioFatturazione,
+			Boolean check, AsyncCallback<Boolean> asyncCallback);
 
 }

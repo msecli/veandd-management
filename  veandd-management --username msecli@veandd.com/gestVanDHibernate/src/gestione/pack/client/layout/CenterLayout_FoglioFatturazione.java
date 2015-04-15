@@ -759,6 +759,7 @@ public CenterLayout_FoglioFatturazione(){}
 		private Text txtVuoto1= new Text();
 		private Text txtTotCompensato= new Text();
 		private CheckBox chbxSalButtare;
+		private CheckBox chbxConfermaPm;
 		private TextField<String> txtfldImportoRtv= new TextField<String>();
 		
 		private Text txtOreDaFatturare= new Text();
@@ -859,7 +860,9 @@ public CenterLayout_FoglioFatturazione(){}
 						String importoDaFatturare=txtfldImportoDaFatturare.getValue().toString();
 						String oreRimborsoSpese= txtfldOreRimborsoSpese.getValue().toString();
 						String salDaButtare= new String();
+						
 						boolean salButtato= chbxSalButtare.getValue();
+						boolean confermaPm= chbxConfermaPm.getValue();
 						
 						String meseCorrente=new String();
 						String anno=new String();
@@ -874,8 +877,8 @@ public CenterLayout_FoglioFatturazione(){}
 						if(salButtato)
 							salDaButtare="S";
 						else
-							salDaButtare="N";
-						
+							salDaButtare="N";						
+												
 						anno=smplcmbxAnno.getRawValue().toString();
 						meseCorrente=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
 						data=meseCorrente+anno;
@@ -884,7 +887,7 @@ public CenterLayout_FoglioFatturazione(){}
 							Window.alert("E' stato indicato un numero di ore da fatturare maggiore del numero di ore residue sull'ordine!");
 						else
 							AdministrationService.Util.getInstance().insertDatiFoglioFatturazione(oreEseguite,salIniziale,pclIniziale, oreFatturare, importoDaFatturare, variazioneSAL,
-								variazionePCL, data, note, statoElaborazione, commessaSelezionata, tariffaUtilizzata, salDaButtare, idAttivita, oreRimborsoSpese, new AsyncCallback<Boolean>() {
+								variazionePCL, data, note, statoElaborazione, commessaSelezionata, tariffaUtilizzata, salDaButtare, idAttivita, oreRimborsoSpese, confermaPm, new AsyncCallback<Boolean>() {
 
 									@Override
 									public void onFailure(Throwable caught) {
@@ -1668,6 +1671,9 @@ public CenterLayout_FoglioFatturazione(){}
 			//chbxSalButtare.setStyleAttribute("padding-top", "15px");
 			chbxSalButtare.setFieldLabel("Sal da scartare");
 			
+			chbxConfermaPm=new CheckBox();
+			chbxConfermaPm.setFieldLabel("Conferma Dati");
+			
 			String r= new String();
 			r=ruolo;
 			if(r.compareTo("PM")==0)
@@ -1819,6 +1825,7 @@ public CenterLayout_FoglioFatturazione(){}
 			hp.add(txtfldImportoDaFatturare);			
 			hp.add(btnAssegnaImporto);
 			layoutColumn5.add(hp, new FormData("85%"));
+			layoutColumn5.add(chbxConfermaPm, new FormData("20%"));
 			cp2.add(layoutColumn5, data1);						
 			
 			fldsetFattura.add(cp2);
@@ -2283,6 +2290,13 @@ public CenterLayout_FoglioFatturazione(){}
 	    	  		txtVariazionePcl.setText("("+totaleEuro+")");
 	    	  		
 	    	  		String chbxValue= result.get("flagSalDaButtare");
+	    	  		String chbxCheck= result.get("confermaPm");
+	    	  		
+	    	  		if(chbxCheck!=null)
+	    	  			if(chbxCheck.compareTo("S")==0)
+	    	  				chbxConfermaPm.setValue(true);
+	    	  			else
+	    	  				chbxConfermaPm.setValue(false);
 	    	  		
 	    	  		if(chbxValue!=null)
 	    	  		if(chbxValue.compareTo("S")==0)
@@ -2343,6 +2357,7 @@ public CenterLayout_FoglioFatturazione(){}
 	    	  		txtVariazionePcl.setText("("+totaleEuro+")");	
 	    	  		
 	    	  		chbxSalButtare.setValue(false);
+	    	  		chbxConfermaPm.setValue(false);
 	    	  		
 	    	  		//txtTotCompensato.setText("Corrette--> ("+oreLavoro+") ");
 				}
