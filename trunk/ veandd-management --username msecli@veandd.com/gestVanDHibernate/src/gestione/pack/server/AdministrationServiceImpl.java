@@ -7079,7 +7079,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					tariffaUtilizzata=c.getTariffaSal();//prendo la tariffa della commessa
 					if(f==null){
 						foglioModel= new FoglioFatturazioneModel("#","#", "0.0", "0.0", "0.0", "0.0", Float.valueOf(tariffaUtilizzata), "0.0",
-								sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.00","#","0.0", "0.0", "0.0", "", "0", "0.00");
+								sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.00","#","0.0", "0.0", "0.0", "", "0", "0.00", "N");
 					}
 					else{	
 						//il foglio fatturazione era già stato compilato quindi tolgo alla sommavariazioni quella in esame
@@ -7088,7 +7088,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						
 						foglioModel= new FoglioFatturazioneModel("#","#", "0.0", "0.0", "0.0", "0.0", Float.valueOf(f.getTariffaUtilizzata()), f.getOreEseguite(),
 								sommaVariazioniSal, sommaVariazioniPcl, f.getOreFatturare(), f.getImportoRealeFatturato(),"#", 
-								f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione(), f.getOreRimborsoSpese());
+								f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione(), f.getOreRimborsoSpese(), f.getConfermaPm());
 					}		
 							
 				}else{
@@ -7170,14 +7170,14 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					if(f==null){	
 						foglioModel= new FoglioFatturazioneModel(numOrdine,rda, oreOrdine, oreResidueBudget,importo, importoResiduo,
 								Float.valueOf(tariffaUtilizzata), "0.0", sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.00",importoRtv,
-								"0.0", "0.0", "0.0", "", "0", "0.00");
+								"0.0", "0.0", "0.0", "", "0", "0.00", "N");
 					}
 					else{
 						sommaVariazioniSal=ServerUtility.getDifference(sommaVariazioniSal, f.getVariazioneSAL());
 						sommaVariazioniPcl=ServerUtility.getDifference(sommaVariazioniPcl, f.getVariazionePCL());
 						foglioModel= new FoglioFatturazioneModel(numOrdine,rda, oreOrdine, oreResidueBudget , importo, importoResiduo, Float.valueOf(f.getTariffaUtilizzata()), f.getOreEseguite(),
 								sommaVariazioniSal, sommaVariazioniPcl, f.getOreFatturare(), f.getImportoRealeFatturato(),importoRtv,
-								f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione(), f.getOreRimborsoSpese());
+								f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione(), f.getOreRimborsoSpese(), f.getConfermaPm());
 					}
 				}
 				
@@ -7277,14 +7277,14 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					tariffaUtilizzata=c.getTariffaSal();//prendo la tariffa della commessa
 					if(f==null){
 						foglioModel= new FoglioFatturazioneModel("#","#", "0.0", "0.0", "0.0", "0.0",Float.valueOf(tariffaUtilizzata), "0.0", 
-								sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.00", "#", "0.0", "0.0", "0.0", "", "0", "0.00");
+								sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.00", "#", "0.0", "0.0", "0.0", "", "0", "0.00", "N");
 					}
 					else{
 						//sommaVariazioniSal=ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f.getVariazioneSAL());
 						//sommaVariazioniPcl=ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, f.getVariazionePCL());
 						foglioModel= new FoglioFatturazioneModel("#","#", "0.0", "0.0", "0.0", "0.0",Float.valueOf(f.getTariffaUtilizzata()), f.getOreEseguite(),
 								sommaVariazioniSal, sommaVariazioniPcl, f.getOreFatturare(), f.getImportoRealeFatturato(),"#", f.getVariazioneSAL(), f.getVariazionePCL(), 
-								f.getOreScaricate(), f.getNote(), f.getStatoElaborazione(), f.getOreRimborsoSpese());
+								f.getOreScaricate(), f.getNote(), f.getStatoElaborazione(), f.getOreRimborsoSpese(), f.getConfermaPm());
 					}
 
 				}else{
@@ -7311,13 +7311,13 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						//--
 						foglioModel= new FoglioFatturazioneModel(numOrdine, rda, oreOrdine,oreResidueBudget, importo, importoResiduo,
 								Float.valueOf(tariffaUtilizzata), "0.0",sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.00", importoRtv, 
-								"0.0", "0.0", "0.0", "", "0", "0.00");
+								"0.0", "0.0", "0.0", "", "0", "0.00", "N");
 					
 					else
 						//tariffa utilizzata prendo quella registrata al momento della registrazione del foglio fatturazione
 						foglioModel= new FoglioFatturazioneModel(numOrdine, rda, oreOrdine, oreResidueBudget, importo, importoResiduo, Float.valueOf(f.getTariffaUtilizzata()), f.getOreEseguite(),
 								sommaVariazioniSal, sommaVariazioniPcl, f.getOreFatturare(), f.getImportoRealeFatturato(), importoRtv, f.getVariazioneSAL(), 
-								f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione(), f.getOreRimborsoSpese());
+								f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione(), f.getOreRimborsoSpese(), f.getConfermaPm());
 					
 				}
 			}
@@ -7332,7 +7332,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			return null;
 		}finally{
 			session.close();
-		}	
+		}
 	}
 
 	
@@ -7508,7 +7508,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			String salIniziale, String pclIniziale, String oreFatturare, String importoFatturare,
 			String variazioneSAL, String variazionePCL, String meseCorrente, String note,
 			String statoElaborazione, String commessa, String tariffaUtilizzata, String flagSal, 
-			int idAttivita, String oreRimborsoSpese)
+			int idAttivita, String oreRimborsoSpese, boolean confermaPm)
 			throws IllegalArgumentException {
 	
 		Commessa c= new Commessa();
@@ -7520,7 +7520,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		String numeroC= new String();
 		String estensione= new String();
-		//String oreResidueBudget= new String();
+		String checkPm=new String();
 		int idCommessa;
 		//Boolean esistePa=false;
 		
@@ -7543,6 +7543,11 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			else 
 				o=null;
 							
+			if(confermaPm)
+				checkPm="S";
+			else
+				checkPm="N";
+			
 			f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where cod_commessa=:idCommessa and meseCorrente=:mese and attivitaOrdine=:idAttivita")
 					.setParameter("idAttivita", idAttivita).setParameter("idCommessa", idCommessa).setParameter("mese", meseCorrente).uniqueResult();
 			if(f==null)
@@ -7569,6 +7574,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				f.setFlagSalDaButtare(flagSal);
 				f.setOreRimborsoSpese(oreRimborsoSpese);
 				f.setAttivitaOrdine(idAttivita);
+				f.setConfermaPm(checkPm);
 				
 				c.getFoglioFatturaziones().add(f);
 												
@@ -7591,6 +7597,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				f.setFlagSalDaButtare(flagSal);	
 				f.setOreRimborsoSpese(oreRimborsoSpese);
 				f.setAttivitaOrdine(idAttivita);
+				f.setConfermaPm(checkPm);
 				
 				tx.commit();
 				return true;
@@ -7641,7 +7648,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					numeroOrdine="";
 				
 				dm=new DatiFatturazioneMeseModel(f.getIdFoglioFatturazione(), numeroCommessa, numeroOrdine , f.getCommessa().getDenominazioneAttivita(), 
-						f.getOreEseguite(), f.getOreFatturare(), f.getVariazioneSAL(), f.getVariazionePCL());
+						f.getOreEseguite(), f.getOreFatturare(), f.getVariazioneSAL(), f.getVariazionePCL(), false);
 				listaDati.add(dm);
 			}
 			
@@ -12866,6 +12873,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 			listaRC.addAll(listaRC1);
 			
+			
+			//TOTALE SU COMMESSE
 			//calcolare totale manualmente per permettere calcolo semplice margine e avere dati in report excel
 			//fare un for usando la lista commesseSelected
 			List<RiepilogoCostiDipSuCommesseFatturateModel> listaRCTotali= new ArrayList<RiepilogoCostiDipSuCommesseFatturateModel>();
@@ -12886,22 +12895,26 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				for(RiepilogoCostiDipSuCommesseFatturateModel rc:listaRC){
 					String app=(String)rc.get("numeroCommessa");
 					String app2=(String)rc.get("attivita");
-					
+					String att1=(String)rc.get("attivita");
 					if((!ServerUtility.commessaIsIncluded(app, listaCommesseCheck)) && (app2.compareTo("DATI FATTURAZIONE")==0)){
 					
 						if(s.compareTo(app)==0){
 							
 							for(RiepilogoCostiDipSuCommesseFatturateModel rca:listaRCApp){
 								app2=(String)rca.get("numeroCommessa");
-								if(app2.compareTo(app)==0)
+								
+								if(app2.compareTo(app)==0){
 									totaleCostoTotale=totaleCostoTotale+(Float)rca.get("costoTotale");
+									totaleOreEseguite=totaleOreEseguite+(Float)rca.get("oreEseguite");
+								}
+								if((app2.compareTo(app)==0)&&(att1.compareTo("DATI FATTURAZIONE")==0)){
+									totaleImportoScaricato=totaleImportoScaricato+(Float)rca.get("importoScaricato");
+									totaleImportoFatturato=totaleImportoFatturato+(Float)rca.get("importoFatturato");
+								}								
 							}
 							
 							numeroCommessa=(String)rc.get("numeroCommessa");
-							totaleOreEseguite=totaleOreEseguite+(Float)rc.get("oreEseguite");
-							
-							totaleImportoScaricato=totaleImportoScaricato+(Float)rc.get("importoScaricato");
-							totaleImportoFatturato=totaleImportoFatturato+(Float)rc.get("importoFatturato");
+																					
 							importoMargine=totaleImportoScaricato-totaleCostoTotale;
 							rapporto=importoMargine/totaleImportoScaricato;
 						
@@ -12930,6 +12943,23 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 			listaRC.addAll(listaRCTotali);
 			
+			
+			//TOTALI SU PM
+			for(RiepilogoCostiDipSuCommesseFatturateModel rct:listaRCTotali){
+				
+				totaleOreEseguite=totaleOreEseguite+(Float)rct.get("oreEseguite");
+				totaleCostoTotale=totaleCostoTotale+(Float)rct.get("costoTotale");
+				totaleImportoScaricato=totaleImportoScaricato+(Float)rct.get("importoScaricato");
+				totaleImportoFatturato=totaleImportoFatturato+(Float)rct.get("importoFatturato");
+				
+			}
+			importoMargine=totaleImportoScaricato-totaleCostoTotale;
+			rapporto=importoMargine/totaleImportoScaricato;
+			
+			rc2=new RiepilogoCostiDipSuCommesseFatturateModel(0, pm, "TOTALE", "", "", "", "", totaleOreEseguite, (float)0.0, 
+					totaleCostoTotale, totaleImportoFatturato, totaleImportoScaricato, importoMargine, rapporto);
+			listaRC.add(rc2);
+			
 			tx.commit();
 			
 		} catch (Exception e) {
@@ -12942,6 +12972,105 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}
 		
 		return listaRC;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<DatiFatturazioneMeseModel> getReportDatiFatturazioneMese(
+			String pm, String mese) {
+		List<DatiFatturazioneMeseModel> listaDati= new ArrayList<DatiFatturazioneMeseModel>();
+		List<FoglioFatturazione> listaFF=new ArrayList<FoglioFatturazione>();
+		List<FoglioFatturazione> listaFF1=new ArrayList<FoglioFatturazione>();
+		DatiFatturazioneMeseModel dm= new DatiFatturazioneMeseModel();
+		
+		String numeroCommessa="";
+		String numeroOrdine="";
+		Ordine o = new Ordine();
+		Boolean confermaPm= false;
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+				
+		try {
+			tx = session.beginTransaction();
+			
+			listaFF=(List<FoglioFatturazione>)session.createQuery("from FoglioFatturazione where meseCorrente=:mese")
+					.setParameter("mese", mese).list();
+			
+			for(FoglioFatturazione ff:listaFF){
+				if(ff.getCommessa().getMatricolaPM().compareTo(pm)==0)
+					listaFF1.add(ff);
+			}
+			
+			for(FoglioFatturazione f:listaFF1){
+				numeroCommessa=f.getCommessa().getNumeroCommessa()+"."+f.getCommessa().getEstensione();
+				o=f.getCommessa().getOrdine();
+				if(o!=null)
+					numeroOrdine=f.getCommessa().getOrdine().getCodiceOrdine();
+				else
+					numeroOrdine="";
+				
+				if(f.getConfermaPm().compareTo("S")==0)
+					confermaPm=true;
+				else
+					confermaPm=false;
+				
+				dm=new DatiFatturazioneMeseModel(f.getIdFoglioFatturazione(), numeroCommessa, numeroOrdine , f.getCommessa().getDenominazioneAttivita(), 
+						f.getOreEseguite(), f.getOreFatturare(), f.getVariazioneSAL(), f.getVariazionePCL(), confermaPm);
+				listaDati.add(dm);
+			}
+			
+			tx.commit();			
+			
+		}catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return null;
+		}finally{
+			session.close();
+		}	
+		
+		return listaDati;
+	}
+
+	@Override
+	public boolean editConfermaPmFogliFatturazione(int idFoglioFatturazione,
+			Boolean check) {
+		
+		FoglioFatturazione f= new FoglioFatturazione();
+		String confermaPm= new String();
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {
+			tx = session.beginTransaction();
+			
+			f=(FoglioFatturazione)session.createQuery("from FoglioFatturazione where idFoglioFatturazione=:id")
+					.setParameter("id", idFoglioFatturazione).uniqueResult();
+			
+			if(check)
+				confermaPm="S";
+			else
+				confermaPm="N";
+			
+			f.setConfermaPm(confermaPm);
+			
+			
+			tx.commit();			
+			
+		}catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return false;
+		}finally{
+			session.close();
+		}
+		
+		return true;
 	}
 			
 }

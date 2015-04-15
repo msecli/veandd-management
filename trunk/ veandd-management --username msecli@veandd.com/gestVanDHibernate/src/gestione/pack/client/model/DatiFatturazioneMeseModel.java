@@ -46,7 +46,7 @@ public class DatiFatturazioneMeseModel extends BaseModel implements IsSerializab
 	
 	
 	public DatiFatturazioneMeseModel(Integer idFoglioFatturazione, String commessa, String ordine, String attivita, String oreEseguite, 
-			String oreFatturate, String variazioneSal, String variazionePcl){
+			String oreFatturate, String variazioneSal, String variazionePcl, Boolean confermaPm){
 			
 		set("idFoglioFatturazione", idFoglioFatturazione);
 		set("numeroCommessa", commessa);		
@@ -56,7 +56,7 @@ public class DatiFatturazioneMeseModel extends BaseModel implements IsSerializab
 		set("oreFatturate", oreFatturate);
 		set("variazioneSal",variazioneSal);		
 		set("variazionePcl",variazionePcl);
-		
+		set("confermaPm", confermaPm);
 	}
 	
 	public String getPM(){

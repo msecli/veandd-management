@@ -213,8 +213,8 @@ public class PanelRiepilogoCostiSuCommesse  extends LayoutContainer{
 				
 		cm = new ColumnModel(createColumns());		
 		
-		AggregationRowConfig<RiepilogoCostiDipSuCommesseFatturateModel> agrTotale= new AggregationRowCosti();		
-		cm.addAggregationRow(agrTotale);
+		//AggregationRowConfig<RiepilogoCostiDipSuCommesseFatturateModel> agrTotale= new AggregationRowCosti();		
+		//cm.addAggregationRow(agrTotale);
 		
 		gridRiepilogo= new EditorGrid<RiepilogoCostiDipSuCommesseFatturateModel>(store, cm);  
 		gridRiepilogo.setBorders(false);  
@@ -266,14 +266,20 @@ public class PanelRiepilogoCostiSuCommesse  extends LayoutContainer{
 		};
 			
 		
-		SummaryRenderer  summaryRenderer= new SummaryRenderer() {
+		GridCellRenderer<RiepilogoCostiDipSuCommesseFatturateModel> percRenderer= new GridCellRenderer<RiepilogoCostiDipSuCommesseFatturateModel>() {
+			
 			@Override
-			public String render(Number value, Map<String, Number> data) {
-				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");			
-				return num.format(value);
+			public Object render(RiepilogoCostiDipSuCommesseFatturateModel model,
+					String property, ColumnData config, int rowIndex, int colIndex,
+					ListStore<RiepilogoCostiDipSuCommesseFatturateModel> store,
+					Grid<RiepilogoCostiDipSuCommesseFatturateModel> grid) {
+				final NumberFormat num= NumberFormat.getPercentFormat();			
+				Float n=model.get(property);
+				return num.format(n);
 			}
 		};
 		
+				
 		SummaryColumnConfig<Double> column;
 		
 		/*column = new SummaryColumnConfig<Double>();
@@ -378,7 +384,8 @@ public class PanelRiepilogoCostiSuCommesse  extends LayoutContainer{
 	    column.setId("rapporto");
 	    column.setHeader("Margine/Scaricate");
 	    column.setWidth(140);
-	    column.setRenderer(renderer);
+	    column.setRenderer(percRenderer);
+	    
 	 //   column.setSummaryRenderer(summaryRenderer);
 	   // column.setSummaryType(SummaryType.SUM);  
 	    configs.add(column);
@@ -414,7 +421,7 @@ public class PanelRiepilogoCostiSuCommesse  extends LayoutContainer{
 					//smplcmbxPm.setSimpleValue("Tutti");
 												
 				}else 
-					Window.alert("error: Errore durante l'accesso ai dati PM.");			
+					Window.alert("error: Errore durante l'accesso ai dati PM.");
 			}
 		});
 	}
@@ -435,30 +442,48 @@ public class PanelRiepilogoCostiSuCommesse  extends LayoutContainer{
 			final NumberFormat number= NumberFormat.getFormat("#,##0.0#;-#");
 			AggregationRenderer<RiepilogoCostiDipSuCommesseFatturateModel> aggrRender= new AggregationRenderer<RiepilogoCostiDipSuCommesseFatturateModel>() {		
 				@Override
-				public Object render(Number value, int colIndex, Grid<RiepilogoCostiDipSuCommesseFatturateModel> grid, ListStore<RiepilogoCostiDipSuCommesseFatturateModel> store) {
-					 if(value!=null)
+				public Object render(Number value, int colIndex, Grid<RiepilogoCostiDipSuCommesseFatturateModel> grid,
+						ListStore<RiepilogoCostiDipSuCommesseFatturateModel> store) {
+					
+					List<Integer> indiciRigaTotale= new ArrayList<Integer>();
+					
+					for(RiepilogoCostiDipSuCommesseFatturateModel r:store.getModels()){
+						String attivita=r.get("attivita");
+						if(attivita.compareTo("TOTALE")==0)
+							indiciRigaTotale.add(Integer.valueOf(store.indexOf(r)));
+					}
+					ColumnConfig columnFour = grid.getColumnModel().getColumn(colIndex);
+					Float totale=(float)0.00;
+					
+					/*for(int i:indiciRigaTotale){
+						RiepilogoCostiDipSuCommesseFatturateModel r1=store.getAt(i);
+						totale=totale+r1.get();
+					}*/
+					
+					
+					if(value!=null)
 			    		  return number.format(value.doubleValue());
-			    	  else
+			    	else
 			    		  return number.format((float) 0) ;
 				}
 			};
-						
+			
 			setHtml("attivita", "<p style=\"font-size:15px; color:#000000; font-weight:bold;\">TOTALE</p>");	
 						
 			setSummaryType("oreEseguite", SummaryType.SUM);
 			//setSummaryFormat("importoComplessivo", NumberFormat.getCurrencyFormat("EUR"));
 			setRenderer("oreEseguite", aggrRender);
-			
+						
 			/*setSummaryType("costoOrario", SummaryType.SUM);
 			setRenderer("costoOrario", aggrRender);
 			setCellStyle("costoOrario", "font-size:15px; color:#000000; font-weight:bold;");
 			setSummaryFormat("costoOrario", NumberFormat.getCurrencyFormat("EUR"));*/
-			
+									
 			setSummaryType("costoTotale", SummaryType.SUM);
 			setRenderer("costoTotale", aggrRender);
 			setCellStyle("costoTotale", "font-size:15px; color:#000000; font-weight:bold;");
 			setSummaryFormat("costoTotale", NumberFormat.getCurrencyFormat("EUR"));
-						
+			
 			setSummaryType("importoScaricato", SummaryType.SUM);
 			setRenderer("importoScaricato", aggrRender);
 			setCellStyle("importoScaricato", "font-size:15px; color:#000000; font-weight:bold;");
@@ -468,6 +493,11 @@ public class PanelRiepilogoCostiSuCommesse  extends LayoutContainer{
 			setRenderer("importoFatturato", aggrRender);
 			setCellStyle("importoFatturato", "font-size:15px; color:#000000; font-weight:bold;");
 			setSummaryFormat("importoFatturato", NumberFormat.getCurrencyFormat("EUR"));
+			
+			setSummaryType("margine", SummaryType.SUM);
+			setRenderer("margine", aggrRender);
+			setCellStyle("margine", "font-size:15px; color:#000000; font-weight:bold;");
+			setSummaryFormat("margine", NumberFormat.getCurrencyFormat("EUR"));
 						
 		}
 	}
