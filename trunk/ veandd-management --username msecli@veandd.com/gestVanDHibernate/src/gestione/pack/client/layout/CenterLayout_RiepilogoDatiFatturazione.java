@@ -897,7 +897,8 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 		    efficienza.setAlignment(HorizontalAlignment.RIGHT);
 		    efficienza.setRenderer(new GridCellRenderer<DatiFatturazioneMeseModel>() {
 				@Override
-				public Object render(DatiFatturazioneMeseModel model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
+				public Object render(DatiFatturazioneMeseModel model, String property, ColumnData config,
+						int rowIndex, int colIndex, ListStore<DatiFatturazioneMeseModel> store,
 						Grid<DatiFatturazioneMeseModel> grid) {	
 					
 					String efficienza=model.get("efficienza");
@@ -921,8 +922,8 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 					
 					return model.get(property);
 				}
-		    });
-		   configs.add(efficienza);	
+		   });
+		   configs.add(efficienza);
 		   
 		   SummaryColumnConfig<Double> note=new SummaryColumnConfig<Double>();		
 		   note.setId("note");  
@@ -937,7 +938,8 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 
 		
 		private void caricaTabellaDati(String mese) {
-			AdministrationService.Util.getInstance().getReportDatiFatturazioneMese(mese, new AsyncCallback<List<DatiFatturazioneMeseModel>>() {		
+			AdministrationService.Util.getInstance().getReportDatiFatturazioneMese(mese, 
+					new AsyncCallback<List<DatiFatturazioneMeseModel>>() {		
 				@Override
 				public void onSuccess(List<DatiFatturazioneMeseModel> result) {
 					if(result==null)
@@ -1006,7 +1008,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			setSummaryType("importoSal", SummaryType.SUM);
 			setRenderer("importoSal", aggrRender);
 			setCellStyle("importoSal", "font-size:15px; color:#000000; font-weight:bold;");
-			setSummaryFormat("importoSal", NumberFormat.getCurrencyFormat("EUR"));
+			//setSummaryFormat("importoSal", NumberFormat.getCurrencyFormat("EUR"));
 			
 			setSummaryType("variazionePcl", SummaryType.SUM);
 			setRenderer("variazionePcl", aggrRender);
@@ -1015,7 +1017,7 @@ public class CenterLayout_RiepilogoDatiFatturazione extends LayoutContainer{
 			setSummaryType("importoPcl", SummaryType.SUM);
 			setRenderer("importoPcl", aggrRender);
 			setCellStyle("importoPcl", "font-size:15px; color:#000000; font-weight:bold;");
-			setSummaryFormat("importoPcl", NumberFormat.getCurrencyFormat("EUR"));
+			//setSummaryFormat("importoPcl", NumberFormat.getCurrencyFormat("EUR"));
 			
 			setSummaryType("oreScaricate", SummaryType.SUM);
 			setRenderer("oreScaricate", aggrRender);

@@ -27,6 +27,8 @@ import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.grid.AggregationRenderer;
+import com.extjs.gxt.ui.client.widget.grid.AggregationRowConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -52,7 +54,7 @@ import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 
 	private GroupingStore<RiepilogoOreNonFatturabiliModel>store = new GroupingStore<RiepilogoOreNonFatturabiliModel>();
-	private Grid<RiepilogoOreNonFatturabiliModel> gridRiepilogo;
+	private EditorGrid<RiepilogoOreNonFatturabiliModel> gridRiepilogo;
 	private ColumnModel cmRiepilogo;
 	
 	private String anno;
@@ -181,6 +183,9 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 	    GroupSummaryView summary = new GroupSummaryView();  
 	    summary.setForceFit(false);  
 	    summary.setShowGroupedColumn(false);  
+	    
+	    AggregationRowConfig<RiepilogoOreNonFatturabiliModel> agrTotale= new AggregationRowPersonale();		
+		cmRiepilogo.addAggregationRow(agrTotale);
 		      		    
 	    gridRiepilogo= new EditorGrid<RiepilogoOreNonFatturabiliModel>(store, cmRiepilogo);  
 	    gridRiepilogo.setBorders(false);  
@@ -204,6 +209,7 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 			
 		}
 	}
+	
 	
 	private void caricaTabellaRiass() {
 		
@@ -548,6 +554,66 @@ public class PanelRiepilogoOreNonFatturabili extends LayoutContainer{
 		} catch (NullPointerException e) {
 			Window.alert("error: Impossibile effettuare il caricamento dati in tabella.");
 				e.printStackTrace();
+		}
+	}
+	
+	private class AggregationRowPersonale extends AggregationRowConfig<RiepilogoOreNonFatturabiliModel>{
+		
+		public AggregationRowPersonale(){
+			final NumberFormat number= NumberFormat.getFormat("#,##0.0#;-#");
+			AggregationRenderer<RiepilogoOreNonFatturabiliModel> aggrRender= new AggregationRenderer<RiepilogoOreNonFatturabiliModel>() {		
+				@Override
+				public Object render(Number value, int colIndex, Grid<RiepilogoOreNonFatturabiliModel> grid, 
+						ListStore<RiepilogoOreNonFatturabiliModel> store) {
+					 if(value!=null)
+			    		  return number.format(value.doubleValue());
+			    	  else
+			    		  return number.format((float) 0) ;
+				}
+			};
+			
+			setHtml("risorsa", "<p style=\"font-size:16px; color:#000000; font-weight:bold;\">TOTALE</p>");	
+			
+			setSummaryType("m1", SummaryType.SUM);
+			setRenderer("m1", aggrRender);
+			setCellStyle("m1", "font-size:15px; color:#000000; font-weight:bold;");
+			
+			setSummaryType("m2", SummaryType.SUM);
+			setRenderer("m2", aggrRender);
+			
+			setSummaryType("m3", SummaryType.SUM);
+			setRenderer("m3", aggrRender);
+			
+			setSummaryType("m4", SummaryType.SUM);
+			setRenderer("m4", aggrRender);
+			
+			setSummaryType("m5", SummaryType.SUM);
+			setRenderer("m5", aggrRender);
+			
+			setSummaryType("m6", SummaryType.SUM);
+			setRenderer("m6", aggrRender);
+			
+			setSummaryType("m7", SummaryType.SUM);
+			setRenderer("m7", aggrRender);
+			
+			setSummaryType("m8", SummaryType.SUM);
+			setRenderer("m8", aggrRender);
+			
+			setSummaryType("m9", SummaryType.SUM);
+			setRenderer("m9", aggrRender);
+			
+			setSummaryType("m10", SummaryType.SUM);
+			setRenderer("m10", aggrRender);
+			
+			setSummaryType("m11", SummaryType.SUM);
+			setRenderer("m11", aggrRender);
+			
+			setSummaryType("m12", SummaryType.SUM);
+			setRenderer("m12", aggrRender);
+			
+			setSummaryType("totOre", SummaryType.SUM);
+			setRenderer("totOre", aggrRender);
+			
 		}
 	}
 	

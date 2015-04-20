@@ -123,7 +123,7 @@ public class SessionManagementServiceImpl extends PersistentRemoteService implem
 		   HttpServletRequest request = this.getThreadLocalRequest();
 	   	   HttpSession httpSession = request.getSession();	   
 	   	   
-	   	   httpSession.setMaxInactiveInterval(60*60);//durata dati in sessione di 1 ora
+	   	   httpSession.setMaxInactiveInterval(180*60);//durata dati in sessione di 3 ora
 	   	   
 	   	   if(!httpSession.isNew()){
 	   		   

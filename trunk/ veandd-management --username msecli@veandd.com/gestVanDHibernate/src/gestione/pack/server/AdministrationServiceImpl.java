@@ -5807,7 +5807,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 									}
 								}
 							}
-														
+							
 							riep=new RiepilogoOreDipCommesseGiornaliero(p.getUsername(), c.getNumeroCommessa()+"."+c.getEstensione(), 
 									p.getCognome()+" "+p.getNome(), "", "", oreLavoro, oreViaggio, (float)0.0, "");
 							
@@ -5815,21 +5815,24 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 							
 							oreLavoro=(float)0.0;
 							oreViaggio=(float)0.0;									
-						}				
+						}
 					}
 				}
 			}
-			
-		
+				
 			for(Personale p1:listaPersonaleAnalizzato){
 				for(FoglioOreMese fm:p1.getFoglioOreMeses()){
 					if(fm.getMeseRiferimento().compareTo(data)==0){
 						for(DettaglioOreGiornaliere d:fm.getDettaglioOreGiornalieres()){
 							for(DettaglioIntervalliCommesse dc:d.getDettaglioIntervalliCommesses()){
-								oreLavoroTot=Float.valueOf(dc.getOreLavorate())+oreLavoroTot;
-								oreViaggioTot=Float.valueOf(dc.getOreViaggio())+oreViaggioTot;
+								
+								oreLavoroTot=Float.valueOf(ServerUtility.getOreCentesimi(dc.getOreLavorate()))+ oreLavoroTot;
+								oreViaggioTot=Float.valueOf(ServerUtility.getOreCentesimi(dc.getOreViaggio()))+oreViaggioTot;
 							}
 						}
+						
+						oreLavoroTot=Float.valueOf(ServerUtility.getOreSessantesimi(String.valueOf(oreLavoroTot)));
+						oreViaggioTot=Float.valueOf(ServerUtility.getOreSessantesimi(String.valueOf(oreViaggioTot)));
 						
 						riep=new RiepilogoOreDipCommesseGiornaliero(p1.getUsername(), "TOTALE", 
 								p1.getCognome()+" "+p1.getNome(), "", "", oreLavoroTot, oreViaggioTot, (float)0.0, "");
@@ -7051,8 +7054,11 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						.setParameter("estensione", "pa").setParameter("stato", "Chiusa").list();
 				
 				for(Commessa c1:listaC){
-					if(c1.getEscludiDaPa().compareTo("N")==0) //controllo esclusione da PA per escludere conteccio SAL
-							listaFF.addAll(c1.getFoglioFatturaziones());		
+					if(c1.getEscludiDaPa().compareTo("N")==0){ //controllo esclusione da PA per escludere conteccio SAL
+							listaFF.addAll(c1.getFoglioFatturaziones());
+							sommaVariazioniPcl=ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, c1.getPclAttuale());
+							sommaVariazioniSal=ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, c1.getSalAttuale());
+					}
 				}				
 				
 				for(FoglioFatturazione f1:listaFF){
@@ -8055,25 +8061,34 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						}
 						listaDati.add(datiModel);					
 						oreMargine="0.00";
-					}	
+					}
 					
 					if(c.getOrdine()!=null){
+						salIniziale=c.getSalAttuale();
+						pclIniziale=c.getPclAttuale();
 						o=c.getOrdine();
 						//per ogni estensione commessa metto l'eventuale importo/num ore ordine, se c'è!
 						datiModel=new DatiFatturazioneCommessaModel(commessa, estensione, attivita, o.getCodiceOrdine(), "0", "INIZIALI", tariffa, 
 								(float)0, Float.valueOf(ServerUtility.getOreCentesimi(o.getOreBudget())), Float.valueOf(o.getImporto()),(float)0.0, 
-								(float)0, (float)0, (float)0);
+								Float.valueOf(ServerUtility.getOreCentesimi(salIniziale)), Float.valueOf(ServerUtility.getOreCentesimi(pclIniziale)), (float)0);
 						listaDati.add(datiModel);
+					}else{
+						salIniziale=c.getSalAttuale();
+						pclIniziale=c.getPclAttuale();
+						datiModel=new DatiFatturazioneCommessaModel(commessa, estensione, attivita, "#", "0", "INIZIALI", tariffa, 
+								(float)0, (float)0, (float)0,(float)0.0, 
+								Float.valueOf(ServerUtility.getOreCentesimi(salIniziale)), Float.valueOf(ServerUtility.getOreCentesimi(pclIniziale)), (float)0);
+						listaDati.add(datiModel);
+						
 					}
 					
-					salIniziale=c.getSalAttuale();
-					pclIniziale=c.getPclAttuale();
+					
 					listaFF.clear();				
 				}
 			}
 			
 			//se esiste la pa sostituisco i valori considerati precedentemente
-			if(esistePa){
+			/*if(esistePa){
 				salIniziale=c_pa.getSalAttuale();
 				pclIniziale=c_pa.getPclAttuale();
 			}
@@ -8081,7 +8096,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			datiModel=new DatiFatturazioneCommessaModel(commessa,"pa", "","", "",".INIZIALI", "", (float)0.0, Float.valueOf(ServerUtility.getOreCentesimi(oreOrdineIniziali)), 
 					 Float.valueOf(importoOrdineIniziale), (float)0.0 , Float.valueOf(ServerUtility.getOreCentesimi(salIniziale)), 
 					 Float.valueOf(ServerUtility.getOreCentesimi(pclIniziale)), (float)0.0);
-			listaDati.add(datiModel);
+			listaDati.add(datiModel);*/
 			
 			tx.commit();	
 			
@@ -12625,34 +12640,12 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			String pm, String mese, String anno) throws IllegalArgumentException {
 		
 		List<Commessa> listaCommesse= new ArrayList<Commessa>();
-		List<Commessa> listaCommesseSel= new ArrayList<Commessa>();	
-		List<Personale> listaP=new ArrayList<Personale>();
-		List<DettaglioOreGiornaliere> listaGiorni= new ArrayList<DettaglioOreGiornaliere>();
-		List<DettaglioIntervalliCommesse> listaIntervalli= new ArrayList<DettaglioIntervalliCommesse>();
-		RiepilogoCostiDipSuCommesseFatturateModel riepC= new RiepilogoCostiDipSuCommesseFatturateModel();
 		List<RiepilogoCostiDipSuCommesseFatturateModel> listaRC= new ArrayList<RiepilogoCostiDipSuCommesseFatturateModel>();
-		List<DettaglioIntervalliCommesse> listaDettComm= new ArrayList<DettaglioIntervalliCommesse>();
-		
-		CostoAzienda ca= new CostoAzienda();
-		
-		String numeroCommessa= new String();
-		String commessa= new String();
-		String estensione= new String();
-		String descrizione= new String();
-		String dipendente= new String();
-		String oreLavoro= new String();
-		String oreViaggio= new String();
-		String oreTotMeseLavoro= "0.0";
-		String oreTotMeseViaggio= "0.0";
-		String oreSommaLavoroViaggio="0.0";
-					
-		Float costoRisorsa=(float)0.0;
-		Float costoTotale=(float)0.0;
-		
+		List<RiepilogoCostiDipSuCommesseFatturateModel> listaRCapp= new ArrayList<RiepilogoCostiDipSuCommesseFatturateModel>();
+				
 		mese=mese.substring(0, 3);
 		String meseRif=mese+anno;
-		
-		
+				
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
 		
@@ -12661,307 +12654,13 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 			listaCommesse = (List<Commessa>) session.createQuery("from Commessa where matricolaPM=:pm and statoCommessa=:stato and tipoCommessa<>:tipoCommessa")
 					.setParameter("pm", pm).setParameter("stato", "Aperta").setParameter("tipoCommessa", "i").list();
-			
-			for (Commessa c : listaCommesse) {
-				
-				commessa = c.getNumeroCommessa();
-				estensione =c.getEstensione();
-
-				descrizione=c.getDenominazioneAttivita();
-
-				numeroCommessa =(commessa + "." + estensione); //una stringa più dettagliata che descriva la commessa
-
-				listaDettComm=session.createQuery("select d from DettaglioIntervalliCommesse d join d.dettaglioOreGiornaliere g join g.foglioOreMese f" +
-						" where d.numeroCommessa=:numCommessa and d.estensioneCommessa=:estensione and f.meseRiferimento=:mese" +
-						" ").setParameter("numCommessa", commessa)
-						.setParameter("estensione", estensione).setParameter("mese", meseRif).list();
-				
-				for(DettaglioIntervalliCommesse d:listaDettComm)
-					//	prendo tutti i dip che hanno lavorato su quella commessa nei mesi considerati
-					if(ServerUtility.isNotIncludedPersonale(listaP, d.getDettaglioOreGiornaliere().getFoglioOreMese().getPersonale()))
-						listaP.add(d.getDettaglioOreGiornaliere().getFoglioOreMese().getPersonale());
-
-				
-				for (Personale p : listaP)
-						if(p.getGruppoLavoro().compareTo("Indiretti")!=0){ // per ogni dipendente in questa commessa selezioni i fogli ore del mese desiderato
-				
-							if(p.getCostoAziendas().iterator().hasNext())
-								ca=p.getCostoAziendas().iterator().next();
-							else
-								ca=null;
-							
-							dipendente = p.getCognome() + " " + p.getNome();					
-							
-							for (FoglioOreMese f : p.getFoglioOreMeses()) {
-								if (f.getMeseRiferimento().compareTo(meseRif) == 0) { //se è il mese cercato
-									listaGiorni.addAll(f.getDettaglioOreGiornalieres()); //prendo tutti i giorni
-									
-									for (DettaglioOreGiornaliere giorno : listaGiorni) {
-															
-										//calcolo ore su intervalli commesse
-										listaIntervalli.addAll(giorno.getDettaglioIntervalliCommesses());
-										for (DettaglioIntervalliCommesse d : listaIntervalli) { //se c'è un intervallo per la commessa selezionata ricavo le ore
-											if (commessa.compareTo(d.getNumeroCommessa()) == 0 && estensione.compareTo(d.getEstensioneCommessa()) == 0) {
-												
-												oreLavoro = d.getOreLavorate();
-												oreViaggio = d.getOreViaggio();
-												oreTotMeseLavoro = ServerUtility.aggiornaTotGenerale(oreTotMeseLavoro,oreLavoro);
-												oreTotMeseViaggio = ServerUtility.aggiornaTotGenerale(oreTotMeseViaggio,oreViaggio);
-																					
-											}
-											oreLavoro="0.0";
-											oreViaggio="0.0";
-										}
-										listaIntervalli.clear();										
-									}
-									listaGiorni.clear();
-																									
-									oreSommaLavoroViaggio = ServerUtility.aggiornaTotGenerale(oreTotMeseLavoro, oreTotMeseViaggio);
-									
-									if(ca!=null)
-										costoRisorsa=Float.valueOf(ca.getCostoOrario())+Float.valueOf(ca.getCostiOneri())+Float.valueOf(ca.getCostoHw())
-											+Float.valueOf(ca.getCostoSw())+Float.valueOf(ca.getCostoStruttura())+Float.valueOf(ca.getCostoTrasferta());
-									else
-										costoRisorsa=(float)0.00;
-									
-									costoTotale=costoRisorsa*Float.valueOf(ServerUtility.getOreCentesimi(oreSommaLavoroViaggio));
-									
-									riepC= new RiepilogoCostiDipSuCommesseFatturateModel(c.getCodCommessa(), pm, numeroCommessa, commessa, estensione, descrizione, dipendente, 
-											Float.valueOf(ServerUtility.getOreCentesimi(oreSommaLavoroViaggio)), costoRisorsa, costoTotale, (float)0.0, (float)0.0, (float)0.0, (float)0.0);
-									listaRC.add(riepC);
-									
-									oreTotMeseLavoro="0.0";
-									oreTotMeseViaggio="0.0";
-									oreSommaLavoroViaggio="0.0";
-									
-								}
-							
-							}//end ciclo su mesi(fatto solo una volta per il mese necessario)
-		
-							
-							
-						}//end ciclo su lista persone nella stessa commessa					
-				
-												
-						listaP.clear();			
-			
-			}
-			
-			//seleziono le commesse presenti in listaRC. Se una commessa è pa allora cercherò tutti i fogli fatturazione del mese ad esclusione di 
-			//sottocommesse con esclusione da pa. Se una commessa non è pa prendo l'unico foglio commesse che ci sarà se ci sarà.
-			
-			//TODO potrei includere all'interno del model RiepilogoCostiSuCommesseFatturate, l'intero model RiepilogoDatiFatturazione
-			
-			String commessa1="";
-			String estensione1="";
-			Commessa c1=new Commessa();
-			List<Integer> commesseSelected= new ArrayList<Integer>();
-			List<String> commesseSelectedNC= new ArrayList<String>();
-			String importoRealeFatturato="";
-			String oreScaricate="";
-			String tariffa="";
-			String oreFatturate="";
-			String varSAL="";
-			String varPCL="";
-			Float importoScaricato=(float)0.0;
-			Float importoMargine=(float)0.0;
-			Float rapporto=(float)0.0;
-			
-			RiepilogoCostiDipSuCommesseFatturateModel rc2= new RiepilogoCostiDipSuCommesseFatturateModel();
-			List<RiepilogoCostiDipSuCommesseFatturateModel> listaRC1=new ArrayList<RiepilogoCostiDipSuCommesseFatturateModel>();
-			
-			Object [] ff;
-			List<FoglioFatturazione> listaFF= new ArrayList<FoglioFatturazione>();
-			
-			for(RiepilogoCostiDipSuCommesseFatturateModel rc1:listaRC){
-				
-				commessa1=(String)rc1.get("commessa");
-				estensione1=(String)rc1.get("estensione");
-				numeroCommessa=commessa1+"."+estensione1;
-				
-				if(!ServerUtility.commessaIsIncluded((int)rc1.get("idCommessa"), commesseSelected))
-				
-					if(estensione1.compareTo("pa")!=0){
-						c1=(Commessa)session.createQuery("from Commessa where numeroCommessa=:numeroCommessa and estensione=:estensioneCommessa")
-								.setParameter("numeroCommessa", commessa1).setParameter("estensioneCommessa", estensione1).uniqueResult();
-												
-						listaFF=session.createSQLQuery("select * from foglio_fatturazione where COD_COMMESSA=:idCommessa " +
-							"and meseCorrente=:mese").setParameter("idCommessa", c1.getCodCommessa()).setParameter("mese", meseRif).list();
-						for(ListIterator iter=listaFF.listIterator();iter.hasNext();){
 						
-							ff=(Object[])iter.next();
-							
-							importoRealeFatturato=(String) ff[4];
-							oreScaricate=(String)ff[7];
-							tariffa=(String)ff[12];
-							
-							oreFatturate=(String)ff[3];
-							varSAL=(String)ff[5];
-							varPCL=(String)ff[6];
+			tx.commit();			
+			
+			listaRC.addAll(ServerUtility.getListaCostiCommesseDip(listaCommesse, meseRif, pm));
+			listaRCapp.addAll(listaRC);
+			listaRC.addAll(ServerUtility.getListaTotaliPerRC(listaRCapp, pm, meseRif));
 					
-							oreScaricate=ServerUtility.aggiornaTotGenerale(String.valueOf(oreFatturate), String.valueOf(varSAL));
-							oreScaricate=ServerUtility.getDifference(oreScaricate, String.valueOf(varPCL));
-					
-							importoScaricato=Float.valueOf(ServerUtility.getOreCentesimi(oreScaricate))*Float.valueOf(tariffa);
-					
-							// margine=scaricate-eseguite
-							// rapporto=oreFatturate/oreEseguite
-							
-							/*margine=ServerUtility.getDifference(oreScaricate, oreEseguite);
-							rapporto=Float.valueOf(ServerUtility.getOreCentesimi(margine))/Float.valueOf(ServerUtility.getOreCentesimi(oreScaricate));
-							
-							importoMargine=Float.valueOf(ServerUtility.getOreCentesimi(margine))* Float.valueOf(tariffa);
-							*/
-							rc2= new RiepilogoCostiDipSuCommesseFatturateModel(0,"", numeroCommessa, commessa1, estensione1, "DATI FATTURAZIONE", "~", 
-									(float)0.00, (float)0.00, (float)0.00, Float.valueOf(importoRealeFatturato), importoScaricato, (float)0.0, (float)0.0);
-					
-							listaRC1.add(rc2);
-							commesseSelected.add((int)rc1.get("idCommessa"));
-							commesseSelectedNC.add((String)rc1.get("numeroCommessa"));
-						}
-						
-					}else{
-						
-						listaCommesseSel=(List<Commessa>)session.createQuery("from Commessa where numeroCommessa=:numeroCommessa and estensione<>:estensione " +
-								"and escludiDaPa=:flag and statoCommessa=:stato").setParameter("numeroCommessa", commessa1).setParameter("estensione","pa")
-								.setParameter("flag", "N").setParameter("stato", "Aperta").list();
-						
-						for(Commessa cc:listaCommesseSel){
-							
-							listaFF=session.createSQLQuery("select * from foglio_fatturazione where COD_COMMESSA=:idCommessa " +
-									"and meseCorrente=:mese").setParameter("idCommessa", cc.getCodCommessa()).setParameter("mese", meseRif).list();
-					
-							for(ListIterator iter=listaFF.listIterator();iter.hasNext();){
-								
-								ff=(Object[])iter.next();
-							
-								if(ff!=null){
-									
-									importoRealeFatturato=(String) ff[4];
-									oreScaricate=(String)ff[7];
-									tariffa=(String)ff[12];
-									
-									oreFatturate=(String)ff[3];
-									varSAL=(String)ff[5];
-									varPCL=(String)ff[6];
-
-									oreScaricate=ServerUtility.aggiornaTotGenerale(String.valueOf(oreFatturate), String.valueOf(varSAL));
-									oreScaricate=ServerUtility.getDifference(oreScaricate, String.valueOf(varPCL));
-					
-									importoScaricato=Float.valueOf(ServerUtility.getOreCentesimi(oreScaricate))*Float.valueOf(tariffa);
-					
-									/*margine=ServerUtility.getDifference(oreScaricate, oreEseguite);
-									rapporto=Float.valueOf(ServerUtility.getOreCentesimi(margine))/Float.valueOf(ServerUtility.getOreCentesimi(oreScaricate));
-									
-									importoMargine=Float.valueOf(ServerUtility.getOreCentesimi(margine))* Float.valueOf(tariffa);
-									*/
-									rc2= new RiepilogoCostiDipSuCommesseFatturateModel(0,"", numeroCommessa, commessa1, cc.getEstensione(), "DATI FATTURAZIONE", "~", 
-											(float)0.00, (float)0.00, (float)0.00, Float.valueOf(importoRealeFatturato), importoScaricato, (float)0.0, (float)0.0);
-					
-									listaRC1.add(rc2);
-									
-									//TODO mettere un model no??
-									commesseSelected.add((int)rc1.get("idCommessa"));
-									commesseSelectedNC.add((String)rc1.get("numeroCommessa"));
-									
-								}
-							}
-						}
-					}			
-						
-			}
-			
-			listaRC.addAll(listaRC1);
-			
-			
-			//TOTALE SU COMMESSE
-			//calcolare totale manualmente per permettere calcolo semplice margine e avere dati in report excel
-			//fare un for usando la lista commesseSelected
-			List<RiepilogoCostiDipSuCommesseFatturateModel> listaRCTotali= new ArrayList<RiepilogoCostiDipSuCommesseFatturateModel>();
-			List<String> listaCommesseCheck= new ArrayList<String>();
-			List<RiepilogoCostiDipSuCommesseFatturateModel> listaRCApp= new ArrayList<RiepilogoCostiDipSuCommesseFatturateModel>();
-			
-			int idCommessa=0;
-			Float totaleOreEseguite=(float)0.0;
-			Float totaleCostoTotale=(float)0.0;
-			Float totaleImportoScaricato=(float)0.0;
-			Float totaleImportoFatturato=(float)0.0;
-			importoMargine=(float)0.0;
-			rapporto=(float)0.0;
-			
-			listaRCApp.addAll(listaRC);
-			
-			for(String s:commesseSelectedNC){
-				for(RiepilogoCostiDipSuCommesseFatturateModel rc:listaRC){
-					String app=(String)rc.get("numeroCommessa");
-					String app2=(String)rc.get("attivita");
-					String att1=(String)rc.get("attivita");
-					if((!ServerUtility.commessaIsIncluded(app, listaCommesseCheck)) && (app2.compareTo("DATI FATTURAZIONE")==0)){
-					
-						if(s.compareTo(app)==0){
-							
-							for(RiepilogoCostiDipSuCommesseFatturateModel rca:listaRCApp){
-								app2=(String)rca.get("numeroCommessa");
-								
-								if(app2.compareTo(app)==0){
-									totaleCostoTotale=totaleCostoTotale+(Float)rca.get("costoTotale");
-									totaleOreEseguite=totaleOreEseguite+(Float)rca.get("oreEseguite");
-								}
-								if((app2.compareTo(app)==0)&&(att1.compareTo("DATI FATTURAZIONE")==0)){
-									totaleImportoScaricato=totaleImportoScaricato+(Float)rca.get("importoScaricato");
-									totaleImportoFatturato=totaleImportoFatturato+(Float)rca.get("importoFatturato");
-								}								
-							}
-							
-							numeroCommessa=(String)rc.get("numeroCommessa");
-																					
-							importoMargine=totaleImportoScaricato-totaleCostoTotale;
-							rapporto=importoMargine/totaleImportoScaricato;
-						
-							listaCommesseCheck.add(app);
-							
-							rc2=new RiepilogoCostiDipSuCommesseFatturateModel(0, "", numeroCommessa, "", "", "TOTALE", "~", totaleOreEseguite, 
-									(float)0.0, totaleCostoTotale, totaleImportoFatturato, totaleImportoScaricato, importoMargine, rapporto);
-							
-							totaleOreEseguite=(float)0.0;
-							totaleCostoTotale=(float)0.0;
-							totaleImportoScaricato=(float)0.0;
-							totaleImportoFatturato=(float)0.0;
-							importoMargine=(float)0.0;
-							rapporto=(float)0.0;
-							
-							listaRCTotali.add(rc2);
-						}					
-					}				
-					else
-						
-							{
-								continue;
-							}
-				}
-			}
-			
-			listaRC.addAll(listaRCTotali);
-			
-			
-			//TOTALI SU PM
-			for(RiepilogoCostiDipSuCommesseFatturateModel rct:listaRCTotali){
-				
-				totaleOreEseguite=totaleOreEseguite+(Float)rct.get("oreEseguite");
-				totaleCostoTotale=totaleCostoTotale+(Float)rct.get("costoTotale");
-				totaleImportoScaricato=totaleImportoScaricato+(Float)rct.get("importoScaricato");
-				totaleImportoFatturato=totaleImportoFatturato+(Float)rct.get("importoFatturato");
-				
-			}
-			importoMargine=totaleImportoScaricato-totaleCostoTotale;
-			rapporto=importoMargine/totaleImportoScaricato;
-			
-			rc2=new RiepilogoCostiDipSuCommesseFatturateModel(0, pm, "TOTALE", "", "", "", "", totaleOreEseguite, (float)0.0, 
-					totaleCostoTotale, totaleImportoFatturato, totaleImportoScaricato, importoMargine, rapporto);
-			listaRC.add(rc2);
-			
-			tx.commit();
-			
 		} catch (Exception e) {
 			if (tx != null)
 				tx.rollback();
@@ -12973,6 +12672,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		return listaRC;
 	}
+	
+	
+	
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -12991,7 +12693,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
 		
-				
 		try {
 			tx = session.beginTransaction();
 			
