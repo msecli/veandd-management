@@ -30,6 +30,9 @@ import gestione.pack.client.model.RtvModel;
 import gestione.pack.shared.AssociazionePtoA;
 import gestione.pack.shared.AttivitaFatturata;
 import gestione.pack.shared.AttivitaOrdine;
+import gestione.pack.shared.Bilancio;
+import gestione.pack.shared.BilancioPm;
+import gestione.pack.shared.Calendario;
 import gestione.pack.shared.Commessa;
 import gestione.pack.shared.CostingRisorsa;
 import gestione.pack.shared.CostoAzienda;
@@ -41,6 +44,7 @@ import gestione.pack.shared.DettaglioTrasferta;
 import gestione.pack.shared.Fattura;
 import gestione.pack.shared.FoglioFatturazione;
 import gestione.pack.shared.GiorniFestivi;
+import gestione.pack.shared.MesiCalendario;
 import gestione.pack.shared.Ordine;
 import gestione.pack.shared.PeriodoSbloccoGiorni;
 import gestione.pack.shared.Rtv;
@@ -3159,7 +3163,8 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 									costoTotale=costoRisorsa*Float.valueOf(ServerUtility.getOreCentesimi(oreSommaLavoroViaggio));
 									
 									riepC= new RiepilogoCostiDipSuCommesseFatturateModel(c.getCodCommessa(), pm, numeroCommessa, commessa, estensione, descrizione, dipendente, 
-											Float.valueOf(ServerUtility.getOreCentesimi(oreSommaLavoroViaggio)), costoRisorsa, costoTotale, (float)0.0, (float)0.0, (float)0.0, (float)0.0);
+											Float.valueOf(ServerUtility.getOreCentesimi(oreSommaLavoroViaggio)), costoRisorsa, costoTotale, (float)0.0,
+											(float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0);
 									listaRC.add(riepC);
 									
 									oreTotMeseLavoro="0.0";
@@ -3225,7 +3230,8 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 					
 							importoScaricato=Float.valueOf(ServerUtility.getOreCentesimi(oreScaricate))*Float.valueOf(tariffa);
 							rc2= new RiepilogoCostiDipSuCommesseFatturateModel(0,"", numeroCommessa, commessa1, estensione1, "DATI FATTURAZIONE", "~", 
-									(float)0.00, (float)0.00, (float)0.00, Float.valueOf(importoRealeFatturato), importoScaricato, (float)0.0, (float)0.0);
+									(float)0.00, (float)0.00, (float)0.00, Float.valueOf(importoRealeFatturato), importoScaricato,
+									(float)0.0, (float)0.0, (float)0.0, (float)0.0,(float)0.0);
 					
 							listaRC1.add(rc2);
 							commesseSelected.add((int)rc1.get("idCommessa"));
@@ -3263,7 +3269,8 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 									importoScaricato=Float.valueOf(ServerUtility.getOreCentesimi(oreScaricate))*Float.valueOf(tariffa);
 					
 									rc2= new RiepilogoCostiDipSuCommesseFatturateModel(0,"", numeroCommessa, commessa1, cc.getEstensione(), "DATI FATTURAZIONE", "~", 
-											(float)0.00, (float)0.00, (float)0.00, Float.valueOf(importoRealeFatturato), importoScaricato, (float)0.0, (float)0.0);
+											(float)0.00, (float)0.00, (float)0.00, Float.valueOf(importoRealeFatturato), importoScaricato, 
+											(float)0.0, (float)0.0, (float)0.0, (float)0.0,(float)0.0);
 									
 									listaRC1.add(rc2);
 																		
@@ -3290,7 +3297,7 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 
 	
 	public static List<RiepilogoCostiDipSuCommesseFatturateModel> getListaTotaliPerRC(
-			List<RiepilogoCostiDipSuCommesseFatturateModel> listaRC, String pm, String meseRif) {
+			List<RiepilogoCostiDipSuCommesseFatturateModel> listaRC, String pm, String meseRif, String isPrecedente) {
 
 		String numeroCommessa;
 		List<RiepilogoCostiDipSuCommesseFatturateModel> listaRCTotali= new ArrayList<RiepilogoCostiDipSuCommesseFatturateModel>();
@@ -3306,6 +3313,9 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 		Float totaleImportoFatturato=(float)0.0;
 		importoMargine=(float)0.0;
 		rapporto=(float)0.0;
+		Float importoBilancio=(float)0.0;
+		Float differenza=(float)0.0;
+		Float differenzaPerc=(float)0.0;
 		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
@@ -3350,8 +3360,14 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 						
 							listaCommesseCheck.add(app);
 							
-							rc2=new RiepilogoCostiDipSuCommesseFatturateModel(0, "", numeroCommessa, "", "", "TOTALE", "~", totaleOreEseguite, 
-									(float)0.0, totaleCostoTotale, totaleImportoFatturato, totaleImportoScaricato, importoMargine, rapporto);
+							if(isPrecedente.compareTo("S")!=0)
+								rc2=new RiepilogoCostiDipSuCommesseFatturateModel(0, "", numeroCommessa, "", "", "TOTALE", "~", totaleOreEseguite, 
+									(float)0.0, totaleCostoTotale, totaleImportoFatturato, totaleImportoScaricato, importoMargine, rapporto,
+									(float)0.0, (float)0.0, (float)0.0);
+							else
+								rc2=new RiepilogoCostiDipSuCommesseFatturateModel(0, "", numeroCommessa, "", "", "TOTALE-PREC", "~", totaleOreEseguite, 
+										(float)0.0, totaleCostoTotale, totaleImportoFatturato, totaleImportoScaricato, importoMargine, rapporto, 
+										(float)0.0, (float)0.0, (float)0.0);
 							
 							totaleOreEseguite=(float)0.0;
 							totaleCostoTotale=(float)0.0;
@@ -3383,10 +3399,18 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 			importoMargine=totaleImportoScaricato-totaleCostoTotale;
 			rapporto=importoMargine/totaleImportoScaricato;
 			
-			rc2=new RiepilogoCostiDipSuCommesseFatturateModel(0, pm, "TOTALE", "", "", "", "", totaleOreEseguite, (float)0.0, 
-					totaleCostoTotale, totaleImportoFatturato, totaleImportoScaricato, importoMargine, rapporto);
-			listaRCTotali.add(rc2);
+			importoBilancio=CalcolaImportoBilancioPerMese(pm, meseRif);
+			differenza=totaleImportoScaricato-importoBilancio;
+			differenzaPerc=differenza/importoBilancio;
 			
+			if(isPrecedente.compareTo("S")!=0)
+				rc2=new RiepilogoCostiDipSuCommesseFatturateModel(0, pm, "TOTALE", "", "", "", "", totaleOreEseguite, (float)0.0, 
+					totaleCostoTotale, totaleImportoFatturato, totaleImportoScaricato, importoMargine, rapporto, importoBilancio, differenza, differenzaPerc);
+			else
+				rc2=new RiepilogoCostiDipSuCommesseFatturateModel(0, pm, "TOTALE-PREC", "", "", "", "", totaleOreEseguite, (float)0.0, 
+						totaleCostoTotale, totaleImportoFatturato, totaleImportoScaricato, importoMargine, rapporto, importoBilancio, differenza, differenzaPerc);
+			
+			listaRCTotali.add(rc2);
 			
 			tx.commit();
 			
@@ -3402,6 +3426,64 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 		return listaRCTotali;
 	}
 
+	
+	private static Float CalcolaImportoBilancioPerMese(String pm, String meseRif) {
+		
+		Float importo=(float)0.0;
+		String mese=meseRif.substring(0,3).toLowerCase();
+		String anno=meseRif.substring(3, meseRif.length());
+		
+		Float totaleBilancio=(float)0.0;
+		int giorniTotali;
+		String giorniMese="0";
+		String cognome= pm.substring(0,pm.indexOf(" "));
+		
+		Bilancio b= new Bilancio();
+		//BilancioPm bp= new BilancioPm();
+		
+		Calendario c=new Calendario();
+		//MesiCalendario mc= new MesiCalendario();
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {
+			tx = session.beginTransaction();
+			
+			c=(Calendario)session.createQuery("from Calendario where annoRiferimento=:anno").setParameter("anno", anno).uniqueResult();
+			
+			giorniTotali=c.getTotaleGiorniLavorativi();
+			
+			for(MesiCalendario mc:c.getMesiCalendarios())
+				if(mc.getMese().compareTo(mese)==0){
+					giorniMese=mc.getGiorni();
+					break;
+				}
+			
+			b=(Bilancio)session.createQuery("from Bilancio where anno=:anno").setParameter("anno", anno).uniqueResult();
+			
+			for(BilancioPm bp:b.getBilancioPms())
+				if(bp.getCognome().compareTo(cognome)==0){
+					totaleBilancio=bp.getValorePm();
+					break;
+				}
+			
+			importo=totaleBilancio/giorniTotali*Integer.valueOf(giorniMese);
+			
+			tx.commit();
+			
+		} catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return null;
+		} finally {
+			session.close();
+		}
+		
+		return importo;
+	}
+	
 	
 	@SuppressWarnings("unchecked")
 	private static List<String> getCommesseSelectedNC(

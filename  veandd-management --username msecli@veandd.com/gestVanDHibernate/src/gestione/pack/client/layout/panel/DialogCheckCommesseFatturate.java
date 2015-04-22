@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gestione.pack.client.AdministrationService;
+import gestione.pack.client.model.RiepilogoCostiDipSuCommesseFatturateModel;
 import gestione.pack.client.model.RiepilogoOreDipFatturazione;
 
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -17,6 +18,7 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class DialogCheckCommesseFatturate  extends Dialog{
@@ -95,6 +97,19 @@ public class DialogCheckCommesseFatturate  extends Dialog{
 	private List<ColumnConfig> createColumns() {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 		
+		GridCellRenderer<RiepilogoCostiDipSuCommesseFatturateModel> renderer= new GridCellRenderer<RiepilogoCostiDipSuCommesseFatturateModel>() {
+			
+			@Override
+			public Object render(RiepilogoCostiDipSuCommesseFatturateModel model,
+					String property, ColumnData config, int rowIndex, int colIndex,
+					ListStore<RiepilogoCostiDipSuCommesseFatturateModel> store,
+					Grid<RiepilogoCostiDipSuCommesseFatturateModel> grid) {
+				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
+				Float n=model.get(property);
+				return num.format(n);
+			}
+		};
+		
 		ColumnConfig column=new ColumnConfig();		
 	    column.setId("numeroCommessa");  
 	    column.setHeader("Commessa");  
@@ -109,6 +124,7 @@ public class DialogCheckCommesseFatturate  extends Dialog{
 		column.setHeader("h/Lavorate");  
 		column.setWidth(90);  
 		column.setRowHeader(true); 
+		column.setRenderer(renderer);
 	    configs.add(column);
 	    
 	    column=new ColumnConfig();		
@@ -116,6 +132,7 @@ public class DialogCheckCommesseFatturate  extends Dialog{
 		column.setHeader("h/Registrate");  
 		column.setWidth(90);  
 		column.setRowHeader(true); 
+		column.setRenderer(renderer);
 	    configs.add(column); 
 		
 	    column=new ColumnConfig();		

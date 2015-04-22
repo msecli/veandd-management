@@ -12641,11 +12641,13 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		
 		List<Commessa> listaCommesse= new ArrayList<Commessa>();
 		List<RiepilogoCostiDipSuCommesseFatturateModel> listaRC= new ArrayList<RiepilogoCostiDipSuCommesseFatturateModel>();
-		List<RiepilogoCostiDipSuCommesseFatturateModel> listaRCapp= new ArrayList<RiepilogoCostiDipSuCommesseFatturateModel>();
+		List<RiepilogoCostiDipSuCommesseFatturateModel> listaRCMesePrec= new ArrayList<RiepilogoCostiDipSuCommesseFatturateModel>();
+		List<RiepilogoCostiDipSuCommesseFatturateModel> listaRCMesePrecTot= new ArrayList<RiepilogoCostiDipSuCommesseFatturateModel>();
 				
 		mese=mese.substring(0, 3);
 		String meseRif=mese+anno;
-				
+		String mesePrec="";
+		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
 		
@@ -12658,9 +12660,16 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			tx.commit();			
 			
 			listaRC.addAll(ServerUtility.getListaCostiCommesseDip(listaCommesse, meseRif, pm));
-			listaRCapp.addAll(listaRC);
-			listaRC.addAll(ServerUtility.getListaTotaliPerRC(listaRCapp, pm, meseRif));
+			listaRC.addAll(ServerUtility.getListaTotaliPerRC(listaRC, pm, meseRif, ""));
 					
+			//mese precedente
+			
+			mesePrec=ServerUtility.getMesePrecedente(meseRif);
+			listaRCMesePrec.addAll(ServerUtility.getListaCostiCommesseDip(listaCommesse, mesePrec, pm));
+			listaRCMesePrecTot.addAll(ServerUtility.getListaTotaliPerRC(listaRCMesePrec, pm, mesePrec, "S"));
+			
+			listaRC.addAll(listaRCMesePrecTot);
+			
 		} catch (Exception e) {
 			if (tx != null)
 				tx.rollback();

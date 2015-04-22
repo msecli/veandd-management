@@ -3,13 +3,10 @@ package gestione.pack.client.layout.panel;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
-import gestione.pack.client.model.DatiFatturazioneMeseModel;
 import gestione.pack.client.model.RiepilogoCostiDipSuCommesseFatturateModel;
-import gestione.pack.client.model.RiepilogoCostiDipendentiModel;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.DatiComboBox;
 import gestione.pack.client.utility.MyImages;
@@ -38,10 +35,8 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
-import com.extjs.gxt.ui.client.widget.grid.GroupSummaryView;
 import com.extjs.gxt.ui.client.widget.grid.GroupingView;
 import com.extjs.gxt.ui.client.widget.grid.SummaryColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.SummaryRenderer;
 import com.extjs.gxt.ui.client.widget.grid.SummaryType;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -273,6 +268,7 @@ public class PanelRiepilogoCostiSuCommesse  extends LayoutContainer{
 					String property, ColumnData config, int rowIndex, int colIndex,
 					ListStore<RiepilogoCostiDipSuCommesseFatturateModel> store,
 					Grid<RiepilogoCostiDipSuCommesseFatturateModel> grid) {
+				
 				final NumberFormat num= NumberFormat.getPercentFormat();			
 				Float n=model.get(property);
 				return num.format(n);
@@ -305,14 +301,13 @@ public class PanelRiepilogoCostiSuCommesse  extends LayoutContainer{
 	    column.setHeader("Attivita'");
 	    column.setWidth(140);
 	    column.setRenderer(new GridCellRenderer<RiepilogoCostiDipSuCommesseFatturateModel>() {
-
 			@Override
 			public Object render(RiepilogoCostiDipSuCommesseFatturateModel model,
 					String property, ColumnData config, int rowIndex,int colIndex, ListStore<RiepilogoCostiDipSuCommesseFatturateModel> store,
 					Grid<RiepilogoCostiDipSuCommesseFatturateModel> grid) {
-				if (model != null) {	    
+				if (model != null) {
 	            	String attivita=model.get(property);
-	            	if(attivita.compareTo("TOTALE")==0)
+	            	if((attivita.compareTo("TOTALE")==0)||(attivita.compareTo("TOTALE-PREC")==0))
 	            		return "<span style='font-weight:bold; color:#139213'>" + model.get(property) + "</span>";
 	            	else
 	            		return "<span style='font-weight:normal; color:#000000'>" + model.get(property) + "</span>";
@@ -331,7 +326,7 @@ public class PanelRiepilogoCostiSuCommesse  extends LayoutContainer{
 	    column = new SummaryColumnConfig<Double>();
 	    column.setId("oreEseguite");
 	    column.setHeader("Ore Eseguite");
-	    column.setWidth(140);
+	    column.setWidth(80);
 	    //column.setSummaryRenderer(summaryRenderer);
 	   // column.setSummaryType(SummaryType.SUM);  
 	    //column.setRenderer(render);
@@ -340,14 +335,14 @@ public class PanelRiepilogoCostiSuCommesse  extends LayoutContainer{
 	    column = new SummaryColumnConfig<Double>();
 	    column.setId("costoOrario");
 	    column.setHeader("Costo Orario");
-	    column.setWidth(140);
+	    column.setWidth(80);
 	    column.setRenderer(renderer);
 	    configs.add(column);
 	    
 	    column = new SummaryColumnConfig<Double>();
 	    column.setId("costoTotale");
 	    column.setHeader("Costo Totale");
-	    column.setWidth(140);
+	    column.setWidth(100);
 	    //column.setSummaryRenderer(summaryRenderer);
 	    column.setRenderer(renderer);
 	  //  column.setSummaryType(SummaryType.SUM);  
@@ -356,7 +351,7 @@ public class PanelRiepilogoCostiSuCommesse  extends LayoutContainer{
 	    column = new SummaryColumnConfig<Double>();
 	    column.setId("importoScaricato");
 	    column.setHeader("euro/Scaricato");
-	    column.setWidth(140);
+	    column.setWidth(100);
 	    column.setRenderer(renderer);
 	  //  column.setSummaryRenderer(summaryRenderer);
 	  //  column.setSummaryType(SummaryType.SUM);  
@@ -365,7 +360,7 @@ public class PanelRiepilogoCostiSuCommesse  extends LayoutContainer{
 	    column = new SummaryColumnConfig<Double>();
 	    column.setId("importoFatturato");
 	    column.setHeader("euro/Fatturato");
-	    column.setWidth(140);
+	    column.setWidth(100);
 	    column.setRenderer(renderer);
 	  //  column.setSummaryRenderer(summaryRenderer);
 	  //  column.setSummaryType(SummaryType.SUM);  
@@ -374,7 +369,7 @@ public class PanelRiepilogoCostiSuCommesse  extends LayoutContainer{
 	    column = new SummaryColumnConfig<Double>();
 	    column.setId("margine");
 	    column.setHeader("euro/Margine");
-	    column.setWidth(140);
+	    column.setWidth(100);
 	    column.setRenderer(renderer);
 	 //   column.setSummaryRenderer(summaryRenderer);
 	   // column.setSummaryType(SummaryType.SUM);  
@@ -383,13 +378,35 @@ public class PanelRiepilogoCostiSuCommesse  extends LayoutContainer{
 	    column = new SummaryColumnConfig<Double>();
 	    column.setId("rapporto");
 	    column.setHeader("Margine/Scaricate");
-	    column.setWidth(140);
+	    column.setWidth(60);
 	    column.setRenderer(percRenderer);
 	    
 	 //   column.setSummaryRenderer(summaryRenderer);
 	   // column.setSummaryType(SummaryType.SUM);  
 	    configs.add(column);
 		
+	    column = new SummaryColumnConfig<Double>();
+	    column.setId("importoBilancio");
+	    column.setHeader("Bilancio");
+	    column.setWidth(100);
+	    column.setRenderer(renderer); 
+	    configs.add(column);
+	    
+	    
+	    column = new SummaryColumnConfig<Double>();
+	    column.setId("differenzaBilancioScaricato");
+	    column.setHeader("Delta");
+	    column.setWidth(100);
+	    column.setRenderer(renderer);
+	    configs.add(column);
+	    
+	    column = new SummaryColumnConfig<Double>();
+	    column.setId("differenzaPerc");
+	    column.setHeader("Delta %");
+	    column.setWidth(60);
+	    column.setRenderer(percRenderer);
+	    configs.add(column);
+	    
 		return configs;
 	}
 
