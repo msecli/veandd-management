@@ -65,6 +65,10 @@
       <mapping class="gestione.pack.shared.Rtv"/>
       <mapping class="gestione.pack.shared.RiferimentiRtv"/>
       <mapping class="gestione.pack.shared.DettaglioTrasferta"/>
+      <mapping class="gestione.pack.shared.Calendario"/>
+      <mapping class="gestione.pack.shared.MesiCalendario"/>
+      <mapping class="gestione.pack.shared.Bilancio"/>
+      <mapping class="gestione.pack.shared.BilancioPm"/>
       
 </session-factory>
  

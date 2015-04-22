@@ -57,7 +57,7 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 		setBorders(false);	
 	}
 
-	protected void onRender(Element target, int index) {  
+	protected void onRender(Element target, int index) {
 	    super.onRender(target, index);
 	    
 	    try {
@@ -70,7 +70,7 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	    Viewport viewport = new Viewport();
 		final BorderLayout layout = new BorderLayout();
 		LayoutContainer container = new LayoutContainer();
-				
+		
 		viewport.setLayout(new FitLayout());
 		viewport.setBorders(false);
 		container.setLayout(layout);
@@ -415,7 +415,7 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	    panel.add(cp);	    
 
 	    Button btnRiepilogoCostiSuCommesse = new Button();
-	    btnRiepilogoCostiSuCommesse.setToolTip("Costi su Commesse");
+	    btnRiepilogoCostiSuCommesse.setToolTip("Margini su Commesse");
 	    btnRiepilogoCostiSuCommesse.setHeight(65);
 	    btnRiepilogoCostiSuCommesse.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.costi()));
 	    btnRiepilogoCostiSuCommesse.setIconAlign(IconAlign.BOTTOM);

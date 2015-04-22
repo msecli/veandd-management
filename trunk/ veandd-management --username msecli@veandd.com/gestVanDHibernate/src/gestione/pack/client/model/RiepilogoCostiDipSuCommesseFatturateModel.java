@@ -16,7 +16,8 @@ public class RiepilogoCostiDipSuCommesseFatturateModel extends BaseModel impleme
 	
 	
 	public RiepilogoCostiDipSuCommesseFatturateModel(int idCommessa, String pm, String numeroCommessa, String commessa, String estensione, String attivita, 
-			String dipendente, Float oreEseguite, Float costoOrario, Float costoTotale, Float importoFatturato, Float importoScaricato, Float margine, Float rapporto){
+			String dipendente, Float oreEseguite, Float costoOrario, Float costoTotale, Float importoFatturato, Float importoScaricato, 
+			Float margine, Float rapporto, Float importoBilancio, Float differenza, Float diffPerc){
 		
 		set("idCommessa",idCommessa);
 		set("pm",pm);
@@ -32,6 +33,9 @@ public class RiepilogoCostiDipSuCommesseFatturateModel extends BaseModel impleme
 		set("importoScaricato", importoScaricato);
 		set("margine",margine);
 		set("rapporto",rapporto);// margine/fatturato
+		set("importoBilancio", importoBilancio);
+		set("differenzaBilancioScaricato", differenza);
+		set("differenzaPerc", diffPerc);
 		
 	}
 	
