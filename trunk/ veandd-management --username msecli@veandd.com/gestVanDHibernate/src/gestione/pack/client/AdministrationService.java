@@ -502,10 +502,12 @@ boolean invioCommenti(String testo, String username, Date giorno);
 			String pm, String mese, String anno)throws IllegalArgumentException;
 
 	List<DatiFatturazioneMeseModel> getReportDatiFatturazioneMese(String pm,
-			String meseSel);
+			String meseSel)throws IllegalArgumentException;
 
 	boolean editConfermaPmFogliFatturazione(int idFoglioFatturazione,
-			Boolean check);
+			Boolean check)throws IllegalArgumentException;
 
+	List<RiepilogoCostiDipSuCommesseFatturateModel> riepilogoTotaleMarginiSuCommesse(
+			String mese, String anno);
 			
 }

@@ -119,7 +119,7 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 		String nome=new String();
 		String cognome=new String();
 		int i=s.indexOf(".");
-				
+		
 		nome=s.substring(0,i);
 		cognome=s.substring(i+1,s.length());
 		nome=nome.substring(0,1).toUpperCase()+nome.substring(1,nome.length());
@@ -129,7 +129,7 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 				
 		north.setTopComponent(toolBar);
 	    toolBar.setHeight("30px");
-			
+		
 	    Button btnSetting=new Button();
 		btnSetting.addListener(Events.OnClick, new Listener<BaseEvent>() {
 

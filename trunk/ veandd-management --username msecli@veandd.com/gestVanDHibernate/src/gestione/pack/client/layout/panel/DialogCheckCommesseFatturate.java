@@ -97,13 +97,13 @@ public class DialogCheckCommesseFatturate  extends Dialog{
 	private List<ColumnConfig> createColumns() {
 		List <ColumnConfig> configs = new ArrayList<ColumnConfig>(); 
 		
-		GridCellRenderer<RiepilogoCostiDipSuCommesseFatturateModel> renderer= new GridCellRenderer<RiepilogoCostiDipSuCommesseFatturateModel>() {
+		GridCellRenderer<RiepilogoOreDipFatturazione> renderer= new GridCellRenderer<RiepilogoOreDipFatturazione>() {
 			
 			@Override
-			public Object render(RiepilogoCostiDipSuCommesseFatturateModel model,
+			public Object render(RiepilogoOreDipFatturazione model,
 					String property, ColumnData config, int rowIndex, int colIndex,
-					ListStore<RiepilogoCostiDipSuCommesseFatturateModel> store,
-					Grid<RiepilogoCostiDipSuCommesseFatturateModel> grid) {
+					ListStore<RiepilogoOreDipFatturazione> store,
+					Grid<RiepilogoOreDipFatturazione> grid) {
 				final NumberFormat num= NumberFormat.getFormat("#,##0.0#;-#");
 				Float n=model.get(property);
 				return num.format(n);
@@ -135,7 +135,7 @@ public class DialogCheckCommesseFatturate  extends Dialog{
 		column.setRenderer(renderer);
 	    configs.add(column); 
 		
-	    column=new ColumnConfig();		
+	    column=new ColumnConfig();
 	    column.setId("checkOre");  
 		column.setHeader("Check");  
 		column.setWidth(90);  

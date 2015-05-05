@@ -12552,7 +12552,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}catch (Exception e) {
 			e.printStackTrace();
 			if (tx!=null)
-				tx.rollback();				
+				tx.rollback();
 		}finally{
 			session.close();
 		}
@@ -12629,7 +12629,6 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}finally{
 			session.close();
 		}
-		
 		return true;
 	}
 	
@@ -12657,16 +12656,16 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			listaCommesse = (List<Commessa>) session.createQuery("from Commessa where matricolaPM=:pm and statoCommessa=:stato and tipoCommessa<>:tipoCommessa")
 					.setParameter("pm", pm).setParameter("stato", "Aperta").setParameter("tipoCommessa", "i").list();
 						
-			tx.commit();			
+			tx.commit();
 			
 			listaRC.addAll(ServerUtility.getListaCostiCommesseDip(listaCommesse, meseRif, pm));
-			listaRC.addAll(ServerUtility.getListaTotaliPerRC(listaRC, pm, meseRif, ""));
-					
+			listaRC.addAll(ServerUtility.getListaTotaliPerRC(listaRC, pm, meseRif, "", ""));
+			
 			//mese precedente
 			
 			mesePrec=ServerUtility.getMesePrecedente(meseRif);
 			listaRCMesePrec.addAll(ServerUtility.getListaCostiCommesseDip(listaCommesse, mesePrec, pm));
-			listaRCMesePrecTot.addAll(ServerUtility.getListaTotaliPerRC(listaRCMesePrec, pm, mesePrec, "S"));
+			listaRCMesePrecTot.addAll(ServerUtility.getListaTotaliPerRC(listaRCMesePrec, pm, mesePrec, "S", ""));
 			
 			listaRC.addAll(listaRCMesePrecTot);
 			
@@ -12781,6 +12780,91 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		}
 		
 		return true;
+	}
+
+	
+	@Override
+	public List<RiepilogoCostiDipSuCommesseFatturateModel> riepilogoTotaleMarginiSuCommesse(
+			String mese, String anno) throws IllegalArgumentException {
+
+		List<Commessa> listaCommesse= new ArrayList<Commessa>();
+		List<RiepilogoCostiDipSuCommesseFatturateModel> listaRC= new ArrayList<RiepilogoCostiDipSuCommesseFatturateModel>();
+		List<RiepilogoCostiDipSuCommesseFatturateModel> listaRCTot= new ArrayList<RiepilogoCostiDipSuCommesseFatturateModel>();
+		List<RiepilogoCostiDipSuCommesseFatturateModel> listaRCMesePrec= new ArrayList<RiepilogoCostiDipSuCommesseFatturateModel>();
+		List<RiepilogoCostiDipSuCommesseFatturateModel> listaRCMesePrecTot= new ArrayList<RiepilogoCostiDipSuCommesseFatturateModel>();
+		RiepilogoCostiDipSuCommesseFatturateModel r= new RiepilogoCostiDipSuCommesseFatturateModel();
+		
+		List<Personale> listaPm= new ArrayList<Personale>();
+		String mesePrec="";
+		mese=mese.substring(0, 3);
+		String meseRif=mese+anno;
+		String pm="";
+		
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {
+			tx = session.beginTransaction();
+			
+			listaPm=(List<Personale>)session.createQuery("from Personale where ruolo=:ruolo order by cognome").setParameter("ruolo", "PM").list();
+			
+			tx.commit();
+			
+			for(Personale p:listaPm){
+				listaCommesse = ServerUtility.getListaCommessePerPm(p);
+				pm=p.getCognome()+" "+p.getNome();
+				
+				listaRC.addAll(ServerUtility.getListaCostiCommesseDip(listaCommesse, meseRif, pm));
+				listaRCTot.addAll(ServerUtility.getListaTotaliPerRC(listaRC, pm, meseRif, "", "TOT"));
+				listaRC.clear();
+			}
+			
+			Float oreEseguite=(float)0.0;
+			Float costoTotale=(float)0.0;
+			Float scaricato=(float)0.0;
+			Float fatturato=(float)0.0;
+			Float bilancio=(float)0.0;
+			Float margine=(float)0.0;
+			Float marginePercentuale=(float)0.0;
+			Float delta=(float)0.0;
+			Float deltaPercentuale=(float)0.0;
+			
+			for(RiepilogoCostiDipSuCommesseFatturateModel rc:listaRCTot){
+				oreEseguite=oreEseguite+(Float)rc.get("oreEseguite");
+				costoTotale=costoTotale+(Float)rc.get("costoTotale");
+				scaricato=scaricato+(Float)rc.get("importoScaricato");
+				fatturato=fatturato+(Float)rc.get("importoFatturato");
+				bilancio=bilancio+(Float)rc.get("importoBilancio");
+			}
+			
+			margine=scaricato-costoTotale;
+			marginePercentuale=margine/scaricato;
+			
+			delta=scaricato-bilancio;
+			deltaPercentuale=delta/bilancio;
+			
+			r=new RiepilogoCostiDipSuCommesseFatturateModel(0, pm, "Project Manager", "", "TOTALE", "", "", oreEseguite, (float)0.0, costoTotale, fatturato, scaricato, 
+					margine, marginePercentuale, bilancio, delta, deltaPercentuale);
+			
+			listaRCTot.add(r);			
+			//mese precedente
+			/*
+			mesePrec=ServerUtility.getMesePrecedente(meseRif);
+			listaRCMesePrec.addAll(ServerUtility.getListaCostiCommesseDip(listaCommesse, mesePrec, pm));
+			listaRCMesePrecTot.addAll(ServerUtility.getListaTotaliPerRC(listaRCMesePrec, pm, mesePrec, "S"));
+			
+			listaRC.addAll(listaRCMesePrecTot);*/
+			
+		} catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return null;
+		} finally {
+			session.close();
+		}
+		
+		return listaRCTot;
 	}
 			
 }
