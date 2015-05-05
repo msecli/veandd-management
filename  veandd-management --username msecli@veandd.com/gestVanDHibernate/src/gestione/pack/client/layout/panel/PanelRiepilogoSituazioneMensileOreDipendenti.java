@@ -27,6 +27,7 @@ import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -82,6 +83,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	private DateField dtfldDataRiferimento;
 	private Text txtRuolo;
 	
+	protected Status status;
 	
 	public PanelRiepilogoSituazioneMensileOreDipendenti(){
 		
@@ -91,6 +93,11 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	    super.onRender(target, index);
 	
 	    setItemId("pnlRiepilogo");
+	    
+	    status = new Status();
+	    status.setBusy("Please wait...");
+	    status.hide();
+	    status.setAutoWidth(true);
 	    
 	    final FitLayout fl= new FitLayout();
 	    LayoutContainer layoutContainer= new LayoutContainer();
@@ -249,7 +256,8 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	  	toolBar.add(btnConfermaTutti);
 	  	toolBar.add(new SeparatorToolItem());
 	  	toolBar.add(btnViewFoglioOre);
-		
+		toolBar.add(status);
+	  	
 		ContentPanel cntpnlGrid= new ContentPanel();
 		cntpnlGrid.setBodyBorder(false);         
 		cntpnlGrid.setLayout(new FitLayout());  
@@ -385,12 +393,14 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 	private void caricaTabellaDati() {
 		String pm= smplcmbxPM.getRawValue().toString();
 		String sede= smplcmbxSede.getRawValue().toString();
-		
+		status.setBusy("Please wait...");
+	    status.show();
 		AdministrationService.Util.getInstance().getRiepilogoMeseFoglioOre(dtfldDataRiferimento.getValue(),
 				pm, sede, cognome,  new AsyncCallback<List<RiepilogoFoglioOreModel>>() {
 			
 			@Override
 			public void onSuccess(List<RiepilogoFoglioOreModel> result) {
+				status.hide();
 				if(result==null)
 					Window.alert("error: Problemi durante l'accesso ai dati del riepilogo ore.");
 				else	
@@ -401,6 +411,7 @@ public class PanelRiepilogoSituazioneMensileOreDipendenti extends LayoutContaine
 			}
 			@Override
 			public void onFailure(Throwable caught) {
+				status.hide();
 				Window.alert("Errore connessione on getRiepilogoOreDipFatturazione();");
 				caught.printStackTrace();		
 			}

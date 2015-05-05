@@ -3297,10 +3297,11 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 
 	
 	public static List<RiepilogoCostiDipSuCommesseFatturateModel> getListaTotaliPerRC(
-			List<RiepilogoCostiDipSuCommesseFatturateModel> listaRC, String pm, String meseRif, String isPrecedente) {
+			List<RiepilogoCostiDipSuCommesseFatturateModel> listaRC, String pm, String meseRif, String isPrecedente, String flag) {
 
 		String numeroCommessa;
 		List<RiepilogoCostiDipSuCommesseFatturateModel> listaRCTotali= new ArrayList<RiepilogoCostiDipSuCommesseFatturateModel>();
+		List<RiepilogoCostiDipSuCommesseFatturateModel> listaRCTotaliOnly= new ArrayList<RiepilogoCostiDipSuCommesseFatturateModel>();
 		List<String> listaCommesseCheck= new ArrayList<String>();
 		List<RiepilogoCostiDipSuCommesseFatturateModel> listaRCApp= new ArrayList<RiepilogoCostiDipSuCommesseFatturateModel>();
 		Float importoMargine;
@@ -3403,13 +3404,22 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 			differenza=totaleImportoScaricato-importoBilancio;
 			differenzaPerc=differenza/importoBilancio;
 			
-			if(isPrecedente.compareTo("S")!=0)
-				rc2=new RiepilogoCostiDipSuCommesseFatturateModel(0, pm, "TOTALE", "", "", "", "", totaleOreEseguite, (float)0.0, 
-					totaleCostoTotale, totaleImportoFatturato, totaleImportoScaricato, importoMargine, rapporto, importoBilancio, differenza, differenzaPerc);
+			if(flag.compareTo("TOT")!=0)
+				if(isPrecedente.compareTo("S")!=0)
+					rc2=new RiepilogoCostiDipSuCommesseFatturateModel(0, pm, "TOTALE", "", "", "", "", totaleOreEseguite, (float)0.0, 
+							totaleCostoTotale, totaleImportoFatturato, totaleImportoScaricato, importoMargine, rapporto, importoBilancio, differenza, differenzaPerc);
+				else
+					rc2=new RiepilogoCostiDipSuCommesseFatturateModel(0, pm, "TOTALE-PREC", "", "", "", "", totaleOreEseguite, (float)0.0, 
+						totaleCostoTotale, totaleImportoFatturato, totaleImportoScaricato, importoMargine, rapporto, importoBilancio, differenza, differenzaPerc);
 			else
-				rc2=new RiepilogoCostiDipSuCommesseFatturateModel(0, pm, "TOTALE-PREC", "", "", "", "", totaleOreEseguite, (float)0.0, 
+				if(isPrecedente.compareTo("S")!=0)
+					rc2=new RiepilogoCostiDipSuCommesseFatturateModel(0, pm, "Project Manager", "", pm, "", "", totaleOreEseguite, (float)0.0, 
+							totaleCostoTotale, totaleImportoFatturato, totaleImportoScaricato, importoMargine, rapporto, importoBilancio, differenza, differenzaPerc);
+				else
+					rc2=new RiepilogoCostiDipSuCommesseFatturateModel(0, pm, "Project Manager", "", pm, "", "", totaleOreEseguite, (float)0.0, 
 						totaleCostoTotale, totaleImportoFatturato, totaleImportoScaricato, importoMargine, rapporto, importoBilancio, differenza, differenzaPerc);
 			
+			listaRCTotaliOnly.add(rc2);			
 			listaRCTotali.add(rc2);
 			
 			tx.commit();
@@ -3423,7 +3433,10 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 			session.close();
 		}
 		
-		return listaRCTotali;
+		if(flag.compareTo("TOT")!=0)
+			return listaRCTotali;
+		else
+			return listaRCTotaliOnly;
 	}
 
 	
@@ -3566,5 +3579,34 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 		return commesseSelectedNC;
 	}
 
+	@SuppressWarnings("unchecked")
+	public static List<Commessa> getListaCommessePerPm(Personale p) {
+		
+		List<Commessa> listaCommesse= new ArrayList<Commessa>();
+		String pm="";
+		Session session= MyHibernateUtil.getSessionFactory().openSession();
+		Transaction tx= null;
+		
+		try {
+			tx = session.beginTransaction();
+			
+			pm=p.getCognome()+" "+p.getNome();
+			
+			listaCommesse=(List<Commessa>) session.createQuery("from Commessa where matricolaPM=:pm and statoCommessa=:stato and tipoCommessa<>:tipoCommessa")
+					.setParameter("pm", pm).setParameter("stato", "Aperta").setParameter("tipoCommessa", "i").list();
+			
+			tx.commit();
+			
+		} catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+			return null;
+		} finally {
+			session.close();
+		}
+		
+		return listaCommesse;
+	}
 }
 

@@ -254,7 +254,7 @@ public class BodyLayout_Dirigente extends LayoutContainer {
 	    
 	    
 	    Button btnRiepilogoCostiSuCommesse = new Button();
-	    btnRiepilogoCostiSuCommesse.setToolTip("Costi su Commesse");
+	    btnRiepilogoCostiSuCommesse.setToolTip("Margini su Commesse");
 	    btnRiepilogoCostiSuCommesse.setHeight(65);
 	    btnRiepilogoCostiSuCommesse.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.costi()));
 	    btnRiepilogoCostiSuCommesse.setIconAlign(IconAlign.BOTTOM);

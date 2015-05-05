@@ -548,4 +548,7 @@ public interface AdministrationServiceAsync {
 	void editConfermaPmFogliFatturazione(int idFoglioFatturazione,
 			Boolean check, AsyncCallback<Boolean> asyncCallback);
 
+	void riepilogoTotaleMarginiSuCommesse(
+			String mese, String anno, AsyncCallback<List<RiepilogoCostiDipSuCommesseFatturateModel>> asyncCallback);
+
 }

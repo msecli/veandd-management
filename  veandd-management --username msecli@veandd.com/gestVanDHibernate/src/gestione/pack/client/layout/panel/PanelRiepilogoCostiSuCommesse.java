@@ -23,6 +23,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
@@ -67,7 +68,10 @@ public class PanelRiepilogoCostiSuCommesse  extends LayoutContainer{
 	protected SimpleComboBox<String> smplcmbxMese;
 	protected SimpleComboBox<String> smplcmbxPm;
 	protected Button btnAggiorna;
+	protected Button btnMostraTotale;
 	protected Button btnPrint;
+	
+	protected Status status;
 	
 	public PanelRiepilogoCostiSuCommesse(){
 		
@@ -79,6 +83,11 @@ public class PanelRiepilogoCostiSuCommesse  extends LayoutContainer{
 		
 		final FitLayout fl= new FitLayout();
 			
+		status = new Status();
+	    status.setBusy("Please wait...");
+	    status.hide();
+	    status.setAutoWidth(true);
+		
 		LayoutContainer layoutContainer= new LayoutContainer();
 		layoutContainer.setBorders(false);
 		layoutContainer.setLayout(fl);
@@ -145,27 +154,66 @@ public class PanelRiepilogoCostiSuCommesse  extends LayoutContainer{
 				@Override
 				public void componentSelected(ButtonEvent ce) {
 					
+					status.setBusy("Please wait...");
+				    status.show();
+					
 					String pm=smplcmbxPm.getRawValue().toString();
 					String anno=smplcmbxAnno.getRawValue().toString();
 					String mese=smplcmbxMese.getRawValue().toString();
 					
-					AdministrationService.Util.getInstance().getRiepilogoCostiSuCommesseFatturate(pm, mese, anno, new AsyncCallback<List<RiepilogoCostiDipSuCommesseFatturateModel>>() {
+					if(pm.compareTo("Tutti")!=0)
+						AdministrationService.Util.getInstance().getRiepilogoCostiSuCommesseFatturate(pm, mese, anno, new AsyncCallback<List<RiepilogoCostiDipSuCommesseFatturateModel>>() {
 
-						@Override
-						public void onFailure(Throwable caught) {
-							Window.alert("Problema di connessione on getRiepilogoCostiSuCommesseFatturate()");
-						}
+							@Override
+							public void onFailure(Throwable caught) {
+								status.hide();
+								Window.alert("Problema di connessione on getRiepilogoCostiSuCommesseFatturate()");
+							}
 
-						@Override
-						public void onSuccess(
+							@Override
+							public void onSuccess(
 								List<RiepilogoCostiDipSuCommesseFatturateModel> result) {
-							if(result!=null)
-								caricaDatiTabella(result);
-							else
-								Window.alert("Impossibile effettuare il caricamento dati!");
-						}
+								status.hide();
+								if(result!=null)
+									caricaDatiTabella(result);
+								else
+									Window.alert("Impossibile effettuare il caricamento dati!");
+							}
 
-					});
+						});
+					else
+						AdministrationService.Util.getInstance().riepilogoTotaleMarginiSuCommesse(mese, anno, new AsyncCallback<List<RiepilogoCostiDipSuCommesseFatturateModel>>() {
+
+							@Override
+							public void onFailure(Throwable caught) {
+								status.hide();
+								Window.alert("Errore di connessione on riepilogoTotaleMarginiSuCommesse()");
+							}
+
+							@Override
+							public void onSuccess(
+									List<RiepilogoCostiDipSuCommesseFatturateModel> result) {
+								status.hide();
+								if(result!=null)
+									caricaDatiTabella(result);
+								else
+									Window.alert("Impossibile accedere ai dati sui margini!");
+							}		
+						});		
+				}
+		});	  
+		
+		
+		btnMostraTotale=new Button();
+		btnMostraTotale.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riep_comm()));
+		btnMostraTotale.setIconAlign(IconAlign.BOTTOM);
+		btnMostraTotale.setToolTip("Totale");
+		btnMostraTotale.setSize(26, 26);
+		btnMostraTotale.addSelectionListener(new SelectionListener<ButtonEvent>() {
+				@Override
+				public void componentSelected(ButtonEvent ce) {
+					
+					
 				}
 		});	  
 		
@@ -233,7 +281,10 @@ public class PanelRiepilogoCostiSuCommesse  extends LayoutContainer{
 		tlbrOpzioni.add(new SeparatorToolItem());
 		tlbrOpzioni.add(btnAggiorna);
 		tlbrOpzioni.add(new SeparatorToolItem());
+		//tlbrOpzioni.add(btnMostraTotale);
+		tlbrOpzioni.add(new SeparatorToolItem());
 		tlbrOpzioni.add(cp);
+		tlbrOpzioni.add(status);
 		
 		cpGrid.add(gridRiepilogo);
 		cpGrid.setTopComponent(tlbrOpzioni);
@@ -433,7 +484,7 @@ public class PanelRiepilogoCostiSuCommesse  extends LayoutContainer{
 			public void onSuccess(List<String> result) {
 				if(result!=null){
 					smplcmbxPm.add(result);
-					//smplcmbxPm.add("Tutti");
+					smplcmbxPm.add("Tutti");
 					smplcmbxPm.recalculate();
 					//smplcmbxPm.setSimpleValue("Tutti");
 												
