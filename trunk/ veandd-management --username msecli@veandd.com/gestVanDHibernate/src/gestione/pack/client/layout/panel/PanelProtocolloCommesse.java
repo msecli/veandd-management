@@ -70,7 +70,7 @@ public class PanelProtocolloCommesse extends LayoutContainer{
 		cpGrid.setHeaderVisible(false);
 		cpGrid.setBorders(false);
 		cpGrid.setFrame(true);
-		cpGrid.setHeight(950);
+		cpGrid.setHeight(870);
 		cpGrid.setWidth(1250);
 		cpGrid.setScrollMode(Scroll.AUTO);
 		cpGrid.setLayout(new FitLayout());

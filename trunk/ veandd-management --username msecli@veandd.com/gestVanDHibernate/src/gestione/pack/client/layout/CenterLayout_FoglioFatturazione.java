@@ -768,6 +768,9 @@ public CenterLayout_FoglioFatturazione(){}
 		private Text txtOreScaricate = new Text();
 		private Text txtMargine= new Text();
 		private Text txtEfficienza= new Text();
+		
+		protected String efficienzaPrevista="";
+		
 		//private TextField<String> txtfldOreEseguiteEffettive= new TextField<String>();
 		
 		private TextArea txtaNote=new TextArea();
@@ -962,7 +965,7 @@ public CenterLayout_FoglioFatturazione(){}
 				@Override
 				public void componentSelected(ButtonEvent ce) {
 					
-					DialogRiepilogoDatiFoglioFatturazione d= new DialogRiepilogoDatiFoglioFatturazione(commessaSelezionata);
+					DialogRiepilogoDatiFoglioFatturazione d= new DialogRiepilogoDatiFoglioFatturazione(commessaSelezionata, idAttivita);
 					d.show();
 				}
 			});
@@ -2192,6 +2195,8 @@ public CenterLayout_FoglioFatturazione(){}
 			Float oreStraoC=(float)0.0;
 			Float oreLavoro=(float)0.0;
 			
+			String efficienzaPrevista="";
+			
 			NumberFormat number= NumberFormat.getFormat("0.00");
 			
 			HorizontalPanel hp= new HorizontalPanel();
@@ -2222,7 +2227,6 @@ public CenterLayout_FoglioFatturazione(){}
 						oreLavoro=(Float.valueOf(ClientUtility.getOreCentesimi(number.format(riep.getOreLavoro()))))+oreLavoro;
 					}
 				}				
-				
 				
 				//TODO oreStrao
 				oreLavoro=oreLavoro+oreStraoC+oreViaggioC;
@@ -2258,6 +2262,7 @@ public CenterLayout_FoglioFatturazione(){}
 					txtfldImportoDaFatturare.setValue((String)result.get("importoDaFatturare"));
 					txtfldImportoRtv.setValue((String)result.get("importoRtv"));
 					txtfldOreRimborsoSpese.setValue((String)result.get("oreRimborsoSpese"));
+					efficienzaPrevista=(String)result.get("efficienzaPrevista");
 					
 					txtfldOreEseguiteRegistrate.setValue(result.getOreEseguiteRegistrate());
 					
@@ -2281,7 +2286,7 @@ public CenterLayout_FoglioFatturazione(){}
 	    	  		
 	    	  		Float efficienza=(float)0.00;
 	    	  		efficienza=Float.valueOf(ClientUtility.getOreCentesimi(scaricate))/Float.valueOf(ClientUtility.getOreCentesimi(txtfldOreEseguiteRegistrate.getValue().toString()));
-	    	  		txtEfficienza.setText("("+number.format(efficienza)+")");
+	    	  		txtEfficienza.setText(""+number.format(efficienza)+""+"/"+efficienzaPrevista);
 	    	  		
 	    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldVariazioneSAL.getValue().toString()));
 	    	  		txtVariazioneSal.setText("("+totaleEuro+")");
@@ -2325,6 +2330,7 @@ public CenterLayout_FoglioFatturazione(){}
 					txtfldOreScaricate.setValue("0.00");
 					txtfldImportoRtv.setValue((String)result.get("importoRtv"));
 					txtfldOreRimborsoSpese.setValue((String)result.get("oreRimborsoSpese"));
+					efficienzaPrevista=(String)result.get("efficienzaPrevista");
 					
 					txtfldOreEseguiteRegistrate.setValue(totOre);
 					//txtfldOreEseguiteRegistrate.setValue(result.getOreEseguiteRegistrate());
@@ -2348,7 +2354,7 @@ public CenterLayout_FoglioFatturazione(){}
 	    	  		
 	    	  		Float efficienza=(float)0.00;
 	    	  		efficienza=Float.valueOf(ClientUtility.getOreCentesimi(scaricate))/Float.valueOf(ClientUtility.getOreCentesimi(txtfldOreEseguiteRegistrate.getValue().toString()));
-	    	  		txtEfficienza.setText("("+number.format(efficienza)+")");
+	    	  		txtEfficienza.setText(""+number.format(efficienza)+""+"/"+efficienzaPrevista);
 	    	  		
 	    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldVariazioneSAL.getValue().toString()));
 	    	  		txtVariazioneSal.setText("("+totaleEuro+")");
