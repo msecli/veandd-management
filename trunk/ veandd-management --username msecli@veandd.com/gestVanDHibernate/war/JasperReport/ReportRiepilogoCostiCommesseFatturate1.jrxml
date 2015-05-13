@@ -28,7 +28,7 @@
 			<style backcolor="#C5C5C5"/>
 		</conditionalStyle>
 	</style>
-	<subDataset name="Table Dataset 1" uuid="9156716b-436f-4ae4-ae7c-49452f595263">
+	<subDataset name="Table Dataset 1" whenResourceMissingType="Empty" uuid="9156716b-436f-4ae4-ae7c-49452f595263">
 		<field name="pm" class="java.lang.String"/>
 		<field name="numeroCommessa" class="java.lang.String"/>
 		<field name="estensione" class="java.lang.String"/>
@@ -39,6 +39,20 @@
 		<field name="costoTotale" class="java.lang.Float"/>
 		<field name="importoFatturato" class="java.lang.Float"/>
 		<field name="importoScaricato" class="java.lang.Float"/>
+		<field name="margine" class="java.lang.Float"/>
+		<field name="rapporto" class="java.lang.Float"/>
+		<variable name="totaleOreEseguite" class="java.lang.Float" calculation="Sum">
+			<variableExpression><![CDATA[$F{oreEseguite}]]></variableExpression>
+		</variable>
+		<variable name="totaleCostoTotale" class="java.lang.Float" calculation="Sum">
+			<variableExpression><![CDATA[$F{costoTotale}]]></variableExpression>
+		</variable>
+		<variable name="totaleImportoFatturato" class="java.lang.Float" calculation="Sum">
+			<variableExpression><![CDATA[$F{importoFatturato}]]></variableExpression>
+		</variable>
+		<variable name="totaleImportoScaricato" class="java.lang.Float" calculation="Sum">
+			<variableExpression><![CDATA[$F{importoScaricato}]]></variableExpression>
+		</variable>
 	</subDataset>
 	<detail>
 		<band height="85" splitType="Stretch">
@@ -149,6 +163,15 @@
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="110" uuid="4735fb6d-a207-43eb-aaa6-6408fec00711">
+						<jr:tableFooter height="30" rowSpan="1">
+							<textField isStretchWithOverflow="true" pattern="#,##0.00">
+								<reportElement uuid="2e86604b-dc44-4e79-b4df-a64b46c91769" x="0" y="0" width="110" height="30" forecolor="#FF0033"/>
+								<textElement verticalAlignment="Middle">
+									<font size="15" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{totaleOreEseguite}]]></textFieldExpression>
+							</textField>
+						</jr:tableFooter>
 						<jr:columnHeader style="table_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement uuid="3d44f2b9-83ba-4b2f-9bb6-b2808e5a6707" x="0" y="0" width="110" height="30"/>
@@ -189,6 +212,15 @@
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="130" uuid="3a210ece-769a-42a5-b74b-00af75851106">
+						<jr:tableFooter height="30" rowSpan="1">
+							<textField isStretchWithOverflow="true" pattern="#,##0.00">
+								<reportElement uuid="830d91b4-4e27-4672-b23b-e2af31b6ff34" x="0" y="0" width="130" height="30" forecolor="#FF0033"/>
+								<textElement verticalAlignment="Middle">
+									<font size="15" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{totaleCostoTotale}]]></textFieldExpression>
+							</textField>
+						</jr:tableFooter>
 						<jr:columnHeader style="table_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement uuid="71286cc3-8b3b-4807-961a-004734801f13" x="0" y="0" width="130" height="30"/>
@@ -209,6 +241,15 @@
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="140" uuid="1064e615-24a9-4621-8abb-3b0323e6e4ab">
+						<jr:tableFooter height="30" rowSpan="1">
+							<textField isStretchWithOverflow="true" pattern="#,##0.00">
+								<reportElement uuid="c955e0d6-b186-4bc0-a86f-5729178174c4" x="0" y="0" width="140" height="30" forecolor="#FF0033"/>
+								<textElement verticalAlignment="Middle">
+									<font size="15" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{totaleImportoFatturato}]]></textFieldExpression>
+							</textField>
+						</jr:tableFooter>
 						<jr:columnHeader style="table_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement uuid="31daa0b3-e06f-415f-9699-735d6eaac6bf" x="0" y="0" width="140" height="30"/>
@@ -229,6 +270,15 @@
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="140" uuid="72478e72-4c17-4090-84e9-f2de2b37a9cf">
+						<jr:tableFooter height="30" rowSpan="1">
+							<textField isStretchWithOverflow="true" pattern="#,##0.00">
+								<reportElement uuid="d6ddd2e4-85bf-4b96-b3f1-b23f56111fef" x="0" y="0" width="140" height="30" forecolor="#FF0033"/>
+								<textElement verticalAlignment="Middle">
+									<font size="15" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{totaleImportoScaricato}]]></textFieldExpression>
+							</textField>
+						</jr:tableFooter>
 						<jr:columnHeader style="table_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement uuid="227d739f-bd0f-4232-8648-b50b3b996dc5" x="0" y="0" width="140" height="30"/>
@@ -245,6 +295,46 @@
 									<font size="12"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{importoScaricato}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="140" uuid="72478e72-4c17-4090-84e9-f2de2b37a9cf">
+						<jr:columnHeader style="table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement uuid="227d739f-bd0f-4232-8648-b50b3b996dc5" x="0" y="0" width="140" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="14" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Margine]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="34" rowSpan="1">
+							<textField isStretchWithOverflow="true" pattern="#,##0.00">
+								<reportElement uuid="beac3881-5741-47ae-ad05-72596123b015" x="0" y="0" width="140" height="34"/>
+								<textElement verticalAlignment="Middle">
+									<font size="12"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{margine}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="140" uuid="72478e72-4c17-4090-84e9-f2de2b37a9cf">
+						<jr:columnHeader style="table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement uuid="227d739f-bd0f-4232-8648-b50b3b996dc5" x="0" y="0" width="140" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="14" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Margine/Scaricato]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="34" rowSpan="1">
+							<textField isStretchWithOverflow="true" pattern="#,##0.00">
+								<reportElement uuid="beac3881-5741-47ae-ad05-72596123b015" x="0" y="0" width="140" height="34"/>
+								<textElement verticalAlignment="Middle">
+									<font size="12"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{rapporto}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
