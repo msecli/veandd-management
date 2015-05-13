@@ -117,7 +117,7 @@ public class DialogCheckCommesseFatturate  extends Dialog{
 	    column.setRowHeader(true);  
 	    configs.add(column); 
 	    
-	    //oreLavoro, oreViaggio campi model	
+	    //oreLavoro, oreViaggio campi model
 	    
 	    column=new ColumnConfig();		
 	    column.setId("oreLavoro");  

@@ -162,7 +162,7 @@ public class PanelCommessa extends LayoutContainer {
 				public void componentSelected(ButtonEvent ce) {
 					String numeroCommessa=txtfldNumeroCommessa.getValue();
 					String estensioneCommessa=txtfldEstensione.getValue();
-					DialogRiepilogoDatiFoglioFatturazione d= new DialogRiepilogoDatiFoglioFatturazione(numeroCommessa+"."+estensioneCommessa);
+					DialogRiepilogoDatiFoglioFatturazione d= new DialogRiepilogoDatiFoglioFatturazione(numeroCommessa+"."+estensioneCommessa, 0);
 					d.show();			
 				}
 			});

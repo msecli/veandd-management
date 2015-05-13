@@ -3097,9 +3097,6 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 			
 			for (Commessa c : listaCommesse) {
 				
-				//1 metodo: parametri commessa, estensione, meseRif
-				//return: listaRC
-						
 				commessa = c.getNumeroCommessa();
 				estensione =c.getEstensione();
 
@@ -3307,7 +3304,7 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 		Float importoMargine;
 		Float rapporto;
 		RiepilogoCostiDipSuCommesseFatturateModel rc2= new RiepilogoCostiDipSuCommesseFatturateModel();
-					
+		
 		Float totaleOreEseguite=(float)0.0;
 		Float totaleCostoTotale=(float)0.0;
 		Float totaleImportoScaricato=(float)0.0;
@@ -3327,7 +3324,7 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 			//TOTALE SU COMMESSE
 			//calcolare totale manualmente per permettere calcolo semplice margine e avere dati in report excel
 			//fare un for usando la lista commesseSelected
-											
+			
 			listaRCApp.addAll(listaRC);
 			
 			List<String> commesseSelectedNC=getCommesseSelectedNC(listaRCApp, meseRif);
@@ -3351,14 +3348,14 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 								if((app2.compareTo(app)==0)&&(att1.compareTo("DATI FATTURAZIONE")==0)){
 									totaleImportoScaricato=totaleImportoScaricato+(Float)rca.get("importoScaricato");
 									totaleImportoFatturato=totaleImportoFatturato+(Float)rca.get("importoFatturato");
-								}								
+								}
 							}
 							
 							numeroCommessa=(String)rc.get("numeroCommessa");
-																					
+							
 							importoMargine=totaleImportoScaricato-totaleCostoTotale;
 							rapporto=importoMargine/totaleImportoScaricato;
-						
+
 							listaCommesseCheck.add(app);
 							
 							if(isPrecedente.compareTo("S")!=0)
@@ -3378,8 +3375,8 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 							rapporto=(float)0.0;
 							
 							listaRCTotali.add(rc2);
-						}					
-					}				
+						}
+					}
 					else
 							{
 								continue;

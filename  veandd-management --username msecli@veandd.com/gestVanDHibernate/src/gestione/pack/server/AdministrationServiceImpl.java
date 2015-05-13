@@ -804,7 +804,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			String numOrdine, String descrizione, String elementoWbs, String conto, 
 			String prCenter, String bem, Date dataInizio,
 			Date dataFine, String tariffa, String numRisorse, String oreDisp,
-			String oreRes, List<TariffaOrdineModel>listaTar, String importoOrdine, String importoResiduoOrdine) throws IllegalArgumentException {
+			String oreRes, List<TariffaOrdineModel>listaTar, String importoOrdine,
+			String importoResiduoOrdine, String efficienzaPrevista) throws IllegalArgumentException {
 		
 		Rda r=new Rda();
 		Cliente c= new Cliente();
@@ -846,7 +847,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				
 				insertDataOfferta(numOfferta, id+1, dataOfferta, descrizione, importo);
 				insertDataOrdine(numOrdine, id+1, dataInizio, dataFine, descrizione, "0.00", numRisorse, 
-						oreDisp, oreRes, importoOrdine, importoResiduoOrdine);
+						oreDisp, oreRes, importoOrdine, importoResiduoOrdine, efficienzaPrevista);
 				
 				for(TariffaOrdineModel trf:listaTar){
 					AttivitaOrdine att=new AttivitaOrdine();
@@ -866,7 +867,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				r.setCodiceRDA(numRdo);
 				
 				insertDataOrdine(numOrdine, o.getRda().getNumeroRda(), dataInizio, dataFine, descrizione, "0.00", 
-						numRisorse, oreDisp, oreRes, importoOrdine, importoResiduoOrdine);
+						numRisorse, oreDisp, oreRes, importoOrdine, importoResiduoOrdine, efficienzaPrevista);
 				for(TariffaOrdineModel trf:listaTar){
 					AttivitaOrdine att=new AttivitaOrdine();
 					att.setDescrizioneAttivita((String)trf.get("descrizione"));
@@ -996,7 +997,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	
 	private void insertDataOrdine(String numOrdine, int id,
 			Date dataInizio, Date dataFine, String descrizione, String tariffa,
-			String numRisorse, String oreDisp, String oreRes, String importoOrdine, String importoResiduoOrdine) {
+			String numRisorse, String oreDisp, String oreRes, String importoOrdine, String importoResiduoOrdine, String efficienzaPrevista) {
 		Boolean esito=true;
 		String errore= new String();
 		
@@ -1035,6 +1036,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			o.setStatoOrdine("A");
 			o.setImporto(importoOrdine);
 			o.setImportoResiduo(importoResiduoOrdine);
+			o.setEfficienzaPrevista(efficienzaPrevista);
 			
 			of=r.getOffertas().iterator().next();
 			of.setStatoOfferta("A");
@@ -1160,7 +1162,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			String numOrdine, String descrizione,  String elementoWbs, String conto, 
 			String prCenter, String bem, Date dataInizio,
 			Date dataFine, String tariffa, String numRisorse, String oreDisp,
-			String oreRes, List<TariffaOrdineModel>listaTar, String importoOrdine, String importoResiduoOrdine) throws IllegalArgumentException {
+			String oreRes, List<TariffaOrdineModel>listaTar, String importoOrdine,
+			String importoResiduoOrdine, String efficienzaPrevista) throws IllegalArgumentException {
 		
 		Boolean esito=true;
 		String errore= new String();
@@ -1185,7 +1188,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			tx.commit();
 			
 			editDataOfferta(numOfferta, idRdo, dataOfferta, descrizione, importo);
-			editDataOrdine(numOrdine, idRdo, dataInizio, dataFine, descrizione, tariffa, numRisorse, oreDisp, oreRes, importoOrdine, importoResiduoOrdine);
+			editDataOrdine(numOrdine, idRdo, dataInizio, dataFine, descrizione, tariffa, numRisorse, oreDisp, oreRes, importoOrdine, 
+					importoResiduoOrdine, efficienzaPrevista);
 			for(TariffaOrdineModel trf:listaTar){
 					
 				String idAtt=(String)trf.get("idAttivitaOrdine");
@@ -1199,8 +1203,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 				
 				if(idAtt==null)
 					idAtt="0";
-								
-				editTariffeOrdine(idRdo, Integer.valueOf(idAtt), tariffaAtt, descrizioneAtt, oreOrdine, oreResidueOrdine, importoOr, importoResiduoOr);
+				
+				editTariffeOrdine(idRdo, Integer.valueOf(idAtt), tariffaAtt, descrizioneAtt, oreOrdine, oreResidueOrdine, importoOr, 
+						importoResiduoOr);
 			}
 			
 		}catch (Exception e){
@@ -1287,7 +1292,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	
 	private void editDataOrdine(String numOrdine, int idRdo, Date dataInizio,
 			Date dataFine, String descrizione, String tariffa,
-			String numRisorse, String oreDisp, String oreRes, String importoOrdine, String importoResiduoOrdine) {
+			String numRisorse, String oreDisp, String oreRes, String importoOrdine, String importoResiduoOrdine, String efficienzaPrevista) {
 		Boolean esito=true;
 		String errore= new String();
 		Ordine o= new Ordine();
@@ -1309,6 +1314,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			o.setOreResidueBudget(oreRes);
 			o.setImporto(importoOrdine);
 			o.setImportoResiduo(importoResiduoOrdine);
+			o.setEfficienzaPrevista(efficienzaPrevista);
 			/*
 			List<AttivitaOrdine> listaAttO= new ArrayList<AttivitaOrdine>();
 			listaAttO.addAll(o.getAttivitaOrdines());
@@ -7085,7 +7091,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					tariffaUtilizzata=c.getTariffaSal();//prendo la tariffa della commessa
 					if(f==null){
 						foglioModel= new FoglioFatturazioneModel("#","#", "0.0", "0.0", "0.0", "0.0", Float.valueOf(tariffaUtilizzata), "0.0",
-								sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.00","#","0.0", "0.0", "0.0", "", "0", "0.00", "N");
+								sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.00","#","0.0", "0.0", "0.0", "", "0", "0.00", "N", "1.0");
 					}
 					else{	
 						//il foglio fatturazione era già stato compilato quindi tolgo alla sommavariazioni quella in esame
@@ -7094,7 +7100,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						
 						foglioModel= new FoglioFatturazioneModel("#","#", "0.0", "0.0", "0.0", "0.0", Float.valueOf(f.getTariffaUtilizzata()), f.getOreEseguite(),
 								sommaVariazioniSal, sommaVariazioniPcl, f.getOreFatturare(), f.getImportoRealeFatturato(),"#", 
-								f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione(), f.getOreRimborsoSpese(), f.getConfermaPm());
+								f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione(), f.getOreRimborsoSpese(), f.getConfermaPm(), "1.0");
 					}		
 							
 				}else{
@@ -7169,6 +7175,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 										
 					String numOrdine=o.getCodiceOrdine();
 					String rda=o.getRda().getCodiceRDA();
+					String efficienzaPrevista=o.getEfficienzaPrevista();
 					
 					if(importo==null)
 						importo="0.00";
@@ -7176,14 +7183,15 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					if(f==null){	
 						foglioModel= new FoglioFatturazioneModel(numOrdine,rda, oreOrdine, oreResidueBudget,importo, importoResiduo,
 								Float.valueOf(tariffaUtilizzata), "0.0", sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.00",importoRtv,
-								"0.0", "0.0", "0.0", "", "0", "0.00", "N");
+								"0.0", "0.0", "0.0", "", "0", "0.00", "N", efficienzaPrevista);
 					}
 					else{
 						sommaVariazioniSal=ServerUtility.getDifference(sommaVariazioniSal, f.getVariazioneSAL());
 						sommaVariazioniPcl=ServerUtility.getDifference(sommaVariazioniPcl, f.getVariazionePCL());
 						foglioModel= new FoglioFatturazioneModel(numOrdine,rda, oreOrdine, oreResidueBudget , importo, importoResiduo, Float.valueOf(f.getTariffaUtilizzata()), f.getOreEseguite(),
 								sommaVariazioniSal, sommaVariazioniPcl, f.getOreFatturare(), f.getImportoRealeFatturato(),importoRtv,
-								f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione(), f.getOreRimborsoSpese(), f.getConfermaPm());
+								f.getVariazioneSAL(), f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), 
+								f.getStatoElaborazione(), f.getOreRimborsoSpese(), f.getConfermaPm(), efficienzaPrevista);
 					}
 				}
 				
@@ -7283,14 +7291,14 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					tariffaUtilizzata=c.getTariffaSal();//prendo la tariffa della commessa
 					if(f==null){
 						foglioModel= new FoglioFatturazioneModel("#","#", "0.0", "0.0", "0.0", "0.0",Float.valueOf(tariffaUtilizzata), "0.0", 
-								sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.00", "#", "0.0", "0.0", "0.0", "", "0", "0.00", "N");
+								sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.00", "#", "0.0", "0.0", "0.0", "", "0", "0.00", "N", "1.0");
 					}
 					else{
 						//sommaVariazioniSal=ServerUtility.aggiornaTotGenerale(sommaVariazioniSal, f.getVariazioneSAL());
 						//sommaVariazioniPcl=ServerUtility.aggiornaTotGenerale(sommaVariazioniPcl, f.getVariazionePCL());
 						foglioModel= new FoglioFatturazioneModel("#","#", "0.0", "0.0", "0.0", "0.0",Float.valueOf(f.getTariffaUtilizzata()), f.getOreEseguite(),
 								sommaVariazioniSal, sommaVariazioniPcl, f.getOreFatturare(), f.getImportoRealeFatturato(),"#", f.getVariazioneSAL(), f.getVariazionePCL(), 
-								f.getOreScaricate(), f.getNote(), f.getStatoElaborazione(), f.getOreRimborsoSpese(), f.getConfermaPm());
+								f.getOreScaricate(), f.getNote(), f.getStatoElaborazione(), f.getOreRimborsoSpese(), f.getConfermaPm(), "1.0");
 					}
 
 				}else{
@@ -7307,6 +7315,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 										
 					String numOrdine=o.getCodiceOrdine();
 					String rda=o.getRda().getCodiceRDA();
+					String efficienzaPrevista=o.getEfficienzaPrevista();
 					//String importo=o.getImporto();
 					//String oreOrdine=o.getOreBudget();
 					
@@ -7317,13 +7326,13 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						//--
 						foglioModel= new FoglioFatturazioneModel(numOrdine, rda, oreOrdine,oreResidueBudget, importo, importoResiduo,
 								Float.valueOf(tariffaUtilizzata), "0.0",sommaVariazioniSal, sommaVariazioniPcl, "0.0", "0.00", importoRtv, 
-								"0.0", "0.0", "0.0", "", "0", "0.00", "N");
+								"0.0", "0.0", "0.0", "", "0", "0.00", "N", efficienzaPrevista);
 					
 					else
 						//tariffa utilizzata prendo quella registrata al momento della registrazione del foglio fatturazione
 						foglioModel= new FoglioFatturazioneModel(numOrdine, rda, oreOrdine, oreResidueBudget, importo, importoResiduo, Float.valueOf(f.getTariffaUtilizzata()), f.getOreEseguite(),
 								sommaVariazioniSal, sommaVariazioniPcl, f.getOreFatturare(), f.getImportoRealeFatturato(), importoRtv, f.getVariazioneSAL(), 
-								f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione(), f.getOreRimborsoSpese(), f.getConfermaPm());
+								f.getVariazionePCL(), f.getOreScaricate(), f.getNote(), f.getStatoElaborazione(), f.getOreRimborsoSpese(), f.getConfermaPm(), efficienzaPrevista);
 					
 				}
 			}
@@ -7937,7 +7946,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<DatiFatturazioneCommessaModel> getRiepilogoDatiFatturazioneCommessa(String commessaSelected) throws IllegalArgumentException {
+	public List<DatiFatturazioneCommessaModel> getRiepilogoDatiFatturazioneCommessa(String commessaSelected, int idAttivita)
+			throws IllegalArgumentException {
 	
 		List<DatiFatturazioneCommessaModel> listaDati= new ArrayList<DatiFatturazioneCommessaModel>();
 		List<FoglioFatturazione> listaFF=new ArrayList<FoglioFatturazione>();
@@ -7971,11 +7981,11 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 	    DecimalFormat d= new DecimalFormat(pattern,formatSymbols);		
 		
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
-		Transaction tx= null;
+		Transaction tx= null;		
 		
 		try {
 			tx = session.beginTransaction();
-						
+			
 			c_pa=(Commessa)session.createQuery("from Commessa where statoCommessa='Aperta' and numeroCommessa=:numeroCommessa and estensione=:numeroEstensione")
 					.setParameter("numeroCommessa", nCommessa).setParameter("numeroEstensione", "pa").uniqueResult();
 			
@@ -8063,40 +8073,44 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 						oreMargine="0.00";
 					}
 					
+					//TODO dovrei controllare se la commessa è legata ad una tariffa e prendere quei valori per l'ordine												
+					
 					if(c.getOrdine()!=null){
+												
 						salIniziale=c.getSalAttuale();
 						pclIniziale=c.getPclAttuale();
 						o=c.getOrdine();
+						
+						for(AttivitaOrdine a: o.getAttivitaOrdines())
+							if(a.getIdAttivitaOrdine()==idAttivita){
+								if(a.getImportoResiduoOrdine()!=0){
+									oreOrdineIniziali=d.format(a.getOreResidueOrdine());
+									importoOrdineIniziale=d.format(a.getImportoResiduoOrdine());									
+								}									
+								break;
+							}
+						
 						//per ogni estensione commessa metto l'eventuale importo/num ore ordine, se c'è!
-						datiModel=new DatiFatturazioneCommessaModel(commessa, estensione, attivita, o.getCodiceOrdine(), "0", "INIZIALI", tariffa, 
+						/*datiModel=new DatiFatturazioneCommessaModel(commessa, estensione, attivita, o.getCodiceOrdine(), "0", "INIZIALI", tariffa, 
 								(float)0, Float.valueOf(ServerUtility.getOreCentesimi(o.getOreBudget())), Float.valueOf(o.getImporto()),(float)0.0, 
+								Float.valueOf(ServerUtility.getOreCentesimi(salIniziale)), Float.valueOf(ServerUtility.getOreCentesimi(pclIniziale)), (float)0);*/
+						datiModel=new DatiFatturazioneCommessaModel(commessa, estensione, attivita, o.getCodiceOrdine(), "0", "INIZIALI", tariffa, 
+								(float)0, Float.valueOf(ServerUtility.getOreCentesimi(oreOrdineIniziali)), Float.valueOf(importoOrdineIniziale),(float)0.0, 
 								Float.valueOf(ServerUtility.getOreCentesimi(salIniziale)), Float.valueOf(ServerUtility.getOreCentesimi(pclIniziale)), (float)0);
 						listaDati.add(datiModel);
+						
 					}else{
 						salIniziale=c.getSalAttuale();
 						pclIniziale=c.getPclAttuale();
 						datiModel=new DatiFatturazioneCommessaModel(commessa, estensione, attivita, "#", "0", "INIZIALI", tariffa, 
 								(float)0, (float)0, (float)0,(float)0.0, 
 								Float.valueOf(ServerUtility.getOreCentesimi(salIniziale)), Float.valueOf(ServerUtility.getOreCentesimi(pclIniziale)), (float)0);
-						listaDati.add(datiModel);
-						
-					}
-					
+						listaDati.add(datiModel);						
+					}					
 					
 					listaFF.clear();				
 				}
-			}
-			
-			//se esiste la pa sostituisco i valori considerati precedentemente
-			/*if(esistePa){
-				salIniziale=c_pa.getSalAttuale();
-				pclIniziale=c_pa.getPclAttuale();
-			}
-				
-			datiModel=new DatiFatturazioneCommessaModel(commessa,"pa", "","", "",".INIZIALI", "", (float)0.0, Float.valueOf(ServerUtility.getOreCentesimi(oreOrdineIniziali)), 
-					 Float.valueOf(importoOrdineIniziale), (float)0.0 , Float.valueOf(ServerUtility.getOreCentesimi(salIniziale)), 
-					 Float.valueOf(ServerUtility.getOreCentesimi(pclIniziale)), (float)0.0);
-			listaDati.add(datiModel);*/
+			}		
 			
 			tx.commit();	
 			
@@ -10334,8 +10348,8 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		try {
 			
 			tx = session.beginTransaction();
-			listaP=(List<Personale>)session.createQuery("from Personale where sedeOperativa=:sede and statoRapporto<>:statoRapporto")
-					.setParameter("statoRapporto", "Cessato").setParameter("sede", sede).list();
+			listaP=(List<Personale>)session.createQuery("from Personale where sedeOperativa=:sede and statoRapporto<>:statoRapporto and gruppoLavoro<>:tipo")
+					.setParameter("statoRapporto", "Cessato").setParameter("sede", sede).setParameter("tipo", "Indiretti").list();
 			
 			for(Personale p:listaP){
 				if(p.getCostoAziendas().iterator().hasNext()){
@@ -10354,6 +10368,17 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					
 					listaC.add(r);
 					costoOrarioTotale=(float)0.0;
+				}else{
+					
+					nome=p.getCognome() + " "+p.getNome();
+					
+					r= new RiepilogoCostiDipendentiModel(p.getId_PERSONALE(), 0, nome, "0.00", p.getTipologiaOrario(), "0", 
+							"0.00","0.00", "0.00","0.00","0.00",
+							"0.00", "0.00", "0.00", p.getGruppoLavoro());
+					
+					listaC.add(r);
+					costoOrarioTotale=(float)0.0;
+					
 				}
 			}
 			

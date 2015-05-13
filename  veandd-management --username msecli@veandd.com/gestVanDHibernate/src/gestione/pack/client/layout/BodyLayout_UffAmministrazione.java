@@ -448,7 +448,7 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 		    btnProtocolloCommesse.addSelectionListener(new SelectionListener<ButtonEvent>() {
 		        public void componentSelected(ButtonEvent ce) {
 		        	Dialog d= new Dialog();
-		        	d.setSize(1430, 980);
+		        	d.setSize(1430, 900);
 		        	d.add(new PanelProtocolloCommesse());
 		        	d.setHeading("Protocollo Commesse");
 		        	d.setCollapsible(true);

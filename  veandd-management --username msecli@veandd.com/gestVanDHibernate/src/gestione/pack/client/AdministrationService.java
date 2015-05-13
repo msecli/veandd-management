@@ -148,7 +148,7 @@ public interface AdministrationService extends RemoteService {
 			String prCenter, String bem, Date dataInizio, Date dataFine,
 			String tariffa, String numRisorse, String oreDisp, String oreRes,
 			List<TariffaOrdineModel> listaTar, String importoOrdine,
-			String importoResiduoOrdine);
+			String importoResiduoOrdine, String efficienzaPrevista);
 	
 	boolean editRdoCompleta(int idRdo, String numRdo, String cliente,
 			String numOfferta, Date dataOfferte, String importo,
@@ -156,7 +156,8 @@ public interface AdministrationService extends RemoteService {
 			String conto, String prCenter, String bem, Date dataInizio,
 			Date dataFine, String tariffa, String numRisorse, String oreDisp,
 			String oreRes, List<TariffaOrdineModel> listaTar,
-			String importoOrdine, String importoResiduoOrdine);
+			String importoOrdine, String importoResiduoOrdine,
+			String efficienzaPrevista);
 	
 	boolean deleteRdoCompleta(int idRdo) throws IllegalArgumentException;
 
@@ -303,7 +304,7 @@ public interface AdministrationService extends RemoteService {
 	List<String> getCommesseRiepilogoDatiFatturazione()throws IllegalArgumentException;
 
 	List<DatiFatturazioneCommessaModel> getRiepilogoDatiFatturazioneCommessa(
-			String commessaSelected)throws IllegalArgumentException;
+			String commessaSelected, int idAttivita);
 
 	List<RiepilogoOreTotaliCommesse> getElencoCommesseSuFoglioFatturazione(
 			String numCommessa, String numEstensione, String data) throws IllegalArgumentException;

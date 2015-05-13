@@ -92,6 +92,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 	private DateField dtfldDataInizioOrdine;
 	private DateField dtfldDataFineOrdine;
 	private TextField<String> txtfldNumeroRisorse;
+	private TextField<String> txtfldEfficienzaPrevista;
 	private TextField<String> txtfldNumeroOreOrdineCompl;
 	private TextField<String> txtfldNumeroOreResidueOrdineCompl;
 	private TextField<String> txtfldImportoOrdineCompl;
@@ -183,6 +184,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 				String oreRes="0.0";
 				String importoOrdine="0.00";
 				String importoResiduoOrdine="0.00";
+				String efficienzaPrevista="1.00";
 								
 				//CntpnlFormRdo cpfrm=(CntpnlFormRdo) hpLayout.getItemByItemId("cpfrm");
 				//ContentPanel cp=(ContentPanel) cpfrm.getItemByItemId("cp");
@@ -210,6 +212,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 					if(!dtfldDataFineOrdine.getRawValue().isEmpty())dataFine=dtfldDataFineOrdine.getValue();
 					if(!txtfldTariffaOraria.getRawValue().isEmpty())tariffa=txtfldTariffaOraria.getValue().toString();
 					if(!txtfldNumeroRisorse.getRawValue().isEmpty())numRisorse=txtfldNumeroRisorse.getValue().toString();
+					if(!txtfldEfficienzaPrevista.getRawValue().isEmpty())efficienzaPrevista=txtfldEfficienzaPrevista.getValue().toString();
 					if(!txtfldNumeroOreOrdineCompl.getRawValue().isEmpty())oreDisp=txtfldNumeroOreOrdineCompl.getValue().toString();
 					if(!txtfldNumeroOreResidueOrdineCompl.getRawValue().isEmpty())oreRes=txtfldNumeroOreResidueOrdineCompl.getValue().toString();
 					if(!txtfldImportoOrdineCompl.getRawValue().isEmpty())importoOrdine=txtfldImportoOrdineCompl.getValue().toString();
@@ -217,7 +220,8 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 					
 					AdministrationService.Util.getInstance().saveRdoCompleta(numRdo, cliente, numOfferta, dataOfferte, importo, numOrdine, descrizione,
 							elementoWbs, conto, prCenter, bem
-							, dataInizio, dataFine, tariffa, numRisorse, oreDisp, oreRes, listaTar, importoOrdine, importoResiduoOrdine, new AsyncCallback<Boolean>() {
+							, dataInizio, dataFine, tariffa, numRisorse, oreDisp, oreRes, listaTar, importoOrdine, importoResiduoOrdine, 
+							efficienzaPrevista, new AsyncCallback<Boolean>() {
 					
 						@Override
 						public void onSuccess(Boolean result) {
@@ -272,6 +276,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 				String oreRes="0.0";
 				String importoOrdine="0.00";
 				String importoResiduoOrdine="0.00";
+				String efficienzaPrevista="1.00";
 				
 				//CntpnlFormRdo cpfrm=(CntpnlFormRdo) hpLayout.getItemByItemId("cpfrm");
 				//ContentPanel cp=(ContentPanel) cpfrm.getItemByItemId("cp");
@@ -297,6 +302,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 					if(!txtfldConto.getRawValue().isEmpty())conto=txtfldConto.getValue().toString();
 					if(!txtfldPrCenter.getRawValue().isEmpty())prCenter=txtfldPrCenter.getValue().toString();
 					if(!txtfldBem.getRawValue().isEmpty())bem=txtfldBem.getValue().toString();
+					if(!txtfldEfficienzaPrevista.getRawValue().isEmpty())efficienzaPrevista=txtfldEfficienzaPrevista.getValue().toString();
 					
 					if(!dtfldDataInizioOrdine.getRawValue().isEmpty())dataInizio=dtfldDataInizioOrdine.getValue();
 					if(!dtfldDataFineOrdine.getRawValue().isEmpty())dataFine=dtfldDataFineOrdine.getValue();
@@ -309,7 +315,8 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 									
 					AdministrationService.Util.getInstance().editRdoCompleta(idRdo, numRdo, cliente, numOfferta, dataOfferte, importo, numOrdine, descrizione,
 							elementoWbs, conto, prCenter, bem
-							, dataInizio, dataFine, tariffa, numRisorse, oreDisp, oreRes, listaTar, importoOrdine, importoResiduoOrdine, new AsyncCallback<Boolean>() {
+							, dataInizio, dataFine, tariffa, numRisorse, oreDisp, oreRes, listaTar, importoOrdine, importoResiduoOrdine,
+							efficienzaPrevista, new AsyncCallback<Boolean>() {
 					
 						@Override
 						public void onSuccess(Boolean result) {
@@ -646,6 +653,13 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			txtfldNumeroRisorse.setName("numeroRisorse");
 			txtfldNumeroRisorse.setRegex("[0-9]*");
 			txtfldNumeroRisorse.getMessages().setRegexText("Deve essere un numero");
+						
+			txtfldEfficienzaPrevista= new TextField<String>();
+			txtfldEfficienzaPrevista.setFieldLabel("Effic.(%)");
+			txtfldEfficienzaPrevista.setName("efficienzaPrevista");
+			txtfldEfficienzaPrevista.setRegex("^([0-9]{1}|[0-9][0-9]|[0-9][0-9][0-9])[.]{1}(0|00|[0-9]{2})$");
+			txtfldEfficienzaPrevista.getMessages().setRegexText("Deve essere un numero");
+			txtfldEfficienzaPrevista.setValue("1.00");
 			
 			txtfldNumeroOreOrdineCompl=new TextField<String>();
 			txtfldNumeroOreOrdineCompl.setWidth(120);
@@ -817,6 +831,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			layoutCol3.add(dtfldDataFineOrdine, new FormData("85%"));
 			//layoutCol3.add(txtfldTariffaOraria, new FormData("60%"));
 			layoutCol3.add(txtfldNumeroRisorse, new FormData("60%"));
+			layoutCol3.add(txtfldEfficienzaPrevista, new FormData("60%"));
 			layoutCol3.add(hp2);
 			layoutCol3.add(hp1);
 			//layoutCol3.add(new CntpnlGridTariffeOrdine(),new FormData("85%"));
@@ -1512,6 +1527,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 									
 						txtfldTariffaOraria.setValue(String.valueOf(be.getSelectedItem().getTariffa()));
 						txtfldNumeroRisorse.setValue(String.valueOf(be.getSelectedItem().getNumeroRisorse()));
+						txtfldEfficienzaPrevista.setValue((String)be.getSelectedItem().get("efficienzaPrevista"));
 						txtfldNumeroOreOrdineCompl.setValue(String.valueOf(be.getSelectedItem().getNumeroOre()));
 						txtfldNumeroOreResidueOrdineCompl.setValue(String.valueOf(be.getSelectedItem().getNumeroOreResidue()));
 						
@@ -1712,6 +1728,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 						
 			txtfldTariffaOraria.setEnabled(true);
 			txtfldNumeroRisorse.setEnabled(true);
+			txtfldEfficienzaPrevista.setEnabled(true);
 			txtfldNumeroOreOrdineCompl.setEnabled(true);
 			txtfldNumeroOreResidueOrdineCompl.setEnabled(true);
 			txtfldImportoOrdineCompl.setEnabled(true);
@@ -1739,6 +1756,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 						
 			txtfldTariffaOraria.setEnabled(false);
 			txtfldNumeroRisorse.setEnabled(false);
+			txtfldEfficienzaPrevista.setEnabled(false);
 			txtfldNumeroOreOrdineCompl.setEnabled(false);
 			txtfldNumeroOreResidueOrdineCompl.setEnabled(false);	
 			txtfldImportoOrdineCompl.setEnabled(false);
@@ -1982,6 +2000,8 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			return false;
 		if(!txtfldImportoResiduoOrdineCompl.isValid())
 			return false;					
+		if(!txtfldEfficienzaPrevista.isValid())
+			return false;
 		
 		return true;
 	}	
@@ -2003,6 +2023,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		dtfldDataFineOrdine.clear();
 		dtfldDataInizioOrdine.clear();
 		txtfldNumeroRisorse.clear();
+		txtfldEfficienzaPrevista.clear();
 		txtfldNumeroOreOrdineCompl.clear();
 		txtfldNumeroOreResidueOrdineCompl.clear();
 		txtfldImportoOrdineCompl.clear();
@@ -2020,6 +2041,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 					
 		txtfldTariffaOraria.setEnabled(true);
 		txtfldNumeroRisorse.setEnabled(true);
+		txtfldEfficienzaPrevista.setEnabled(true);
 		txtfldNumeroOreOrdineCompl.setEnabled(true);
 		txtfldNumeroOreResidueOrdineCompl.setEnabled(true);
 		txtfldImportoOrdineCompl.setEnabled(true);

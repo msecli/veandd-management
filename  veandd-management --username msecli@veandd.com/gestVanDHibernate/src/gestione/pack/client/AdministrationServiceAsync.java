@@ -121,13 +121,13 @@ public interface AdministrationServiceAsync {
 			Date dataOfferte, String importo, String numOrdine,
 			String descrizione, String elementoWbs, String conto, String prCenter, String bem, Date dataInizio, Date dataFine, String tariffa,
 			String numRisorse, String oreDisp, String oreRes,
-			List<TariffaOrdineModel> listaTar, String importoOrdine, String importoResiduoOrdine, AsyncCallback<Boolean> asyncCallback);
+			List<TariffaOrdineModel> listaTar, String importoOrdine, String importoResiduoOrdine, String efficienzaPrevista, AsyncCallback<Boolean> asyncCallback);
 	
 	void editRdoCompleta(int idRdo, String numRdo, String cliente,
 			String numOfferta, Date dataOfferte, String importo,
 			String numOrdine, String descrizione, String elementoWbs, String conto, String prCenter, String bem, Date dataInizio,
 			Date dataFine, String tariffa, String numRisorse, String oreDisp,
-			String oreRes, List<TariffaOrdineModel> listaTar, String importoOrdine, String importoResiduoOrdine, AsyncCallback<Boolean> asyncCallback);
+			String oreRes, List<TariffaOrdineModel> listaTar, String importoOrdine, String importoResiduoOrdine, String efficienzaPrevista, AsyncCallback<Boolean> asyncCallback);
 
 	void deleteRdoCompleta(int idRdo, AsyncCallback<Boolean> asyncCallback);
 	
@@ -320,7 +320,7 @@ public interface AdministrationServiceAsync {
 	void getCommesseRiepilogoDatiFatturazione(
 			AsyncCallback<List<String>> asyncCallback);
 
-	void getRiepilogoDatiFatturazioneCommessa(String commessaSelected, AsyncCallback<List<DatiFatturazioneCommessaModel>> asyncCallback);
+	void getRiepilogoDatiFatturazioneCommessa(String commessaSelected, int idAttivita, AsyncCallback<List<DatiFatturazioneCommessaModel>> asyncCallback);
 
 	void loadIntervalliToolTip(String username, Date giorno,
 			AsyncCallback<List<String>> asyncCallback);

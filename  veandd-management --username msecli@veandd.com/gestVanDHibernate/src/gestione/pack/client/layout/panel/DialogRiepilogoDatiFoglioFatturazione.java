@@ -39,10 +39,12 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 	private ColumnModel cm;	
 	
 	private String commessaSelected= new String();
+	private int idAttivita;
 	
-	public DialogRiepilogoDatiFoglioFatturazione(String commessa){
+	public DialogRiepilogoDatiFoglioFatturazione(String commessa, int idAttivita){
 	
 		commessaSelected=commessa;
+		this.idAttivita=idAttivita;
 		
 		setLayout(new FitLayout());
 		setBodyBorder(true);
@@ -329,7 +331,7 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 	
 	
 	private void caricaTabellaDatiFatturazioneCommesse() {
-		AdministrationService.Util.getInstance().getRiepilogoDatiFatturazioneCommessa(commessaSelected, new AsyncCallback<List<DatiFatturazioneCommessaModel>>() {
+		AdministrationService.Util.getInstance().getRiepilogoDatiFatturazioneCommessa(commessaSelected, idAttivita, new AsyncCallback<List<DatiFatturazioneCommessaModel>>() {
 			
 			@Override
 			public void onSuccess(List<DatiFatturazioneCommessaModel> result) {

@@ -148,7 +148,7 @@ public class PanelRiepilogoSalPclMeseOld  extends LayoutContainer{
                      @Override
                      public void componentSelected(ButtonEvent ce) {
                              String commessaSelezionata=cs.getSelectedItem().get("commessa");
-                             DialogRiepilogoDatiFoglioFatturazione d= new DialogRiepilogoDatiFoglioFatturazione(commessaSelezionata);
+                             DialogRiepilogoDatiFoglioFatturazione d= new DialogRiepilogoDatiFoglioFatturazione(commessaSelezionata, 0);
                              d.setCollapsible(true);
                              d.show();
                      }               
@@ -192,7 +192,7 @@ public class PanelRiepilogoSalPclMeseOld  extends LayoutContainer{
              cp.setHeaderVisible(false);
              cp.add(fp);
              tlbrPrint.add(cp);
-             tlbrPrint.add(btnRiep);
+           //  tlbrPrint.add(btnRiep);
              
          AggregationRowConfig<RiepilogoSALPCLModel> agrTotale= new AggregationRowPersonale();		
      	 cmRiepilogo.addAggregationRow(agrTotale);

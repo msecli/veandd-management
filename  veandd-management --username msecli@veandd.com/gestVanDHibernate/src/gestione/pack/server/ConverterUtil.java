@@ -346,7 +346,8 @@ public class ConverterUtil {
 		}
 				
 		OrdineModel ordine= new OrdineModel(o.getNumeroOrdine(), o.getCodiceOrdine(), null, codiceRda, commessa,
-				dataInizioO, dataFineO, o.getDescrizioneAttivita(), o.getTariffaOraria(), o.getNumRisorse(), o.getOreBudget(), "");
+				dataInizioO, dataFineO, o.getDescrizioneAttivita(), o.getTariffaOraria(), o.getNumRisorse(), o.getOreBudget(),
+				"", o.getEfficienzaPrevista());
 		ordine.setListaCommesse(listaC);
 		
 		return ordine;
