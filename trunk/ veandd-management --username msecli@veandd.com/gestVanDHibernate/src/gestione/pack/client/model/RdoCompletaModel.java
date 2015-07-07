@@ -13,7 +13,7 @@ private static final long serialVersionUID = 1L;
     public RdoCompletaModel(int idRdo, String numeroRdo, String cliente, String numOfferta, String dataOfferta, String descrizione,  String attivitaCommessa,
     		String elementoWbs, String conto, String prCenter, String bem,
     		String importo, String numOrdine, String commessa, String dataInizioOrdine, String dataFineOrdine, String tariffaOraria, String numeroRisorse,
-    		String numeroOre, String numeroOreResidue, String importoOrdine, String importoResiduo, String statoOrdine)
+    		String numeroOre, String numeroOreResidue, String importoOrdine, String importoResiduo, String statoOrdine, String efficienzaPrevista)
     {
     	set("numeroRdo",numeroRdo); 
     	set("idRdo", idRdo);
@@ -38,6 +38,7 @@ private static final long serialVersionUID = 1L;
     	set("importoOrdine", importoOrdine);
     	set("importoResiduo", importoResiduo);
     	set("statoOrdine", statoOrdine);
+    	set("efficienzaPrevista", efficienzaPrevista);
     }
     
 

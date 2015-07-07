@@ -340,7 +340,7 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 				else	
 					if(result.size()==0)
 						Window.alert("Nessun dato rilevato in base ai criteri di ricerca selezionati.");
-					loadTable(result);			
+					loadTable(result);
 			}
 
 			@Override
@@ -348,7 +348,7 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 				Window.alert("Errore connessione on getRiepilogoDatiFatturazioneCommessa();");
 				caught.printStackTrace();		
 			}
-		}); //AsyncCallback	   
+		}); //AsyncCallback
 	}
 	
 	private void loadTable(List<DatiFatturazioneCommessaModel> result) {
@@ -361,7 +361,7 @@ public class DialogRiepilogoDatiFoglioFatturazione extends Dialog {
 		} catch (NullPointerException e) {
 			Window.alert("error: Impossibile effettuare il caricamento dati in tabella.");
 				e.printStackTrace();
-		}			
+		}
 	}
 	
 	

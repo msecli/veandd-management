@@ -5,9 +5,11 @@ package gestione.pack.client.layout;
 import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.layout.panel.PanelAbilitazioneStraordinarioDip;
 import gestione.pack.client.layout.panel.PanelMensileOrdini;
+import gestione.pack.client.layout.panel.PanelRiepilogoCostiDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoCostiSuCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
 import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
+import gestione.pack.client.layout.panel.PanelRiepilogoStatoAvanzamentoMensileCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoStatoAvanzamentoOreCommesse;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
@@ -322,11 +324,28 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	        	center.removeAll();
 	        	center.add(new PanelAbilitazioneStraordinarioDip());
 	        	center.layout(true);
-	        	}	        
+	        	}
 	    });
 	    cp.add(btnAbilitazioneStrao);
-	    panel.add(cp);
 	    
+	    Button btnRiepilogoCostiDip = new Button();
+	    btnRiepilogoCostiDip.setToolTip("Riepilogo Costi");
+	    btnRiepilogoCostiDip.setHeight(65);
+	    btnRiepilogoCostiDip.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.costi()));
+	    btnRiepilogoCostiDip.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoCostiDip.setWidth("100%");
+	    btnRiepilogoCostiDip.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelRiepilogoCostiDipendenti("PM"));
+	        	center.layout(true);}
+	        
+	      });
+	    btnRiepilogoCostiDip.setWidth("100%");
+	    cp.add(btnRiepilogoCostiDip);
+	    
+	    panel.add(cp);	    
+	        
 	    cp = new ContentPanel();
 	    cp.setAnimCollapse(false);
 	    cp.setBodyStyleName("pad-text");
@@ -338,21 +357,7 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	        	center.layout(true);
             }
         });	    
-	   /* Button btnGestioneCommessa = new Button();
-	    btnGestioneCommessa.setToolTip("Gestione Dati Commessa");
-	    btnGestioneCommessa.setHeight(65);
-	    btnGestioneCommessa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.anagrafica()));
-	    btnGestioneCommessa.setIconAlign(IconAlign.BOTTOM);
-	    btnGestioneCommessa.setWidth("100%");
-	    btnGestioneCommessa.addSelectionListener(new SelectionListener<ButtonEvent>() {
-	        public void componentSelected(ButtonEvent ce) {
-	          center.removeAll();
-	        	center.add(new CenterLayout_GestioneCommessa());
-	        	center.layout(true);}
-	        
-	      });
-	    btnGestioneCommessa.setWidth("100%");
-	    cp.add(btnGestioneCommessa);*/
+	  
 	    
 	    Button btnAssociaPersonale = new Button();
 	    btnAssociaPersonale.setToolTip("Associazione Dipendenti Commessa");
@@ -365,25 +370,11 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	          center.removeAll();
 	        	center.add(new CenterLayout_AssociaPersonale());
 	        	center.layout(true);}
-	        
 	      });
 	    btnAssociaPersonale.setWidth("100%");
 	    cp.add(btnAssociaPersonale);
 	    
-	    Button btnRiepilogoMesePerCommessa = new Button();
-	    btnRiepilogoMesePerCommessa.setToolTip("Riepilogo Ore Su Commesse");
-	    btnRiepilogoMesePerCommessa.setHeight(65);
-	    btnRiepilogoMesePerCommessa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.presenzeDip()));
-	    btnRiepilogoMesePerCommessa.setIconAlign(IconAlign.BOTTOM);
-	    btnRiepilogoMesePerCommessa.setWidth("100%");
-	    btnRiepilogoMesePerCommessa.addSelectionListener(new SelectionListener<ButtonEvent>() {
-	        public void componentSelected(ButtonEvent ce) {
-	        	center.removeAll();
-	        	center.add(new PanelRiepilogoStatoAvanzamentoOreCommesse());
-	        	center.layout(true);}      
-	      });
-	    cp.add(btnRiepilogoMesePerCommessa);
-	    
+	   	    
 	    if(txtfldUsername.getValue().toString().compareTo("enzo.cardano")==0){
 	    	Image loadingImage = new Image(MyImages.INSTANCE.logoEnzo());
 	    	cp.add(loadingImage);
@@ -408,8 +399,8 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	        	d.setButtons("");
 	        	d.setConstrain(false);
 	        	d.show();
-	        }        
-	      });
+	        }
+	    });
 	    cp.add(btnRiepiloghiSalPcl);
 	    
 	    panel.add(cp);	    
@@ -526,9 +517,53 @@ public class BodyLayout_PersonalManager extends LayoutContainer {
 	        	d.setConstrain(false);
 	        	d.show();
 	        	
-	        }	        
+	        }
 	    });
 	    cp.add(btnRiepilogoMensile);
+	    panel.add(cp);
+	    
+	    cp = new ContentPanel();
+	    cp.setAnimCollapse(false);
+	    cp.setBodyStyleName("pad-text");
+	    cp.setHeading("Riepilogo Ore");
+	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent be) {
+            	/*center.removeAll();
+	        	center.add(new PanelRiepilogoOreDipendentiPerCommesse());
+	        	center.layout(true);     */          
+            }
+        });
+	    
+	    Button btnRiepilogoMesePerCommessa = new Button();
+	    btnRiepilogoMesePerCommessa.setToolTip("Stato avanzamento commesse (Dettaglio dipendenti)");
+	    btnRiepilogoMesePerCommessa.setHeight(65);
+	    btnRiepilogoMesePerCommessa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.presenzeDip()));
+	    btnRiepilogoMesePerCommessa.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoMesePerCommessa.setWidth("100%");
+	    btnRiepilogoMesePerCommessa.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        		center.removeAll();
+	        		center.add(new PanelRiepilogoStatoAvanzamentoOreCommesse());
+	        		center.layout(true);
+	        	}      
+	    });
+	    cp.add(btnRiepilogoMesePerCommessa);
+	    
+	    Button btnRiepilogoCommessePerMese = new Button();
+	    btnRiepilogoCommessePerMese.setToolTip("Stato avanzamento commesse (Dettaglio mensile)");
+	    btnRiepilogoCommessePerMese.setHeight(65);
+	    btnRiepilogoCommessePerMese.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.presenzeDip()));
+	    btnRiepilogoCommessePerMese.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoCommessePerMese.setWidth("100%");
+	    btnRiepilogoCommessePerMese.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelRiepilogoStatoAvanzamentoMensileCommesse());
+	        	center.layout(true);}      
+	    });
+	    cp.add(btnRiepilogoCommessePerMese);
+	    
+	    panel.add(cp);
 	    
 	    if(txtfldUsername.getValue().toString().compareTo("enzo.cardano")==0){
 	    	Image loadingImage = new Image(MyImages.INSTANCE.logoEnzo());

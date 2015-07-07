@@ -52,6 +52,8 @@ public class DettaglioOreGiornaliere extends LightEntity implements IsSerializab
 	private String totaleOreGiorno;
 	
 	private String noteAggiuntive;
+	
+	private String fermoMacchina;
 
 	//bi-directional many-to-one association to DettaglioIntervalliCommesse
 	@OneToMany(mappedBy="dettaglioOreGiornaliere", fetch=FetchType.LAZY)
@@ -239,6 +241,14 @@ public class DettaglioOreGiornaliere extends LightEntity implements IsSerializab
 		} else if (!giornoRiferimento.equals(other.giornoRiferimento))
 			return false;
 		return true;
+	}
+
+	public String getFermoMacchina() {
+		return fermoMacchina;
+	}
+
+	public void setFermoMacchina(String fermoMacchina) {
+		this.fermoMacchina = fermoMacchina;
 	}
 
 	

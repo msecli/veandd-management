@@ -25,6 +25,7 @@ import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiDettCommesse
 import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoRichiesteHardware;
 import gestione.pack.client.layout.panel.PanelRiepilogoSituazioneMensileOreDipendenti;
+import gestione.pack.client.layout.panel.PanelRiepilogoStatoAvanzamentoMensileCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoStatoAvanzamentoOreCommesse;
 import gestione.pack.client.layout.panel.PanelSaturazioneRisorsePerSede;
 import gestione.pack.client.layout.panel.PanelStrumentiAmministrativi_TabellaFogliFatturazione;
@@ -400,7 +401,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    btnRiepilogoCostiDip.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        public void componentSelected(ButtonEvent ce) {
 	        	center.removeAll();
-	        	center.add(new PanelRiepilogoCostiDipendenti());
+	        	center.add(new PanelRiepilogoCostiDipendenti("AMM"));
 	        	center.layout(true);}
 	        
 	      });
@@ -751,7 +752,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	    cp.add(btnRiepilogoAnnuale);
 	    
 	    Button btnRiepilogoMesePerCommessa = new Button();
-	    btnRiepilogoMesePerCommessa.setToolTip("Riepilogo Ore Su Commesse");
+	    btnRiepilogoMesePerCommessa.setToolTip("Stato avanzamento commesse (Dettaglio dipendenti)");
 	    btnRiepilogoMesePerCommessa.setHeight(65);
 	    btnRiepilogoMesePerCommessa.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.presenzeDip()));
 	    btnRiepilogoMesePerCommessa.setIconAlign(IconAlign.BOTTOM);
@@ -760,9 +761,25 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        public void componentSelected(ButtonEvent ce) {
 	        	center.removeAll();
 	        	center.add(new PanelRiepilogoStatoAvanzamentoOreCommesse());
-	        	center.layout(true);}      
+	        	center.layout(true);
+	        	}      
 	    });
 	    cp.add(btnRiepilogoMesePerCommessa);
+	    
+
+	    Button btnRiepilogoCommessePerMese = new Button();
+	    btnRiepilogoCommessePerMese.setToolTip("Stato avanzamento commesse (Dettaglio mensile)");
+	    btnRiepilogoCommessePerMese.setHeight(65);
+	    btnRiepilogoCommessePerMese.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.presenzeDip()));
+	    btnRiepilogoCommessePerMese.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoCommessePerMese.setWidth("100%");
+	    btnRiepilogoCommessePerMese.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelRiepilogoStatoAvanzamentoMensileCommesse());
+	        	center.layout(true);}      
+	    });
+	    cp.add(btnRiepilogoCommessePerMese);
 	    
 	    Button btnRiepilogoOreDipPerCommessa = new Button();
 	    btnRiepilogoOreDipPerCommessa.setToolTip("Riepilogo Ore Dipendenti");
@@ -1099,7 +1116,7 @@ public class BodyLayout_Administration extends LayoutContainer {
 	        	center.removeAll();
 	        	center.add(new PanelInsertRTV());
 	        	center.layout(true);	        	
-	       }      
+	       }
 	    });
 	    btnTools.setWidth("100%");
 	    cp.add(btnIns);

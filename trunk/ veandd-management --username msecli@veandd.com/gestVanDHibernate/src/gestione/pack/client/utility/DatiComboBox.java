@@ -116,7 +116,7 @@ public class DatiComboBox {
 		return lista;
 	}
 	
-
+	
 	public static List<String> getStatoCommessa() {
 		
 		List <String> listaR=new ArrayList<String>();
@@ -132,11 +132,12 @@ public class DatiComboBox {
 	
 	public static List<String> getTipoCommessa() {
 		
-		List <String> listaR=new ArrayList<String>();	
+		List <String> listaR=new ArrayList<String>();
 		listaR.add("c");
 		listaR.add("p");
 		//listaR.add("e");
 		listaR.add("i");
+		listaR.add("f");
 		return listaR;
 	}
 	
@@ -178,6 +179,16 @@ public class DatiComboBox {
 		listaR.add("29.Congedo Obbl. Padre");
 							
 		return listaR;
+	}
+	
+	
+	public static List<String> getFermoMacchina(){
+		List<String> lista=new ArrayList<String>();
+		lista.add("01.Assenza connessione TC/CODEP");
+		lista.add("02.Problema HW");
+		lista.add("02.Problema SW");
+		lista.add("04.Altro");
+		return lista;
 	}
 	
 

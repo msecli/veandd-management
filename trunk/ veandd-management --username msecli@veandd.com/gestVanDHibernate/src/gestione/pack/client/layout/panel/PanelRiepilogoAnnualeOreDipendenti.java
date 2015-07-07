@@ -41,6 +41,7 @@ import com.extjs.gxt.ui.client.widget.grid.SummaryType;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
@@ -97,7 +98,7 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 		cpGrid.setSize(w-230, h-65);
 		cpGrid.setScrollMode(Scroll.AUTO);
 		cpGrid.setLayout(new FitLayout());
-	
+
 		Resizable r=new Resizable(cpGrid);
 		
 		ToolBar tlbrOperazioni= new ToolBar();
@@ -186,6 +187,8 @@ public class PanelRiepilogoAnnualeOreDipendenti extends LayoutContainer{
 		smplcmbxSede.setSimpleValue("T");
 		smplcmbxSede.setWidth(70);
 		tlbrOperazioni.add(smplcmbxSede);
+		
+		tlbrOperazioni.add(new SeparatorToolItem());
 		
 		btnSelect= new Button();
 		btnSelect.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.reload()));

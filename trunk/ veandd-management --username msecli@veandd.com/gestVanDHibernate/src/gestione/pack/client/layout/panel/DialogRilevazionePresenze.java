@@ -269,6 +269,7 @@ public class DialogRilevazionePresenze extends Dialog {
 					TextArea txtrNote= new TextArea();
 					
 					SimpleComboBox<String> smplcmbxGiustificativo=new SimpleComboBox <String>();
+					SimpleComboBox<String> smplcmbxFermoMacchina=new SimpleComboBox<String>();
 								
 					List<String> intervalliIU= new ArrayList<String>();
 					List<IntervalliCommesseModel> intervalliC= new ArrayList<IntervalliCommesseModel>();
@@ -312,6 +313,7 @@ public class DialogRilevazionePresenze extends Dialog {
 					txtfldRecupero=fldSetGiustificativi.txtfldRecupero;
 					txtfldAbbuono=fldSetGiustificativi.txtfldAbbuono;
 					
+					smplcmbxFermoMacchina=fldSetGiustificativi.smplcmbxFermoMacchina;
 					smplcmbxGiustificativo=fldSetGiustificativi.smplcmbxAltroGiustificativo;
 					txtfldOreViaggio=fldSetGiustificativi.txtfldOreViaggio;
 					txtfldDeltaOreViaggio=fldSetGiustificativi.txtfldDeltaViaggio;
@@ -332,11 +334,17 @@ public class DialogRilevazionePresenze extends Dialog {
 					String noteAggiuntive="";
 					String oreRecuperoTot= txtfldRecuperoTotale.getValue().toString();
 					String giustificativo=new String();
-					
+					String fermoMacchina= new String();
 										
 					if(!smplcmbxGiustificativo.getRawValue().isEmpty())
 						giustificativo=smplcmbxGiustificativo.getRawValue().toString();
 					else giustificativo="";
+					
+					if((!smplcmbxFermoMacchina.getRawValue().isEmpty())&&(smplcmbxFermoMacchina.getRawValue().toString()!=null)){
+						fermoMacchina=smplcmbxFermoMacchina.getRawValue().toString();		
+					}else
+						fermoMacchina="";
+					
 					if(!txtrNote.getRawValue().isEmpty())
 						noteAggiuntive=txtrNote.getValue().toString();
 				
@@ -351,7 +359,8 @@ public class DialogRilevazionePresenze extends Dialog {
 					if(fldSetIntervalliIU.numeroInseriti()%2==0){ 
 						if(controlloDati.compareTo("OK")==0){	
 							AdministrationService.Util.getInstance().insertFoglioOreGiorno(username, giorno, totOreGenerale, delta, oreViaggio, oreAssRecupero, deltaOreViaggio, 
-									giustificativo, oreStraordinario, oreFerie, orePermesso, "0", oreAbbuono, intervalliIU, intervalliC, oreRecuperoTot, noteAggiuntive, new AsyncCallback<Boolean>() {
+									giustificativo, oreStraordinario, oreFerie, orePermesso, "0", oreAbbuono, intervalliIU, intervalliC, oreRecuperoTot, 
+									noteAggiuntive, fermoMacchina, new AsyncCallback<Boolean>() {
 
 								@Override
 								public void onFailure(Throwable caught) {
@@ -3006,6 +3015,7 @@ public class DialogRilevazionePresenze extends Dialog {
 	
 	public class FldsetGiustificativi extends FieldSet {	
 		public SimpleComboBox<String> smplcmbxAltroGiustificativo=new SimpleComboBox<String>();
+		private SimpleComboBox<String> smplcmbxFermoMacchina= new SimpleComboBox<String>();
 		public TextField<String> txtfldFerie=new TextField<String>();
 		public TextField<String> txtfldStraordinario=new TextField<String>();
 		public TextField<String> txtfldPermesso=new TextField<String>();
@@ -3385,6 +3395,14 @@ public class DialogRilevazionePresenze extends Dialog {
 				}		
 			});
 			
+			smplcmbxFermoMacchina.setEmptyText("Fermo macchina..");
+			smplcmbxFermoMacchina.setFieldLabel("Fermo macchina");
+			for(String f:DatiComboBox.getFermoMacchina()){
+				smplcmbxFermoMacchina.add(f);
+			}
+			smplcmbxFermoMacchina.setTriggerAction(TriggerAction.ALL);
+			if(result.getFermoMacchina().compareTo("")!=0)
+				smplcmbxFermoMacchina.setSimpleValue(result.getFermoMacchina());
 			
 			txtfldFerie.setValue(result.getOreFerie());
 			txtfldFerie.setAllowBlank(false);
@@ -3619,7 +3637,7 @@ public class DialogRilevazionePresenze extends Dialog {
 			txtrNoteAggiuntive.setMaxLength(250);
 			txtrNoteAggiuntive.setValue(result.get("noteAggiuntive").toString());
 			if(statoRevisione==1)txtrNoteAggiuntive.setEnabled(false);
-					
+			
 			ContentPanel cp= new ContentPanel();
 			cp.setHeaderVisible(false);
 			cp.setSize(320, 110);
@@ -3632,7 +3650,7 @@ public class DialogRilevazionePresenze extends Dialog {
 			
 			ContentPanel cp2= new ContentPanel();
 			cp2.setHeaderVisible(false);
-			cp2.setSize(320, 140);
+			cp2.setSize(320, 155);
 			cp2.setBorders(false);
 			cp2.setBodyBorder(false);
 			cp2.setFrame(false);
@@ -3671,7 +3689,7 @@ public class DialogRilevazionePresenze extends Dialog {
 			layout.setLabelWidth(90);
 			layout.setLabelAlign(LabelAlign.TOP);
 			layoutCol3.setLayout(layout);
-						
+			
 			layout=new FormLayout();
 			layout.setLabelWidth(90);
 			layout.setLabelAlign(LabelAlign.TOP);
@@ -3697,7 +3715,7 @@ public class DialogRilevazionePresenze extends Dialog {
 			hpFerie.add(lblFerie);
 			hpFerie.add(txtfldFerie);
 			hpFerie.add(btnAssegnaOreFerie);*/
-						
+			
 			layoutCol1.add(txtfldFerie, new FormData("100%"));
 			layoutCol1.add(txtfldPermesso, new FormData("100%"));
 			layoutCol1.add(txtfldStraordinario, new FormData("100%"));		
@@ -3706,12 +3724,13 @@ public class DialogRilevazionePresenze extends Dialog {
 			layoutCol6.add(smplcmbxAltroGiustificativo, new FormData("100%"));
 			layoutCol6.add(txtfldAbbuono, new FormData("20%"));			
 			layoutCol6.add(txtrNoteAggiuntive, new FormData("100%"));
+			layoutCol6.add(smplcmbxFermoMacchina, new FormData("100%"));
 			
 			layoutCol2.add(btnAssegnaOreFerie);
 			layoutCol2.add(btnAssegnaOrePermesso);
 			layoutCol2.add(btnAssegnaOreStraordinario);
 			layoutCol2.add(btnAssegnaRecupero);
-						
+			
 		    layoutCol3.add(txtfldOrePreviste, new FormData("50%"));
 			layoutCol3.add(txtfldOreViaggio, new FormData("50%"));
 			

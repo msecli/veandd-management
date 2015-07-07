@@ -367,13 +367,13 @@ public class CenterLayout_AnagraficaPersonale extends LayoutContainer {
 	    			if(txtfldCostoStruttura.getRawValue().isEmpty()){  costoS = "";}else{ costoS=txtfldCostoStruttura.getValue().toString();};
 	    			if(smplcmbxSede.getRawValue().isEmpty()){ sede="";}else{sede=smplcmbxSede.getRawValue().toString();}
 	    			if(smplcmbxSedeOperativa.getRawValue().isEmpty()){ sedeOperativa="";}else{sedeOperativa=smplcmbxSedeOperativa.getRawValue().toString();}
-	    			if(txtfldOreDirette.getRawValue().isEmpty()){ oreDirette="";}else{oreDirette=txtfldOreDirette.getValue().toString();}
-	    			if(txtfldOreIndirette.getRawValue().isEmpty()){ oreIndirette="";}else{oreIndirette=txtfldOreIndirette.getValue().toString();}
-	    			if(txtfldPermessi.getRawValue().isEmpty()){ permessi="";}else{permessi=txtfldPermessi.getValue().toString();}
-	    			if(txtfldFerie.getRawValue().isEmpty()){ ferie="";}else{ferie=txtfldFerie.getValue().toString();}
+	    			if(txtfldOreDirette.getRawValue().isEmpty()){ oreDirette="0.00";}else{oreDirette=txtfldOreDirette.getValue().toString();}
+	    			if(txtfldOreIndirette.getRawValue().isEmpty()){ oreIndirette="0.00";}else{oreIndirette=txtfldOreIndirette.getValue().toString();}
+	    			if(txtfldPermessi.getRawValue().isEmpty()){ permessi="0.00";}else{permessi=txtfldPermessi.getValue().toString();}
+	    			if(txtfldFerie.getRawValue().isEmpty()){ ferie="0.00";}else{ferie=txtfldFerie.getValue().toString();}
 	    			//if(txtfldExt.getRawValue().isEmpty()){ ext="";}else{ext=txtfldExt.getValue().toString();}
 	    			ext="";
-	    			if(txtfldOreRecupero.getRawValue().isEmpty()){ oreRecupero="";}else{oreRecupero=txtfldOreRecupero.getValue().toString();}
+	    			if(txtfldOreRecupero.getRawValue().isEmpty()){ oreRecupero="0.00";}else{oreRecupero=txtfldOreRecupero.getValue().toString();}
 	    			 
 	    			//Al momento dell'inserimento la password sarà uguale all'username
 	    			AdministrationService.Util.getInstance().insertDataPersonale(nome, cognome, username, username, statoRapporto, badge, ruolo, tipoO, tipoL, gruppoL, costoO,  costoS, 

@@ -4,6 +4,7 @@ import gestione.pack.client.SessionManagementService;
 import gestione.pack.client.layout.panel.PanelAbilitazioneStraordinarioDip;
 import gestione.pack.client.layout.panel.PanelPrintAll;
 import gestione.pack.client.layout.panel.PanelRiepilogoAnnualeOreDipendenti;
+import gestione.pack.client.layout.panel.PanelRiepilogoCostiDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
 import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoSituazioneMensileOreDipendenti;
@@ -378,6 +379,52 @@ public class BodyLayout_GestionePersonale extends LayoutContainer {
 	        
 	      });
 	    cp.add(btnAbilitazioneStrao);
+	    
+	    Button btnRiepilogoCostiDip = new Button();
+	    btnRiepilogoCostiDip.setToolTip("Riepilogo Costi");
+	    btnRiepilogoCostiDip.setHeight(65);
+	    btnRiepilogoCostiDip.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.costi()));
+	    btnRiepilogoCostiDip.setIconAlign(IconAlign.BOTTOM);
+	    btnRiepilogoCostiDip.setWidth("100%");
+	    btnRiepilogoCostiDip.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	        	center.removeAll();
+	        	center.add(new PanelRiepilogoCostiDipendenti("GP"));
+	        	center.layout(true);}
+	        
+	      });
+	    btnRiepilogoCostiDip.setWidth("100%");
+	    cp.add(btnRiepilogoCostiDip);
+	    panel.add(cp);
+	    
+	    cp = new ContentPanel();
+	    cp.setAnimCollapse(false);
+	    cp.setBodyStyleName("pad-text");
+	    cp.setHeading("Gestione Commesse");
+	    cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent be) {
+            	center.removeAll();
+	        	center.add(new CenterLayout_AssociaPersonale());
+	        	center.layout(true);
+            }
+        });	    
+	  
+	    
+	    Button btnAssociaPersonale = new Button();
+	    btnAssociaPersonale.setToolTip("Associazione Dipendenti Commessa");
+	    btnAssociaPersonale.setHeight(65);
+	    btnAssociaPersonale.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.associaPtoC()));
+	    btnAssociaPersonale.setIconAlign(IconAlign.BOTTOM);
+	    btnAssociaPersonale.setWidth("100%");
+	    btnAssociaPersonale.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	          center.removeAll();
+	        	center.add(new CenterLayout_AssociaPersonale());
+	        	center.layout(true);}
+	        
+	      });
+	    btnAssociaPersonale.setWidth("100%");
+	    cp.add(btnAssociaPersonale);
 	    
 	    panel.add(cp);
 	    

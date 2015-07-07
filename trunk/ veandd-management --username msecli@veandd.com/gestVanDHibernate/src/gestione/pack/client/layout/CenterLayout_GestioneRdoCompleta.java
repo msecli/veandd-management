@@ -86,7 +86,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 	private TextField<String> txtfldBem;
 	
 	private TextField<String> txtfldImporto;
-	private DateField dtfldDataOfferta;	
+	private DateField dtfldDataOfferta;
 	private TextField<String> txtfldNumeroOrdine;
 	private TextField<String> txtfldTariffaOraria;
 	private DateField dtfldDataInizioOrdine;
@@ -97,6 +97,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 	private TextField<String> txtfldNumeroOreResidueOrdineCompl;
 	private TextField<String> txtfldImportoOrdineCompl;
 	private TextField<String> txtfldImportoResiduoOrdineCompl;
+	private TextField<String> txtfldImportoFerro;
 	private SimpleComboBox<String> smplcmbxCliente = new SimpleComboBox<String>();
 	
 	private VerticalPanel hpLayout;
@@ -184,7 +185,8 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 				String oreRes="0.0";
 				String importoOrdine="0.00";
 				String importoResiduoOrdine="0.00";
-				String efficienzaPrevista="1.00";
+				String efficienzaPrevista="1.20";
+				String importoFerro="0.00";
 								
 				//CntpnlFormRdo cpfrm=(CntpnlFormRdo) hpLayout.getItemByItemId("cpfrm");
 				//ContentPanel cp=(ContentPanel) cpfrm.getItemByItemId("cp");
@@ -217,11 +219,12 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 					if(!txtfldNumeroOreResidueOrdineCompl.getRawValue().isEmpty())oreRes=txtfldNumeroOreResidueOrdineCompl.getValue().toString();
 					if(!txtfldImportoOrdineCompl.getRawValue().isEmpty())importoOrdine=txtfldImportoOrdineCompl.getValue().toString();
 					if(!txtfldImportoResiduoOrdineCompl.getRawValue().isEmpty())importoResiduoOrdine=txtfldImportoResiduoOrdineCompl.getValue().toString();
+					if(!txtfldImportoFerro.getRawValue().isEmpty())importoFerro=txtfldImportoFerro.getValue().toString();
 					
 					AdministrationService.Util.getInstance().saveRdoCompleta(numRdo, cliente, numOfferta, dataOfferte, importo, numOrdine, descrizione,
 							elementoWbs, conto, prCenter, bem
 							, dataInizio, dataFine, tariffa, numRisorse, oreDisp, oreRes, listaTar, importoOrdine, importoResiduoOrdine, 
-							efficienzaPrevista, new AsyncCallback<Boolean>() {
+							efficienzaPrevista, importoFerro, new AsyncCallback<Boolean>() {
 					
 						@Override
 						public void onSuccess(Boolean result) {
@@ -276,7 +279,8 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 				String oreRes="0.0";
 				String importoOrdine="0.00";
 				String importoResiduoOrdine="0.00";
-				String efficienzaPrevista="1.00";
+				String efficienzaPrevista="1.20";
+				String importoFerro="0.00";
 				
 				//CntpnlFormRdo cpfrm=(CntpnlFormRdo) hpLayout.getItemByItemId("cpfrm");
 				//ContentPanel cp=(ContentPanel) cpfrm.getItemByItemId("cp");
@@ -312,11 +316,12 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 					if(!txtfldNumeroOreResidueOrdineCompl.getRawValue().isEmpty())oreRes=txtfldNumeroOreResidueOrdineCompl.getValue().toString();
 					if(!txtfldImportoOrdineCompl.getRawValue().isEmpty())importoOrdine=txtfldImportoOrdineCompl.getValue().toString();
 					if(!txtfldImportoResiduoOrdineCompl.getRawValue().isEmpty())importoResiduoOrdine=txtfldImportoResiduoOrdineCompl.getValue().toString();
+					if(!txtfldImportoFerro.getRawValue().isEmpty())importoFerro=txtfldImportoFerro.getValue().toString();
 									
 					AdministrationService.Util.getInstance().editRdoCompleta(idRdo, numRdo, cliente, numOfferta, dataOfferte, importo, numOrdine, descrizione,
 							elementoWbs, conto, prCenter, bem
 							, dataInizio, dataFine, tariffa, numRisorse, oreDisp, oreRes, listaTar, importoOrdine, importoResiduoOrdine,
-							efficienzaPrevista, new AsyncCallback<Boolean>() {
+							efficienzaPrevista,  importoFerro, new AsyncCallback<Boolean>() {
 					
 						@Override
 						public void onSuccess(Boolean result) {
@@ -579,7 +584,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			txtfldNumeroOfferta.setName("numeroOfferta");
 			txtfldNumeroOfferta.setMaxLength(20);
 			txtfldNumeroOfferta.setAllowBlank(true);
-						
+			
 			dtfldDataOfferta=new DateField();
 			dtfldDataOfferta.setFieldLabel("Data Offerta");
 			dtfldDataOfferta.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd-MM-yyyy"));
@@ -606,7 +611,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			dtfldDataInizioOrdine=new DateField();
 			dtfldDataInizioOrdine.setFieldLabel("Data Inizio");
 			dtfldDataInizioOrdine.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd-MM-yyyy"));
-			dtfldDataInizioOrdine.setAllowBlank(true);
+			dtfldDataInizioOrdine.setAllowBlank(false);
 			
 			dtfldDataFineOrdine=new DateField();
 			dtfldDataFineOrdine.setFieldLabel("Data Fine");
@@ -659,7 +664,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			txtfldEfficienzaPrevista.setName("efficienzaPrevista");
 			txtfldEfficienzaPrevista.setRegex("^([0-9]{1}|[0-9][0-9]|[0-9][0-9][0-9])[.]{1}(0|00|[0-9]{2})$");
 			txtfldEfficienzaPrevista.getMessages().setRegexText("Deve essere un numero");
-			txtfldEfficienzaPrevista.setValue("1.00");
+			txtfldEfficienzaPrevista.setValue("1.20");
 			
 			txtfldNumeroOreOrdineCompl=new TextField<String>();
 			txtfldNumeroOreOrdineCompl.setWidth(120);
@@ -816,6 +821,40 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 				 }
 			});
 			
+			txtfldImportoFerro=new TextField<String>();
+			txtfldImportoFerro.setWidth(120);
+			txtfldImportoFerro.setEmptyText("Importo Ferro...");
+			txtfldImportoFerro.setToolTip("Importo Ferro");
+			txtfldImportoFerro.setRegex("[0-9]+[.][0-9]{1}[0-9]{1}|0.00|0.0");
+			txtfldImportoFerro.addKeyListener(new KeyListener(){
+				 public void componentKeyDown(ComponentEvent event) { 	  
+				    	int keyCode=event.getKeyCode();
+						if(keyCode==9){							
+							if(txtfldImportoFerro.getValue()==null)
+								txtfldImportoFerro.setValue("0.00");
+							else{
+								String valore= txtfldImportoFerro.getValue().toString();
+														
+								if(valore.compareTo("")==0)
+									valore ="0.00";
+								else
+									if(valore.indexOf(".")==-1)
+										valore=valore+".00";
+									else{
+										int index=valore.indexOf(".");
+										int length=valore.length();
+										
+										if(valore.substring(index+1, length).length()==1)
+											valore=valore+"0";		
+										else if(valore.substring(index+1, length).length()==0)
+											valore=valore+"00";
+									}
+								txtfldImportoFerro.setValue(valore);
+							}
+						}
+				 }
+			});
+			
 			HorizontalPanel hp1= new HorizontalPanel();
 			hp1.setSpacing(2);
 			hp1.add(txtfldImportoOrdineCompl);
@@ -826,6 +865,10 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			hp2.add(txtfldNumeroOreOrdineCompl);
 			hp2.add(txtfldNumeroOreResidueOrdineCompl);
 			
+			HorizontalPanel hp3=new HorizontalPanel();
+			hp3.setSpacing(2);
+			//hp3.add(txtfldImportoFerro);
+			
 			layoutCol3.add(txtfldNumeroOrdine,new FormData("85%"));
 			layoutCol3.add(dtfldDataInizioOrdine,new FormData("85%"));
 			layoutCol3.add(dtfldDataFineOrdine, new FormData("85%"));
@@ -834,6 +877,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			layoutCol3.add(txtfldEfficienzaPrevista, new FormData("60%"));
 			layoutCol3.add(hp2);
 			layoutCol3.add(hp1);
+			layoutCol3.add(hp3);
 			//layoutCol3.add(new CntpnlGridTariffeOrdine(),new FormData("85%"));
 			
 			RowData data = new RowData(.25, 1);
@@ -846,7 +890,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			cp.add(layoutCol2, data);
 			cp.add(layoutCol3, data);
 			
-			add(cp);			
+			add(cp);
 		}
 		
 		public void getClienti(){
@@ -883,7 +927,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 
 				@Override
 				public void onSuccess(List<OffertaModel> result) {
-					if(result!=null){		
+					if(result!=null){
 						ListStore<OffertaModel> lista= new ListStore<OffertaModel>();
 						lista.setStoreSorter(new StoreSorter<OffertaModel>());  
 						lista.setDefaultSort("numeroOfferta", SortDir.ASC);
@@ -895,7 +939,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 					}else Window.alert("error: Errore durante l'accesso ai dati Personale.");				
 				}
 			});				
-		}		
+		}
 	}
 	
 	
@@ -933,7 +977,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 			
 			cs=new CellSelectionModel<TariffaOrdineModel>();
 		    cs.setSelectionMode(SelectionMode.SIMPLE);
-	   
+
 		    txtfldTariffa= new TextField<String>();
 		    txtfldTariffa.setRegex("^([0-9]{1}|[0-9][0-9]|[0-9][0-9][0-9])[.]{1}(0|00|[0-9]{2})$");
 		    txtfldTariffa.getMessages().setRegexText("Deve essere un numero!");
@@ -948,7 +992,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 								txtfldTariffa.setValue("0.00");
 							else{
 								String valore= txtfldTariffa.getValue().toString();
-														
+								
 								if(valore.compareTo("")==0)
 									valore ="0.00";
 								else
@@ -999,7 +1043,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 											valore=valore+"00";
 									}
 								txtfldOreOrdine.setValue(valore);
-							}		
+							}
 						}
 				 }
 		    });
@@ -1016,7 +1060,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 				}
 			});
 		    txtfldOreResidueOrdine.addKeyListener(new KeyListener(){
-				 public void componentKeyDown(ComponentEvent event) { 	  
+				 public void componentKeyDown(ComponentEvent event) {
 				    	int keyCode=event.getKeyCode();
 						if(keyCode==9){
 							
@@ -1040,7 +1084,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 											valore=valore+"00";
 									}
 								txtfldOreResidueOrdine.setValue(valore);
-							}						
+							}
 						}
 				 }
 			});
@@ -1496,15 +1540,15 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		            	String dataF=be.getSelectedItem().getDataFine();
 		            	try {	
 		            		if(data.compareTo("#")!=0){
-		            			dataOff=DateTimeFormat.getFormat("dd-MM-yyyy").parse(data);
+		            			dataOff=DateTimeFormat.getFormat("yyyy-MM-dd").parse(data);
 		            			dtfldDataOfferta.setValue(dataOff);
 		            		}else dtfldDataOfferta.clear();
 		            		if(dataI.compareTo("#")!=0){
-		            			dataInizio=DateTimeFormat.getFormat("dd-MM-yyyy").parse(dataI);
+		            			dataInizio=DateTimeFormat.getFormat("yyyy-MM-dd").parse(dataI);
 		            			dtfldDataInizioOrdine.setValue(dataInizio);
 		            		}else dtfldDataInizioOrdine.clear();
 		            		if(dataF.compareTo("#")!=0){
-		            			dataFine=DateTimeFormat.getFormat("dd-MM-yyyy").parse(dataF); 
+		            			dataFine=DateTimeFormat.getFormat("yyyy-MM-dd").parse(dataF); 
 		            			dtfldDataFineOrdine.setValue(dataFine);
 		            		}else dtfldDataFineOrdine.clear();
 		            	} catch (Exception e)
@@ -1533,7 +1577,8 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 						
 						txtfldImportoOrdineCompl.setValue((String)be.getSelectedItem().get("importoOrdine"));
 						txtfldImportoResiduoOrdineCompl.setValue((String)be.getSelectedItem().get("importoResiduo"));
-		               
+						txtfldEfficienzaPrevista.setValue((String)be.getSelectedItem().get("efficienzaPrevista"));
+						
 						VerticalPanel vp= new VerticalPanel();
 						vp=(VerticalPanel) getParent();
 						//CntpnlFormRdo cpfrm=(CntpnlFormRdo) vp.getItemByItemId("cpfrm");

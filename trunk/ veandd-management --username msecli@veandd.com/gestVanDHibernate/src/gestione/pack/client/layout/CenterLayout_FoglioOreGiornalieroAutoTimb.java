@@ -334,6 +334,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					TextArea txtrNote= new TextArea();
 					
 					SimpleComboBox<String> smplcmbxGiustificativo=new SimpleComboBox <String>();
+					SimpleComboBox<String> smplcmbxFermoMacchina = new SimpleComboBox<String>();
 								
 					List<String> intervalliIU= new ArrayList<String>();
 					List<IntervalliCommesseModel> intervalliC= new ArrayList<IntervalliCommesseModel>();
@@ -378,6 +379,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					txtfldAbbuono=fldSetGiustificativi.txtfldAbbuono;
 					
 					smplcmbxGiustificativo=fldSetGiustificativi.smplcmbxAltroGiustificativo;
+					smplcmbxFermoMacchina=fldSetGiustificativi.smplcmbxFermoMacchina;
 					txtfldOreViaggio=fldSetGiustificativi.txtfldOreViaggio;
 					txtfldDeltaOreViaggio=fldSetGiustificativi.txtfldDeltaViaggio;
 					txtfldRecuperoTotale=fldSetRiepilogoTotale.txtfldOreRecuperoMonteTotale;
@@ -397,6 +399,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					String noteAggiuntive="";
 					String oreRecuperoTot= txtfldRecuperoTotale.getValue().toString();
 					String giustificativo=new String();
+					String fermoMacchina= new String();
 					
 					//TODO
 					//generare un numero che mi dica quanti giustificativi ci sono e inserirlo nella stringa "giustificativo"
@@ -412,6 +415,12 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					}
 					else 
 						giustificativo= ClientUtility.elaboraCodiceGiustificativo(oreStraordinario, oreAssRecupero, oreFerie, orePermesso);
+					
+					if((!smplcmbxFermoMacchina.getRawValue().isEmpty())&&(smplcmbxFermoMacchina.getRawValue().toString()!=null)){
+						fermoMacchina=smplcmbxFermoMacchina.getRawValue().toString();		
+					}else
+						fermoMacchina="";
+					
 					if(!txtrNote.getRawValue().isEmpty())
 						noteAggiuntive=txtrNote.getValue().toString();
 										
@@ -425,7 +434,8 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 					if(fldSetIntervalliIU.numeroInseriti()%2==0){ //controllo su intervalli compilati che siano in numero pari
 						if(controlloDati.compareTo("OK")==0){
 							AdministrationService.Util.getInstance().insertFoglioOreGiorno(username, giorno, totOreGenerale, delta, oreViaggio, oreAssRecupero, deltaOreViaggio, 
-									giustificativo, oreStraordinario, oreFerie, orePermesso, String.valueOf(statoRevisione), oreAbbuono, intervalliIU, intervalliC, oreRecuperoTot, noteAggiuntive, new AsyncCallback<Boolean>() {
+									giustificativo, oreStraordinario, oreFerie, orePermesso, String.valueOf(statoRevisione), oreAbbuono, intervalliIU, intervalliC, oreRecuperoTot, 
+									noteAggiuntive, fermoMacchina, new AsyncCallback<Boolean>() {
 
 								@Override
 								public void onFailure(Throwable caught) {
@@ -2768,13 +2778,13 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 				//fldsetGiustificativo.smplcmbxAltroGiustificativo.setAllowBlank(false);
 			}	
 			
-			if(Float.valueOf(delta)==0){			
+			if(Float.valueOf(delta)==0){
 				//fldsetGiustificativo.txtfldRecupero.setEnabled(false);
 				fldsetGiustificativo.smplcmbxAltroGiustificativo.setAllowBlank(true);
 				fldsetGiustificativo.txtfldFerie.setEnabled(false);
 				fldsetGiustificativo.txtfldPermesso.setEnabled(false);	
 			//	fldsetGiustificativo.txtfldStraordinario.setEnabled(false);
-			}	
+			}
 			
 			if(giustificativo.compareTo("23.Abbuono")==0){
 				
@@ -2784,9 +2794,9 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 				fldsetGiustificativo.btnAssegnaRecupero.setEnabled(false);
 				
 			}
-		}		
+		}
 				
-		private void enableFieldGiustificativo(FldsetGiustificativi fldsetGiustificativo){	
+		private void enableFieldGiustificativo(FldsetGiustificativi fldsetGiustificativo){
 			fldsetGiustificativo.txtfldFerie.setEnabled(true);
 			fldsetGiustificativo.txtfldPermesso.setEnabled(true);
 			//fldsetGiustificativo.txtfldStraordinario.setEnabled(true);
@@ -2799,7 +2809,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			String username=txtfldUsername.getValue().toString();
 			Date giorno=dtfldGiorno.getValue();
 			
-			AdministrationService.Util.getInstance().loadIntervalliToolTip(username, giorno, new AsyncCallback<List<String>>() {		
+			AdministrationService.Util.getInstance().loadIntervalliToolTip(username, giorno, new AsyncCallback<List<String>>() {
 				@Override
 				public void onSuccess(List<String> result) {
 					if(result==null)
@@ -3045,7 +3055,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			   listaParziali.add(txtfldSomma3.getValue().toString());
 			   listaParziali.add(txtfldSomma4.getValue().toString());
 			   listaParziali.add(txtfldSomma5.getValue().toString());
-  	   	  		   	  	
+  	   	  		
 			   //if(!fldsetGiustificativo.txtfldAbbuono.getRawValue().isEmpty())
 			   abbuono="-"+fldsetGiustificativo.txtfldAbbuono.getValue();
 			   // else
@@ -3318,6 +3328,8 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 	
 	public class FldsetGiustificativi extends FieldSet {	
 		public SimpleComboBox<String> smplcmbxAltroGiustificativo=new SimpleComboBox<String>();
+		private SimpleComboBox<String> smplcmbxFermoMacchina= new SimpleComboBox<String>();
+		
 		public TextField<String> txtfldFerie=new TextField<String>();
 		public TextField<String> txtfldStraordinario=new TextField<String>();
 		public TextField<String> txtfldPermesso=new TextField<String>();
@@ -3735,6 +3747,14 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 				}		
 			});
 			
+			smplcmbxFermoMacchina.setEmptyText("Fermo macchina..");
+			smplcmbxFermoMacchina.setFieldLabel("Fermo macchina");
+			for(String f:DatiComboBox.getFermoMacchina()){
+				smplcmbxFermoMacchina.add(f);
+			}
+			smplcmbxFermoMacchina.setTriggerAction(TriggerAction.ALL);
+			if(result.getFermoMacchina().compareTo("")!=0)
+				smplcmbxFermoMacchina.setSimpleValue(result.getFermoMacchina());
 			
 			txtfldFerie.setValue(result.getOreFerie());
 			txtfldFerie.setAllowBlank(false);
@@ -3969,7 +3989,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			txtrNoteAggiuntive.setMaxLength(250);
 			txtrNoteAggiuntive.setValue(result.get("noteAggiuntive").toString());
 			if(statoRevisione==2)txtrNoteAggiuntive.setEnabled(false);
-					
+				
 			ContentPanel cp= new ContentPanel();
 			cp.setHeaderVisible(false);
 			cp.setSize(320, 110);
@@ -3982,7 +4002,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			
 			ContentPanel cp2= new ContentPanel();
 			cp2.setHeaderVisible(false);
-			cp2.setSize(320, 140);
+			cp2.setSize(320, 155);
 			cp2.setBorders(false);
 			cp2.setBodyBorder(false);
 			cp2.setFrame(false);
@@ -4056,6 +4076,7 @@ public class CenterLayout_FoglioOreGiornalieroAutoTimb extends LayoutContainer {
 			layoutCol6.add(smplcmbxAltroGiustificativo, new FormData("100%"));
 			layoutCol6.add(txtfldAbbuono, new FormData("20%"));			
 			layoutCol6.add(txtrNoteAggiuntive, new FormData("100%"));
+			layoutCol6.add(smplcmbxFermoMacchina, new FormData("100%"));
 			
 			layoutCol2.add(btnAssegnaOreFerie);
 			layoutCol2.add(btnAssegnaOrePermesso);

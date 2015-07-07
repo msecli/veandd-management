@@ -85,8 +85,10 @@ public class PanelRiepilogoCostiDipendenti extends LayoutContainer{
 	private com.google.gwt.user.client.ui.FormPanel fp= new com.google.gwt.user.client.ui.FormPanel();
 	private static String url= "/gestvandhibernate/PrintDataServlet";
 	
-	public PanelRiepilogoCostiDipendenti(){
-		
+	protected String ruolo;
+	
+	public PanelRiepilogoCostiDipendenti(String ruolo){
+		this.ruolo=ruolo;
 	}
 	
 	protected void onRender(Element target, int index) {
@@ -197,6 +199,11 @@ public class PanelRiepilogoCostiDipendenti extends LayoutContainer{
 				}
 			}
 		});
+		
+		if((ruolo.compareTo("PM")==0)){
+			btnConfirm.disable();
+			btnAdd.disable();
+		}
 		
 		smplcmbxSede= new SimpleComboBox<String>();
 		smplcmbxSede.setFieldLabel("Sede");
@@ -541,7 +548,7 @@ public class PanelRiepilogoCostiDipendenti extends LayoutContainer{
 	    column.setWidth(100);
 	    txtfldCostoOneri= new TextField<String>();
 	    txtfldCostoOneri.setValue("0.00");
-	    txtfldCostoOneri.setRegex("^([0-9]+).(00|15|30|45)$");
+	    txtfldCostoOneri.setRegex("^([0-9]+).([0-9]{1,2})$");
 	    txtfldCostoOneri.addKeyListener(new KeyListener(){
 			
 			/*	public void componentKeyUp(ComponentEvent event) {				
@@ -612,7 +619,7 @@ public class PanelRiepilogoCostiDipendenti extends LayoutContainer{
 									}
 								txtfldCostoSoftware.setValue(valore);
 								
-							}						
+							}				
 						}
 				 }
 			});

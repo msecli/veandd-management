@@ -207,9 +207,9 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			cmbxDipendente.setDisplayField("nomeCompleto");
 			cmbxDipendente.addListener(Events.OnClick, new Listener<BaseEvent>(){
 				@Override
-				public void handleEvent(BaseEvent be) {					
-						getAllDipendenti();					
-				}		
+				public void handleEvent(BaseEvent be) {
+						getAllDipendenti();	
+				}
 			});
 						
 			ButtonBar buttonBarTop = new ButtonBar();
@@ -379,6 +379,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 						TextField<String> txtfldDeltaOreViaggio= new TextField<String>();
 						//TextField<String> txtfldOreTotali= new TextField<String>();
 						SimpleComboBox<String> smplcmbxGiustificativo=new SimpleComboBox <String>();
+						SimpleComboBox<String> smplcmbxFermoMacchina=new SimpleComboBox<String>();
 						TextArea txtrNote= new TextArea();
 											
 						List<String> intervalliIU= new ArrayList<String>();
@@ -427,6 +428,8 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 						txtfldDeltaOreViaggio=fldSetGiustificativi.txtfldDeltaViaggio;
 						txtfldRecuperoTotale=fldSetRiepilogoTotale.txtfldOreRecuperoMonteTotale;
 						txtrNote=fldSetGiustificativi.txtrNoteAggiuntive;
+						smplcmbxFermoMacchina=fldSetGiustificativi.smplcmbxFermoMacchina;
+						
 						//txtfldOreTotali=fldSetGiustificativi.txtfldOreTotEffettive;
 						
 						String totOreGenerale=txtfldTotGenerale.getValue().toString();
@@ -441,6 +444,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 						String noteAggiuntive="";
 						String oreRecuperoTot= txtfldRecuperoTotale.getValue().toString();
 						String giustificativo=new String();
+						String fermoMacchina=new String();
 											
 						//TODO
 						//generare un numero che mi dica quanti giustificativi ci sono e inserirlo nella stringa "giustificativo"
@@ -455,6 +459,12 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 						}
 						else 
 							ClientUtility.elaboraCodiceGiustificativo(oreStraordinario, oreAssRecupero, oreFerie, orePermesso);
+						
+						if((!smplcmbxFermoMacchina.getRawValue().isEmpty())&&(smplcmbxFermoMacchina.getRawValue().toString()!=null)){
+							fermoMacchina=smplcmbxFermoMacchina.getRawValue().toString();		
+						}else
+							fermoMacchina="";
+						
 						if(!txtrNote.getRawValue().isEmpty())
 							noteAggiuntive=txtrNote.getValue().toString();
 						
@@ -468,7 +478,8 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 						if(controlloDati.compareTo("OK")==0){ 
 						
 								AdministrationService.Util.getInstance().insertFoglioOreGiorno(username, giorno, totOreGenerale, delta, oreViaggio, oreAssRecupero, deltaOreViaggio, 
-										giustificativo, oreStraordinario, oreFerie, orePermesso, "0", oreAbbuono, intervalliIU, intervalliC, oreRecuperoTot, noteAggiuntive, new AsyncCallback<Boolean>() {
+										giustificativo, oreStraordinario, oreFerie, orePermesso, "0", oreAbbuono, 
+										intervalliIU, intervalliC, oreRecuperoTot, noteAggiuntive, fermoMacchina, new AsyncCallback<Boolean>() {
 
 									@Override
 									public void onFailure(Throwable caught) {
@@ -3097,6 +3108,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 	
 	public class FldsetGiustificativi extends FieldSet {	
 		public SimpleComboBox<String> smplcmbxAltroGiustificativo=new SimpleComboBox<String>();
+		public SimpleComboBox<String> smplcmbxFermoMacchina=new SimpleComboBox<String>();
 		public TextField<String> txtfldFerie=new TextField<String>();
 		public TextField<String> txtfldStraordinario=new TextField<String>();
 		public TextField<String> txtfldPermesso=new TextField<String>();
@@ -3483,6 +3495,14 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 				}		
 			});
 			
+			smplcmbxFermoMacchina.setEmptyText("Fermo macchina..");
+			smplcmbxFermoMacchina.setFieldLabel("Fermo macchina");
+			for(String f:DatiComboBox.getFermoMacchina()){
+				smplcmbxFermoMacchina.add(f);
+			}
+			smplcmbxFermoMacchina.setTriggerAction(TriggerAction.ALL);
+			if(result.getFermoMacchina().compareTo("")!=0)
+				smplcmbxFermoMacchina.setSimpleValue(result.getFermoMacchina());
 			
 			txtfldFerie.setValue(result.getOreFerie());
 			txtfldFerie.setAllowBlank(false);
@@ -3726,7 +3746,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			
 			ContentPanel cp2= new ContentPanel();
 			cp2.setHeaderVisible(false);
-			cp2.setSize(320, 140);
+			cp2.setSize(320, 155);
 			cp2.setBorders(false);
 			cp2.setBodyBorder(false);
 			cp2.setFrame(false);
@@ -3800,6 +3820,7 @@ public class CenterLayout_FoglioOreSelectDipendenti extends LayoutContainer {
 			layoutCol6.add(smplcmbxAltroGiustificativo, new FormData("100%"));
 			layoutCol6.add(txtfldAbbuono, new FormData("20%"));			
 			layoutCol6.add(txtrNoteAggiuntive, new FormData("100%"));
+			layoutCol6.add(smplcmbxFermoMacchina, new FormData("100%"));
 			
 			layoutCol2.add(btnAssegnaOreFerie);
 			layoutCol2.add(btnAssegnaOrePermesso);

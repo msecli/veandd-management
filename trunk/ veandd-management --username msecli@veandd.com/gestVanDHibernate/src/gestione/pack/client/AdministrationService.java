@@ -148,7 +148,8 @@ public interface AdministrationService extends RemoteService {
 			String prCenter, String bem, Date dataInizio, Date dataFine,
 			String tariffa, String numRisorse, String oreDisp, String oreRes,
 			List<TariffaOrdineModel> listaTar, String importoOrdine,
-			String importoResiduoOrdine, String efficienzaPrevista);
+			String importoResiduoOrdine, String efficienzaPrevista,
+			String importoFerro);
 	
 	boolean editRdoCompleta(int idRdo, String numRdo, String cliente,
 			String numOfferta, Date dataOfferte, String importo,
@@ -157,7 +158,7 @@ public interface AdministrationService extends RemoteService {
 			Date dataFine, String tariffa, String numRisorse, String oreDisp,
 			String oreRes, List<TariffaOrdineModel> listaTar,
 			String importoOrdine, String importoResiduoOrdine,
-			String efficienzaPrevista);
+			String efficienzaPrevista, String importoFerro);
 	
 	boolean deleteRdoCompleta(int idRdo) throws IllegalArgumentException;
 
@@ -249,7 +250,7 @@ public interface AdministrationService extends RemoteService {
 			String orePermesso, String revisione, String oreAbbuono,
 			List<String> intervalliIU,
 			List<IntervalliCommesseModel> intervalliC, String oreRecuperoTot,
-			String noteAggiuntive);
+			String noteAggiuntive, String fermoMacchina);
 	
 	boolean insertFoglioOreGiorno(String username, Date giorno,
 			List<IntervalliCommesseModel> intervalliC);
@@ -500,7 +501,7 @@ boolean invioCommenti(String testo, String username, Date giorno);
 			String tabSelected, String pm);
 
 	List<RiepilogoCostiDipSuCommesseFatturateModel> getRiepilogoCostiSuCommesseFatturate(
-			String pm, String mese, String anno)throws IllegalArgumentException;
+			String pm, String mese, String anno, boolean includi);
 
 	List<DatiFatturazioneMeseModel> getReportDatiFatturazioneMese(String pm,
 			String meseSel)throws IllegalArgumentException;
@@ -510,5 +511,9 @@ boolean invioCommenti(String testo, String username, Date giorno);
 
 	List<RiepilogoCostiDipSuCommesseFatturateModel> riepilogoTotaleMarginiSuCommesse(
 			String mese, String anno);
+
+	List<RiepilogoOreDipFatturazione> getRiepilogoOreMeseDettaglioCommesse(
+			String annoI, String meseI, String annoF, String meseF, String pm,
+			List<CommessaModel> listaCommesseSel);
 			
 }
