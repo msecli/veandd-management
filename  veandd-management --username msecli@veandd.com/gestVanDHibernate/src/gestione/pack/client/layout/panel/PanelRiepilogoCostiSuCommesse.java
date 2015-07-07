@@ -22,10 +22,12 @@ import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.grid.AggregationRenderer;
@@ -70,7 +72,8 @@ public class PanelRiepilogoCostiSuCommesse  extends LayoutContainer{
 	protected Button btnAggiorna;
 	protected Button btnMostraTotale;
 	protected Button btnPrint;
-	
+	protected Label lblchbx;
+	protected CheckBox chbxIncludi;
 	protected Status status;
 	
 	public PanelRiepilogoCostiSuCommesse(){
@@ -145,6 +148,11 @@ public class PanelRiepilogoCostiSuCommesse  extends LayoutContainer{
 		}
 		smplcmbxMese.setSimpleValue(mese);
 		
+		lblchbx= new Label();
+		lblchbx.setText("Includi non fatturabili:");
+		
+		chbxIncludi= new CheckBox();
+				
 		btnAggiorna=new Button();
 		btnAggiorna.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.reload()));
 		btnAggiorna.setIconAlign(IconAlign.BOTTOM);
@@ -160,9 +168,13 @@ public class PanelRiepilogoCostiSuCommesse  extends LayoutContainer{
 					String pm=smplcmbxPm.getRawValue().toString();
 					String anno=smplcmbxAnno.getRawValue().toString();
 					String mese=smplcmbxMese.getRawValue().toString();
+					boolean includi=false;
+					
+					if(chbxIncludi.getValue())
+						includi=true;
 					
 					if(pm.compareTo("Tutti")!=0)
-						AdministrationService.Util.getInstance().getRiepilogoCostiSuCommesseFatturate(pm, mese, anno, new AsyncCallback<List<RiepilogoCostiDipSuCommesseFatturateModel>>() {
+						AdministrationService.Util.getInstance().getRiepilogoCostiSuCommesseFatturate(pm, mese, anno, includi, new AsyncCallback<List<RiepilogoCostiDipSuCommesseFatturateModel>>() {
 
 							@Override
 							public void onFailure(Throwable caught) {
@@ -179,7 +191,6 @@ public class PanelRiepilogoCostiSuCommesse  extends LayoutContainer{
 								else
 									Window.alert("Impossibile effettuare il caricamento dati!");
 							}
-
 						});
 					else
 						AdministrationService.Util.getInstance().riepilogoTotaleMarginiSuCommesse(mese, anno, new AsyncCallback<List<RiepilogoCostiDipSuCommesseFatturateModel>>() {
@@ -203,7 +214,7 @@ public class PanelRiepilogoCostiSuCommesse  extends LayoutContainer{
 				}
 		});	  
 		
-		
+						
 		btnMostraTotale=new Button();
 		btnMostraTotale.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riep_comm()));
 		btnMostraTotale.setIconAlign(IconAlign.BOTTOM);
@@ -279,9 +290,10 @@ public class PanelRiepilogoCostiSuCommesse  extends LayoutContainer{
 		tlbrOpzioni.add(smplcmbxMese);
 		tlbrOpzioni.add(smplcmbxPm);
 		tlbrOpzioni.add(new SeparatorToolItem());
-		tlbrOpzioni.add(btnAggiorna);
+		tlbrOpzioni.add(lblchbx);
+		tlbrOpzioni.add(chbxIncludi);
 		tlbrOpzioni.add(new SeparatorToolItem());
-		//tlbrOpzioni.add(btnMostraTotale);
+		tlbrOpzioni.add(btnAggiorna);
 		tlbrOpzioni.add(new SeparatorToolItem());
 		tlbrOpzioni.add(cp);
 		tlbrOpzioni.add(status);

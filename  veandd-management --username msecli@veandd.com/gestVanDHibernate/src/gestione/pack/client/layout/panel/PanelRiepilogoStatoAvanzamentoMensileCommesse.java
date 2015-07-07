@@ -55,7 +55,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
-public class PanelRiepilogoStatoAvanzamentoOreCommesse extends LayoutContainer{
+public class PanelRiepilogoStatoAvanzamentoMensileCommesse extends LayoutContainer{
 
 	private ListStore<CommessaModel> storeCommesse;
 	private GroupingStore<RiepilogoOreDipFatturazione>storeRiepCommesse = new GroupingStore<RiepilogoOreDipFatturazione>();
@@ -82,8 +82,8 @@ public class PanelRiepilogoStatoAvanzamentoOreCommesse extends LayoutContainer{
 	private int h=Window.getClientHeight();
 	private int w=Window.getClientWidth();	
 	
-	public PanelRiepilogoStatoAvanzamentoOreCommesse(){
-		
+	public PanelRiepilogoStatoAvanzamentoMensileCommesse() {
+				
 	}
 	
 	protected void onRender(Element target, int index) {  
@@ -119,8 +119,8 @@ public class PanelRiepilogoStatoAvanzamentoOreCommesse extends LayoutContainer{
 		cm=new CellSelectionModel<RiepilogoOreDipFatturazione>();
 		cm.setSelectionMode(SelectionMode.SIMPLE);	   
 		cmRiepCommesse=new ColumnModel(createColumnsDettaglioCommesse());
-		storeRiepCommesse.groupBy("numeroCommessa");
-		storeRiepCommesse.setSortField("dipendente");
+		storeRiepCommesse.groupBy("indicativoMese");
+		//storeRiepCommesse.setSortField("dipendente");
 		storeRiepCommesse.setSortDir(SortDir.ASC);
 		
 		GroupSummaryView summary = new GroupSummaryView();  
@@ -149,7 +149,7 @@ public class PanelRiepilogoStatoAvanzamentoOreCommesse extends LayoutContainer{
 						String mese=r1.get("meseRif");
 						if(commessa.compareTo(numeroCommessa)==0 && mese.compareTo("Totale")!=0)
 							storeRiepMesi.add(r1);
-					}								
+					}
 					gridRiepMesi.reconfigure(storeRiepMesi, cmRiepMesi);
 				}
 		});	  
@@ -217,7 +217,7 @@ public class PanelRiepilogoStatoAvanzamentoOreCommesse extends LayoutContainer{
 		smplcmbxPeriodo.setEmptyText("Periodo..");
 		smplcmbxPeriodo.setTriggerAction(TriggerAction.ALL);
 		smplcmbxPeriodo.setAllowBlank(false);
-		smplcmbxPeriodo.add("Anno");
+		//smplcmbxPeriodo.add("Anno");
 		smplcmbxPeriodo.add("Periodo");
 		smplcmbxPeriodo.setWidth(80);
 		smplcmbxPeriodo.addListener(Events.SelectionChange, new Listener<BaseEvent>() {
@@ -392,7 +392,7 @@ public class PanelRiepilogoStatoAvanzamentoOreCommesse extends LayoutContainer{
 		cntpnlGroupPerMese.add(gridRiepMesi);
 		
 		vp.add(cntpnlGroupPerCommesse);
-		vp.add(cntpnlGroupPerMese);
+		//vp.add(cntpnlGroupPerMese);
 		
 		layoutContainer.add(vp, new FitData(1,1,1,1));
 		 
@@ -403,7 +403,7 @@ public class PanelRiepilogoStatoAvanzamentoOreCommesse extends LayoutContainer{
 	private void caricaTabellaDati(String annoI, String meseI,
 			String annoF, String meseF , String pm, List<CommessaModel> listaCommesseSel) {
 		
-		AdministrationService.Util.getInstance().getRiepilogoOreCommesseDettDipendentiPeriodo(
+		AdministrationService.Util.getInstance().getRiepilogoOreMeseDettaglioCommesse(
 				annoI, meseI, annoF, meseF, pm, listaCommesseSel, new AsyncCallback<List<RiepilogoOreDipFatturazione>>() {	
 			@Override
 			public void onSuccess(List<RiepilogoOreDipFatturazione> result) {
@@ -424,7 +424,7 @@ public class PanelRiepilogoStatoAvanzamentoOreCommesse extends LayoutContainer{
 				
 				for(RiepilogoOreDipFatturazione r:result){
 					meseRif=r.get("meseRif");					
-					if(meseRif.compareTo("Totale")==0)
+					//if(meseRif.compareTo("Totale")==0)
 						storeRiepCommesse.add(r);
 				}				
 				
@@ -655,8 +655,8 @@ public class PanelRiepilogoStatoAvanzamentoOreCommesse extends LayoutContainer{
 	    configs.add(column); 
 	    
 	    column=new SummaryColumnConfig<Double>();		
-	    column.setId("dipendente");  
-		column.setHeader("Dipendente");  
+	    column.setId("indicativoMese");  
+		column.setHeader("Mese");  
 		column.setWidth(120);  
 		column.setRowHeader(true); 
 		//column.setRenderer(renderer);

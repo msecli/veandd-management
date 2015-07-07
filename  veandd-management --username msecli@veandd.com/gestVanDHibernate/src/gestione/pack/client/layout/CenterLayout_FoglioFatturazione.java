@@ -117,7 +117,7 @@ public CenterLayout_FoglioFatturazione(){}
 		hpLayout.setItemId("hpLayout");
 		hpLayout.setStyleAttribute("margin-left", "5px");
 				
-		/*ContentPanel cntpnlLayout = new ContentPanel(); //pannello esterno
+		/*ContentPanel cntpnlLayout = new ContentPanel();   //pannello esterno
 		cntpnlLayout.setHeading("Fatturazione.");
 		cntpnlLayout.setHeaderVisible(true);
 		cntpnlLayout.setCollapsible(false);
@@ -755,6 +755,7 @@ public CenterLayout_FoglioFatturazione(){}
 		private TextField<String> txtfldImportoOrdine= new TextField<String>();
 		private TextField<String> txtfldImportoResiduo= new TextField<String>();
 		private TextField<String> txtfldOreRimborsoSpese= new TextField<String>();
+		private TextField<String> txtfldImportoFerro= new TextField<String>();
 		
 		private Text txtVuoto1= new Text();
 		private Text txtTotCompensato= new Text();
@@ -1001,7 +1002,7 @@ public CenterLayout_FoglioFatturazione(){}
 			layout.setLabelWidth(80);
 			layout.setLabelAlign(LabelAlign.LEFT);
 			layoutCol1.setLayout(layout);
-					
+			
 			layout= new FormLayout();
 			layout.setLabelWidth(80);
 			layout.setLabelAlign(LabelAlign.LEFT);
@@ -1033,6 +1034,9 @@ public CenterLayout_FoglioFatturazione(){}
 			txtfldImportoResiduo.setFieldLabel("Importo Res.");
 			txtfldImportoResiduo.setEnabled(false);
 			
+			txtfldImportoFerro.setFieldLabel("Importo Ferro");
+			txtfldImportoFerro.setEnabled(false);
+			
 			txtTotCompensato.setStyleAttribute("padding-top", "10px");
 			
 			txtfldCostoOrario.setFieldLabel("Tariffa Oraria");
@@ -1049,7 +1053,7 @@ public CenterLayout_FoglioFatturazione(){}
 							txtfldCostoOrario.setValue("0.00");
 						else{
 							String valore= txtfldCostoOrario.getValue().toString();
-													
+							
 							if(valore.compareTo("")==0)
 								valore ="0.00";
 							else
@@ -1065,7 +1069,7 @@ public CenterLayout_FoglioFatturazione(){}
 										valore=valore+"00";
 								}
 							txtfldCostoOrario.setValue(valore);
-						}						
+						}
 					}
 				}
 			});
@@ -1120,7 +1124,7 @@ public CenterLayout_FoglioFatturazione(){}
 								txtfldOreEseguiteRegistrate.setValue("0.00");
 							else{
 								String valore= txtfldOreEseguiteRegistrate.getValue().toString();
-														
+								
 								if(valore.compareTo("")==0)
 									valore ="0.00";
 								else
@@ -1141,16 +1145,17 @@ public CenterLayout_FoglioFatturazione(){}
 							if(hasValue(txtfldOreEseguiteRegistrate)&& 
 									(Float.valueOf(txtfldOreEseguiteRegistrate.getValue().toString())<=Float.valueOf(txtfldOreResiduoOrdine.getValue().toString())))
 								txtfldOreDaFatturare.setValue(txtfldOreEseguiteRegistrate.getValue().toString());
-								
+						
 						}
 				 }
 			});
-								
+			
 			layoutCol1.add(txtfldImportoOrdine, new FormData("95%"));
 			layoutCol1.add(txtfldImportoResiduo, new FormData("95%"));
-			layoutCol1.add(txtVuoto1, new FormData("95%"));
+		//TODO
+			//	layoutCol1.add(txtfldImportoFerro, new FormData("95%"));
 			layoutCol1.add(txtTotCompensato, new FormData("95%"));
-						
+			
 			layoutCol2.add(txtfldOreOrdine, new FormData("95%"));
 			layoutCol2.add(txtfldOreResiduoOrdine, new FormData("95%"));
 			layoutCol2.add(txtfldCostoOrario, new FormData("95%"));
@@ -1183,7 +1188,7 @@ public CenterLayout_FoglioFatturazione(){}
 			
 			ContentPanel cp1=new ContentPanel();
 			cp1.setHeaderVisible(false);
-			cp1.setSize(855, 90);
+			cp1.setSize(855, 110);
 			cp1.setBorders(false);
 			cp1.setBodyBorder(false);
 			cp1.setFrame(false);
@@ -1829,7 +1834,7 @@ public CenterLayout_FoglioFatturazione(){}
 			hp.add(btnAssegnaImporto);
 			layoutColumn5.add(hp, new FormData("85%"));
 			layoutColumn5.add(chbxConfermaPm, new FormData("20%"));
-			cp2.add(layoutColumn5, data1);						
+			cp2.add(layoutColumn5, data1);
 			
 			fldsetFattura.add(cp2);
 			
@@ -2286,7 +2291,7 @@ public CenterLayout_FoglioFatturazione(){}
 	    	  		
 	    	  		Float efficienza=(float)0.00;
 	    	  		efficienza=Float.valueOf(ClientUtility.getOreCentesimi(scaricate))/Float.valueOf(ClientUtility.getOreCentesimi(txtfldOreEseguiteRegistrate.getValue().toString()));
-	    	  		txtEfficienza.setText(""+number.format(efficienza)+""+"/"+efficienzaPrevista);
+	    	  		txtEfficienza.setText(""+number.format(efficienza)+""+"/"+efficienzaPrevista + " (eff.reale/eff.programmata)");
 	    	  		
 	    	  		totaleEuro=number.format(ClientUtility.calcolaImporto(txtfldCostoOrario.getValue().toString(), txtfldVariazioneSAL.getValue().toString()));
 	    	  		txtVariazioneSal.setText("("+totaleEuro+")");

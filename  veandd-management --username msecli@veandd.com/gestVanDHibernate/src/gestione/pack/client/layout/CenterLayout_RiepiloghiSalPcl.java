@@ -52,6 +52,7 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 	private TabItem tbSal = new TabItem("SAL");
 	private TabItem tbSalProd = new TabItem("PROD");
 	private TabItem tbPcl = new TabItem("PCL");
+	private TabItem tbPclProd = new TabItem("PRODPCL");
 	private TabItem tbRiassunto= new TabItem("Riassunto");
 	private TabItem tbNonFatturabili= new TabItem("Non Fatturabili");
 	private TabItem tbIndiretti= new TabItem("Indiretti");
@@ -176,6 +177,12 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 					meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
 					data=meseRif+anno;
 					
+					if(tabSelected.compareTo("PRODPCL")==0){
+						tbSalProd.removeAll();
+						tbSalProd.add(new PanelRiepilogoSalPclMese(tabSelected, data, pm));
+						tbSalProd.layout(true);
+						cpnlContainTab.layout();
+					}else						
 					if(tabSelected.compareTo("PROD")==0){
 						tbSalProd.removeAll();
 						tbSalProd.add(new PanelRiepilogoSalPclMese(tabSelected, data, pm));
@@ -266,9 +273,9 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 				data=meseRif+anno;
 				
 	        	tabSelected="PROD";
-	        	tbSal.removeAll();
-	        	tbSal.add(new PanelRiepilogoSalPclMese(tabSelected, data, pm));
-	        	tbSal.layout(true);
+	        	tbSalProd.removeAll();
+	        	tbSalProd.add(new PanelRiepilogoSalPclMese(tabSelected, data, pm));
+	        	tbSalProd.layout(true);
 	          }  
 	    }); 
 	    tabpnlRiepSalPcl.add(tbSalProd);  
@@ -293,15 +300,15 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 	        	tbSalOld.removeAll();
 	        	tbSalOld.add(new PanelRiepilogoSalPclMeseOld(tabSelected, data, pm));
 	        	tbSalOld.layout(true);
-	          }  
-	    });  
-	    if(ruolo.compareTo("AMM")==0)
-	    	tabpnlRiepSalPcl.add(tbSalOld); 
+	          }
+	    });
+	    //if(ruolo.compareTo("AMM")==0)
+	    	//tabpnlRiepSalPcl.add(tbSalOld); 
 	   
 	    tbPcl.setTitle("PCL");
 	    tbPcl.setScrollMode(Scroll.AUTO);
 	    tbPcl.addListener(Events.Select, new Listener<ComponentEvent>() {  
-	        public void handleEvent(ComponentEvent be) {  
+	        public void handleEvent(ComponentEvent be) {
 	        	String meseRif= new String(); 
 		    	String anno= new String();
 		    	String pm= new String();
@@ -318,9 +325,33 @@ public class CenterLayout_RiepiloghiSalPcl extends LayoutContainer{
 	        	tbPcl.removeAll();
 	        	tbPcl.add(new PanelRiepilogoSalPclMese(tabSelected, data, pm));
 	        	tbPcl.layout(true);
-	          }  
-	    });  
+	          }
+	    });
 	    tabpnlRiepSalPcl.add(tbPcl);
+	    
+	    tbPclProd.setTitle("PRODPCL");
+	    tbPclProd.setScrollMode(Scroll.AUTO);
+	    tbPclProd.addListener(Events.Select, new Listener<ComponentEvent>() {
+	        public void handleEvent(ComponentEvent be) {
+	        	String meseRif= new String();
+		    	String anno= new String();
+		    	String pm= new String();
+		    	if(smplcmbxPM.getRawValue().isEmpty())
+		    		pm="";
+		    	else
+		    		pm=smplcmbxPM.getRawValue().toString();
+		    	
+		    	anno= smplcmbxAnno.getRawValue().toString();
+				meseRif=ClientUtility.traduciMese(smplcmbxMese.getRawValue().toString());
+				data=meseRif+anno;
+				
+	        	tabSelected="PRODPCL";
+	        	tbPclProd.removeAll();
+	        	tbPclProd.add(new PanelRiepilogoSalPclMese(tabSelected, data, pm));
+	        	tbPclProd.layout(true);
+	          }
+	    }); 
+	    tabpnlRiepSalPcl.add(tbPclProd);  
 	    
 	    tbPclOld.setTitle("PCL old");
 	    tbPclOld.setScrollMode(Scroll.AUTO);

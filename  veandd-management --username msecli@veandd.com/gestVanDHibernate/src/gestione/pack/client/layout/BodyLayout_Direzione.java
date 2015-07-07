@@ -11,6 +11,7 @@ import gestione.pack.client.layout.panel.PanelRiepilogoCostiDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoCostiSuCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
 import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
+import gestione.pack.client.layout.panel.PanelRiepilogoStatoAvanzamentoMensileCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoStatoAvanzamentoOreCommesse;
 import gestione.pack.client.layout.panel.PanelSaturazioneRisorsePerSede;
 import gestione.pack.client.utility.ClientUtility;
@@ -300,13 +301,13 @@ public class BodyLayout_Direzione extends LayoutContainer {
 		    Button btnRiepilogoCostiDip = new Button();
 		    btnRiepilogoCostiDip.setToolTip("Riepilogo Costi");
 		    btnRiepilogoCostiDip.setHeight(65);
-		    btnRiepilogoCostiDip.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+		    btnRiepilogoCostiDip.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.costi()));
 		    btnRiepilogoCostiDip.setIconAlign(IconAlign.BOTTOM);
 		    btnRiepilogoCostiDip.setWidth("100%");
 		    btnRiepilogoCostiDip.addSelectionListener(new SelectionListener<ButtonEvent>() {
 		        public void componentSelected(ButtonEvent ce) {
 		        	center.removeAll();
-		        	center.add(new PanelRiepilogoCostiDipendenti());
+		        	center.add(new PanelRiepilogoCostiDipendenti("DIR"));
 		        	center.layout(true);}
 		        
 		      });
@@ -592,6 +593,20 @@ public class BodyLayout_Direzione extends LayoutContainer {
 		        	center.layout(true);}      
 		      });
 		    cp.add(btnRiepilogoMesePerCommessa);
+		    
+		    Button btnRiepilogoCommessePerMese = new Button();
+		    btnRiepilogoCommessePerMese.setToolTip("Stato avanzamento commesse (Dettaglio mensile)");
+		    btnRiepilogoCommessePerMese.setHeight(65);
+		    btnRiepilogoCommessePerMese.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.presenzeDip()));
+		    btnRiepilogoCommessePerMese.setIconAlign(IconAlign.BOTTOM);
+		    btnRiepilogoCommessePerMese.setWidth("100%");
+		    btnRiepilogoCommessePerMese.addSelectionListener(new SelectionListener<ButtonEvent>() {
+		        public void componentSelected(ButtonEvent ce) {
+		        	center.removeAll();
+		        	center.add(new PanelRiepilogoStatoAvanzamentoMensileCommesse());
+		        	center.layout(true);}      
+		    });
+		    cp.add(btnRiepilogoCommessePerMese);
 		    
 		    panel.add(cp);
 		    

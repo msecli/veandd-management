@@ -1,18 +1,10 @@
 package gestione.pack.client.layout;
 
-import java.util.List;
 
-import gestione.pack.client.AdministrationService;
 import gestione.pack.client.SessionManagementService;
-import gestione.pack.client.UtilityService;
-import gestione.pack.client.layout.panel.DialogRichiestaHardwareDipendente;
-import gestione.pack.client.layout.panel.PanelAbilitazioneStraordinarioDip;
-import gestione.pack.client.layout.panel.PanelAnagraficaHardware;
-import gestione.pack.client.layout.panel.PanelEditPasswordUtenti;
 import gestione.pack.client.layout.panel.PanelGestioneCosting;
 import gestione.pack.client.layout.panel.PanelGestioneOfferte;
 import gestione.pack.client.layout.panel.PanelMensileOrdini;
-import gestione.pack.client.layout.panel.PanelPrintAll;
 import gestione.pack.client.layout.panel.PanelProtocolloCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoAnnualeOreDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoCostiDipendenti;
@@ -20,14 +12,11 @@ import gestione.pack.client.layout.panel.PanelRiepilogoCostiSuCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoMeseGiornalieroHorizontal;
 import gestione.pack.client.layout.panel.PanelRiepilogoOreCartellinoDipendenti;
 import gestione.pack.client.layout.panel.PanelRiepilogoOreDipendentiPerCommesse;
-import gestione.pack.client.layout.panel.PanelRiepilogoRichiesteHardware;
-import gestione.pack.client.layout.panel.PanelRiepilogoSituazioneMensileOreDipendenti;
+import gestione.pack.client.layout.panel.PanelRiepilogoStatoAvanzamentoMensileCommesse;
 import gestione.pack.client.layout.panel.PanelRiepilogoStatoAvanzamentoOreCommesse;
 import gestione.pack.client.layout.panel.PanelSaturazioneRisorsePerSede;
-import gestione.pack.client.layout.panel.PanelToolAmministrativi;
 import gestione.pack.client.utility.ClientUtility;
 import gestione.pack.client.utility.ConstantiMSG;
-import gestione.pack.client.utility.DatiComboBox;
 import gestione.pack.client.utility.MyImages;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -38,13 +27,11 @@ import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.Viewport;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
@@ -166,7 +153,7 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 		btnLogout.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.logout()));
 		btnLogout.setToolTip("LogOut");
 		btnLogout.addSelectionListener(new SelectionListener<ButtonEvent>() {
-	        public void componentSelected(ButtonEvent ce) {     
+	        public void componentSelected(ButtonEvent ce) {
 	        	SessionManagementService.Util.getInstance().logOut( new AsyncCallback<Void>() {
 					
 					@Override
@@ -180,7 +167,7 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 					}
 				});
 	        }
-	      });
+	    });
 		
 		ButtonBar buttonBar= new ButtonBar();
 		buttonBar.setAlignment(HorizontalAlignment.RIGHT);
@@ -244,7 +231,7 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 		        public void componentSelected(ButtonEvent ce) {
 		          center.removeAll();
 		        	center.add(new CenterLayout_FoglioOreSelectDipendenti());
-		        	center.layout(true);}      
+		        	center.layout(true);}    
 		      });
 		    btnPresenzeDipendenti.setWidth("100%");
 		    cp.add(btnPresenzeDipendenti);
@@ -258,12 +245,12 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 		        public void componentSelected(ButtonEvent ce) {
 		          center.removeAll();
 		        	center.add(new CenterLayout_RilevazioneOreColocation());
-		        	center.layout(true);}      
+		        	center.layout(true);}
 		      });
 		    btnRilevColocation.setWidth("100%");
 		    cp.add(btnRilevColocation);	    
 		    
-		      
+		    
 		    Button btnRiepilogoMeseHorizontal = new Button();
 		    btnRiepilogoMeseHorizontal.setToolTip("Riepilogo Dettagliato Compilazione");
 		    btnRiepilogoMeseHorizontal.setHeight(65);
@@ -299,13 +286,13 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 		    Button btnRiepilogoCostiDip = new Button();
 		    btnRiepilogoCostiDip.setToolTip("Riepilogo Costi");
 		    btnRiepilogoCostiDip.setHeight(65);
-		    btnRiepilogoCostiDip.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.riepMensDip()));
+		    btnRiepilogoCostiDip.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.costi()));
 		    btnRiepilogoCostiDip.setIconAlign(IconAlign.BOTTOM);
 		    btnRiepilogoCostiDip.setWidth("100%");
 		    btnRiepilogoCostiDip.addSelectionListener(new SelectionListener<ButtonEvent>() {
 		        public void componentSelected(ButtonEvent ce) {
 		        	center.removeAll();
-		        	center.add(new PanelRiepilogoCostiDipendenti());
+		        	center.add(new PanelRiepilogoCostiDipendenti("AMM"));
 		        	center.layout(true);}
 		        
 		      });
@@ -636,6 +623,20 @@ public class BodyLayout_UffAmministrazione extends LayoutContainer {
 		        	center.layout(true);}      
 		      });
 		    cp.add(btnRiepilogoMesePerCommessa);
+		    
+		    Button btnRiepilogoCommessePerMese = new Button();
+		    btnRiepilogoCommessePerMese.setToolTip("Stato avanzamento commesse (Dettaglio mensile)");
+		    btnRiepilogoCommessePerMese.setHeight(65);
+		    btnRiepilogoCommessePerMese.setIcon(AbstractImagePrototype.create(MyImages.INSTANCE.presenzeDip()));
+		    btnRiepilogoCommessePerMese.setIconAlign(IconAlign.BOTTOM);
+		    btnRiepilogoCommessePerMese.setWidth("100%");
+		    btnRiepilogoCommessePerMese.addSelectionListener(new SelectionListener<ButtonEvent>() {
+		        public void componentSelected(ButtonEvent ce) {
+		        	center.removeAll();
+		        	center.add(new PanelRiepilogoStatoAvanzamentoMensileCommesse());
+		        	center.layout(true);}      
+		    });
+		    cp.add(btnRiepilogoCommessePerMese);
 		    
 		    panel.add(cp);
 		    

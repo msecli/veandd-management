@@ -59,6 +59,7 @@ import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -3087,13 +3088,12 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 					
 		Float costoRisorsa=(float)0.0;
 		Float costoTotale=(float)0.0;
-			
-		
+				
 		Session session= MyHibernateUtil.getSessionFactory().openSession();
 		Transaction tx= null;
 		
 		try {
-			tx = session.beginTransaction();		
+			tx = session.beginTransaction();
 			
 			for (Commessa c : listaCommesse) {
 				
@@ -3195,12 +3195,15 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 			
 			Object [] ff;
 			List<FoglioFatturazione> listaFF= new ArrayList<FoglioFatturazione>();
-			
+						
 			for(RiepilogoCostiDipSuCommesseFatturateModel rc1:listaRC){
 				
 				commessa1=(String)rc1.get("commessa");
 				estensione1=(String)rc1.get("estensione");
 				numeroCommessa=commessa1+"."+estensione1;
+				
+				if(commessa1.compareTo("10008")==0)
+					System.out.print("");
 				
 				if(!ServerUtility.commessaIsIncluded((int)rc1.get("idCommessa"), commesseSelected))
 				
@@ -3211,7 +3214,7 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 						listaFF=session.createSQLQuery("select * from foglio_fatturazione where COD_COMMESSA=:idCommessa " +
 							"and meseCorrente=:mese").setParameter("idCommessa", c1.getCodCommessa()).setParameter("mese", meseRif).list();
 						for(ListIterator iter=listaFF.listIterator();iter.hasNext();){
-						
+							
 							ff=(Object[])iter.next();
 							
 							importoRealeFatturato=(String) ff[4];
@@ -3238,8 +3241,8 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 					}else{
 						
 						listaCommesseSel=(List<Commessa>)session.createQuery("from Commessa where numeroCommessa=:numeroCommessa and estensione<>:estensione " +
-								"and escludiDaPa=:flag and statoCommessa=:stato").setParameter("numeroCommessa", commessa1).setParameter("estensione","pa")
-								.setParameter("flag", "N").setParameter("stato", "Aperta").list();
+								"and escludiDaPa=:flag and statoCommessa<>:stato").setParameter("numeroCommessa", commessa1).setParameter("estensione","pa")
+								.setParameter("flag", "N").setParameter("stato", "Costing").list();
 						
 						for(Commessa cc:listaCommesseSel){
 							
@@ -3541,8 +3544,8 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 					}else{
 						
 						listaCommesseSel=(List<Commessa>)session.createQuery("from Commessa where numeroCommessa=:numeroCommessa and estensione<>:estensione " +
-								"and escludiDaPa=:flag and statoCommessa=:stato").setParameter("numeroCommessa", commessa1).setParameter("estensione","pa")
-								.setParameter("flag", "N").setParameter("stato", "Aperta").list();
+								"and escludiDaPa=:flag and statoCommessa<>:stato").setParameter("numeroCommessa", commessa1).setParameter("estensione","pa")
+								.setParameter("flag", "N").setParameter("stato", "Costing").list();
 						
 						for(Commessa cc:listaCommesseSel){
 							
@@ -3604,6 +3607,53 @@ public static boolean saveDataFattura(FatturaModel fm,	List<AttivitaFatturateMod
 		}
 		
 		return listaCommesse;
+	}
+
+	public static List<String> elaboraMesi(String annoI, String meseI,
+			String annoF, String meseF) {
+		List<String> listaMesi= new ArrayList<String>();
+		
+		meseI=meseI.substring(0, 3).toLowerCase();
+		meseF=meseF.substring(0, 3).toLowerCase();
+		
+		listaMesi.add(meseI.substring(0,1).toUpperCase()+meseI.substring(1, meseI.length())+annoI);
+		
+		Date dataInizio= new Date();
+		Date dataFine=new Date();
+		
+	    DateFormat  formatter = new SimpleDateFormat("MMMyyyy", Locale.ITALIAN);
+	    	    
+		try {
+			dataInizio= formatter.parse(meseI+annoI);
+			dataFine= formatter.parse(meseF+annoF);
+		
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		while(dataInizio.before(dataFine)){
+			dataInizio=addOneMonth(dataInizio);
+			
+			String meseRif;
+			
+			SimpleDateFormat sFormatter =new SimpleDateFormat("MMMyyyy",Locale.ITALIAN);
+			meseRif=sFormatter.format(dataInizio);
+			meseRif=meseRif.substring(0, 1).toUpperCase()+meseRif.substring(1,meseRif.length());
+			
+			listaMesi.add(meseRif);
+		}
+		
+		//listaMesi.add(meseF+annoF);
+			
+		return listaMesi;
+	}
+	
+	public static Date addOneMonth(Date date)
+	{
+	    Calendar cal = Calendar.getInstance();
+	    cal.setTime(date);
+	    cal.add(Calendar.MONTH, 1);
+	    return cal.getTime();
 	}
 }
 

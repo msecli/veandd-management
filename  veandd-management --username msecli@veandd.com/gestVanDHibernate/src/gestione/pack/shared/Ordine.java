@@ -79,6 +79,8 @@ public class Ordine extends LightEntity implements IsSerializable {
 	
 	private String efficienzaPrevista;
 	
+	private String importoFerro;
+	
 	
 	//bi-directional many-to-one association to Rda
 	@ManyToOne
@@ -353,6 +355,14 @@ public class Ordine extends LightEntity implements IsSerializable {
 
 	public void setEfficienzaPrevista(String efficienzaPrevista) {
 		this.efficienzaPrevista = efficienzaPrevista;
+	}
+
+	public String getImportoFerro() {
+		return importoFerro;
+	}
+
+	public void setImportoFerro(String importoFerro) {
+		this.importoFerro = importoFerro;
 	}
 	
 }

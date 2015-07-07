@@ -432,16 +432,18 @@ public class PanelCommessa extends LayoutContainer {
 									if(smplcmbxTipoCommessa.getRawValue().isEmpty()){ tipoCommessa="";}else{tipoCommessa=smplcmbxTipoCommessa.getRawValue().toString();}
 									if(txtrDescrizione.getRawValue().isEmpty()){ descrizione="";}else{descrizione=txtrDescrizione.getValue().toString();}
 									if(txtrNote.getRawValue().isEmpty()){ note="";}else{note=txtrNote.getValue().toString();}
-									if(smplcmbxPM.getRawValue().isEmpty()){ pM="";}else{							
-										pM=smplcmbxPM.getRawValue().toString();		
+									if(smplcmbxPM.getRawValue().isEmpty()){ pM="";}else{
+										pM=smplcmbxPM.getRawValue().toString();
 									}
-									if(smplcmbxCliente.getRawValue().isEmpty()){ ragioneSociale="";}else{							
-										ragioneSociale=smplcmbxCliente.getRawValue().toString();		
+									if(smplcmbxCliente.getRawValue().isEmpty()){ ragioneSociale="";}else{
+										ragioneSociale=smplcmbxCliente.getRawValue().toString();
 									}
 									if(smplcmbxStatoCommessa.getRawValue().isEmpty()){ statoCommessa="";}else{statoCommessa=smplcmbxStatoCommessa.getRawValue().toString();}
-														
+									
 									//dataInizio=dtfldData.getValue();
-																		
+									if(descrizione.contains("\n"))
+										descrizione=descrizione.substring(0,descrizione.length()-1);
+									
 									AdministrationService.Util.getInstance().insertDataCommessa(ragioneSociale, numCommessa, estensione, tipoCommessa, pM, statoCommessa, 
 											/*dataInizio,*/oreLavoro, oreLavoroResidue, tariffaSal, salAttuale, pclAttuale, descrizione, note, escludiDaPa,  new AsyncCallback<Boolean>() {
 

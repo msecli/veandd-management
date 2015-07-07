@@ -121,13 +121,13 @@ public interface AdministrationServiceAsync {
 			Date dataOfferte, String importo, String numOrdine,
 			String descrizione, String elementoWbs, String conto, String prCenter, String bem, Date dataInizio, Date dataFine, String tariffa,
 			String numRisorse, String oreDisp, String oreRes,
-			List<TariffaOrdineModel> listaTar, String importoOrdine, String importoResiduoOrdine, String efficienzaPrevista, AsyncCallback<Boolean> asyncCallback);
+			List<TariffaOrdineModel> listaTar, String importoOrdine, String importoResiduoOrdine, String efficienzaPrevista, String importoFerro, AsyncCallback<Boolean> asyncCallback);
 	
 	void editRdoCompleta(int idRdo, String numRdo, String cliente,
 			String numOfferta, Date dataOfferte, String importo,
 			String numOrdine, String descrizione, String elementoWbs, String conto, String prCenter, String bem, Date dataInizio,
 			Date dataFine, String tariffa, String numRisorse, String oreDisp,
-			String oreRes, List<TariffaOrdineModel> listaTar, String importoOrdine, String importoResiduoOrdine, String efficienzaPrevista, AsyncCallback<Boolean> asyncCallback);
+			String oreRes, List<TariffaOrdineModel> listaTar, String importoOrdine, String importoResiduoOrdine, String efficienzaPrevista, String importoFerro, AsyncCallback<Boolean> asyncCallback);
 
 	void deleteRdoCompleta(int idRdo, AsyncCallback<Boolean> asyncCallback);
 	
@@ -257,7 +257,7 @@ public interface AdministrationServiceAsync {
 			String giustificativo, String oreStraordinario, String oreFerie, String orePermesso, 
 			String revisione, String oreAbbuono, List<String> intervalliIU,
 			List<IntervalliCommesseModel> intervalliC, String oreRecuperoTot,
-			String noteAggiuntive, AsyncCallback<Boolean> asyncCallback);
+			String noteAggiuntive, String fermoMacchina, AsyncCallback<Boolean> asyncCallback);
 	/*void getOrePreviste(String username, AsyncCallback<String> asyncCallback);
 
 	void loadFoglioOre(AsyncCallback<Boolean> asyncCallback);*/
@@ -540,7 +540,7 @@ public interface AdministrationServiceAsync {
 
 	void getRiepilogoCostiSuCommesseFatturate(
 			String pm,
-			String mese, String anno, AsyncCallback<List<RiepilogoCostiDipSuCommesseFatturateModel>> asyncCallback);
+			String mese, String anno, boolean includi, AsyncCallback<List<RiepilogoCostiDipSuCommesseFatturateModel>> asyncCallback);
 
 	void getReportDatiFatturazioneMese(String pm, String meseSel,
 			AsyncCallback<List<DatiFatturazioneMeseModel>> asyncCallback);
@@ -550,5 +550,10 @@ public interface AdministrationServiceAsync {
 
 	void riepilogoTotaleMarginiSuCommesse(
 			String mese, String anno, AsyncCallback<List<RiepilogoCostiDipSuCommesseFatturateModel>> asyncCallback);
+
+	void getRiepilogoOreMeseDettaglioCommesse(String annoI, String meseI,
+			String annoF, String meseF, String pm,
+			List<CommessaModel> listaCommesseSel,
+			AsyncCallback<List<RiepilogoOreDipFatturazione>> asyncCallback);
 
 }
