@@ -813,6 +813,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 		Rda r=new Rda();
 		Cliente c= new Cliente();
 		Offerta o= new Offerta();
+		Ordine ord= new Ordine();
 		
 		int id;
 		
@@ -824,6 +825,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			tx=session.beginTransaction();
 			
 			//faccio un check sul numero di offerta per vedere se è già presente ed eventualmente procedo all'inserimento dei dati del solo ordine
+			
+			ord=(Ordine)session.createQuery("from Ordine where codiceOrdine=:numeroOrdine").setParameter("numeroOrdine", numOrdine).uniqueResult();
+			
+			if(ord==null){
 			
 			if(numOfferta.compareTo("#")==0)
 				o=null;
@@ -883,7 +888,10 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 					insertTariffeOrdine(numOrdine, att);
 				}
 			}
-			
+			}else{
+				return false;
+			}
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 			if (tx!=null)
@@ -7746,6 +7754,9 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			listaFF=(List<FoglioFatturazione>)session.createQuery("from FoglioFatturazione where meseCorrente=:mese").setParameter("mese", mese).list();
 			for(FoglioFatturazione f: listaFF){
 				
+				if(f.getIdFoglioFatturazione()==2836)
+					System.out.print("");
+				
 				fattura=(Fattura)session.createQuery("from Fattura where idFoglioFatturazione=:id").setParameter("id", f.getIdFoglioFatturazione()).uniqueResult();
 				if(fattura!=null)
 					statoFattura="S";
@@ -12887,6 +12898,7 @@ public class AdministrationServiceImpl extends PersistentRemoteService implement
 			
 			for(FoglioFatturazione f:listaFF1){
 				numeroCommessa=f.getCommessa().getNumeroCommessa()+"."+f.getCommessa().getEstensione();
+												
 				o=f.getCommessa().getOrdine();
 				if(o!=null)
 					numeroOrdine=f.getCommessa().getOrdine().getCodiceOrdine();
