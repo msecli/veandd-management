@@ -279,9 +279,10 @@ public class BodyLayout_Direzione extends LayoutContainer {
 	            public void handleEvent(ComponentEvent be) {
 	            	/*center.removeAll();
 		        	center.add(new PanelGestioneCostiDipendenti());
-		        	center.layout(true);*/               
+		        	center.layout(true);*/
 	            }
 	        });
+		    
 		    Button btnAnagrP = new Button();
 		    btnAnagrP.setToolTip("Anagrafica Personale");
 		    btnAnagrP.setHeight(65);
@@ -292,9 +293,9 @@ public class BodyLayout_Direzione extends LayoutContainer {
 		        public void componentSelected(ButtonEvent ce) {
 		        	center.removeAll();
 		        	center.add(new CenterLayout_AnagraficaPersonale());
-		        	center.layout(true);}
-		        
-		      });
+		        	center.layout(true);
+		        }
+		    });
 		    btnAnagrP.setWidth("100%");
 		    cp.add(btnAnagrP);
 		    
@@ -308,9 +309,10 @@ public class BodyLayout_Direzione extends LayoutContainer {
 		        public void componentSelected(ButtonEvent ce) {
 		        	center.removeAll();
 		        	center.add(new PanelRiepilogoCostiDipendenti("DIR"));
-		        	center.layout(true);}
-		        
-		      });
+		        	center.layout(true);
+		        }
+		    });
+		    
 		    btnRiepilogoCostiDip.setWidth("100%");
 		    cp.add(btnRiepilogoCostiDip);
 		    panel.add(cp);
@@ -323,9 +325,10 @@ public class BodyLayout_Direzione extends LayoutContainer {
 	            public void handleEvent(ComponentEvent be) {
 	            	/*center.removeAll();
 		        	center.add(new CenterLayout_AnagraficaClienti());
-		        	center.layout(true);  */             
+		        	center.layout(true);*/
 	            }
 	        });
+		    
 		    Button btnAnagrC = new Button();
 		    btnAnagrC.setToolTip("Anagrafica Clienti");
 		    btnAnagrC.setHeight(65);
@@ -338,7 +341,7 @@ public class BodyLayout_Direzione extends LayoutContainer {
 		          center.add(new CenterLayout_AnagraficaClienti());
 		          center.layout(true);}
 		        
-		      });
+		    });
 		    btnAnagrC.setWidth("100%");
 		    cp.add(btnAnagrC);
 		    panel.add(cp);

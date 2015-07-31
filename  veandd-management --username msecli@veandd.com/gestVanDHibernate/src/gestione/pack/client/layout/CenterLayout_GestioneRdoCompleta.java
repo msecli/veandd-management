@@ -979,7 +979,7 @@ public class CenterLayout_GestioneRdoCompleta extends LayoutContainer{
 		    cs.setSelectionMode(SelectionMode.SIMPLE);
 
 		    txtfldTariffa= new TextField<String>();
-		    txtfldTariffa.setRegex("^([0-9]{1}|[0-9][0-9]|[0-9][0-9][0-9])[.]{1}(0|00|[0-9]{2})$");
+		    txtfldTariffa.setRegex("^([0-9]{1}|[0-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9]|[0-9][0-9][0-9][0-9][0-9])[.]{1}(0|00|[0-9]{2})$");
 		    txtfldTariffa.getMessages().setRegexText("Deve essere un numero!");
 		    txtfldTariffa.setValue("0.00");
 		    txtfldTariffa.setAllowBlank(false);
